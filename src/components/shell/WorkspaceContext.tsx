@@ -62,6 +62,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   // in an effect so hydration never mismatches.
   const [state, dispatch] = useReducer(workspaceReducer, DEFAULT_STATE);
   const [hydrated, setHydrated] = useReducer(() => true, false);
+  /** The passage in focus, readable inside the mount-once event listeners. */
+  const activeRefRef = useRef<{ book: string; chapter: number } | null>(null);
 
   useEffect(() => {
     const saved = loadWorkspace();
@@ -95,6 +97,23 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
       dispatch({ type: "openLexicon", id: detail.id.trim().toUpperCase() });
     };
+    const onOpenGuide = (e: Event) => {
+      const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
+      // A guide asked for without a passage takes the pane in focus.
+      const book =
+        detail && typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        detail && typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({ type: "openGuide", book, chapter });
+    };
+    const onOpenWordStudy = (e: Event) => {
+      const detail = (e as CustomEvent<{ id?: string }>).detail;
+      if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
+      dispatch({ type: "openWordStudy", strongsId: detail.id.trim() });
+    };
     const onToggleDock = () => dispatch({ type: "toggleDock" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
@@ -110,6 +129,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-ref", onOpenRef);
     window.addEventListener("berean:search", onSearch);
     window.addEventListener("berean:open-lexicon", onOpenLexicon);
+    window.addEventListener("berean:open-guide", onOpenGuide);
+    window.addEventListener("berean:open-wordstudy", onOpenWordStudy);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
     window.addEventListener("keydown", onKey);
@@ -117,6 +138,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-ref", onOpenRef);
       window.removeEventListener("berean:search", onSearch);
       window.removeEventListener("berean:open-lexicon", onOpenLexicon);
+      window.removeEventListener("berean:open-guide", onOpenGuide);
+      window.removeEventListener("berean:open-wordstudy", onOpenWordStudy);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
       window.removeEventListener("keydown", onKey);
@@ -128,6 +151,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const leaf = findLeaf(state.root, state.activePaneId);
     return leaf ? paneRef(leaf) : null;
   }, [state.root, state.activePaneId]);
+  activeRefRef.current = activeRef;
 
   /*
    * The scroll-sync bus for link sets. Kept outside React state so a

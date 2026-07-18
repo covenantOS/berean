@@ -31,6 +31,8 @@ import {
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
 import ToolTabBody from "./ToolTabBody";
+import PassageGuide from "./PassageGuide";
+import WordStudyGuide from "./WordStudyGuide";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -111,6 +113,8 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "search") return `“${tab.q}”`;
   if (tab.type === "commentary") return "Commentary";
   if (tab.type === "crossrefs") return "Cross-refs";
+  if (tab.type === "guide") return `Guide: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  if (tab.type === "wordstudy") return `Word Study: ${tab.strongsId}`;
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -472,6 +476,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             />
           ) : activeTab.type === "search" ? (
             <SearchPane q={activeTab.q} />
+          ) : activeTab.type === "guide" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <PassageGuide book={activeTab.book} chapter={activeTab.chapter} />
+            </div>
+          ) : activeTab.type === "wordstudy" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <WordStudyGuide strongsId={activeTab.strongsId} />
+            </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />
           )

@@ -68,21 +68,21 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 3. Guides and Workflows
 
-- [ ] [SW] Passage Guide: master pericope report over library and datasets.
+- [x] [SW] Passage Guide: master pericope report over library and datasets.
 - [ ] [DATA] Commentaries section: hits sortable by priority, series, author, denomination, type, and era (patristic through contemporary).
-- [ ] [DATA][LICENSED] Cross References section: pooled cross-reference data from licensed Bibles and dedicated resources.
+- [x] [DATA][LICENSED] Cross References section: pooled cross-reference data from licensed Bibles and dedicated resources.
 - [ ] [DATA] Parallel Passages section: quotation and allusion parallels from harmony resources and the OT-in-NT dataset.
 - [ ] [DATA] Topics section: Logos Controlled Vocabulary tags for the passage as list, cloud, or tags.
 - [ ] [DATA] Interesting Words section: statistically significant vocabulary of the passage from reverse interlinear data.
 - [ ] [SW] Compare Versions section: translation similarity against a chosen base version.
-- [ ] [DATA] Biblical People, Places, Things, and Events sections: entity cards from the Biblical Knowledgebase with Factbook links.
+- [x] [DATA] Biblical People, Places, Things, and Events sections: entity cards from the Biblical Knowledgebase with Factbook links.
 - [ ] [DATA] Cultural Concepts and Literary Typing sections: background concepts and genre labels from their datasets.
 - [ ] [LICENSED] Media, Atlas, and Music sections: maps, images, and hymn resources tied to the passage.
 - [ ] [LICENSED] Journals, Sermons, Illustrations, and Collections sections: hits from journal series, sermon archives, illustration resources, and user collections.
 - [ ] [DATA] Systematic Theologies, Biblical Theologies, and Confessional Documents sections: passages cited inside those tagged corpora.
 - [ ] [SW] Exegetical Guide: original language report with Word by Word, Grammar, Textual Variants, Apparatuses, Lemma in Passage, and Important Words sections.
 - [ ] [DATA][LICENSED] Textual Variants and Apparatuses sections: manuscript evidence from the variants dataset and licensed apparatuses.
-- [ ] [SW] Bible Word Study guide: the word-level report; section detail under Word Study.
+- [x] [SW] Bible Word Study guide: the word-level report; section detail under Word Study.
 - [ ] [DATA] Topic Guide: controlled vocabulary topic entry with definition, key passages, dictionary hits, and related topics.
 - [ ] [DATA] Sermon Starter Guide: passage or theme in; themes, key passages, illustrations, outlines, sermons, and media out; depends on Preaching Themes and sermon tagging.
 - [ ] [DATA] Theology Guide (Logos 10): systematic theology topics browsed through the Lexham Survey of Theology ontology.
@@ -259,11 +259,11 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 15. Word Study
 
-- [ ] [SW] Bible Word Study guide: one lemma or English word in, a full lexical report out, with English and original language modes.
+- [x] [SW] Bible Word Study guide: one lemma or English word in, a full lexical report out, with English and original language modes.
 - [ ] [DATA] Translation section: ring graph of how a lemma is rendered across your reverse interlinears, with Charts handoff.
 - [ ] [DATA] Septuagint Translation section: Hebrew lemma to Greek equivalents in the LXX.
 - [ ] [DATA] Lemma, Root, and Senses sections: dictionary entries, root relationships, and the sense taxonomy with example occurrences.
-- [ ] [DATA] Morphology section: form distribution of the lemma across the corpus.
+- [x] [DATA] Morphology section: form distribution of the lemma across the corpus.
 - [ ] [LICENSED] Grammars section: discussion of the construction in your grammar resources.
 - [ ] [DATA] Textual Searches section: prebuilt searches for the word across corpora and datasets.
 - [ ] [SW] Concordance tool: build a concordance of any book with language, heading, and field facets.

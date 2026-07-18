@@ -101,6 +101,21 @@ export default function LexiconDock({ entryId }: { entryId?: string | null } = {
           <span className="font-semibold">In context:</span> {word.gloss}
         </p>
       )}
+      {word.strongs[0] && (
+        <p className="mt-1.5">
+          <button
+            type="button"
+            onClick={() => {
+              // Extended ids (H7225G) reduce to the base entry the study knows.
+              const base = word.strongs[0].toUpperCase().match(/^[GH]\d+/)?.[0];
+              if (base) dispatch({ type: "openWordStudy", strongsId: base });
+            }}
+            className="text-[0.68rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Open word study
+          </button>
+        </p>
+      )}
       {word.strongs.length > 1 && (
         <p className="mt-1.5 flex flex-wrap items-center gap-1 text-[0.68rem] text-muted">
           Also tagged:

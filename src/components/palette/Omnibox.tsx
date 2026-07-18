@@ -25,6 +25,9 @@
  *                              Bible reference input, a text hit, a daily
  *                              verse, or a recent. `book` is the canon slug.
  *   "berean:open-lexicon"      { id }            Strong's id, e.g. "G25".
+ *   "berean:open-guide"        { book?, chapter? }  Passage Guide; absent ref
+ *                              means the passage in focus.
+ *   "berean:open-wordstudy"    { id }            Word study for a Strong's id.
  *   "berean:search"            { q }             Plain text submitted.
  *   "berean:apply-preset"      { preset }        Workspace preset placeholder,
  *                              currently only { preset: "reading" }.
@@ -161,6 +164,7 @@ interface Command {
 
 const COMMANDS: Command[] = [
   { id: "preset-reading", label: "Open reading preset", meta: "Preset" },
+  { id: "guide", label: "Passage guide for this passage", meta: "Guide" },
   { id: "toggle-dock", label: "Toggle right dock" },
   { id: "daily", label: "Go to daily verse" },
   { id: "settings", label: "Open settings" },
@@ -275,6 +279,8 @@ export default function Omnibox() {
   function runCommand(id: string) {
     if (id === "preset-reading") {
       emit("berean:apply-preset", { preset: "reading" });
+    } else if (id === "guide") {
+      emit("berean:open-guide", {});
     } else if (id === "toggle-dock") {
       emit("berean:toggle-right-dock", {});
     } else if (id === "daily") {
@@ -335,6 +341,16 @@ export default function Omnibox() {
             parsed.label
           ),
       });
+      items.push({
+        key: "ref-guide",
+        group: "References",
+        label: `Passage guide: ${parsed.label}`,
+        sub: "Commentaries, cross-references, people, topics",
+        run: () => {
+          emit("berean:open-guide", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
     } else if (parsed.kind === "strongs") {
       items.push({
         key: "strongs",
@@ -343,6 +359,16 @@ export default function Omnibox() {
         refStyle: true,
         sub: `Strong's number · ${parsed.id.startsWith("H") ? "Hebrew" : "Greek"} lexicon`,
         run: () => openStrongs(parsed.id),
+      });
+      items.push({
+        key: "strongs-wordstudy",
+        group: "References",
+        label: `Word study: ${parsed.id}`,
+        sub: "Lexicon, occurrences, forms, topics",
+        run: () => {
+          emit("berean:open-wordstudy", { id: parsed.id });
+          closePalette();
+        },
       });
     }
 

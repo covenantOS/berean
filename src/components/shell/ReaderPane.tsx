@@ -556,6 +556,14 @@ export default function ReaderPane({
           )}
         </h2>
         <div className="flex flex-1 items-center justify-end gap-1">
+          <button
+            type="button"
+            title="Open the Passage Guide for this chapter"
+            onClick={() => dispatch({ type: "openGuide", book, chapter, paneId })}
+            className={toggleBtn(false)}
+          >
+            Guide
+          </button>
           {ready && ready.translationId === "kjv" && ready.hasTagged && (
             <button
               type="button"

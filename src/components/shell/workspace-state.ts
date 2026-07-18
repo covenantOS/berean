@@ -83,10 +83,25 @@ export interface CrossRefsTab {
   type: "crossrefs";
 }
 
+/** The Passage Guide: one chapter's datasets composed into a single report. */
+export interface GuideTab {
+  id: string;
+  type: "guide";
+  book: string;
+  chapter: number;
+}
+
+/** The Bible Word Study: one Strong's number's lexical report. */
+export interface WordStudyTab {
+  id: string;
+  type: "wordstudy";
+  strongsId: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
-export type Tab = ReaderTab | SearchTab | ToolTab;
+export type Tab = ReaderTab | SearchTab | ToolTab | GuideTab | WordStudyTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -194,6 +209,14 @@ export function crossrefsTab(): CrossRefsTab {
 
 export function lexiconTab(entryId: string | null = null): LexiconTab {
   return { id: newId("tab"), type: "lexicon", entryId };
+}
+
+export function guideTab(book = "genesis", chapter = 1): GuideTab {
+  return { id: newId("tab"), type: "guide", book, chapter };
+}
+
+export function wordStudyTab(strongsId: string): WordStudyTab {
+  return { id: newId("tab"), type: "wordstudy", strongsId };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -324,6 +347,8 @@ export type WorkspaceAction =
   | { type: "openRef"; book: string; chapter: number; paneId?: string }
   | { type: "openSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
+  | { type: "openGuide"; book: string; chapter: number; paneId?: string }
+  | { type: "openWordStudy"; strongsId: string; paneId?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -449,6 +474,44 @@ export function workspaceReducer(
 
     case "openLexicon":
       return { ...state, lexiconId: action.id, dockTab: "lexicon", dockOpen: true };
+
+    case "openGuide": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // A guide pins its passage at open time; it never follows the pane.
+      const tab = guideTab(book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openWordStudy": {
+      const m = action.strongsId.trim().toUpperCase().match(/^[GH]\d{1,5}$/);
+      if (!m) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const tab = wordStudyTab(m[0]);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
 
     case "selectVerse": {
       const book = getBook(action.book);
@@ -877,6 +940,21 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? t.entryId.toUpperCase()
             : null;
         tabs.push({ id: t.id, type: "lexicon", entryId });
+        continue;
+      }
+      if (t.type === "guide" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        tabs.push({ id: t.id, type: "guide", book: book.slug, chapter });
+        continue;
+      }
+      if (t.type === "wordstudy" && typeof t.id === "string") {
+        if (typeof t.strongsId !== "string" || !/^[hg]\d{1,5}$/i.test(t.strongsId)) continue;
+        tabs.push({ id: t.id, type: "wordstudy", strongsId: t.strongsId.toUpperCase() });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;
