@@ -11,6 +11,7 @@ import {
 import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
 import { searchEntities } from "@/lib/entities";
 import { searchTopics } from "@/lib/topics";
+import SemanticMode from "./semantic";
 
 export const metadata: Metadata = { title: "Concordance" };
 
@@ -26,7 +27,7 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const { q, t } = params;
-  const mode = params.mode === "original" ? "original" : "english";
+  const mode = params.mode === "original" ? "original" : params.mode === "semantic" ? "semantic" : "english";
   const query = (q ?? "").trim();
 
   return (
@@ -46,12 +47,17 @@ export default async function SearchPage({
         >
           Original languages
         </ModeTab>
+        <ModeTab href="/search?mode=semantic" active={mode === "semantic"}>
+          Search by meaning
+        </ModeTab>
       </nav>
 
       {mode === "english" ? (
         <EnglishMode query={query} t={t} />
-      ) : (
+      ) : mode === "original" ? (
         <OriginalMode query={query} params={params} />
+      ) : (
+        <SemanticMode />
       )}
     </div>
   );
