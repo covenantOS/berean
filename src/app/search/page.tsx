@@ -10,6 +10,7 @@ import {
 } from "@/lib/morphsearch";
 import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
 import { searchEntities } from "@/lib/entities";
+import { searchTopics } from "@/lib/topics";
 
 export const metadata: Metadata = { title: "Concordance" };
 
@@ -88,6 +89,7 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
   const results =
     query.length >= 2 ? await searchCanon(query, 200, translation) : null;
   const entities = query.length >= 2 ? await searchEntities(query) : [];
+  const topics = query.length >= 2 ? await searchTopics(query) : [];
 
   return (
     <>
@@ -138,6 +140,30 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
                   {e.kind === "place" ? "place" : e.type.toLowerCase() || e.kind}
                   {e.brief ? ` · ${e.brief}` : ""} · {e.refs.toLocaleString()}{" "}
                   {e.refs === 1 ? "reference" : "references"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {topics.length > 0 && (
+        <section className="mb-8">
+          <p className="small-caps mb-3 border-b border-rule pb-2 text-sm text-muted">
+            Topics
+          </p>
+          <ul className="space-y-2">
+            {topics.map((t) => (
+              <li key={`${t.work}-${t.id}`} className="text-sm">
+                <Link
+                  href={`/topics/${t.work}/${t.id}`}
+                  className="font-medium text-sapphire no-underline hover:underline capitalize"
+                >
+                  {t.title}
+                </Link>{" "}
+                <span className="text-xs text-muted">
+                  {t.work === "naves" ? "Nave's" : "Torrey's"} · {t.refs.toLocaleString()}{" "}
+                  {t.refs === 1 ? "reference" : "references"}
                 </span>
               </li>
             ))}

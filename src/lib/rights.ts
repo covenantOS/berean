@@ -257,6 +257,32 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "naves-topical",
+    title: "Orville J. Nave, Nave's Topical Bible",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/Nave.zip (CrossWire SWORD module 3.0, from the CCEL digitization)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Topical index with nested sub-topics and ~100,000 scripture references, stored as data/topics/naves.json behind /topics. References are normalized to canonical slugs; entries whose references cannot be mapped are counted at build time. Raw module kept under data/_sources/naves (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
+    status: "shipped",
+  },
+  {
+    id: "torreys-topical",
+    title: "R. A. Torrey, The New Topical Text Book (1897)",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/Torrey.zip (CrossWire SWORD module 1.3, via Bible Foundation)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Topical textbook with sub-topics and scripture proofs, stored as data/topics/torreys.json behind /topics. References are normalized to canonical slugs; unmappable references are counted at build time. Raw module kept under data/_sources/torreys (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
+    status: "shipped",
+  },
+  {
     id: "strongs",
     title: "Strong's Exhaustive Concordance (lexical numbers and glosses)",
     kind: "dataset",

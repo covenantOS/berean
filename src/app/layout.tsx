@@ -77,6 +77,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Concordance
               </Link>{" "}
               ·{" "}
+              <Link href="/topics" className="text-sapphire">
+                Topics
+              </Link>{" "}
+              ·{" "}
               <Link href="/plans" className="text-sapphire">
                 Plans
               </Link>{" "}

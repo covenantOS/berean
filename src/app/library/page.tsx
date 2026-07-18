@@ -200,7 +200,19 @@ export default async function LibraryPage({
         )}
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-[4px] border border-rule bg-surface p-5 text-sm leading-relaxed">
+          <h3 className="font-editorial mb-1 font-bold">The topical index</h3>
+          <p className="text-muted">
+            The canon gathered under its subjects: Nave&apos;s Topical Bible and Torrey&apos;s New
+            Topical Textbook, every reference set out with its KJV text and linked to the reader.
+          </p>
+          <p className="mt-2">
+            <Link href="/topics" className="text-sapphire no-underline hover:underline">
+              Open the topical index
+            </Link>
+          </p>
+        </div>
         <div className="rounded-[4px] border border-rule bg-surface p-5 text-sm leading-relaxed">
           <h3 className="font-editorial mb-1 font-bold">The original languages</h3>
           <p className="text-muted">
