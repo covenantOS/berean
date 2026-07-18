@@ -80,7 +80,13 @@ export default function AlmanacPage() {
       <h1 className="font-editorial mb-1 text-2xl font-bold">The Almanac</h1>
       <p className="mb-8 max-w-2xl text-sm text-muted">
         The room that governs time: the preaching and teaching calendar, the rule of life, and the
-        day&apos;s appointed work. Everything be done decently and in order.
+        day&apos;s appointed work. Everything be done decently and in order. For the long view of the
+        time God has governed, see{" "}
+        <Link href="/almanac/timeline" className="text-sapphire no-underline hover:underline">
+          the Timeline
+        </Link>{" "}
+        — a biblical chronology from creation to the early church, linked to the reader and the
+        Factbook.
       </p>
 
       {/* Today's appointed work */}

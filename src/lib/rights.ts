@@ -400,6 +400,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "ussher-chronology",
+    title: "James Ussher, The Annals of the World (1658) — chronology framework",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "James Ussher, Annals of the World (1658, public domain); hand-curated event list at data/timeline/events.json",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "The dated backbone of the Timeline at /almanac/timeline: a hand-curated event list (creation to AD 95) following Ussher's public-domain chronology for the OT and standard conservative NT dates, cross-linked to TIPNR entities and canonical passages. Every entry is flagged as approximate where Ussher himself or modern scholarship diverges; ancient dates before the divided kingdom are conventional, not certain, and the data file's header says so plainly. The curation itself is Berean's own work from public-domain sources.",
+    status: "shipped",
+  },
+  {
     id: "tvtms",
     title: "TVTMS: Translators Versification Traditions with Methodology for Standardisation",
     kind: "dataset",

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBook } from "@/lib/canon";
 import { getEntity, Entity, EntityRelation } from "@/lib/entities";
+import { eventsForEntity, formatEventYears } from "@/lib/timeline";
 import LocatorMap from "@/components/LocatorMap";
 
 export async function generateMetadata({
@@ -54,6 +55,8 @@ export default async function EntityPage({
   const { id } = await params;
   const entity = await getEntity(id);
   if (!entity) notFound();
+
+  const timelineEvents = await eventsForEntity(id);
 
   const byBook = new Map<string, { chapter: number; verse: number }[]>();
   for (const ref of entity.refs) {
@@ -107,6 +110,25 @@ export default async function EntityPage({
           {RELATION_LABELS.map(([key, label]) => (
             <RelationGroup key={key} label={label} items={relations[key]} />
           ))}
+        </section>
+      )}
+
+      {timelineEvents.length > 0 && (
+        <section className="mb-8 rounded-[4px] border border-rule bg-surface p-5">
+          <h2 className="small-caps mb-2 text-sm text-muted">On the timeline</h2>
+          <ul className="space-y-1 text-sm">
+            {timelineEvents.map((e) => (
+              <li key={e.id}>
+                <Link
+                  href={`/almanac/timeline?event=${e.id}`}
+                  className="text-sapphire no-underline hover:underline"
+                >
+                  {e.label}
+                </Link>{" "}
+                <span className="text-xs text-muted">{formatEventYears(e)}</span>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
