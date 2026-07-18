@@ -1,0 +1,7 @@
+{
+  "id": "tahot",
+  "title": "TAHOT: Translators Amalgamated Hebrew OT",
+  "attribution": "Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). https://github.com/STEPBible/STEPBible-Data",
+  "retrieved": "2026-07-18",
+  "builtBy": "scripts/build-step.mjs"
+}

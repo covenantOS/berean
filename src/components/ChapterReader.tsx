@@ -575,7 +575,7 @@ function RefsPanel({
         </div>
       ))}
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
-        Cross-references: OpenBible.info (CC-BY).
+        Cross-references: Treasury of Scripture Knowledge (public domain).
       </p>
     </div>
   );
