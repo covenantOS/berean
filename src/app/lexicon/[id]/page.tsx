@@ -117,6 +117,14 @@ export default async function LexiconPage({
             <h2 className="section-rule small-caps mb-4 text-sm">
               {total} occurrence{total === 1 ? "" : "s"} in the canon
             </h2>
+            <p className="mb-4 text-sm">
+              <Link
+                href={`/search?mode=original&q=${hit.id}`}
+                className="text-sapphire no-underline hover:underline"
+              >
+                Find every occurrence with parsing in the original text
+              </Link>
+            </p>
             {occurrences.length === 0 ? (
               <p className="text-sm text-muted">
                 No occurrences found in the tagged text.

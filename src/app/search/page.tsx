@@ -1,22 +1,31 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { searchCanon } from "@/lib/bible";
+import {
+  GREEK_FILTER_DEFS,
+  HEBREW_FILTER_DEFS,
+  MorphFilters,
+  OriginalHit,
+  searchOriginal,
+} from "@/lib/morphsearch";
 import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
 
 export const metadata: Metadata = { title: "Concordance" };
 
+const FILTER_KEYS = [
+  "gpos", "gtense", "gvoice", "gmood", "gcase", "gperson", "gnumber", "ggender",
+  "hpos", "hstem", "haspect", "hstate", "hperson", "hnumber", "hgender",
+] as const;
+
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; t?: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const { q, t } = await searchParams;
+  const params = await searchParams;
+  const { q, t } = params;
+  const mode = params.mode === "original" ? "original" : "english";
   const query = (q ?? "").trim();
-  const available = await getAvailableTranslations();
-  const translation =
-    t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
-  const results =
-    query.length >= 2 ? await searchCanon(query, 200, translation) : null;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
@@ -25,6 +34,61 @@ export default async function SearchPage({
         Search every word of the canon. Results open the passage at the verse.
       </p>
 
+      <nav className="mb-8 flex gap-4 border-b border-rule text-sm">
+        <ModeTab href={`/search?q=${encodeURIComponent(query)}`} active={mode === "english"}>
+          English concordance
+        </ModeTab>
+        <ModeTab
+          href={`/search?mode=original&q=${encodeURIComponent(query)}`}
+          active={mode === "original"}
+        >
+          Original languages
+        </ModeTab>
+      </nav>
+
+      {mode === "english" ? (
+        <EnglishMode query={query} t={t} />
+      ) : (
+        <OriginalMode query={query} params={params} />
+      )}
+    </div>
+  );
+}
+
+function ModeTab({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`-mb-px border-b-2 px-1 pb-2 no-underline ${
+        active
+          ? "border-sapphire font-medium text-ink"
+          : "border-transparent text-muted hover:text-ink"
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
+/* ------------------------------ English mode ------------------------------ */
+
+async function EnglishMode({ query, t }: { query: string; t?: string }) {
+  const available = await getAvailableTranslations();
+  const translation =
+    t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
+  const results =
+    query.length >= 2 ? await searchCanon(query, 200, translation) : null;
+
+  return (
+    <>
       <form action="/search" method="get" className="mb-8 flex gap-2">
         <input
           type="search"
@@ -81,7 +145,167 @@ export default async function SearchPage({
           )}
         </>
       )}
-    </div>
+    </>
+  );
+}
+
+/* ----------------------------- Original mode ----------------------------- */
+
+async function OriginalMode({
+  query,
+  params,
+}: {
+  query: string;
+  params: Record<string, string | undefined>;
+}) {
+  const filters: MorphFilters = {};
+  for (const key of FILTER_KEYS) {
+    if (params[key]) filters[key] = params[key];
+  }
+  const ran = query.length >= 2 || Object.keys(filters).length > 0;
+  const results = ran ? await searchOriginal(query, filters, 200) : null;
+
+  return (
+    <>
+      <form action="/search" method="get" className="mb-8">
+        <input type="hidden" name="mode" value="original" />
+        <div className="flex gap-2">
+          <input
+            type="search"
+            name="q"
+            defaultValue={query}
+            placeholder="Lemma, transliteration, Strong's (G25, H1254), or letters in the script (λογ, ברא)"
+            aria-label="Search the Greek and Hebrew text"
+            className="w-full rounded-[4px] border border-rule bg-surface px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
+          />
+          <button
+            type="submit"
+            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
+          >
+            Search
+          </button>
+        </div>
+
+        <details className="mt-3 rounded-[4px] border border-rule bg-surface p-4" open={Object.keys(filters).length > 0}>
+          <summary className="small-caps cursor-pointer text-sm text-muted">
+            Narrow by parsing
+          </summary>
+          <div className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+            <p className="small-caps text-xs text-muted sm:col-span-2 lg:col-span-4">
+              Greek (New Testament)
+            </p>
+            {GREEK_FILTER_DEFS.map((def) => (
+              <FilterSelect key={def.key} def={def} value={params[def.key]} />
+            ))}
+            <p className="small-caps mt-2 text-xs text-muted sm:col-span-2 lg:col-span-4">
+              Hebrew (Old Testament)
+            </p>
+            {HEBREW_FILTER_DEFS.map((def) => (
+              <FilterSelect key={def.key} def={def} value={params[def.key]} />
+            ))}
+          </div>
+        </details>
+      </form>
+
+      {results && (
+        <>
+          <p className="small-caps mb-4 border-b border-rule pb-2 text-sm text-muted">
+            {results.total.toLocaleString()} {results.total === 1 ? "occurrence" : "occurrences"}
+            {" in "}
+            {results.verses.toLocaleString()} {results.verses === 1 ? "verse" : "verses"}
+            {results.verses > results.hits.length &&
+              ` · showing first ${results.hits.length} verses`}
+          </p>
+          <ol className="space-y-4">
+            {results.hits.map((hit) => (
+              <OriginalResult key={`${hit.book.slug}-${hit.chapter}-${hit.verse}`} hit={hit} />
+            ))}
+          </ol>
+          {results.total === 0 && (
+            <p className="text-sm text-muted">
+              Nothing in the tagged {results.lang === "hebrew" ? "Hebrew" : results.lang === "greek" ? "Greek" : "original"} text matches
+              {query ? ` “${query}”` : ""} with those filters.
+            </p>
+          )}
+        </>
+      )}
+    </>
+  );
+}
+
+function FilterSelect({
+  def,
+  value,
+}: {
+  def: { key: string; label: string; options: string[] };
+  value?: string;
+}) {
+  return (
+    <label className="flex flex-col gap-1 text-xs text-muted">
+      {def.label}
+      <select
+        name={def.key}
+        defaultValue={value ?? ""}
+        className="rounded-[4px] border border-rule bg-surface px-2 py-1.5 text-sm text-ink"
+      >
+        <option value="">any</option>
+        {def.options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function OriginalResult({ hit }: { hit: OriginalHit }) {
+  const matched = new Set(hit.matches.map((m) => m.t));
+  return (
+    <li>
+      <Link
+        href={`/read/${hit.book.slug}/${hit.chapter}#v${hit.verse}`}
+        className="small-caps text-sm font-medium text-sapphire no-underline hover:underline"
+      >
+        {hit.book.name} {hit.chapter}:{hit.verse}
+      </Link>
+      <p
+        className={`mt-0.5 text-lg leading-relaxed ${
+          hit.book.testament === "OT" ? "lang-hebrew" : "lang-greek"
+        }`}
+        dir={hit.book.testament === "OT" ? "rtl" : "ltr"}
+      >
+        {hit.text.split(" ").map((w, i) =>
+          matched.has(w) ? (
+            <mark key={i} className="rounded-[2px] bg-amber/25 px-0.5">
+              {w}{" "}
+            </mark>
+          ) : (
+            <span key={i}>{w} </span>
+          )
+        )}
+      </p>
+      <ul className="mt-1 space-y-0.5 text-xs text-muted">
+        {hit.matches.map((m, i) => (
+          <li key={i}>
+            <span className={hit.book.testament === "OT" ? "lang-hebrew" : "lang-greek"}>
+              {m.t}
+            </span>
+            {" · "}
+            {m.parsing}
+            {m.gloss ? ` · “${m.gloss}”` : ""}
+            {m.strongs ? (
+              <>
+                {" · "}
+                <Link href={`/lexicon/${m.strongs}`} className="text-sapphire no-underline hover:underline">
+                  {m.strongs}
+                </Link>
+              </>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </li>
   );
 }
 

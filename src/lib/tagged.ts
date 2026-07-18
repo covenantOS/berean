@@ -131,7 +131,7 @@ interface RawOriginalBook {
 
 const originalCache = new Map<string, RawOriginalBook | null>();
 
-async function loadOriginalBook(book: Book, dir: "tahot" | "tagnt"): Promise<RawOriginalBook | null> {
+export async function loadOriginalBook(book: Book, dir: "tahot" | "tagnt"): Promise<RawOriginalBook | null> {
   const key = `${dir}/${book.file}`;
   const hit = originalCache.get(key);
   if (hit !== undefined) return hit;
@@ -311,6 +311,146 @@ function decodeGreek(code: string): string {
   if (GK_NUMBER[tail[i + 1]]) parts.push(GK_NUMBER[tail[i + 1]]);
   if (GK_GENDER[tail[i + 2]]) parts.push(GK_GENDER[tail[i + 2]]);
   return parts.join(" ");
+}
+
+/* ------------------- structured parsing (for search filters) ------------------- */
+
+export interface GreekMorph {
+  pos: string;
+  tense?: string;
+  voice?: string;
+  mood?: string;
+  case?: string;
+  person?: string;
+  number?: string;
+  gender?: string;
+}
+
+/** Parse one Robinson code into fields, using the same labels as decodeGreek. */
+export function parseRobinson(code: string): GreekMorph | null {
+  if (!code) return null;
+  if (GK_STANDALONE[code]) return { pos: GK_STANDALONE[code] };
+  const segs = code.split("-");
+  const pos = segs[0];
+  const posName = GK_POS[pos];
+  if (!posName) return null;
+  if (pos === "V") {
+    const tv = segs[1] ?? "";
+    const tenseKey = tv.startsWith("2") ? tv.slice(0, 2) : tv.slice(0, 1);
+    const rest = tv.slice(tenseKey.length);
+    const out: GreekMorph = {
+      pos: "verb",
+      tense: GK_TENSE[tenseKey],
+      voice: GK_VOICE[rest[0]],
+      mood: GK_MOOD[rest[1]],
+    };
+    const tail = segs[2] ?? "";
+    if (rest[1] === "P") {
+      out.case = GK_CASE[tail[0]];
+      out.number = GK_NUMBER[tail[1]];
+      out.gender = GK_GENDER[tail[2]];
+    } else if (rest[1] !== "N" && /^[123]/.test(tail[0] ?? "")) {
+      out.person = `${tail[0]}${tail[0] === "1" ? "st" : tail[0] === "2" ? "nd" : "rd"} person`;
+      out.number = GK_NUMBER[tail[1]];
+    }
+    return out;
+  }
+  const tail = segs[1] ?? "";
+  const out: GreekMorph = { pos: posName };
+  let i = 0;
+  if (/^[123]/.test(tail)) {
+    out.person = `${tail[0]}${tail[0] === "1" ? "st" : tail[0] === "2" ? "nd" : "rd"} person`;
+    i = 1;
+  }
+  out.case = GK_CASE[tail[i]];
+  out.number = GK_NUMBER[tail[i + 1]];
+  out.gender = GK_GENDER[tail[i + 2]];
+  return out;
+}
+
+export interface HebrewMorph {
+  pos: string;
+  stem?: string;
+  /** Conjugation/aspect: perfect, imperfect, participle, and so on. */
+  aspect?: string;
+  person?: string;
+  gender?: string;
+  number?: string;
+  state?: string;
+}
+
+function parseHebrewSegment(seg: string): HebrewMorph | null {
+  const pos = seg[0];
+  const rest = seg.slice(1);
+  switch (pos) {
+    case "V": {
+      const out: HebrewMorph = {
+        pos: "verb",
+        stem: HEB_STEM[rest[0]],
+        aspect: HEB_CONJ[rest[1]],
+      };
+      if (rest[1] === "r" || rest[1] === "s") {
+        out.gender = HEB_GENDER[rest[2]];
+        out.number = HEB_NUMBER[rest[3]];
+        out.state = HEB_STATE[rest[4]];
+      } else if (rest[1] !== "c" && rest[1] !== "a") {
+        out.person = HEB_PERSON[rest[2]];
+        out.gender = HEB_GENDER[rest[3]];
+        out.number = HEB_NUMBER[rest[4]];
+      }
+      return out;
+    }
+    case "N":
+      return {
+        pos: rest[0] === "p" ? "proper noun" : "noun",
+        gender: HEB_GENDER[rest[1]],
+        number: HEB_NUMBER[rest[2]],
+        state: HEB_STATE[rest[3]],
+      };
+    case "A":
+      return {
+        pos: "adjective",
+        gender: HEB_GENDER[rest[1]],
+        number: HEB_NUMBER[rest[2]],
+        state: HEB_STATE[rest[3]],
+      };
+    case "S":
+    case "P": {
+      const out: HebrewMorph = { pos: HEB_POS[pos] };
+      let i = 0;
+      if (rest[0] === "p") i = 1;
+      if (rest[i] === "d") return { pos: "demonstrative pronoun" };
+      if (rest[i] === "h") return { pos: "interrogative pronoun" };
+      if (rest[i] === "n") return { pos: "indefinite pronoun" };
+      out.person = HEB_PERSON[rest[i]];
+      out.gender = HEB_GENDER[rest[i + 1]];
+      out.number = HEB_NUMBER[rest[i + 2]];
+      return out;
+    }
+    case "c":
+    case "C":
+      return { pos: "conjunction" };
+    case "T":
+      return { pos: HEB_T_SUB[rest[0]] ?? "particle" };
+    case "D":
+      return { pos: "adverb" };
+    case "R":
+      return { pos: "preposition" };
+    default:
+      return null;
+  }
+}
+
+/**
+ * Parse one TAHOT morphology code into per-segment fields, one entry per
+ * "/" word segment (prefix segments included), labels matching decodeMorph.
+ */
+export function parseHebrewMorph(code: string): HebrewMorph[] {
+  if (!code) return [];
+  return code
+    .split("/")
+    .map((seg) => parseHebrewSegment(seg.replace(/^[HA]/, "")))
+    .filter((m): m is HebrewMorph => m !== null);
 }
 
 /**

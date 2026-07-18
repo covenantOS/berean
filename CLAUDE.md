@@ -42,8 +42,11 @@ plans, and memory work; Pulpit pipeline and archive; Chapel liturgy composer
 with settled forms, print, and family worship; Writing Desk with verified
 Scripture insertion and the Scribe as critic; Library word study; Almanac
 calendar and rule of life; settings with governed Scribe memory and
-whole-graph export/import/delete. Platform decisions in ADR 0002 (Cloudflare,
+whole-graph export/import/delete. Original-language apparatus shipped: TAHOT
+(Hebrew OT) and TAGNT (Greek NT) under the reader, lexicon aggregation at
+`/lexicon/[id]`, and morphology-aware lemma/parsing search as a mode of
+`/search`. Platform decisions in ADR 0002 (Cloudflare,
 desktop/mobile/web, local-first sync). Not yet built: database and identity
-(open decisions — data is device-local), original-language apparatus and
-commentary/psalter/catechism texts (need verified datasets; registered as
-planned in rights), and all Covenant OS integration (contracts first).
+(open decisions — data is device-local), commentary/psalter/catechism texts
+(need verified datasets; registered as planned in rights), and all Covenant
+OS integration (contracts first).
