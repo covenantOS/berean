@@ -140,6 +140,54 @@ export async function getVerseTopics(
   }
 }
 
+export interface VerseTopicMention {
+  work: TopicWork;
+  id: string;
+  title: string;
+}
+
+/**
+ * Chapter-level topic mentions for the reader apparatus, in the pattern of
+ * getChapterEntities: every verse in the chapter that any topic cites,
+ * with titles resolved for display.
+ */
+export async function getChapterTopics(
+  slug: string,
+  chapter: number
+): Promise<Record<number, VerseTopicMention[]> | null> {
+  const book = getBook(slug);
+  if (!book) return null;
+  let raw: Record<string, string[]>;
+  try {
+    raw = JSON.parse(
+      await fs.readFile(
+        path.join(process.cwd(), "data", "topics", "verses", `${book.file}.json`),
+        "utf8"
+      )
+    ) as Record<string, string[]>;
+  } catch {
+    return null;
+  }
+  for (const w of TOPIC_WORKS) await loadWork(w.id);
+  const prefix = `${chapter}:`;
+  const out: Record<number, VerseTopicMention[]> = {};
+  for (const [key, tags] of Object.entries(raw)) {
+    if (!key.startsWith(prefix)) continue;
+    const verse = Number(key.slice(prefix.length));
+    if (!Number.isFinite(verse)) continue;
+    const mentions: VerseTopicMention[] = [];
+    for (const tag of tags) {
+      const i = tag.indexOf(":");
+      const work = tag.slice(0, i) as TopicWork;
+      const id = tag.slice(i + 1);
+      const title = byId.get(work)?.get(id)?.title;
+      if (title) mentions.push({ work, id, title });
+    }
+    if (mentions.length > 0) out[verse] = mentions;
+  }
+  return out;
+}
+
 /** Display form of a reference: "Genesis 6:14-22", "1 Chronicles 24". */
 export function formatTopicRef(ref: TopicRef): string {
   const book = getBook(ref.slug);

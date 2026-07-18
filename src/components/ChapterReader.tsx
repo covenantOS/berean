@@ -97,6 +97,12 @@ interface EntityMention {
   brief: string;
 }
 
+interface VerseTopicMention {
+  work: "naves" | "torreys";
+  id: string;
+  title: string;
+}
+
 interface TranslationOption {
   id: string;
   abbrev: string;
@@ -132,6 +138,7 @@ export default function ChapterReader({
   crossrefs,
   commentary,
   entities,
+  verseTopics,
 }: {
   bookSlug: string;
   bookName: string;
@@ -154,6 +161,7 @@ export default function ChapterReader({
   crossrefs: Record<number, CrossRef[]> | null;
   commentary: CommentaryWorkSections[];
   entities: Record<number, EntityMention[]> | null;
+  verseTopics: Record<number, VerseTopicMention[]> | null;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("paper");
@@ -682,6 +690,7 @@ export default function ChapterReader({
                 removeNote={removeNote}
                 openVerse={openVerse}
                 entities={entities}
+                verseTopics={verseTopics}
                 cancel={() => {
                   setSelectedVerse(null);
                   setEditingId(null);
@@ -732,6 +741,7 @@ function MarginPanel(props: {
   removeNote: (id: string) => void;
   openVerse: (v: number) => void;
   entities: Record<number, EntityMention[]> | null;
+  verseTopics: Record<number, VerseTopicMention[]> | null;
   cancel: () => void;
 }) {
   const {
@@ -746,10 +756,13 @@ function MarginPanel(props: {
     removeNote,
     openVerse,
     entities,
+    verseTopics,
     cancel,
   } = props;
   const mentions =
     selectedVerse !== null && entities ? (entities[selectedVerse] ?? []) : [];
+  const topicMentions =
+    selectedVerse !== null && verseTopics ? (verseTopics[selectedVerse] ?? []) : [];
   return (
     <>
       {selectedVerse !== null ? (
@@ -808,6 +821,25 @@ function MarginPanel(props: {
                   className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
                 >
                   {m.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {topicMentions.length > 0 && (
+        <div className="mb-4 border-t border-rule pt-3">
+          <p className="small-caps mb-2 text-[0.68rem] text-muted">Topics</p>
+          <ul className="flex flex-wrap gap-1.5">
+            {topicMentions.map((m) => (
+              <li key={`${m.work}:${m.id}`}>
+                <Link
+                  href={`/topics/${m.work}/${m.id}`}
+                  title={m.work === "naves" ? "Nave's Topical Bible" : "Torrey's New Topical Textbook"}
+                  className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
+                >
+                  {m.title}
                 </Link>
               </li>
             ))}

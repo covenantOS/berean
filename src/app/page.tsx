@@ -1,7 +1,15 @@
 import Link from "next/link";
 import { CANON, TOTAL_CHAPTERS } from "@/lib/canon";
+import { getVerses } from "@/lib/bible";
+import { dailyRef } from "@/lib/daily-verse";
 
-export default function Home() {
+// The daily verse turns over with the calendar, so render per request.
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const daily = dailyRef(new Date());
+  const dailyVerses = await getVerses(daily.slug, daily.chapter, daily.verse, daily.verse);
+  const dailyText = dailyVerses?.[0]?.text ?? null;
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <section className="mb-10 border-b border-rule pb-10">
@@ -30,6 +38,24 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {dailyText && (
+        <section className="mb-10 border-b border-rule pb-10">
+          <p className="small-caps mb-3 text-sm text-muted">The day's portion</p>
+          <blockquote className="font-editorial max-w-2xl text-xl leading-relaxed text-ink sm:text-2xl">
+            {dailyText}
+          </blockquote>
+          <p className="mt-3 text-sm">
+            <Link
+              href={`/read/${daily.slug}/${daily.chapter}#v${daily.verse}`}
+              className="text-sapphire no-underline hover:underline"
+            >
+              {daily.label}
+            </Link>
+            <span className="text-muted"> (KJV)</span>
+          </p>
+        </section>
+      )}
 
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Card
