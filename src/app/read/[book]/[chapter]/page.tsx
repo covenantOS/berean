@@ -5,7 +5,7 @@ import { getChapter } from "@/lib/bible";
 import { getAvailableTranslations, getTranslation, DEFAULT_TRANSLATION } from "@/lib/translations";
 import { getTaggedChapter, getOriginalChapter, decodeMorph } from "@/lib/tagged";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
-import { getCommentary } from "@/lib/commentary";
+import { getChapterCommentary } from "@/lib/commentary";
 import ChapterReader from "@/components/ChapterReader";
 
 export async function generateMetadata({
@@ -44,7 +44,7 @@ export default async function ChapterPage({
     translationId === "kjv" ? getTaggedChapter(slug, chapter) : Promise.resolve(null),
     getOriginalChapter(slug, chapter),
     getChapterCrossRefs(slug, chapter),
-    getCommentary("mhc", slug, chapter),
+    getChapterCommentary(slug, chapter),
   ]);
   if (!verses) notFound();
 

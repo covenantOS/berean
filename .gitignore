@@ -7,3 +7,8 @@ next-env.d.ts
 
 # Raw STEPBible-Data TSVs (~108MB); reproducible from data/_sources/stepbible/PROVENANCE.md
 data/_sources/stepbible/*.txt
+
+# Raw commentary sources (~170MB); reproducible from each PROVENANCE.md
+data/_sources/jfb/*.xml
+data/_sources/barnes/*.zip
+data/_sources/clarke/*.zip

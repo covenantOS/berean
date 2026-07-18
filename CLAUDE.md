@@ -46,7 +46,12 @@ whole-graph export/import/delete. Original-language apparatus shipped: TAHOT
 (Hebrew OT) and TAGNT (Greek NT) under the reader, lexicon aggregation at
 `/lexicon/[id]`, and morphology-aware lemma/parsing search as a mode of
 `/search`. Platform decisions in ADR 0002 (Cloudflare,
-desktop/mobile/web, local-first sync). Not yet built: database and identity
-(open decisions — data is device-local), commentary/psalter/catechism texts
+desktop/mobile/web, local-first sync). The reader's Shelf tab is now a
+commentary wall: Matthew Henry complete and concise, Calvin, JFB, Clarke, and
+Barnes (NT) ship as per-book JSON under `data/commentary/<work>/`, each with a
+build script, a vendored source with PROVENANCE.md, and a shipped rights
+entry; Gill, Poole, the Pulpit Commentary, Ellicott, and the Geneva notes are
+registered as planned pending clean digitizations. Not yet built: database and
+identity (open decisions — data is device-local), psalter/catechism texts
 (need verified datasets; registered as planned in rights), and all Covenant
 OS integration (contracts first).

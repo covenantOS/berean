@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { studyWord } from "@/lib/bible";
+import { COMMENTARY_WORKS } from "@/lib/commentary";
+import { getRights } from "@/lib/rights";
 
 export const metadata: Metadata = { title: "The Library" };
 
@@ -134,9 +136,30 @@ export default async function LibraryPage({
         <div className="rounded-[4px] border border-rule bg-surface p-5 text-sm leading-relaxed">
           <h3 className="font-editorial mb-1 font-bold">The commentary shelf</h3>
           <p className="text-muted">
-            The public-domain giants — Calvin, Henry, Poole, Gill, and their company — join the
-            shelf as verified source editions are secured and registered. The Library never speaks
-            without footnotes, so no commentary text appears here before its provenance does.
+            Public-domain volumes ride along with every chapter in the reader&apos;s Shelf tab.
+            On the shelf now:
+          </p>
+          <ul className="mt-2 space-y-1">
+            {COMMENTARY_WORKS.filter((w) => getRights(w.rightsId)?.status === "shipped").map(
+              (w) => (
+                <li key={w.id}>
+                  <Link
+                    href={`/read/genesis/1`}
+                    className="text-sapphire no-underline hover:underline"
+                  >
+                    {w.label}
+                  </Link>
+                </li>
+              )
+            )}
+          </ul>
+          <p className="mt-2 text-xs text-muted">
+            Gill, Poole, the Pulpit Commentary, Ellicott, and the Geneva notes join as verified
+            source editions are secured — see{" "}
+            <Link href="/sources" className="text-sapphire no-underline hover:underline">
+              Sources &amp; rights
+            </Link>
+            .
           </p>
         </div>
       </section>

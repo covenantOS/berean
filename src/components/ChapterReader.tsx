@@ -82,6 +82,11 @@ interface CommentarySection {
   text: string;
 }
 
+interface CommentaryWorkSections {
+  work: { id: string; label: string };
+  sections: CommentarySection[];
+}
+
 interface TranslationOption {
   id: string;
   abbrev: string;
@@ -129,7 +134,7 @@ export default function ChapterReader({
   original: OriginalVerse[] | null;
   lang: Lang;
   crossrefs: Record<number, CrossRef[]> | null;
-  commentary: CommentarySection[] | null;
+  commentary: CommentaryWorkSections[];
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("paper");
@@ -602,7 +607,9 @@ export default function ChapterReader({
               />
             )}
 
-            {tab === "shelf" && <ShelfPanel commentary={commentary} />}
+            {tab === "shelf" && (
+              <ShelfPanel commentary={commentary} selectedVerse={selectedVerse} />
+            )}
 
             {tab === "word" && (
               <WordPanel
@@ -778,35 +785,85 @@ function RefsPanel({
   );
 }
 
-function ShelfPanel({ commentary }: { commentary: CommentarySection[] | null }) {
-  if (!commentary) {
+const SHELF_EXCERPT = 320;
+
+function rangeCovers(verses: string, verse: number): boolean {
+  const nums = verses.match(/\d+/g);
+  if (!nums) return true; // intro section
+  const start = Number(nums[0]);
+  const end = Number(nums[nums.length - 1]);
+  return start <= verse && verse <= end;
+}
+
+function ShelfSection({ section }: { section: CommentarySection }) {
+  const [open, setOpen] = useState(false);
+  const long = section.text.length > SHELF_EXCERPT;
+  const shown = open || !long ? section.text : section.text.slice(0, SHELF_EXCERPT).replace(/\s+\S*$/, "") + " …";
+  return (
+    <div>
+      {section.verses && (
+        <p className="mb-1 text-xs font-semibold text-sapphire">Verses {section.verses}</p>
+      )}
+      {shown.split(/\n\n+/).map((para, j) => (
+        <p key={j} className="mb-2 font-[family-name:var(--font-reader)] text-[0.86rem] leading-relaxed">
+          {para}
+        </p>
+      ))}
+      {long && (
+        <button
+          onClick={() => setOpen(!open)}
+          className="text-xs font-medium text-sapphire hover:underline"
+        >
+          {open ? "Put back" : "Read on"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ShelfPanel({
+  commentary,
+  selectedVerse,
+}: {
+  commentary: CommentaryWorkSections[];
+  selectedVerse: number | null;
+}) {
+  const wall = commentary
+    .map((w) => ({
+      ...w,
+      sections:
+        selectedVerse === null
+          ? w.sections
+          : w.sections.filter((s) => rangeCovers(s.verses, selectedVerse)),
+    }))
+    .filter((w) => w.sections.length > 0);
+  if (wall.length === 0) {
     return (
       <p className="text-xs text-muted">
-        The commentary shelf holds no volume for this chapter yet. Matthew
-        Henry arrives with the furnished Library.
+        {selectedVerse === null
+          ? "The commentary shelf holds no volume for this chapter yet."
+          : "No volume on the shelf comments on this verse."}
       </p>
     );
   }
   return (
-    <div className="space-y-4">
-      <p className="small-caps text-xs font-semibold text-muted">
-        Matthew Henry — Concise Commentary
-      </p>
-      {commentary.map((s, i) => (
-        <div key={i}>
-          {s.verses && (
-            <p className="mb-1 text-xs font-semibold text-sapphire">Verses {s.verses}</p>
-          )}
-          {s.text.split(/\n\n+/).map((para, j) => (
-            <p key={j} className="mb-2 font-[family-name:var(--font-reader)] text-[0.86rem] leading-relaxed">
-              {para}
-            </p>
-          ))}
-        </div>
+    <div className="space-y-6">
+      {selectedVerse !== null && (
+        <p className="text-xs text-muted">Commentary touching verse {selectedVerse}.</p>
+      )}
+      {wall.map((w) => (
+        <section key={w.work.id}>
+          <p className="small-caps mb-2 text-xs font-semibold text-muted">{w.work.label}</p>
+          <div className="space-y-4">
+            {w.sections.map((s, i) => (
+              <ShelfSection key={i} section={s} />
+            ))}
+          </div>
+        </section>
       ))}
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
-        Public domain. The volume is on the shelf; take it down yourself at any
-        point of disagreement.
+        Public domain. The volumes are on the shelf; take any of them down
+        yourself at any point of disagreement.
       </p>
     </div>
   );
