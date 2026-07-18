@@ -45,7 +45,11 @@ calendar and rule of life; settings with governed Scribe memory and
 whole-graph export/import/delete. Original-language apparatus shipped: TAHOT
 (Hebrew OT) and TAGNT (Greek NT) under the reader, lexicon aggregation at
 `/lexicon/[id]`, and morphology-aware lemma/parsing search as a mode of
-`/search`. Platform decisions in ADR 0002 (Cloudflare,
+`/search`. The Factbook backbone shipped: TIPNR people and places under
+`data/entities` (scripts/build-entities.mjs, src/lib/entities.ts), entity
+pages at `/library/entity/[id]`, a people-and-places index and filter in the
+Library, an entity group in `/search`, and verse-level mentions in the
+reader margin. Platform decisions in ADR 0002 (Cloudflare,
 desktop/mobile/web, local-first sync). The reader's Shelf tab is now a
 commentary wall: Matthew Henry complete and concise, Calvin, JFB, Clarke, and
 Barnes (NT) ship as per-book JSON under `data/commentary/<work>/`, each with a

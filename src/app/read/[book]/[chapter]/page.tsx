@@ -6,6 +6,7 @@ import { getAvailableTranslations, getTranslation, DEFAULT_TRANSLATION } from "@
 import { getTaggedChapter, getOriginalChapter, decodeMorph } from "@/lib/tagged";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterCommentary } from "@/lib/commentary";
+import { getChapterEntities } from "@/lib/entities";
 import ChapterReader from "@/components/ChapterReader";
 
 export async function generateMetadata({
@@ -38,13 +39,14 @@ export default async function ChapterPage({
   const parallelId =
     p && p !== translationId && available.some((x) => x.id === p) ? p : null;
 
-  const [verses, parallelVerses, tagged, original, crossrefs, commentary] = await Promise.all([
+  const [verses, parallelVerses, tagged, original, crossrefs, commentary, entities] = await Promise.all([
     getChapter(slug, chapter, translationId),
     parallelId ? getChapter(slug, chapter, parallelId) : Promise.resolve(null),
     translationId === "kjv" ? getTaggedChapter(slug, chapter) : Promise.resolve(null),
     getOriginalChapter(slug, chapter),
     getChapterCrossRefs(slug, chapter),
     getChapterCommentary(slug, chapter),
+    getChapterEntities(slug, chapter),
   ]);
   if (!verses) notFound();
 
@@ -128,6 +130,7 @@ export default async function ChapterPage({
         lang={lang}
         crossrefs={crossrefs}
         commentary={commentary}
+        entities={entities}
       />
     </div>
   );

@@ -87,6 +87,14 @@ interface CommentaryWorkSections {
   sections: CommentarySection[];
 }
 
+interface EntityMention {
+  id: string;
+  name: string;
+  kind: "person" | "place" | "other";
+  type: string;
+  brief: string;
+}
+
 interface TranslationOption {
   id: string;
   abbrev: string;
@@ -119,6 +127,7 @@ export default function ChapterReader({
   lang,
   crossrefs,
   commentary,
+  entities,
 }: {
   bookSlug: string;
   bookName: string;
@@ -135,6 +144,7 @@ export default function ChapterReader({
   lang: Lang;
   crossrefs: Record<number, CrossRef[]> | null;
   commentary: CommentaryWorkSections[];
+  entities: Record<number, EntityMention[]> | null;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("paper");
@@ -591,6 +601,7 @@ export default function ChapterReader({
                 submitNote={submitNote}
                 removeNote={removeNote}
                 openVerse={openVerse}
+                entities={entities}
                 cancel={() => {
                   setSelectedVerse(null);
                   setEditingId(null);
@@ -640,6 +651,7 @@ function MarginPanel(props: {
   submitNote: () => void;
   removeNote: (id: string) => void;
   openVerse: (v: number) => void;
+  entities: Record<number, EntityMention[]> | null;
   cancel: () => void;
 }) {
   const {
@@ -653,8 +665,11 @@ function MarginPanel(props: {
     submitNote,
     removeNote,
     openVerse,
+    entities,
     cancel,
   } = props;
+  const mentions =
+    selectedVerse !== null && entities ? (entities[selectedVerse] ?? []) : [];
   return (
     <>
       {selectedVerse !== null ? (
@@ -699,6 +714,25 @@ function MarginPanel(props: {
           Tap a verse number to write a note. Notes are private and stored only
           on this device.
         </p>
+      )}
+
+      {mentions.length > 0 && (
+        <div className="mb-4 border-t border-rule pt-3">
+          <p className="small-caps mb-2 text-[0.68rem] text-muted">People and places</p>
+          <ul className="flex flex-wrap gap-1.5">
+            {mentions.map((m) => (
+              <li key={m.id}>
+                <Link
+                  href={`/library/entity/${m.id}`}
+                  title={m.brief || (m.kind === "place" ? "Place" : m.type)}
+                  className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
+                >
+                  {m.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {notes.length > 0 ? (

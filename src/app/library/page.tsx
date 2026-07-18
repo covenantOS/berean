@@ -3,17 +3,37 @@ import type { Metadata } from "next";
 import { studyWord } from "@/lib/bible";
 import { COMMENTARY_WORKS } from "@/lib/commentary";
 import { getRights } from "@/lib/rights";
+import { listEntities } from "@/lib/entities";
 
 export const metadata: Metadata = { title: "The Library" };
+
+const ENTITY_PAGE = 60;
 
 export default async function LibraryPage({
   searchParams,
 }: {
-  searchParams: Promise<{ word?: string }>;
+  searchParams: Promise<{ word?: string; eq?: string; ek?: string }>;
 }) {
-  const { word } = await searchParams;
+  const { word, eq, ek } = await searchParams;
   const study = word ? await studyWord(word) : null;
   const maxCount = study ? Math.max(...study.byBook.map((b) => b.count), 1) : 1;
+
+  const entityQuery = (eq ?? "").trim().toLowerCase();
+  const entityKind = ek === "person" || ek === "place" || ek === "other" ? ek : "";
+  const allEntities = (await listEntities()) ?? [];
+  const kindCounts = {
+    person: allEntities.filter((e) => e.kind === "person").length,
+    place: allEntities.filter((e) => e.kind === "place").length,
+    other: allEntities.filter((e) => e.kind === "other").length,
+  };
+  const entities = allEntities.filter(
+    (e) =>
+      (!entityKind || e.kind === entityKind) &&
+      (!entityQuery ||
+        e.name.toLowerCase().includes(entityQuery) ||
+        e.aliases.some((a) => a.toLowerCase().includes(entityQuery)))
+  );
+  const shownEntities = entities.slice(0, ENTITY_PAGE);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -117,6 +137,66 @@ export default async function LibraryPage({
             Rest a word here and see where and how the canon uses it — counts by book, first and last
             occurrence, and every verse through the concordance.
           </p>
+        )}
+      </section>
+
+      <section className="mb-10">
+        <h2 className="small-caps mb-2 text-sm text-muted">People and places</h2>
+        <p className="mb-4 max-w-2xl text-sm text-muted">
+          Every individualised name in the canon — {kindCounts.person.toLocaleString()} people,{" "}
+          {kindCounts.place.toLocaleString()} places — with family relationships and exhaustive
+          references. From STEPBible&apos;s TIPNR dataset (CC BY 4.0).
+        </p>
+        <form action="/library" method="get" className="mb-4 flex flex-wrap gap-2">
+          <input
+            name="eq"
+            defaultValue={eq ?? ""}
+            placeholder="A name — Abraham, Jerusalem, Beelzebul…"
+            aria-label="Find a person or place"
+            className="w-full max-w-md rounded-[4px] border border-rule bg-surface px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
+          />
+          <select
+            name="ek"
+            defaultValue={entityKind}
+            aria-label="Kind"
+            className="rounded-[4px] border border-rule bg-surface px-2 py-2 text-sm"
+          >
+            <option value="">people &amp; places</option>
+            <option value="person">people</option>
+            <option value="place">places</option>
+            <option value="other">other names</option>
+          </select>
+          <button
+            type="submit"
+            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          >
+            Find
+          </button>
+        </form>
+        {(entityQuery || entityKind) && (
+          <p className="small-caps mb-3 text-xs text-muted">
+            {entities.length.toLocaleString()} {entities.length === 1 ? "entry" : "entries"}
+            {entities.length > shownEntities.length && ` · showing first ${shownEntities.length}`}
+          </p>
+        )}
+        <ul className="grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+          {shownEntities.map((e) => (
+            <li key={e.id} className="text-sm">
+              <Link
+                href={`/library/entity/${e.id}`}
+                className="text-sapphire no-underline hover:underline"
+              >
+                {e.name}
+              </Link>{" "}
+              <span className="text-xs text-muted">
+                {e.kind === "place" ? "place" : e.type.toLowerCase() || e.kind}
+                {e.brief ? ` · ${e.brief}` : ""}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {entities.length === 0 && (
+          <p className="text-sm text-muted">No entry matches that name.</p>
         )}
       </section>
 

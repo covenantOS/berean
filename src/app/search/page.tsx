@@ -9,6 +9,7 @@ import {
   searchOriginal,
 } from "@/lib/morphsearch";
 import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
+import { searchEntities } from "@/lib/entities";
 
 export const metadata: Metadata = { title: "Concordance" };
 
@@ -86,6 +87,7 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
     t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
   const results =
     query.length >= 2 ? await searchCanon(query, 200, translation) : null;
+  const entities = query.length >= 2 ? await searchEntities(query) : [];
 
   return (
     <>
@@ -117,6 +119,31 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
           Search
         </button>
       </form>
+
+      {entities.length > 0 && (
+        <section className="mb-8">
+          <p className="small-caps mb-3 border-b border-rule pb-2 text-sm text-muted">
+            People and places
+          </p>
+          <ul className="space-y-2">
+            {entities.map((e) => (
+              <li key={e.id} className="text-sm">
+                <Link
+                  href={`/library/entity/${e.id}`}
+                  className="font-medium text-sapphire no-underline hover:underline"
+                >
+                  {e.name}
+                </Link>{" "}
+                <span className="text-xs text-muted">
+                  {e.kind === "place" ? "place" : e.type.toLowerCase() || e.kind}
+                  {e.brief ? ` · ${e.brief}` : ""} · {e.refs.toLocaleString()}{" "}
+                  {e.refs === 1 ? "reference" : "references"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {results && (
         <>

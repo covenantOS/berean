@@ -23,10 +23,16 @@ JSON under `data/tahot/` and `data/tagnt/` is committed.
 | TAGNT-Act-Rev.txt | Translators Amalgamated OT+NT/TAGNT Act-Rev - Translators Amalgamated Greek NT - STEPBible.org CC-BY.txt |
 | TBESH.txt | Lexicons/TBESH - Translators Brief lexicon of Extended Strongs for Hebrew - STEPBible.org CC BY.txt |
 | TBESG.txt | Lexicons/TBESG - Translators Brief lexicon of Extended Strongs for Greek - STEPBible.org CC BY.txt |
+| TIPNR.txt | Proper Nouns/TIPNR - Translators Individualised Proper Names with all References - STEPBible.org CC BY.txt |
 
 Normalized by `scripts/build-step.mjs`. The STEP copyright header blocks in
 each TSV are documentation, not data rows; the parser skips every line that
 does not begin with a verse reference.
+
+TIPNR is normalized by `scripts/build-entities.mjs` into `data/entities/`
+(index, per-letter detail shards, per-book verse maps). TIPNR references
+follow standard English versification; LXX-only references and the handful
+of source rows that do not parse are skipped and counted by the build.
 
 Versification notes: TAHOT references follow English (NRSV) chapter and
 verse numbering, with the Hebrew numbering in parentheses where it differs

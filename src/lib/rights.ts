@@ -329,10 +329,10 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     license: "CC BY 4.0",
     source: "https://github.com/STEPBible/STEPBible-Data (Proper Nouns/)",
     sourceRetrieved: "2026-07-18",
-    allowedUses: [],
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Disambiguated people and places with exhaustive references and geodata; the planned Factbook backbone (Tier 1 item 6). Not yet downloaded or shipped.",
-    status: "planned",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). The Factbook backbone: 4,247 individualised people, places, and other proper names with family relationships, geolocation, and 31,974 mapped references (24 LXX-only and 6 unparsable source refs skipped and counted), stored as an index, per-letter detail shards, and per-book verse maps under data/entities. Presented at /library/entity/[id], indexed in /search and the Library, and linked from the reader apparatus. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-entities.mjs.",
+    status: "shipped",
   },
   {
     id: "tvtms",
