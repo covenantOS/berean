@@ -3,6 +3,9 @@
 import type { ComponentType } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import type { DockTab } from "./workspace-state";
+import CommentaryDock from "./CommentaryDock";
+import CrossRefsDock from "./CrossRefsDock";
+import LexiconDock from "./LexiconDock";
 import { CommentaryIcon, CrossRefsIcon, LexiconIcon, ScribeIcon } from "./icons";
 
 const DOCK_ITEMS: { tab: DockTab; label: string; icon: ComponentType }[] = [
@@ -12,28 +15,10 @@ const DOCK_ITEMS: { tab: DockTab; label: string; icon: ComponentType }[] = [
   { tab: "scribe", label: "Scribe", icon: ScribeIcon },
 ];
 
-const PLACEHOLDERS: Record<DockTab, { title: string; body: string }> = {
-  commentary: {
-    title: "Commentary wall",
-    body: "Henry, Calvin, JFB, Clarke, and Barnes will gather here for the passage in focus. Every work is registered in the rights registry.",
-  },
-  lexicon: {
-    title: "Lexicon",
-    body: "Strong's, TBESH, and TBESG entries will answer the selected word here.",
-  },
-  crossrefs: {
-    title: "Cross-references",
-    body: "The treasury of cross-references will open at the verse in focus.",
-  },
-  scribe: {
-    title: "Scribe",
-    body: "The Scribe prepares the study; it never writes the sermon. Every citation is verified against the text server-side.",
-  },
-};
-
 /**
- * The right dock: tool tabs answering the selection. Phase 0 ships the
- * frame with quiet placeholder bodies; the tools land in Phase 1.
+ * The right dock: tool tabs answering the selection. Commentary, Lexicon,
+ * and Cross-refs are live over the passage in focus; the Scribe lands in a
+ * later phase.
  */
 export default function RightDock() {
   const { state, dispatch } = useWorkspace();
@@ -55,8 +40,6 @@ export default function RightDock() {
       </div>
     );
   }
-
-  const active = PLACEHOLDERS[state.dockTab];
 
   return (
     <aside
@@ -95,8 +78,18 @@ export default function RightDock() {
         </button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        <h3 className="font-editorial text-sm font-semibold">{active.title}</h3>
-        <p className="mt-2 text-xs leading-relaxed text-muted">{active.body}</p>
+        {state.dockTab === "commentary" && <CommentaryDock />}
+        {state.dockTab === "lexicon" && <LexiconDock />}
+        {state.dockTab === "crossrefs" && <CrossRefsDock />}
+        {state.dockTab === "scribe" && (
+          <>
+            <h3 className="font-editorial text-sm font-semibold">Scribe</h3>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              The Scribe prepares the study; it never writes the sermon. Every citation is
+              verified against the text server-side.
+            </p>
+          </>
+        )}
       </div>
     </aside>
   );

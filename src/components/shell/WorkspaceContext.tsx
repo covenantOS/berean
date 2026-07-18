@@ -11,7 +11,9 @@ import {
 } from "react";
 import {
   DEFAULT_STATE,
+  findLeaf,
   loadWorkspace,
+  paneRef,
   saveWorkspace,
   workspaceReducer,
   type WorkspaceAction,
@@ -23,6 +25,8 @@ interface WorkspaceContextValue {
   dispatch: Dispatch<WorkspaceAction>;
   /** False until the persisted workspace has been restored. */
   hydrated: boolean;
+  /** The passage the pane in focus shows; the dock's tools answer it. */
+  activeRef: { book: string; chapter: number } | null;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -50,30 +54,55 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     if (hydrated) saveWorkspace(state);
   }, [state, hydrated]);
 
+  /*
+   * The omnibox's side of the event contract (src/components/palette/
+   * Omnibox.tsx). The palette owns Ctrl/Cmd+K itself and opens on
+   * "berean:omnibox-toggle"; the shell answers these intents on the window.
+   */
   useEffect(() => {
-    // Ctrl/Cmd+K is reserved for the command palette (built separately).
-    // The shell only announces the intent on the window.
-    const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        window.dispatchEvent(new CustomEvent("berean:palette"));
-      }
-    };
-    // Any part of the app (or another agent's palette) can ask the
-    // workspace to open a reference in the pane in focus.
     const onOpenRef = (e: Event) => {
       const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
       if (!detail || typeof detail.book !== "string") return;
       dispatch({ type: "openRef", book: detail.book, chapter: Number(detail.chapter) || 1 });
     };
-    window.addEventListener("keydown", onKeyDown);
+    const onSearch = (e: Event) => {
+      const detail = (e as CustomEvent<{ q?: string }>).detail;
+      if (!detail || typeof detail.q !== "string") return;
+      dispatch({ type: "openSearch", q: detail.q });
+    };
+    const onOpenLexicon = (e: Event) => {
+      const detail = (e as CustomEvent<{ id?: string }>).detail;
+      if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
+      dispatch({ type: "openLexicon", id: detail.id.trim().toUpperCase() });
+    };
+    const onToggleDock = () => dispatch({ type: "toggleDock" });
+    const onApplyPreset = (e: Event) => {
+      const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
+      if (preset === "reading" || preset === "study") dispatch({ type: "applyPreset", preset });
+    };
     window.addEventListener("berean:open-ref", onOpenRef);
+    window.addEventListener("berean:search", onSearch);
+    window.addEventListener("berean:open-lexicon", onOpenLexicon);
+    window.addEventListener("berean:toggle-right-dock", onToggleDock);
+    window.addEventListener("berean:apply-preset", onApplyPreset);
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("berean:open-ref", onOpenRef);
+      window.removeEventListener("berean:search", onSearch);
+      window.removeEventListener("berean:open-lexicon", onOpenLexicon);
+      window.removeEventListener("berean:toggle-right-dock", onToggleDock);
+      window.removeEventListener("berean:apply-preset", onApplyPreset);
     };
   }, []);
 
-  const value = useMemo(() => ({ state, dispatch, hydrated }), [state, hydrated]);
+  // Derived, never stored: wherever a pane navigates, the dock follows.
+  const activeRef = useMemo(() => {
+    const leaf = findLeaf(state.root, state.activePaneId);
+    return leaf ? paneRef(leaf) : null;
+  }, [state.root, state.activePaneId]);
+
+  const value = useMemo(
+    () => ({ state, dispatch, hydrated, activeRef }),
+    [state, hydrated, activeRef]
+  );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

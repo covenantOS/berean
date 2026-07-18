@@ -11,6 +11,7 @@ import {
   type SplitNode,
 } from "./workspace-state";
 import ReaderPane from "./ReaderPane";
+import SearchPane from "./SearchPane";
 import { SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -109,8 +110,11 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           className="flex min-w-0 flex-1 items-stretch overflow-x-auto"
         >
           {leaf.tabs.map((tab) => {
-            const book = getBook(tab.book);
             const tabActive = tab.id === leaf.activeTabId;
+            const label =
+              tab.type === "reader"
+                ? `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`
+                : `“${tab.q}”`;
             return (
               <div
                 key={tab.id}
@@ -130,12 +134,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                     : "text-muted hover:bg-paper hover:text-ink"
                 }`}
               >
-                <span>
-                  {book?.name ?? tab.book} {tab.chapter}
-                </span>
+                <span>{label}</span>
                 <button
                   type="button"
-                  aria-label={`Close ${book?.name ?? tab.book} ${tab.chapter}`}
+                  aria-label={`Close ${label}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     dispatch({ type: "closeTab", paneId: leaf.id, tabId: tab.id });
@@ -190,7 +192,11 @@ function Pane({ leaf }: { leaf: LeafNode }) {
       </div>
       <div className="min-h-0 flex-1 overflow-hidden">
         {activeTab ? (
-          <ReaderPane paneId={leaf.id} book={activeTab.book} chapter={activeTab.chapter} />
+          activeTab.type === "reader" ? (
+            <ReaderPane paneId={leaf.id} book={activeTab.book} chapter={activeTab.chapter} />
+          ) : (
+            <SearchPane q={activeTab.q} />
+          )
         ) : (
           <EmptyPane paneId={leaf.id} />
         )}

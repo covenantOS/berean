@@ -51,7 +51,7 @@ export default function Sidebar() {
           <Placeholder text="Studies, projects, and the sermon pipeline will gather here. Until then, open a passage and split the pane." />
         )}
         {state.railMode === "search" && (
-          <Placeholder text="Concordance, lemma, and semantic search will live here. The command palette (Ctrl+K) arrives with it." />
+          <Placeholder text="Concordance search answers in the command palette (Ctrl+K) and opens as a pane. Lemma and semantic search land here in a later phase." />
         )}
         {state.railMode === "almanac" && (
           <Placeholder text="The calendar, rule of life, and timeline will live here." />

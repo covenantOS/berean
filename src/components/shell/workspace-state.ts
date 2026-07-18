@@ -6,8 +6,8 @@ import { getBook } from "@/lib/canon";
  * Workspace pane state — the Phase 0 shell's one state tree.
  *
  * The pane grid is a binary tree: split nodes carry a direction and a ratio,
- * leaf nodes carry tabs. Phase 0 has a single tab kind (reader); later
- * phases add commentary, lexicon, search, and document panels as new tab
+ * leaf nodes carry tabs. Phase 0 has two tab kinds (reader and search);
+ * later phases add commentary, lexicon, and document panels as new tab
  * kinds without changing the tree shape. The whole tree, the active ids,
  * the rail mode, and the sidebar/dock visibility persist to localStorage
  * under STORAGE_KEY so the workspace reopens where it was left.
@@ -46,7 +46,14 @@ export interface ReaderTab {
   chapter: number;
 }
 
-export type Tab = ReaderTab;
+/** A concordance search, opened as a pane by the omnibox. */
+export interface SearchTab {
+  id: string;
+  type: "search";
+  q: string;
+}
+
+export type Tab = ReaderTab | SearchTab;
 
 export interface LeafNode {
   kind: "leaf";
@@ -73,6 +80,8 @@ export interface WorkspaceState {
   sidebarOpen: boolean;
   dockOpen: boolean;
   dockTab: DockTab;
+  /** The Strong's id the dock's Lexicon tab answers, when one was asked for. */
+  lexiconId: string | null;
 }
 
 export const MAX_PANES = 4;
@@ -89,6 +98,10 @@ function newId(prefix: string): string {
 
 export function readerTab(book = "genesis", chapter = 1): ReaderTab {
   return { id: newId("tab"), type: "reader", book, chapter };
+}
+
+export function searchTab(q: string): SearchTab {
+  return { id: newId("tab"), type: "search", q };
 }
 
 export function leafNode(tabs: Tab[] = []): LeafNode {
@@ -113,6 +126,7 @@ export const DEFAULT_STATE: WorkspaceState = {
   sidebarOpen: true,
   dockOpen: false,
   dockTab: "commentary",
+  lexiconId: null,
 };
 
 /* ---------- tree helpers (pure; never mutate) ---------- */
@@ -166,10 +180,10 @@ function updateSplit(node: PaneNode, id: string, fn: (split: SplitNode) => Split
   return node;
 }
 
-/** The reference a pane is currently showing (its active reader tab). */
+/** The reference a pane is currently showing (its active reader tab, when it has one). */
 export function paneRef(leaf: LeafNode): { book: string; chapter: number } | null {
   const tab = leaf.tabs.find((t) => t.id === leaf.activeTabId);
-  return tab ? { book: tab.book, chapter: tab.chapter } : null;
+  return tab && tab.type === "reader" ? { book: tab.book, chapter: tab.chapter } : null;
 }
 
 /* ---------- reducer ---------- */
@@ -183,6 +197,8 @@ export type WorkspaceAction =
   | { type: "activatePane"; paneId: string }
   | { type: "activateTab"; paneId: string; tabId: string }
   | { type: "openRef"; book: string; chapter: number; paneId?: string }
+  | { type: "openSearch"; q: string; paneId?: string }
+  | { type: "openLexicon"; id: string }
   | { type: "newTab"; paneId?: string }
   | { type: "closeTab"; paneId: string; tabId: string }
   | { type: "splitPane"; paneId: string; direction: SplitDirection }
@@ -192,13 +208,14 @@ export type WorkspaceAction =
 
 function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode {
   const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
-  if (active) {
+  if (active && active.type === "reader") {
     // Retarget the tab in focus, the way a Logos panel follows navigation.
     return {
       ...leaf,
       tabs: leaf.tabs.map((t) => (t.id === active.id ? { ...t, book, chapter } : t)),
     };
   }
+  // A search or empty pane keeps its tab; the passage opens beside it.
   const tab = readerTab(book, chapter);
   return { ...leaf, tabs: [...leaf.tabs, tab], activeTabId: tab.id };
 }
@@ -248,6 +265,27 @@ export function workspaceReducer(
         root: updateLeaf(state.root, paneId, (l) => openRefInLeaf(l, book.slug, chapter)),
       };
     }
+
+    case "openSearch": {
+      const q = action.q.trim();
+      if (!q) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const tab = searchTab(q);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openLexicon":
+      return { ...state, lexiconId: action.id, dockTab: "lexicon", dockOpen: true };
 
     case "newTab": {
       const paneId =
@@ -365,6 +403,10 @@ function sanitizeNode(node: unknown): PaneNode | null {
     for (const raw of n.tabs) {
       if (typeof raw !== "object" || raw === null) continue;
       const t = raw as Record<string, unknown>;
+      if (t.type === "search" && typeof t.id === "string" && typeof t.q === "string" && t.q.trim()) {
+        tabs.push({ id: t.id, type: "search", q: t.q });
+        continue;
+      }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;
       const book = getBook(t.book);
       if (!book) continue;
@@ -424,6 +466,7 @@ export function loadWorkspace(): WorkspaceState | null {
     sidebarOpen: p.sidebarOpen !== false,
     dockOpen: p.dockOpen === true,
     dockTab: DOCK_TABS.includes(p.dockTab as DockTab) ? (p.dockTab as DockTab) : "commentary",
+    lexiconId: typeof p.lexiconId === "string" && p.lexiconId ? p.lexiconId : null,
   };
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Omnibox from "@/components/palette/Omnibox";
 import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
 import IconRail from "./IconRail";
 import Sidebar from "./Sidebar";
@@ -11,12 +12,15 @@ import StatusBar from "./StatusBar";
  * The workspace shell: rail, sidebar, pane grid, dock, status bar. No
  * website chrome — the root layout's header and footer are hidden for this
  * route by an additive rule in globals.css (body:has(> main >
- * .workspace-shell)), so the existing site is untouched.
+ * .workspace-shell)), so the existing site is untouched. The command
+ * omnibox mounts once here and listens for Ctrl/Cmd+K and
+ * berean:omnibox-toggle itself; the shell answers its events.
  */
 export default function WorkspaceShell() {
   return (
     <WorkspaceProvider>
       <ShellFrame />
+      <Omnibox />
     </WorkspaceProvider>
   );
 }
