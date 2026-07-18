@@ -351,23 +351,31 @@ OpenBible attribution in `ChapterReader.tsx`. File: `src/lib/rights.ts`.
 
 - **Audio.** LibriVox KJV recordings (public domain) or a quality TTS pass,
   chapter-synced in the reader. Confirm recording licenses individually in
-  the registry.
+  the registry. SHIPPED 2026-07: LibriVox recordings chapter-synced in the
+  reader, 383 chapters mapped in `data/audio/manifest.json`.
 - **Atlas.** TIPNR geodata rendered on open map tiles; PD historical atlas
-  scans as overlays.
+  scans as overlays. SHIPPED 2026-07: `/library/atlas`, TIPNR geography on a
+  Natural Earth base, SVG, no dependencies.
 - **Timeline.** Public-domain chronology data, filterable, linked to
-  Factbook entities and the Almanac.
+  Factbook entities and the Almanac. SHIPPED 2026-07: `/almanac/timeline`,
+  curated chronology with era bands, reader and Factbook links.
 - **LXX as a first-class parallel column.** Brenton's English Septuagint
   (public domain) plus the Greek LXX (CCAT/Tauber open texts), with TVTMS
   handling versification drift. Direct from the product vision's textual
-  commitments.
-- **Daily verse** on the home page, quiet, no streak, no badge.
+  commitments. SHIPPED 2026-07: Brenton English and Greek LXX as OT-only
+  parallel columns, LXX versification kept with divergence notices.
+- **Daily verse** on the home page, quiet, no streak, no badge. SHIPPED
+  2026-07.
 - **Semantic concordance.** Scribe-assisted search over the admitted corpus
   ("find passages about covenant faithfulness"), every result a real verse
   reference verified against the canon, in the pattern of the existing
-  brief verification. Logos Smart Search, charter-shaped.
+  brief verification. Logos Smart Search, charter-shaped. SHIPPED 2026-07.
 - **Sync.** ADR 0002 local-first sync, replacing export/import as the
   bridge.
 - **Verse-image export** for the Writing Desk, as a print/share aid only.
+  SHIPPED 2026-07: the reader margin exports a selected verse as a
+  letterpress SVG card (print/export aid, no share mechanics); the Writing
+  Desk hook remains open.
 
 ### Tier 3: never build
 

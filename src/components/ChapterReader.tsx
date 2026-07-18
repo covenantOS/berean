@@ -335,6 +335,29 @@ export default function ChapterReader({
     setEditingId(null);
   }
 
+  /** Print/export aid: the selected verse as a letterpress card, downloaded
+   *  as SVG. No engagement mechanics; the card carries only text, reference,
+   *  and translation tag. */
+  function exportCard() {
+    if (selectedVerse === null) return;
+    const entries = baseByVerse.get(selectedVerse) ?? [];
+    if (entries.length === 0) return;
+    const text = entries
+      .map((v) => (v.label ? `${v.label} ${v.text}` : v.text))
+      .join(" ");
+    const reference = `${bookName} ${chapter}:${selectedVerse}`;
+    const svg = verseCardSvg(text, reference, translationAbbrev);
+    const blob = new Blob([svg], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${bookSlug}-${chapter}-${selectedVerse}-${translationAbbrev.toLowerCase()}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   const showTagged = wordsOn && !parallel && translationId === "kjv" && tagged !== null;
   const showOriginal = origOn && !parallel && original !== null;
   const parallelId = parallel?.id ?? parallelRequested?.id ?? "";
@@ -722,6 +745,7 @@ export default function ChapterReader({
                 submitNote={submitNote}
                 removeNote={removeNote}
                 openVerse={openVerse}
+                exportCard={exportCard}
                 entities={entities}
                 verseTopics={verseTopics}
                 cancel={() => {
@@ -773,6 +797,7 @@ function MarginPanel(props: {
   submitNote: () => void;
   removeNote: (id: string) => void;
   openVerse: (v: number) => void;
+  exportCard: () => void;
   entities: Record<number, EntityMention[]> | null;
   verseTopics: Record<number, VerseTopicMention[]> | null;
   cancel: () => void;
@@ -788,6 +813,7 @@ function MarginPanel(props: {
     submitNote,
     removeNote,
     openVerse,
+    exportCard,
     entities,
     verseTopics,
     cancel,
@@ -827,6 +853,13 @@ function MarginPanel(props: {
                 Delete
               </button>
             )}
+            <button
+              onClick={exportCard}
+              title="Download this verse as a printable card (SVG)"
+              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
+            >
+              Export card
+            </button>
             <button
               onClick={cancel}
               className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
@@ -1169,6 +1202,67 @@ function WordPanel({
       ))}
     </div>
   );
+}
+
+function escapeXml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** Approximate word wrap for the card's serif at a given measure. */
+function wrapCardText(text: string, maxChars: number): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    const trial = line ? `${line} ${word}` : word;
+    if (trial.length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = trial;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+/** A letterpress card: paper, a double rule border, the verse in the reader
+ *  serif, reference and translation tag. No ornament beyond the gold rule. */
+function verseCardSvg(text: string, reference: string, abbrev: string): string {
+  const W = 1200;
+  const SERIF = `'EB Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif`;
+  const fontSize = 46;
+  const lineHeight = 72;
+  const lines = wrapCardText(text, 44);
+  const topPad = 150;
+  const bottomPad = 130;
+  const textBlock = lines.length * lineHeight;
+  const ruleGap = 64;
+  const refY = topPad + textBlock + ruleGap + 56;
+  const tagY = refY + 48;
+  const H = tagY + bottomPad;
+  const textLines = lines
+    .map(
+      (line, i) =>
+        `  <text x="${W / 2}" y="${topPad + i * lineHeight}" text-anchor="middle" font-family="${SERIF}" font-size="${fontSize}" fill="#262016">${escapeXml(line)}</text>`
+    )
+    .join("\n");
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`,
+    `  <rect width="${W}" height="${H}" fill="#faf5e9"/>`,
+    `  <rect x="24" y="24" width="${W - 48}" height="${H - 48}" fill="none" stroke="#d9cdb4" stroke-width="3"/>`,
+    `  <rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="none" stroke="#d9cdb4" stroke-width="1"/>`,
+    textLines,
+    `  <line x1="${W / 2 - 60}" y1="${topPad + textBlock + ruleGap}" x2="${W / 2 + 60}" y2="${topPad + textBlock + ruleGap}" stroke="#c9a227" stroke-width="2"/>`,
+    `  <text x="${W / 2}" y="${refY}" text-anchor="middle" font-family="${SERIF}" font-size="30" letter-spacing="4" fill="#262016">${escapeXml(reference.toUpperCase())}</text>`,
+    `  <text x="${W / 2}" y="${tagY}" text-anchor="middle" font-family="${SERIF}" font-size="22" letter-spacing="3" fill="#6d5f4b">${escapeXml(abbrev)}</text>`,
+    `</svg>`,
+    "",
+  ].join("\n");
 }
 
 function VerseNum({ n, onClick }: { n: number; onClick: () => void }) {

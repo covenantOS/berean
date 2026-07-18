@@ -42,24 +42,36 @@ plans, and memory work; Pulpit pipeline and archive; Chapel liturgy composer
 with settled forms, print, and family worship; Writing Desk with verified
 Scripture insertion and the Scribe as critic; Library word study; Almanac
 calendar and rule of life; settings with governed Scribe memory and
-whole-graph export/import/delete. Original-language apparatus shipped: TAHOT
-(Hebrew OT) and TAGNT (Greek NT) under the reader, lexicon aggregation at
-`/lexicon/[id]`, and morphology-aware lemma/parsing search as a mode of
-`/search`. Brenton's English Septuagint and the Greek LXX (Brenton diglot
-text, both public domain via eBible.org) ship as OT-only parallel columns
-(data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
+whole-graph export/import/delete. Original-language mode shipped: TAHOT
+(Hebrew OT) and TAGNT (Greek NT) under the reader with a configurable
+interlinear and a word study panel, lexicon aggregation (Strong's, TBESH,
+TBESG) at `/lexicon/[id]`, and morphology-aware lemma/parsing search as a
+mode of `/search`. Brenton's English Septuagint and the Greek LXX (Brenton
+diglot text, both public domain via eBible.org) ship as OT-only parallel
+columns (data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
 scripts/build-lxx.mjs); LXX versification is kept as-is, with divergence
-notices and honest gaps instead of silent realignment. The Factbook backbone shipped: TIPNR people and places under
-`data/entities` (scripts/build-entities.mjs, src/lib/entities.ts), entity
-pages at `/library/entity/[id]`, a people-and-places index and filter in the
-Library, an entity group in `/search`, and verse-level mentions in the
-reader margin. Platform decisions in ADR 0002 (Cloudflare,
-desktop/mobile/web, local-first sync). The reader's Shelf tab is now a
-commentary wall: Matthew Henry complete and concise, Calvin, JFB, Clarke, and
-Barnes (NT) ship as per-book JSON under `data/commentary/<work>/`, each with a
-build script, a vendored source with PROVENANCE.md, and a shipped rights
-entry; Gill, Poole, the Pulpit Commentary, Ellicott, and the Geneva notes are
-registered as planned pending clean digitizations. Not yet built: database and
-identity (open decisions — data is device-local), psalter/catechism texts
-(need verified datasets; registered as planned in rights), and all Covenant
-OS integration (contracts first).
+notices and honest gaps instead of silent realignment. The Factbook backbone
+shipped: TIPNR people and places under `data/entities`
+(scripts/build-entities.mjs, src/lib/entities.ts), entity pages at
+`/library/entity/[id]`, a people-and-places index and filter in the Library,
+an entity group in `/search`, and verse-level mentions in the reader margin.
+The topical index shipped: Nave's and Torrey's at `/topics` with full verse
+texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR
+geography on a Natural Earth base at `/library/atlas`, rendered as SVG with
+no dependencies. The Timeline shipped: a curated biblical chronology with
+era bands at `/almanac/timeline`, linked to the reader and the Factbook. A
+quiet daily verse sits on the home page. The semantic concordance shipped:
+Scribe-assisted search by meaning, every reference verified against the
+canon. Audio shipped: chapter-synced public-domain LibriVox KJV recordings
+in the reader, 383 chapters mapped in `data/audio/manifest.json`. Verse
+cards shipped: a selected verse exports from the reader margin as a
+letterpress SVG card, a print/export aid only. Platform decisions in ADR
+0002 (Cloudflare, desktop/mobile/web, local-first sync). The reader's Shelf
+tab is now a commentary wall: Matthew Henry complete and concise, Calvin,
+JFB, Clarke, and Barnes (NT) ship as per-book JSON under
+`data/commentary/<work>/`, each with a build script, a vendored source with
+PROVENANCE.md, and a shipped rights entry; Gill, Poole, the Pulpit
+Commentary, Ellicott, and the Geneva notes are registered as planned pending
+clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter/catechism texts (need verified datasets;
+registered as planned in rights), ADR 0002 sync (export/import remains the
+bridge), and all Covenant OS integration (contracts first).
