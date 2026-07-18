@@ -130,6 +130,24 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 .verse-target {
   scroll-margin-top: 6rem;
 }
+/* Verse highlights: a low-alpha stained-glass tint behind the text. */
+.hl-amber {
+  background: color-mix(in srgb, var(--stained-amber) 13%, transparent);
+  border-radius: 2px;
+}
+.hl-sapphire {
+  background: color-mix(in srgb, var(--stained-sapphire) 11%, transparent);
+  border-radius: 2px;
+}
+.hl-emerald {
+  background: color-mix(in srgb, var(--stained-emerald) 12%, transparent);
+  border-radius: 2px;
+}
+.hl-ruby {
+  background: color-mix(in srgb, var(--stained-ruby) 10%, transparent);
+  border-radius: 2px;
+}
+/* Listed after the tints so the selection wins when both apply. */
 .verse-selected {
   background: color-mix(in srgb, var(--stained-amber) 16%, transparent);
   border-radius: 2px;
@@ -164,6 +182,10 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 .tagged-word.word-active {
   background: color-mix(in srgb, var(--stained-amber) 22%, transparent);
   border-bottom-color: var(--stained-amber);
+}
+/* Words mode: tappable words carry a standing dotted rule, not only a hover. */
+.tagged-word.armed {
+  border-bottom-color: color-mix(in srgb, var(--stained-sapphire) 45%, transparent);
 }
 
 /* Original-text mode: each word carries its own quiet interlinear line. */

@@ -80,17 +80,26 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
       if (preset === "reading" || preset === "study") dispatch({ type: "applyPreset", preset });
     };
+    // Escape lets the selection go, unless the user is typing in a field.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const el = document.activeElement;
+      if (el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement) return;
+      dispatch({ type: "clearSelection" });
+    };
     window.addEventListener("berean:open-ref", onOpenRef);
     window.addEventListener("berean:search", onSearch);
     window.addEventListener("berean:open-lexicon", onOpenLexicon);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
+    window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("berean:open-ref", onOpenRef);
       window.removeEventListener("berean:search", onSearch);
       window.removeEventListener("berean:open-lexicon", onOpenLexicon);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
+      window.removeEventListener("keydown", onKey);
     };
   }, []);
 

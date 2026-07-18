@@ -113,7 +113,9 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             const tabActive = tab.id === leaf.activeTabId;
             const label =
               tab.type === "reader"
-                ? `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`
+                ? `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}${
+                    tab.translation ? ` · ${tab.translation.toUpperCase()}` : ""
+                  }`
                 : `“${tab.q}”`;
             return (
               <div
@@ -193,7 +195,12 @@ function Pane({ leaf }: { leaf: LeafNode }) {
       <div className="min-h-0 flex-1 overflow-hidden">
         {activeTab ? (
           activeTab.type === "reader" ? (
-            <ReaderPane paneId={leaf.id} book={activeTab.book} chapter={activeTab.chapter} />
+            <ReaderPane
+              paneId={leaf.id}
+              book={activeTab.book}
+              chapter={activeTab.chapter}
+              translation={activeTab.translation}
+            />
           ) : (
             <SearchPane q={activeTab.q} />
           )

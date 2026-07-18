@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getBook } from "@/lib/canon";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface TyndaleVariant {
@@ -33,12 +34,15 @@ type LoadState =
 
 /**
  * The dock's lexicon: answers the Strong's number last asked for, from the
- * omnibox or anywhere else that dispatches berean:open-lexicon. Strong's
- * definitions render with the Tyndale House extended variants beneath.
+ * omnibox or anywhere else that dispatches berean:open-lexicon. A word
+ * selection in the reader opens the entry directly and pins the word's
+ * parsing above it. Strong's definitions render with the Tyndale House
+ * extended variants beneath.
  */
 export default function LexiconDock() {
-  const { state } = useWorkspace();
+  const { state, dispatch } = useWorkspace();
   const id = state.lexiconId;
+  const word = state.selection?.kind === "word" ? state.selection : null;
   const [load, setLoad] = useState<LoadState>({ status: "idle" });
 
   useEffect(() => {
@@ -64,24 +68,88 @@ export default function LexiconDock() {
     return () => controller.abort();
   }, [id]);
 
+  // The selected word's parsing, pinned above the entry it opened.
+  const wordCard = word ? (
+    <div className="rounded-[4px] border border-rule bg-paper p-3">
+      <p className="flex items-baseline gap-2">
+        <span
+          className={
+            word.lemma ? (word.strongs[0]?.startsWith("H") ? "lang-hebrew" : "lang-greek") : ""
+          }
+        >
+          {word.text}
+        </span>
+        {word.xlit && <span className="text-xs text-muted">{word.xlit}</span>}
+        <span className="ml-auto text-xs text-muted">
+          {getBook(word.book)?.name ?? word.book} {word.chapter}:{word.verse}
+        </span>
+      </p>
+      {word.lemma && (
+        <p className="mt-1 text-xs text-muted">
+          <span className="font-semibold">Lemma:</span> {word.lemma}
+        </p>
+      )}
+      {word.morph && (
+        <p className="mt-0.5 text-xs text-muted">
+          <span className="font-semibold">Parsing:</span> {word.morph}
+        </p>
+      )}
+      {word.gloss && (
+        <p className="mt-0.5 text-xs text-muted">
+          <span className="font-semibold">In context:</span> {word.gloss}
+        </p>
+      )}
+      {word.strongs.length > 1 && (
+        <p className="mt-1.5 flex flex-wrap items-center gap-1 text-[0.68rem] text-muted">
+          Also tagged:
+          {word.strongs.slice(1).map((s) => (
+            <button
+              key={s}
+              type="button"
+              title={`Open ${s} in the lexicon`}
+              onClick={() => dispatch({ type: "openLexicon", id: s.toUpperCase() })}
+              className="border border-rule bg-surface px-1 py-0.5 text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {s}
+            </button>
+          ))}
+        </p>
+      )}
+    </div>
+  ) : null;
+
   if (!id || load.status === "idle") {
     return (
-      <p className="text-xs text-muted">
-        Ask for a Strong's number (G25, H7225) in the omnibox and the entry answers here.
-      </p>
+      <div className="space-y-4">
+        {wordCard}
+        <p className="text-xs text-muted">
+          Ask for a Strong's number (G25, H7225) in the omnibox and the entry answers here.
+        </p>
+      </div>
     );
   }
   if (load.status === "loading") {
-    return <p className="text-xs text-muted">Opening the lexicon…</p>;
+    return (
+      <div className="space-y-4">
+        {wordCard}
+        <p className="text-xs text-muted">Opening the lexicon…</p>
+      </div>
+    );
   }
   if (load.status === "missing") {
-    return <p className="text-xs text-muted">No lexicon entry found for {id}.</p>;
+    return (
+      <div className="space-y-4">
+        {wordCard}
+        <p className="text-xs text-muted">No lexicon entry found for {id}.</p>
+      </div>
+    );
   }
 
   const e = load.entry;
   const langClass = e.id.startsWith("H") ? "lang-hebrew" : "lang-greek";
   return (
     <div className="space-y-4">
+      {wordCard}
       <div className="rounded-[4px] border border-rule bg-paper p-3">
         <p className="flex items-baseline gap-2">
           <span className={`${langClass} text-lg`}>{e.lemma}</span>

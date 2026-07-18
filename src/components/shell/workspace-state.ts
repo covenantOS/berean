@@ -44,6 +44,8 @@ export interface ReaderTab {
   type: "reader";
   book: string;
   chapter: number;
+  /** Translation id when not the default (a compare tab, e.g. "web"). */
+  translation?: string;
 }
 
 /** A concordance search, opened as a pane by the omnibox. */
@@ -73,6 +75,35 @@ export interface SplitNode {
 
 export type PaneNode = LeafNode | SplitNode;
 
+/* ---------- selection (the broadcast every module answers) ---------- */
+
+/** A verse tap: commentary, cross-refs, and the context strip answer it. */
+export interface VerseSelection {
+  kind: "verse";
+  book: string;
+  chapter: number;
+  verse: number;
+}
+
+/** A word tap: the lexicon answers it, with the parsing carried along. */
+export interface WordSelection {
+  kind: "word";
+  book: string;
+  chapter: number;
+  verse: number;
+  /** Surface text: the KJV word or the original-language word. */
+  text: string;
+  /** Base Strong's ids the lexicon knows. */
+  strongs: string[];
+  lemma?: string;
+  xlit?: string;
+  /** Human-readable morphology, decoded on the server. */
+  morph?: string;
+  gloss?: string;
+}
+
+export type WorkspaceSelection = VerseSelection | WordSelection | null;
+
 export interface WorkspaceState {
   root: PaneNode;
   activePaneId: string;
@@ -82,6 +113,8 @@ export interface WorkspaceState {
   dockTab: DockTab;
   /** The Strong's id the dock's Lexicon tab answers, when one was asked for. */
   lexiconId: string | null;
+  /** The current selection. Transient by design: never persisted. */
+  selection: WorkspaceSelection;
 }
 
 export const MAX_PANES = 4;
@@ -127,6 +160,7 @@ export const DEFAULT_STATE: WorkspaceState = {
   dockOpen: false,
   dockTab: "commentary",
   lexiconId: null,
+  selection: null,
 };
 
 /* ---------- tree helpers (pure; never mutate) ---------- */
@@ -199,6 +233,10 @@ export type WorkspaceAction =
   | { type: "openRef"; book: string; chapter: number; paneId?: string }
   | { type: "openSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
+  | { type: "selectVerse"; book: string; chapter: number; verse: number }
+  | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
+  | { type: "clearSelection" }
+  | { type: "compareRef"; book: string; chapter: number; translation: string; paneId?: string }
   | { type: "newTab"; paneId?: string }
   | { type: "closeTab"; paneId: string; tabId: string }
   | { type: "splitPane"; paneId: string; direction: SplitDirection }
@@ -262,6 +300,7 @@ export function workspaceReducer(
       return {
         ...state,
         activePaneId: paneId,
+        selection: null,
         root: updateLeaf(state.root, paneId, (l) => openRefInLeaf(l, book.slug, chapter)),
       };
     }
@@ -276,6 +315,7 @@ export function workspaceReducer(
       return {
         ...state,
         activePaneId: paneId,
+        selection: null,
         root: updateLeaf(state.root, paneId, (l) => ({
           ...l,
           tabs: [...l.tabs, tab],
@@ -286,6 +326,80 @@ export function workspaceReducer(
 
     case "openLexicon":
       return { ...state, lexiconId: action.id, dockTab: "lexicon", dockOpen: true };
+
+    case "selectVerse": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const verse = Math.max(1, Math.trunc(action.verse));
+      const s = state.selection;
+      // Tapping the selected verse again lets it go.
+      if (s?.kind === "verse" && s.book === book.slug && s.chapter === chapter && s.verse === verse) {
+        return { ...state, selection: null };
+      }
+      return { ...state, selection: { kind: "verse", book: book.slug, chapter, verse } };
+    }
+
+    case "selectWord": {
+      const book = getBook(action.word.book);
+      if (!book) return state;
+      const first = action.word.strongs[0];
+      // The lexicon opens at the word's Strong's entry; the parsing rides
+      // along in the selection and renders above the entry.
+      return {
+        ...state,
+        selection: {
+          kind: "word",
+          ...action.word,
+          book: book.slug,
+          chapter: Math.min(Math.max(1, Math.trunc(action.word.chapter)), book.chapters),
+          verse: Math.max(1, Math.trunc(action.word.verse)),
+        },
+        ...(first ? { lexiconId: first.toUpperCase() } : {}),
+        dockTab: "lexicon",
+        dockOpen: true,
+      };
+    }
+
+    case "clearSelection":
+      return state.selection === null ? state : { ...state, selection: null };
+
+    case "compareRef": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const leaf =
+        (action.paneId ? findLeaf(state.root, action.paneId) : null) ??
+        findLeaf(state.root, state.activePaneId);
+      if (!leaf) return state;
+      const tab: ReaderTab = { ...readerTab(book.slug, chapter), translation: action.translation };
+      if (countLeaves(state.root) < MAX_PANES) {
+        // Beside: the comparison opens as a new pane to the right.
+        const fresh = leafNode([tab]);
+        const split: SplitNode = {
+          kind: "split",
+          id: newId("split"),
+          direction: "horizontal",
+          ratio: 0.5,
+          children: [leaf, fresh],
+        };
+        return {
+          ...state,
+          root: replaceNode(state.root, leaf.id, split),
+          activePaneId: fresh.id,
+        };
+      }
+      // The grid is full: the comparison opens as a tab in the same pane.
+      return {
+        ...state,
+        activePaneId: leaf.id,
+        root: updateLeaf(state.root, leaf.id, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
 
     case "newTab": {
       const paneId =
@@ -369,7 +483,7 @@ export function workspaceReducer(
       if (action.preset === "reading") {
         // One unhurried pane; the dock closes.
         const leaf = leafNode([readerTab(current.book, current.chapter)]);
-        return { ...state, root: leaf, activePaneId: leaf.id, dockOpen: false };
+        return { ...state, root: leaf, activePaneId: leaf.id, dockOpen: false, selection: null };
       }
       // "study": text beside text, tools at hand.
       const left = leafNode([readerTab(current.book, current.chapter)]);
@@ -381,7 +495,7 @@ export function workspaceReducer(
         ratio: 0.5,
         children: [left, right],
       };
-      return { ...state, root: split, activePaneId: left.id, dockOpen: true, dockTab: "commentary" };
+      return { ...state, root: split, activePaneId: left.id, dockOpen: true, dockTab: "commentary", selection: null };
     }
 
     default:
@@ -414,7 +528,11 @@ function sanitizeNode(node: unknown): PaneNode | null {
         typeof t.chapter === "number" && Number.isInteger(t.chapter)
           ? Math.min(Math.max(1, t.chapter), book.chapters)
           : 1;
-      tabs.push({ id: t.id, type: "reader", book: book.slug, chapter });
+      const translation =
+        typeof t.translation === "string" && /^[a-z0-9-]{2,12}$/i.test(t.translation)
+          ? t.translation.toLowerCase()
+          : undefined;
+      tabs.push({ id: t.id, type: "reader", book: book.slug, chapter, ...(translation ? { translation } : {}) });
     }
     const activeTabId =
       typeof n.activeTabId === "string" && tabs.some((t) => t.id === n.activeTabId)
@@ -467,13 +585,15 @@ export function loadWorkspace(): WorkspaceState | null {
     dockOpen: p.dockOpen === true,
     dockTab: DOCK_TABS.includes(p.dockTab as DockTab) ? (p.dockTab as DockTab) : "commentary",
     lexiconId: typeof p.lexiconId === "string" && p.lexiconId ? p.lexiconId : null,
+    selection: null,
   };
 }
 
 export function saveWorkspace(state: WorkspaceState) {
   if (typeof window === "undefined") return;
   try {
-    const stored: StoredWorkspace = { version: 1, ...state };
+    // The selection is transient: it never survives a reload.
+    const stored: StoredWorkspace = { version: 1, ...state, selection: null };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
   } catch {
     // A full or blocked localStorage must never break the workspace.

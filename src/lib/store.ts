@@ -115,6 +115,7 @@ export function collection<T extends Record_>(key: string): Collection<T> {
 
 export const GRAPH_KEYS = [
   "berean.marginalia.v1",
+  "berean.highlights.v1",
   "berean.projects.v1",
   "berean.documents.v1",
   "berean.liturgies.v1",

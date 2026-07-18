@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 import { DEFAULT_TRANSLATION, getTranslation } from "@/lib/translations";
+import { decodeMorph, getOriginalChapter, getTaggedChapter } from "@/lib/tagged";
 
 /**
  * Chapter text for workspace panes. The shell is client-driven; panes fetch
  * Scripture here instead of navigating. The text always comes from the
  * actual server-side data (src/lib/bible.ts), never from the client.
+ *
+ * The default payload stays lean: verses plus the hasTagged/hasOriginal
+ * flags that let a pane offer word-level toggles without fetching the
+ * apparatus first. ?tagged=1 adds the Strong's-tagged KJV words and
+ * ?original=1 adds the TAHOT/TAGNT words with morphology pre-decoded
+ * server-side (md), so word interaction needs no new routes.
  */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
@@ -17,7 +24,15 @@ export async function GET(req: NextRequest) {
   }
   const requested = params.get("translation") ?? DEFAULT_TRANSLATION;
   const translation = getTranslation(requested) ?? getTranslation(DEFAULT_TRANSLATION)!;
-  const verses = await getChapter(book.slug, chapter, translation.id);
+  const wantTagged = params.get("tagged") === "1";
+  const wantOriginal = params.get("original") === "1";
+  const lang = book.testament === "OT" ? ("hebrew" as const) : ("greek" as const);
+  const [verses, tagged, original] = await Promise.all([
+    getChapter(book.slug, chapter, translation.id),
+    // The tagged apparatus is KJV-only; other texts report it as absent.
+    translation.id === "kjv" ? getTaggedChapter(book.slug, chapter) : Promise.resolve(null),
+    getOriginalChapter(book.slug, chapter),
+  ]);
   if (!verses) return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   return NextResponse.json({
     book: book.slug,
@@ -26,6 +41,20 @@ export async function GET(req: NextRequest) {
     chapters: book.chapters,
     poetry: book.poetry === true,
     translation: translation.abbrev,
+    translationId: translation.id,
+    lang,
+    hasTagged: tagged !== null,
+    hasOriginal: original !== null,
     verses,
+    ...(wantTagged && tagged ? { tagged } : {}),
+    ...(wantOriginal && original
+      ? {
+          original: original.map((v) => ({
+            verse: v.verse,
+            ...(v.alt ? { alt: v.alt } : {}),
+            words: v.words.map((w) => ({ ...w, md: decodeMorph(w.m ?? "", lang) })),
+          })),
+        }
+      : {}),
   });
 }

@@ -80,27 +80,7 @@ export async function getChapterCommentary(
   );
 }
 
-/** The first number of a section's verse label ("1-3" -> 1, "2, 4" -> 2). */
-function sectionStart(verses: string): number {
-  const m = verses.match(/\d+/);
-  return m ? Number(m[0]) : 0;
-}
-
-/** The last number of a section's verse label ("1-3" -> 3, "2, 4" -> 4). */
-function sectionEnd(verses: string): number {
-  const nums = verses.match(/\d+/g);
-  return nums ? Number(nums[nums.length - 1]) : 0;
-}
-
-/** Sections touching a verse: intro sections (no label) plus any whose range
- * covers it. Range ends are taken from the label's first and last numbers,
- * which is exact for the contiguous ranges the build scripts emit and a
- * generous superset for comma lists. */
-export function sectionsForVerse(
-  sections: CommentarySection[],
-  verse: number
-): CommentarySection[] {
-  return sections.filter(
-    (s) => !s.verses || (sectionStart(s.verses) <= verse && verse <= sectionEnd(s.verses))
-  );
-}
+/* The range helpers live in src/lib/sections.ts so client code (the
+ * workspace dock) can filter sections without importing this fs-backed
+ * module; the export stays here for the shelf's existing callers. */
+export { sectionsForVerse } from "./sections";
