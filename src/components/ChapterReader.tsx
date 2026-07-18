@@ -139,6 +139,7 @@ export default function ChapterReader({
   commentary,
   entities,
   verseTopics,
+  audio,
 }: {
   bookSlug: string;
   bookName: string;
@@ -162,6 +163,8 @@ export default function ChapterReader({
   commentary: CommentaryWorkSections[];
   entities: Record<number, EntityMention[]> | null;
   verseTopics: Record<number, VerseTopicMention[]> | null;
+  /** This chapter's public-domain recording, or null when none is mapped. */
+  audio: { url: string; reader: string | null; seconds: number | null; sourceUrl: string } | null;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("paper");
@@ -507,6 +510,36 @@ export default function ChapterReader({
             </div>
           </div>
         </div>
+
+        {audio && (
+          <div className="no-print mb-6 rounded-[4px] border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)]">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="small-caps text-[0.68rem] text-muted">Listen</span>
+              <audio
+                key={audio.url}
+                controls
+                preload="none"
+                src={audio.url}
+                className="h-8 min-w-0 flex-1"
+              >
+                Your browser does not support audio playback.
+              </audio>
+            </div>
+            <p className="mt-1 text-[0.68rem] text-muted">
+              {audio.reader ? `Read by ${audio.reader}. ` : ""}
+              LibriVox recording, public domain, streamed from{" "}
+              <a
+                href={audio.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sapphire no-underline hover:underline"
+              >
+                archive.org
+              </a>
+              .
+            </p>
+          </div>
+        )}
 
         {parallelNote && (
           <p className="no-print mb-4 rounded-[4px] border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)] text-xs text-muted">

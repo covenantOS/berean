@@ -465,6 +465,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "planned",
   },
   {
+    id: "librivox-kjv-audio",
+    title: "LibriVox King James Version recordings (chapter audio)",
+    kind: "dataset",
+    rightsHolder: "Public domain (LibriVox volunteers)",
+    license: "Public domain (CC0 / CC Public Domain Mark per each archive.org item)",
+    source: "https://archive.org (LibriVox KJV book projects; identifiers per recording in data/audio/manifest.json, e.g. https://archive.org/details/matthew_kjv_mp_librivox)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation"],
+    notes:
+      "Chapter-synced audio for the reader's Listen control. All LibriVox recordings are public domain; scripts/build-audio.mjs only admits archive.org items whose metadata carries an explicit public-domain license URL (publicdomain/zero, publicdomain/mark, or licenses/publicdomain), and only files that map to exactly one chapter, so coverage is partial and honest: 383 of 1189 chapters across 22 of 66 books (multi-chapter-per-file LibriVox projects and items without a stated license, e.g. daniel_kjv_1112_librivox, are excluded). Audio is streamed from archive.org at listen time; no audio is vendored or redistributed.",
+    status: "shipped",
+  },
+  {
     id: "reader-typeface",
     title: "Dedicated Scripture reading typeface",
     kind: "font",

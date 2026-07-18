@@ -9,6 +9,7 @@ import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterCommentary } from "@/lib/commentary";
 import { getChapterEntities } from "@/lib/entities";
 import { getChapterTopics } from "@/lib/topics";
+import { getChapterAudio } from "@/lib/audio";
 import ChapterReader from "@/components/ChapterReader";
 
 export async function generateMetadata({
@@ -41,7 +42,7 @@ export default async function ChapterPage({
   const parallelId =
     p && p !== translationId && available.some((x) => x.id === p) ? p : null;
 
-  const [verses, parallelVerses, tagged, original, crossrefs, commentary, entities, verseTopics] = await Promise.all([
+  const [verses, parallelVerses, tagged, original, crossrefs, commentary, entities, verseTopics, audio] = await Promise.all([
     getChapter(slug, chapter, translationId),
     parallelId ? getChapter(slug, chapter, parallelId) : Promise.resolve(null),
     translationId === "kjv" ? getTaggedChapter(slug, chapter) : Promise.resolve(null),
@@ -50,6 +51,8 @@ export default async function ChapterPage({
     getChapterCommentary(slug, chapter),
     getChapterEntities(slug, chapter),
     getChapterTopics(slug, chapter),
+    // The recordings are the KJV read aloud; offer them only on the KJV text.
+    translationId === "kjv" ? getChapterAudio(slug, chapter) : Promise.resolve(null),
   ]);
   if (!verses) notFound();
 
@@ -151,6 +154,7 @@ export default async function ChapterPage({
         commentary={commentary}
         entities={entities}
         verseTopics={verseTopics}
+        audio={audio}
       />
     </div>
   );

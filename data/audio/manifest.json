@@ -1,0 +1,2032 @@
+{
+ "generated": "2026-07-18",
+ "sources": {
+  "deuteronomy_kjv_1110_librivox": {
+   "title": "Deuteronomy (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "volunteer readers"
+  },
+  "bible_kjv_joshua_jc_librivox": {
+   "title": "Joshua",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "bible_judges_kjv_jc_librivox": {
+   "title": "Book of Judges KJV",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "bible_1samuel_kjv_0903_librivox": {
+   "title": "Book of 1 Samuel KJV",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "bible_2samuel_kjv_jc_librivox": {
+   "title": "Book of 2 Samuel KJV",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "bible_kjv_11_1king_0909_librivox": {
+   "title": "1 Kings (KJV)",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "bible_kjv_2kings_jc_librivox": {
+   "title": "2 Kings",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "Joy Chan"
+  },
+  "1chronicles_jc_librivox": {
+   "title": "Bible(KJV) 13:1 Chronicles",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Joy Chan"
+  },
+  "2chronicleskjv_1403_librivox": {
+   "title": "2 Chronicles, KJV (Version 2)",
+   "license": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "reader": "Joy Chan & Kimberly Krause"
+  },
+  "bible_kjv_17_esther_dr_1502_librivox": {
+   "title": "Bible (KJV) 17: Esther (Dramatic Reading)",
+   "license": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "reader": null
+  },
+  "bible_kjv_18_job_version_2_1507_librivox": {
+   "title": "Bible (KJV) 18: Job (version 2)",
+   "license": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "reader": "Peter Tucker"
+  },
+  "proverbs_kjv_mp_librivox": {
+   "title": "Proverbs (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Michael Packard"
+  },
+  "bible_kjv_25_lamentations_mp_0909_librivox": {
+   "title": "Lamentations",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": ""
+  },
+  "matthew_kjv_mp_librivox": {
+   "title": "The Gospel of Matthew (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Michael Packard"
+  },
+  "acts_kjv_1112_librivox": {
+   "title": "Acts (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "volunteer readers"
+  },
+  "romans_kjv_1408_librivox": {
+   "title": "Romans (KJV) (Version 2)",
+   "license": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "reader": "Kimberly Krause"
+  },
+  "2corinthians_kjv_1105_librivox": {
+   "title": "2 Corinthians (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Simon Wainright"
+  },
+  "galatians_kjv_1412_librivox": {
+   "title": "Bible (KJV) NT 09: Galatians",
+   "license": "http://creativecommons.org/publicdomain/mark/1.0/",
+   "reader": "Kimberly Krause"
+  },
+  "philippians_kjv_vm_librivox": {
+   "title": "Philippians",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Victoria Martin"
+  },
+  "bible_philemon_kjv_1007_librivox": {
+   "title": "Philemon (KJV)",
+   "license": "http://creativecommons.org/licenses/publicdomain/",
+   "reader": "David Lawrence"
+  },
+  "bible_epistlesjohn_rt_librivox": {
+   "title": "1, 2, and 3 John (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Rick Tabisz"
+  },
+  "revelation_mp_librivox": {
+   "title": "Revelation (KJV)",
+   "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+   "reader": "Mark Penfold"
+  }
+ },
+ "chapters": {
+  "deuteronomy:28": {
+   "src": "deuteronomy_kjv_1110_librivox",
+   "file": "deuteronomy_11_kjv.mp3",
+   "seconds": 851
+  },
+  "joshua:1": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_01_kjv.mp3",
+   "seconds": 210
+  },
+  "joshua:2": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_02_kjv.mp3",
+   "seconds": 260
+  },
+  "joshua:3": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_03_kjv.mp3",
+   "seconds": 200
+  },
+  "joshua:4": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_04_kjv.mp3",
+   "seconds": 235
+  },
+  "joshua:5": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_05_kjv.mp3",
+   "seconds": 199
+  },
+  "joshua:6": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_06_kjv.mp3",
+   "seconds": 309
+  },
+  "joshua:7": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_07_kjv.mp3",
+   "seconds": 318
+  },
+  "joshua:8": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_08_kjv.mp3",
+   "seconds": 401
+  },
+  "joshua:9": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_09_kjv.mp3",
+   "seconds": 270
+  },
+  "joshua:10": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_10_kjv.mp3",
+   "seconds": 477
+  },
+  "joshua:11": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_11_kjv.mp3",
+   "seconds": 267
+  },
+  "joshua:12": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_12_kjv.mp3",
+   "seconds": 207
+  },
+  "joshua:13": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_13_kjv.mp3",
+   "seconds": 316
+  },
+  "joshua:14": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_14_kjv.mp3",
+   "seconds": 185
+  },
+  "joshua:15": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_15_kjv.mp3",
+   "seconds": 427
+  },
+  "joshua:16": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_16_kjv.mp3",
+   "seconds": 119
+  },
+  "joshua:17": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_17_kjv.mp3",
+   "seconds": 252
+  },
+  "joshua:18": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_18_kjv.mp3",
+   "seconds": 289
+  },
+  "joshua:19": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_19_kjv.mp3",
+   "seconds": 399
+  },
+  "joshua:20": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_20_kjv.mp3",
+   "seconds": 130
+  },
+  "joshua:21": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_21_kjv.mp3",
+   "seconds": 373
+  },
+  "joshua:22": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_22_kjv.mp3",
+   "seconds": 441
+  },
+  "joshua:23": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_23_kjv.mp3",
+   "seconds": 203
+  },
+  "joshua:24": {
+   "src": "bible_kjv_joshua_jc_librivox",
+   "file": "joshua_24_kjv.mp3",
+   "seconds": 376
+  },
+  "judges:1": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_01_kjv.mp3",
+   "seconds": 372
+  },
+  "judges:2": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_02_kjv.mp3",
+   "seconds": 260
+  },
+  "judges:3": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_03_kjv.mp3",
+   "seconds": 323
+  },
+  "judges:4": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_04_kjv.mp3",
+   "seconds": 284
+  },
+  "judges:5": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_05_kjv.mp3",
+   "seconds": 301
+  },
+  "judges:6": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_06_kjv.mp3",
+   "seconds": 435
+  },
+  "judges:7": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_07_kjv.mp3",
+   "seconds": 339
+  },
+  "judges:8": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_08_kjv.mp3",
+   "seconds": 354
+  },
+  "judges:9": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_09_kjv.mp3",
+   "seconds": 565
+  },
+  "judges:10": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_10_kjv.mp3",
+   "seconds": 190
+  },
+  "judges:11": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_11_kjv.mp3",
+   "seconds": 432
+  },
+  "judges:12": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_12_kjv.mp3",
+   "seconds": 168
+  },
+  "judges:13": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_13_kjv.mp3",
+   "seconds": 244
+  },
+  "judges:14": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_14_kjv.mp3",
+   "seconds": 245
+  },
+  "judges:15": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_15_kjv.mp3",
+   "seconds": 244
+  },
+  "judges:16": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_16_kjv.mp3",
+   "seconds": 367
+  },
+  "judges:17": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_17_kjv.mp3",
+   "seconds": 149
+  },
+  "judges:18": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_18_kjv.mp3",
+   "seconds": 348
+  },
+  "judges:19": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_19_kjv.mp3",
+   "seconds": 367
+  },
+  "judges:20": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_20_kjv.mp3",
+   "seconds": 496
+  },
+  "judges:21": {
+   "src": "bible_judges_kjv_jc_librivox",
+   "file": "judges_21_kjv.mp3",
+   "seconds": 261
+  },
+  "1-samuel:1": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_01_kjv.mp3",
+   "seconds": 305
+  },
+  "1-samuel:2": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_02_kjv.mp3",
+   "seconds": 386
+  },
+  "1-samuel:3": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_03_kjv.mp3",
+   "seconds": 223
+  },
+  "1-samuel:4": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_04_kjv.mp3",
+   "seconds": 275
+  },
+  "1-samuel:5": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_05_kjv.mp3",
+   "seconds": 168
+  },
+  "1-samuel:6": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_06_kjv.mp3",
+   "seconds": 275
+  },
+  "1-samuel:7": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_07_kjv.mp3",
+   "seconds": 213
+  },
+  "1-samuel:8": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_08_kjv.mp3",
+   "seconds": 213
+  },
+  "1-samuel:9": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_09_kjv.mp3",
+   "seconds": 354
+  },
+  "1-samuel:10": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_10_kjv.mp3",
+   "seconds": 319
+  },
+  "1-samuel:11": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_11_kjv.mp3",
+   "seconds": 206
+  },
+  "1-samuel:12": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_12_kjv.mp3",
+   "seconds": 295
+  },
+  "1-samuel:13": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_13_kjv.mp3",
+   "seconds": 273
+  },
+  "1-samuel:14": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_14_kjv.mp3",
+   "seconds": 588
+  },
+  "1-samuel:15": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_15_kjv.mp3",
+   "seconds": 377
+  },
+  "1-samuel:16": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_16_kjv.mp3",
+   "seconds": 270
+  },
+  "1-samuel:17": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_17_kjv.mp3",
+   "seconds": 608
+  },
+  "1-samuel:18": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_18_kjv.mp3",
+   "seconds": 325
+  },
+  "1-samuel:19": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_19_kjv.mp3",
+   "seconds": 277
+  },
+  "1-samuel:20": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_20_kjv.mp3",
+   "seconds": 461
+  },
+  "1-samuel:21": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_21_kjv.mp3",
+   "seconds": 191
+  },
+  "1-samuel:22": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_22_kjv.mp3",
+   "seconds": 281
+  },
+  "1-samuel:23": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_23_kjv.mp3",
+   "seconds": 321
+  },
+  "1-samuel:24": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_24_kjv.mp3",
+   "seconds": 258
+  },
+  "1-samuel:25": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_25_kjv.mp3",
+   "seconds": 516
+  },
+  "1-samuel:26": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_26_kjv.mp3",
+   "seconds": 331
+  },
+  "1-samuel:27": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_27_kjv.mp3",
+   "seconds": 159
+  },
+  "1-samuel:28": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_28_kjv.mp3",
+   "seconds": 312
+  },
+  "1-samuel:29": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_29_kjv.mp3",
+   "seconds": 167
+  },
+  "1-samuel:30": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_30_kjv.mp3",
+   "seconds": 345
+  },
+  "1-samuel:31": {
+   "src": "bible_1samuel_kjv_0903_librivox",
+   "file": "1samuel_31_kjv.mp3",
+   "seconds": 151
+  },
+  "2-samuel:1": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_01_kjv.mp3",
+   "seconds": 289
+  },
+  "2-samuel:2": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_02_kjv.mp3",
+   "seconds": 370
+  },
+  "2-samuel:3": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_03_kjv.mp3",
+   "seconds": 440
+  },
+  "2-samuel:4": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_04_kjv.mp3",
+   "seconds": 179
+  },
+  "2-samuel:5": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_05_kjv.mp3",
+   "seconds": 261
+  },
+  "2-samuel:6": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_06_kjv.mp3",
+   "seconds": 270
+  },
+  "2-samuel:7": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_07_kjv.mp3",
+   "seconds": 319
+  },
+  "2-samuel:8": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_08_kjv.mp3",
+   "seconds": 197
+  },
+  "2-samuel:9": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_09_kjv.mp3",
+   "seconds": 175
+  },
+  "2-samuel:10": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_10_kjv.mp3",
+   "seconds": 236
+  },
+  "2-samuel:11": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_11_kjv.mp3",
+   "seconds": 303
+  },
+  "2-samuel:12": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_12_kjv.mp3",
+   "seconds": 360
+  },
+  "2-samuel:13": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_13_kjv.mp3",
+   "seconds": 429
+  },
+  "2-samuel:14": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_14_kjv.mp3",
+   "seconds": 392
+  },
+  "2-samuel:15": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_15_kjv.mp3",
+   "seconds": 417
+  },
+  "2-samuel:16": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_16_kjv.mp3",
+   "seconds": 288
+  },
+  "2-samuel:17": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_17_kjv.mp3",
+   "seconds": 354
+  },
+  "2-samuel:18": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_18_kjv.mp3",
+   "seconds": 406
+  },
+  "2-samuel:19": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_19_kjv.mp3",
+   "seconds": 508
+  },
+  "2-samuel:20": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_20_kjv.mp3",
+   "seconds": 316
+  },
+  "2-samuel:21": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_21_kjv.mp3",
+   "seconds": 281
+  },
+  "2-samuel:22": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_22_kjv.mp3",
+   "seconds": 365
+  },
+  "2-samuel:23": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_23_kjv.mp3",
+   "seconds": 350
+  },
+  "2-samuel:24": {
+   "src": "bible_2samuel_kjv_jc_librivox",
+   "file": "2samuel_24_kjv.mp3",
+   "seconds": 322
+  },
+  "1-kings:1": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_01_kjv.mp3",
+   "seconds": 524
+  },
+  "1-kings:2": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_02_kjv.mp3",
+   "seconds": 505
+  },
+  "1-kings:3": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_03_kjv.mp3",
+   "seconds": 293
+  },
+  "1-kings:4": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_04_kjv.mp3",
+   "seconds": 271
+  },
+  "1-kings:5": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_05_kjv.mp3",
+   "seconds": 194
+  },
+  "1-kings:6": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_06_kjv.mp3",
+   "seconds": 335
+  },
+  "1-kings:7": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_07_kjv.mp3",
+   "seconds": 488
+  },
+  "1-kings:8": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_08_kjv.mp3",
+   "seconds": 668
+  },
+  "1-kings:9": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_09_kjv.mp3",
+   "seconds": 277
+  },
+  "1-kings:10": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_10_kjv.mp3",
+   "seconds": 288
+  },
+  "1-kings:11": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_11_kjv.mp3",
+   "seconds": 432
+  },
+  "1-kings:12": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_12_kjv.mp3",
+   "seconds": 354
+  },
+  "1-kings:13": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_13_kjv.mp3",
+   "seconds": 349
+  },
+  "1-kings:14": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_14_kjv.mp3",
+   "seconds": 324
+  },
+  "1-kings:15": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_15_kjv.mp3",
+   "seconds": 317
+  },
+  "1-kings:16": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_16_kjv.mp3",
+   "seconds": 336
+  },
+  "1-kings:17": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_17_kjv.mp3",
+   "seconds": 234
+  },
+  "1-kings:18": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_18_kjv.mp3",
+   "seconds": 474
+  },
+  "1-kings:19": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_19_kjv.mp3",
+   "seconds": 263
+  },
+  "1-kings:20": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_20_kjv.mp3",
+   "seconds": 517
+  },
+  "1-kings:21": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_21_kjv.mp3",
+   "seconds": 309
+  },
+  "1-kings:22": {
+   "src": "bible_kjv_11_1king_0909_librivox",
+   "file": "1kings_22_kjv.mp3",
+   "seconds": 509
+  },
+  "2-kings:1": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_01_kjv.mp3",
+   "seconds": 240
+  },
+  "2-kings:2": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_02_kjv.mp3",
+   "seconds": 311
+  },
+  "2-kings:3": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_03_kjv.mp3",
+   "seconds": 309
+  },
+  "2-kings:4": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_04_kjv.mp3",
+   "seconds": 454
+  },
+  "2-kings:5": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_05_kjv.mp3",
+   "seconds": 334
+  },
+  "2-kings:6": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_06_kjv.mp3",
+   "seconds": 351
+  },
+  "2-kings:7": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_07_kjv.mp3",
+   "seconds": 268
+  },
+  "2-kings:8": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_08_kjv.mp3",
+   "seconds": 329
+  },
+  "2-kings:9": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_09_kjv.mp3",
+   "seconds": 426
+  },
+  "2-kings:10": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_10_kjv.mp3",
+   "seconds": 415
+  },
+  "2-kings:11": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_11_kjv.mp3",
+   "seconds": 244
+  },
+  "2-kings:12": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_12_kjv.mp3",
+   "seconds": 235
+  },
+  "2-kings:13": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_13_kjv.mp3",
+   "seconds": 289
+  },
+  "2-kings:14": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_14_kjv.mp3",
+   "seconds": 314
+  },
+  "2-kings:15": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_15_kjv.mp3",
+   "seconds": 383
+  },
+  "2-kings:16": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_16_kjv.mp3",
+   "seconds": 238
+  },
+  "2-kings:17": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_17_kjv.mp3",
+   "seconds": 425
+  },
+  "2-kings:18": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_18_kjv.mp3",
+   "seconds": 440
+  },
+  "2-kings:19": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_19_kjv.mp3",
+   "seconds": 413
+  },
+  "2-kings:20": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_20_kjv.mp3",
+   "seconds": 248
+  },
+  "2-kings:21": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_21_kjv.mp3",
+   "seconds": 266
+  },
+  "2-kings:22": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_22_kjv.mp3",
+   "seconds": 253
+  },
+  "2-kings:23": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_23_kjv.mp3",
+   "seconds": 491
+  },
+  "2-kings:24": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_24_kjv.mp3",
+   "seconds": 220
+  },
+  "2-kings:25": {
+   "src": "bible_kjv_2kings_jc_librivox",
+   "file": "2kings_25_kjv.mp3",
+   "seconds": 342
+  },
+  "1-chronicles:1": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_01_kjv.mp3",
+   "seconds": 363
+  },
+  "1-chronicles:2": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_02_kjv.mp3",
+   "seconds": 411
+  },
+  "1-chronicles:3": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_03_kjv.mp3",
+   "seconds": 203
+  },
+  "1-chronicles:4": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_04_kjv.mp3",
+   "seconds": 387
+  },
+  "1-chronicles:5": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_05_kjv.mp3",
+   "seconds": 276
+  },
+  "1-chronicles:6": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_06_kjv.mp3",
+   "seconds": 560
+  },
+  "1-chronicles:7": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_07_kjv.mp3",
+   "seconds": 375
+  },
+  "1-chronicles:8": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_08_kjv.mp3",
+   "seconds": 257
+  },
+  "1-chronicles:9": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_09_kjv.mp3",
+   "seconds": 393
+  },
+  "1-chronicles:10": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_10_kjv.mp3",
+   "seconds": 151
+  },
+  "1-chronicles:11": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_11_kjv.mp3",
+   "seconds": 379
+  },
+  "1-chronicles:12": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_12_kjv.mp3",
+   "seconds": 386
+  },
+  "1-chronicles:13": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_13_kjv.mp3",
+   "seconds": 155
+  },
+  "1-chronicles:14": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_14_kjv.mp3",
+   "seconds": 159
+  },
+  "1-chronicles:15": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_15_kjv.mp3",
+   "seconds": 289
+  },
+  "1-chronicles:16": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_16_kjv.mp3",
+   "seconds": 329
+  },
+  "1-chronicles:17": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_17_kjv.mp3",
+   "seconds": 279
+  },
+  "1-chronicles:18": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_18_kjv.mp3",
+   "seconds": 183
+  },
+  "1-chronicles:19": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_19_kjv.mp3",
+   "seconds": 237
+  },
+  "1-chronicles:20": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_20_kjv.mp3",
+   "seconds": 123
+  },
+  "1-chronicles:21": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_21_kjv.mp3",
+   "seconds": 328
+  },
+  "1-chronicles:22": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_22_kjv.mp3",
+   "seconds": 225
+  },
+  "1-chronicles:23": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_23_kjv.mp3",
+   "seconds": 272
+  },
+  "1-chronicles:24": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_24_kjv.mp3",
+   "seconds": 245
+  },
+  "1-chronicles:25": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_25_kjv.mp3",
+   "seconds": 254
+  },
+  "1-chronicles:26": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_26_kjv.mp3",
+   "seconds": 315
+  },
+  "1-chronicles:27": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_27_kjv.mp3",
+   "seconds": 336
+  },
+  "1-chronicles:28": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_28_kjv.mp3",
+   "seconds": 315
+  },
+  "1-chronicles:29": {
+   "src": "1chronicles_jc_librivox",
+   "file": "1chronicles_29_kjv.mp3",
+   "seconds": 373
+  },
+  "2-chronicles:1": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_01_kjv.mp3",
+   "seconds": 202
+  },
+  "2-chronicles:2": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_02_kjv.mp3",
+   "seconds": 252
+  },
+  "2-chronicles:3": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_03_kjv.mp3",
+   "seconds": 186
+  },
+  "2-chronicles:4": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_04_kjv.mp3",
+   "seconds": 223
+  },
+  "2-chronicles:5": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_05_kjv.mp3",
+   "seconds": 188
+  },
+  "2-chronicles:6": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_06_kjv.mp3",
+   "seconds": 509
+  },
+  "2-chronicles:7": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_07_kjv.mp3",
+   "seconds": 272
+  },
+  "2-chronicles:8": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_08_kjv.mp3",
+   "seconds": 214
+  },
+  "2-chronicles:9": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_09_kjv.mp3",
+   "seconds": 365
+  },
+  "2-chronicles:10": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_10_kjv.mp3",
+   "seconds": 228
+  },
+  "2-chronicles:11": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_11_kjv.mp3",
+   "seconds": 219
+  },
+  "2-chronicles:12": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_12_kjv.mp3",
+   "seconds": 207
+  },
+  "2-chronicles:13": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_13_kjv.mp3",
+   "seconds": 275
+  },
+  "2-chronicles:14": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_14_kjv.mp3",
+   "seconds": 192
+  },
+  "2-chronicles:15": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_15_kjv.mp3",
+   "seconds": 204
+  },
+  "2-chronicles:16": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_16_kjv.mp3",
+   "seconds": 204
+  },
+  "2-chronicles:17": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_17_kjv.mp3",
+   "seconds": 226
+  },
+  "2-chronicles:18": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_18_kjv.mp3",
+   "seconds": 418
+  },
+  "2-chronicles:19": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_19_kjv.mp3",
+   "seconds": 154
+  },
+  "2-chronicles:20": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_20_kjv.mp3",
+   "seconds": 445
+  },
+  "2-chronicles:21": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_21_kjv.mp3",
+   "seconds": 251
+  },
+  "2-chronicles:22": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_22_kjv.mp3",
+   "seconds": 189
+  },
+  "2-chronicles:23": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_23_kjv.mp3",
+   "seconds": 313
+  },
+  "2-chronicles:24": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_24_kjv.mp3",
+   "seconds": 382
+  },
+  "2-chronicles:25": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_25_kjv.mp3",
+   "seconds": 390
+  },
+  "2-chronicles:26": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_26_kjv.mp3",
+   "seconds": 302
+  },
+  "2-chronicles:27": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_27_kjv.mp3",
+   "seconds": 109
+  },
+  "2-chronicles:28": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_28_kjv.mp3",
+   "seconds": 356
+  },
+  "2-chronicles:29": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_29_kjv.mp3",
+   "seconds": 462
+  },
+  "2-chronicles:30": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_30_kjv.mp3",
+   "seconds": 350
+  },
+  "2-chronicles:31": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_31_kjv.mp3",
+   "seconds": 312
+  },
+  "2-chronicles:32": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_32_kjv.mp3",
+   "seconds": 425
+  },
+  "2-chronicles:33": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_33_kjv.mp3",
+   "seconds": 284
+  },
+  "2-chronicles:34": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_34_kjv.mp3",
+   "seconds": 429
+  },
+  "2-chronicles:35": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_35_kjv.mp3",
+   "seconds": 356
+  },
+  "2-chronicles:36": {
+   "src": "2chronicleskjv_1403_librivox",
+   "file": "2chronicles_36_kjv.mp3",
+   "seconds": 293
+  },
+  "esther:1": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_1_kjv.mp3",
+   "seconds": 367
+  },
+  "esther:2": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_2_kjv.mp3",
+   "seconds": 336
+  },
+  "esther:3": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_3_kjv.mp3",
+   "seconds": 244
+  },
+  "esther:4": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_4_kjv.mp3",
+   "seconds": 199
+  },
+  "esther:5": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_5_kjv.mp3",
+   "seconds": 183
+  },
+  "esther:6": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_6_kjv.mp3",
+   "seconds": 209
+  },
+  "esther:7": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_7_kjv.mp3",
+   "seconds": 136
+  },
+  "esther:8": {
+   "src": "bible_kjv_17_esther_dr_1502_librivox",
+   "file": "esther_8_kjv.mp3",
+   "seconds": 246
+  },
+  "job:1": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_01_kjv.mp3",
+   "seconds": 255
+  },
+  "job:2": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_02_kjv.mp3",
+   "seconds": 154
+  },
+  "job:3": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_03_kjv.mp3",
+   "seconds": 171
+  },
+  "job:4": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_04_kjv.mp3",
+   "seconds": 148
+  },
+  "job:5": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_05_kjv.mp3",
+   "seconds": 176
+  },
+  "job:6": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_06_kjv.mp3",
+   "seconds": 193
+  },
+  "job:7": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_07_kjv.mp3",
+   "seconds": 153
+  },
+  "job:8": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_08_kjv.mp3",
+   "seconds": 136
+  },
+  "job:9": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_09_kjv.mp3",
+   "seconds": 196
+  },
+  "job:10": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_10_kjv.mp3",
+   "seconds": 156
+  },
+  "job:11": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_11_kjv.mp3",
+   "seconds": 127
+  },
+  "job:12": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_12_kjv.mp3",
+   "seconds": 156
+  },
+  "job:13": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_13_kjv.mp3",
+   "seconds": 163
+  },
+  "job:14": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_14_kjv.mp3",
+   "seconds": 159
+  },
+  "job:15": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_15_kjv.mp3",
+   "seconds": 209
+  },
+  "job:16": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_16_kjv.mp3",
+   "seconds": 144
+  },
+  "job:17": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_17_kjv.mp3",
+   "seconds": 105
+  },
+  "job:18": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_18_kjv.mp3",
+   "seconds": 121
+  },
+  "job:19": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_19_kjv.mp3",
+   "seconds": 171
+  },
+  "job:20": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_20_kjv.mp3",
+   "seconds": 178
+  },
+  "job:21": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_21_kjv.mp3",
+   "seconds": 194
+  },
+  "job:22": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_22_kjv.mp3",
+   "seconds": 184
+  },
+  "job:23": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_23_kjv.mp3",
+   "seconds": 105
+  },
+  "job:24": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_24_kjv.mp3",
+   "seconds": 178
+  },
+  "job:25": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_25_kjv.mp3",
+   "seconds": 47
+  },
+  "job:26": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_26_kjv.mp3",
+   "seconds": 96
+  },
+  "job:27": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_27_kjv.mp3",
+   "seconds": 148
+  },
+  "job:28": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_28_kjv.mp3",
+   "seconds": 173
+  },
+  "job:29": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_29_kjv.mp3",
+   "seconds": 144
+  },
+  "job:30": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_30_kjv.mp3",
+   "seconds": 190
+  },
+  "job:31": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_31_kjv.mp3",
+   "seconds": 240
+  },
+  "job:32": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_32_kjv.mp3",
+   "seconds": 147
+  },
+  "job:33": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_33_kjv.mp3",
+   "seconds": 205
+  },
+  "job:34": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_34_kjv.mp3",
+   "seconds": 239
+  },
+  "job:35": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_35_kjv.mp3",
+   "seconds": 105
+  },
+  "job:36": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_36_kjv.mp3",
+   "seconds": 193
+  },
+  "job:37": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_37_kjv.mp3",
+   "seconds": 157
+  },
+  "job:38": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_38_kjv.mp3",
+   "seconds": 246
+  },
+  "job:39": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_39_kjv.mp3",
+   "seconds": 179
+  },
+  "job:40": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_40_kjv.mp3",
+   "seconds": 156
+  },
+  "job:41": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_41_kjv.mp3",
+   "seconds": 200
+  },
+  "job:42": {
+   "src": "bible_kjv_18_job_version_2_1507_librivox",
+   "file": "bookofjob_42_kjv.mp3",
+   "seconds": 178
+  },
+  "proverbs:1": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_01_kjv.mp3",
+   "seconds": 278
+  },
+  "proverbs:2": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_02_kjv.mp3",
+   "seconds": 159
+  },
+  "proverbs:3": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_03_kjv.mp3",
+   "seconds": 261
+  },
+  "proverbs:4": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_04_kjv.mp3",
+   "seconds": 188
+  },
+  "proverbs:5": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_05_kjv.mp3",
+   "seconds": 171
+  },
+  "proverbs:6": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_06_kjv.mp3",
+   "seconds": 256
+  },
+  "proverbs:7": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_07_kjv.mp3",
+   "seconds": 185
+  },
+  "proverbs:8": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_08_kjv.mp3",
+   "seconds": 249
+  },
+  "proverbs:9": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_09_kjv.mp3",
+   "seconds": 133
+  },
+  "proverbs:10": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_10_kjv.mp3",
+   "seconds": 261
+  },
+  "proverbs:11": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_11_kjv.mp3",
+   "seconds": 253
+  },
+  "proverbs:12": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_12_kjv.mp3",
+   "seconds": 219
+  },
+  "proverbs:13": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_13_kjv.mp3",
+   "seconds": 216
+  },
+  "proverbs:14": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_14_kjv.mp3",
+   "seconds": 277
+  },
+  "proverbs:15": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_15_kjv.mp3",
+   "seconds": 249
+  },
+  "proverbs:16": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_16_kjv.mp3",
+   "seconds": 247
+  },
+  "proverbs:17": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_17_kjv.mp3",
+   "seconds": 215
+  },
+  "proverbs:18": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_18_kjv.mp3",
+   "seconds": 185
+  },
+  "proverbs:19": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_19_kjv.mp3",
+   "seconds": 245
+  },
+  "proverbs:20": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_20_kjv.mp3",
+   "seconds": 240
+  },
+  "proverbs:21": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_21_kjv.mp3",
+   "seconds": 243
+  },
+  "proverbs:22": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_22_kjv.mp3",
+   "seconds": 229
+  },
+  "proverbs:23": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_23_kjv.mp3",
+   "seconds": 253
+  },
+  "proverbs:24": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_24_kjv.mp3",
+   "seconds": 263
+  },
+  "proverbs:25": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_25_kjv.mp3",
+   "seconds": 236
+  },
+  "proverbs:26": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_26_kjv.mp3",
+   "seconds": 226
+  },
+  "proverbs:27": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_27_kjv.mp3",
+   "seconds": 230
+  },
+  "proverbs:28": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_28_kjv.mp3",
+   "seconds": 268
+  },
+  "proverbs:29": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_29_kjv.mp3",
+   "seconds": 223
+  },
+  "proverbs:30": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_30_kjv.mp3",
+   "seconds": 287
+  },
+  "proverbs:31": {
+   "src": "proverbs_kjv_mp_librivox",
+   "file": "proverbs_31_kjv.mp3",
+   "seconds": 233
+  },
+  "lamentations:1": {
+   "src": "bible_kjv_25_lamentations_mp_0909_librivox",
+   "file": "lamentations_1_kjv.mp3",
+   "seconds": 335
+  },
+  "lamentations:2": {
+   "src": "bible_kjv_25_lamentations_mp_0909_librivox",
+   "file": "lamentations_2_kjv.mp3",
+   "seconds": 292
+  },
+  "lamentations:3": {
+   "src": "bible_kjv_25_lamentations_mp_0909_librivox",
+   "file": "lamentations_3_kjv.mp3",
+   "seconds": 353
+  },
+  "lamentations:4": {
+   "src": "bible_kjv_25_lamentations_mp_0909_librivox",
+   "file": "lamentations_4_kjv.mp3",
+   "seconds": 248
+  },
+  "lamentations:5": {
+   "src": "bible_kjv_25_lamentations_mp_0909_librivox",
+   "file": "lamentations_5_kjv.mp3",
+   "seconds": 178
+  },
+  "matthew:1": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_01_kjv.mp3",
+   "seconds": 260
+  },
+  "matthew:2": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_02_kjv.mp3",
+   "seconds": 257
+  },
+  "matthew:3": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_03_kjv.mp3",
+   "seconds": 190
+  },
+  "matthew:4": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_04_kjv.mp3",
+   "seconds": 255
+  },
+  "matthew:5": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_05_kjv.mp3",
+   "seconds": 467
+  },
+  "matthew:6": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_06_kjv.mp3",
+   "seconds": 366
+  },
+  "matthew:7": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_07_kjv.mp3",
+   "seconds": 279
+  },
+  "matthew:8": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_08_kjv.mp3",
+   "seconds": 375
+  },
+  "matthew:9": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_09_kjv.mp3",
+   "seconds": 411
+  },
+  "matthew:10": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_10_kjv.mp3",
+   "seconds": 448
+  },
+  "matthew:11": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_11_kjv.mp3",
+   "seconds": 323
+  },
+  "matthew:12": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_12_kjv.mp3",
+   "seconds": 533
+  },
+  "matthew:13": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_13_kjv.mp3",
+   "seconds": 643
+  },
+  "matthew:14": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_14_kjv.mp3",
+   "seconds": 350
+  },
+  "matthew:15": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_15_kjv.mp3",
+   "seconds": 394
+  },
+  "matthew:16": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_16_kjv.mp3",
+   "seconds": 338
+  },
+  "matthew:17": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_17_kjv.mp3",
+   "seconds": 318
+  },
+  "matthew:18": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_18_kjv.mp3",
+   "seconds": 398
+  },
+  "matthew:19": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_19_kjv.mp3",
+   "seconds": 346
+  },
+  "matthew:20": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_20_kjv.mp3",
+   "seconds": 363
+  },
+  "matthew:21": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_21_kjv.mp3",
+   "seconds": 523
+  },
+  "matthew:22": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_22_kjv.mp3",
+   "seconds": 388
+  },
+  "matthew:23": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_23_kjv.mp3",
+   "seconds": 452
+  },
+  "matthew:24": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_24_kjv.mp3",
+   "seconds": 508
+  },
+  "matthew:25": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_25_kjv.mp3",
+   "seconds": 481
+  },
+  "matthew:26": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_26_kjv.mp3",
+   "seconds": 780
+  },
+  "matthew:27": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_27_kjv.mp3",
+   "seconds": 652
+  },
+  "matthew:28": {
+   "src": "matthew_kjv_mp_librivox",
+   "file": "matthew_28_kjv.mp3",
+   "seconds": 222
+  },
+  "acts:24": {
+   "src": "acts_kjv_1112_librivox",
+   "file": "acts_09_kjv.mp3",
+   "seconds": 265
+  },
+  "romans:1": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_01_kjv.mp3",
+   "seconds": 292
+  },
+  "romans:2": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_02_kjv.mp3",
+   "seconds": 263
+  },
+  "romans:3": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_03_kjv.mp3",
+   "seconds": 255
+  },
+  "romans:4": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_04_kjv.mp3",
+   "seconds": 245
+  },
+  "romans:5": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_05_kjv.mp3",
+   "seconds": 227
+  },
+  "romans:6": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_06_kjv.mp3",
+   "seconds": 211
+  },
+  "romans:7": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_07_kjv.mp3",
+   "seconds": 240
+  },
+  "romans:8": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_08_kjv.mp3",
+   "seconds": 359
+  },
+  "romans:9": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_09_kjv.mp3",
+   "seconds": 307
+  },
+  "romans:10": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_10_kjv.mp3",
+   "seconds": 202
+  },
+  "romans:11": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_11_kjv.mp3",
+   "seconds": 365
+  },
+  "romans:12": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_12_kjv.mp3",
+   "seconds": 189
+  },
+  "romans:13": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_13_kjv.mp3",
+   "seconds": 187
+  },
+  "romans:14": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_14_kjv.mp3",
+   "seconds": 253
+  },
+  "romans:15": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_15_kjv.mp3",
+   "seconds": 349
+  },
+  "romans:16": {
+   "src": "romans_kjv_1408_librivox",
+   "file": "romans_16_kjv.mp3",
+   "seconds": 261
+  },
+  "2-corinthians:11": {
+   "src": "2corinthians_kjv_1105_librivox",
+   "file": "2corinthians_6_kjv.mp3",
+   "seconds": 407
+  },
+  "galatians:1": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_1_kjv.mp3",
+   "seconds": 215
+  },
+  "galatians:2": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_2_kjv.mp3",
+   "seconds": 254
+  },
+  "galatians:3": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_3_kjv.mp3",
+   "seconds": 291
+  },
+  "galatians:4": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_4_kjv.mp3",
+   "seconds": 279
+  },
+  "galatians:5": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_5_kjv.mp3",
+   "seconds": 208
+  },
+  "galatians:6": {
+   "src": "galatians_kjv_1412_librivox",
+   "file": "galatians_6_kjv.mp3",
+   "seconds": 157
+  },
+  "philippians:1": {
+   "src": "philippians_kjv_vm_librivox",
+   "file": "philippians_1_kjv.mp3",
+   "seconds": 219
+  },
+  "philippians:2": {
+   "src": "philippians_kjv_vm_librivox",
+   "file": "philippians_2_kjv.mp3",
+   "seconds": 229
+  },
+  "philippians:3": {
+   "src": "philippians_kjv_vm_librivox",
+   "file": "philippians_3_kjv.mp3",
+   "seconds": 197
+  },
+  "philippians:4": {
+   "src": "philippians_kjv_vm_librivox",
+   "file": "philippians_4_kjv.mp3",
+   "seconds": 220
+  },
+  "philemon:1": {
+   "src": "bible_philemon_kjv_1007_librivox",
+   "file": "philemon_01_kjv.mp3",
+   "seconds": 205
+  },
+  "1-john:1": {
+   "src": "bible_epistlesjohn_rt_librivox",
+   "file": "epistlesofjohn_1_kjv.mp3",
+   "seconds": 109
+  },
+  "1-john:2": {
+   "src": "bible_epistlesjohn_rt_librivox",
+   "file": "epistlesofjohn_2_kjv.mp3",
+   "seconds": 292
+  },
+  "1-john:3": {
+   "src": "bible_epistlesjohn_rt_librivox",
+   "file": "epistlesofjohn_3_kjv.mp3",
+   "seconds": 232
+  },
+  "1-john:4": {
+   "src": "bible_epistlesjohn_rt_librivox",
+   "file": "epistlesofjohn_4_kjv.mp3",
+   "seconds": 205
+  },
+  "1-john:5": {
+   "src": "bible_epistlesjohn_rt_librivox",
+   "file": "epistlesofjohn_5_kjv.mp3",
+   "seconds": 226
+  },
+  "revelation:1": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_01_kjv.mp3",
+   "seconds": 285
+  },
+  "revelation:2": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_02_kjv.mp3",
+   "seconds": 365
+  },
+  "revelation:3": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_03_kjv.mp3",
+   "seconds": 296
+  },
+  "revelation:4": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_04_kjv.mp3",
+   "seconds": 157
+  },
+  "revelation:5": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_05_kjv.mp3",
+   "seconds": 186
+  },
+  "revelation:6": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_06_kjv.mp3",
+   "seconds": 211
+  },
+  "revelation:7": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_07_kjv.mp3",
+   "seconds": 213
+  },
+  "revelation:8": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_08_kjv.mp3",
+   "seconds": 166
+  },
+  "revelation:9": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_09_kjv.mp3",
+   "seconds": 228
+  },
+  "revelation:10": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_10_kjv.mp3",
+   "seconds": 148
+  },
+  "revelation:11": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_11_kjv.mp3",
+   "seconds": 226
+  },
+  "revelation:12": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_12_kjv.mp3",
+   "seconds": 187
+  },
+  "revelation:13": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_13_kjv.mp3",
+   "seconds": 208
+  },
+  "revelation:14": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_14_kjv.mp3",
+   "seconds": 251
+  },
+  "revelation:15": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_15_kjv.mp3",
+   "seconds": 117
+  },
+  "revelation:16": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_16_kjv.mp3",
+   "seconds": 232
+  },
+  "revelation:17": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_17_kjv.mp3",
+   "seconds": 213
+  },
+  "revelation:18": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_18_kjv.mp3",
+   "seconds": 308
+  },
+  "revelation:19": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_19_kjv.mp3",
+   "seconds": 267
+  },
+  "revelation:20": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_20_kjv.mp3",
+   "seconds": 187
+  },
+  "revelation:21": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_21_kjv.mp3",
+   "seconds": 340
+  },
+  "revelation:22": {
+   "src": "revelation_mp_librivox",
+   "file": "revelation_22_kjv.mp3",
+   "seconds": 296
+  }
+ }
+}
