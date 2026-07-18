@@ -21,6 +21,8 @@ const IL_KEY = "berean.interlinear.v1";
 interface Verse {
   verse: number;
   text: string;
+  /** Source label when it is not the plain number, e.g. "1b" (LXX additions). */
+  label?: string;
 }
 
 interface TaggedWord {
@@ -122,6 +124,8 @@ export default function ChapterReader({
   translationAbbrev,
   translations,
   parallel,
+  parallelRequested,
+  parallelNote,
   tagged,
   original,
   lang,
@@ -139,6 +143,11 @@ export default function ChapterReader({
   translationAbbrev: string;
   translations: TranslationOption[];
   parallel: { id: string; abbrev: string; verses: Verse[] } | null;
+  /** Set when a parallel was asked for but has no text for this chapter
+   *  (e.g. the LXX has no Malachi 4); the notice says why. */
+  parallelRequested: { id: string; abbrev: string } | null;
+  /** Numbering-divergence notice for LXX columns, or null. */
+  parallelNote: string | null;
   tagged: TaggedVerse[] | null;
   original: OriginalVerse[] | null;
   lang: Lang;
@@ -317,11 +326,34 @@ export default function ChapterReader({
 
   const showTagged = wordsOn && !parallel && translationId === "kjv" && tagged !== null;
   const showOriginal = origOn && !parallel && original !== null;
+  const parallelId = parallel?.id ?? parallelRequested?.id ?? "";
   const parallelByVerse = useMemo(() => {
-    const m = new Map<number, string>();
-    parallel?.verses.forEach((v) => m.set(v.verse, v.text));
+    const m = new Map<number, Verse[]>();
+    parallel?.verses.forEach((v) => {
+      const arr = m.get(v.verse) ?? [];
+      arr.push(v);
+      m.set(v.verse, arr);
+    });
     return m;
   }, [parallel]);
+  const baseByVerse = useMemo(() => {
+    const m = new Map<number, Verse[]>();
+    verses.forEach((v) => {
+      const arr = m.get(v.verse) ?? [];
+      arr.push(v);
+      m.set(v.verse, arr);
+    });
+    return m;
+  }, [verses]);
+  /** Union of both columns' verse numbers, so LXX-only verses show in place
+   *  and missing ones leave an honest gap. */
+  const rowNumbers = useMemo(
+    () =>
+      parallel
+        ? [...new Set([...baseByVerse.keys(), ...parallelByVerse.keys()])].sort((a, b) => a - b)
+        : [],
+    [parallel, baseByVerse, parallelByVerse]
+  );
 
   const verseClass = (v: number) =>
     `verse-target ${notedVerses.has(v) ? "has-note" : ""} ${
@@ -365,7 +397,7 @@ export default function ChapterReader({
           <div className="flex flex-wrap items-center gap-2 font-[family-name:var(--font-interface)]">
             <select
               value={translationId}
-              onChange={(e) => navigate(e.target.value, parallel?.id ?? "")}
+              onChange={(e) => navigate(e.target.value, parallelId)}
               aria-label="Translation"
               className="rounded-[4px] border border-rule bg-transparent px-2 py-1 text-xs"
             >
@@ -377,7 +409,7 @@ export default function ChapterReader({
             </select>
             {translations.length > 1 && (
               <select
-                value={parallel?.id ?? ""}
+                value={parallelId}
                 onChange={(e) => navigate(translationId, e.target.value)}
                 aria-label="Parallel translation"
                 className="rounded-[4px] border border-rule bg-transparent px-2 py-1 text-xs"
@@ -468,25 +500,63 @@ export default function ChapterReader({
           </div>
         </div>
 
+        {parallelNote && (
+          <p className="no-print mb-4 rounded-[4px] border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)] text-xs text-muted">
+            {parallelNote}
+          </p>
+        )}
+
         {parallel ? (
           <div className="text-[1.02rem] leading-relaxed">
             <div className="mb-3 grid grid-cols-2 gap-6 border-b border-rule pb-2 font-[family-name:var(--font-interface)] text-xs font-semibold text-muted">
               <span>{translationAbbrev}</span>
               <span>{parallel.abbrev}</span>
             </div>
-            {verses.map((v) => (
-              <div
-                key={v.verse}
-                id={`v${v.verse}`}
-                className={`grid grid-cols-2 gap-6 border-b border-rule/60 py-2 ${verseClass(v.verse)}`}
-              >
-                <p>
-                  <VerseNum n={v.verse} onClick={() => openVerse(v.verse)} />
-                  {v.text}
-                </p>
-                <p className="opacity-90">{parallelByVerse.get(v.verse) ?? "—"}</p>
-              </div>
-            ))}
+            {rowNumbers.map((n) => {
+              const left = baseByVerse.get(n);
+              const right = parallelByVerse.get(n);
+              return (
+                <div
+                  key={n}
+                  id={`v${n}`}
+                  className={`grid grid-cols-2 gap-6 border-b border-rule/60 py-2 ${verseClass(n)}`}
+                >
+                  <p>
+                    {left ? (
+                      left.map((v, i) => (
+                        <span key={i}>
+                          {i === 0 && <VerseNum n={n} onClick={() => openVerse(n)} />}
+                          {v.label && (
+                            <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
+                              {v.label}{" "}
+                            </span>
+                          )}
+                          {v.text}{" "}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="opacity-50">—</span>
+                    )}
+                  </p>
+                  <p className="opacity-90">
+                    {right ? (
+                      right.map((v, i) => (
+                        <span key={i}>
+                          {v.label && (
+                            <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
+                              {v.label}{" "}
+                            </span>
+                          )}
+                          {v.text}{" "}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="opacity-50">—</span>
+                    )}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ) : showOriginal ? (
           <div
@@ -538,18 +608,28 @@ export default function ChapterReader({
           </p>
         ) : poetry ? (
           <div className="poetry-verses">
-            {verses.map((v) => (
-              <p key={v.verse} id={`v${v.verse}`} className={`verse-line ${verseClass(v.verse)}`}>
+            {verses.map((v, i) => (
+              <p key={`${v.verse}:${i}`} id={`v${v.verse}`} className={`verse-line ${verseClass(v.verse)}`}>
                 <VerseNum n={v.verse} onClick={() => openVerse(v.verse)} />
+                {v.label && (
+                  <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
+                    {v.label}{" "}
+                  </span>
+                )}
                 {v.text}
               </p>
             ))}
           </div>
         ) : (
           <p className="prose-verses drop-cap">
-            {verses.map((v) => (
-              <span key={v.verse} id={`v${v.verse}`} className={verseClass(v.verse)}>
+            {verses.map((v, i) => (
+              <span key={`${v.verse}:${i}`} id={`v${v.verse}`} className={verseClass(v.verse)}>
                 <VerseNum n={v.verse} onClick={() => openVerse(v.verse)} />
+                {v.label && (
+                  <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
+                    {v.label}{" "}
+                  </span>
+                )}
                 {v.text}{" "}
               </span>
             ))}

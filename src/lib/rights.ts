@@ -105,6 +105,32 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "brenton-lxx-english",
+    title: "Brenton's English Septuagint (1851)",
+    kind: "bible-translation",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "https://eBible.org/Scriptures/eng-Brenton_usfm.zip (details: https://ebible.org/find/details.php?id=eng-Brenton)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Sir Lancelot C. L. Brenton's translation of the Greek Septuagint, published 1851 and marked public domain by eBible.org. Old Testament only. Stored per-book as JSON under data/translations/brenton with LXX verse numbering kept as-is (Psalms numbered per the LXX, Esther carrying the additions as lettered verses, Malachi ending at chapter 3); the reader shows a numbering notice on divergent books instead of silently realigning. Raw USFM kept out of git; provenance in data/_sources/brenton/PROVENANCE.md; normalized by scripts/build-brenton.mjs.",
+    status: "shipped",
+  },
+  {
+    id: "lxx-greek-brenton",
+    title: "Greek Septuagint (Brenton diglot text, 1851)",
+    kind: "bible-translation",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "https://eBible.org/Scriptures/grcbrent_usfm.zip (details: https://ebible.org/find/details.php?id=grcbrent)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "The Greek Septuagint text printed in Brenton's 1851 diglot (principally Codex Vaticanus), marked public domain by eBible.org. Old Testament only, with the same LXX versification as the English Brenton column. Chosen over the CrossWire SWORD LXX module (CCAT/Rahlfs), which is restricted to free non-commercial distribution, and over unlicensed or GPL repository mirrors. Stored per-book as JSON under data/lxx. Raw USFM kept out of git; provenance in data/_sources/lxx/PROVENANCE.md; normalized by scripts/build-lxx.mjs.",
+    status: "shipped",
+  },
+  {
     id: "matthew-henry",
     title: "Matthew Henry, Concise Commentary on the Whole Bible",
     kind: "commentary",

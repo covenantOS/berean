@@ -9,6 +9,10 @@ export interface Translation {
   /** Directory under data/ holding per-book JSON files. */
   dir: string;
   license: string;
+  /** True when the text covers only the Old Testament (e.g. the LXX). */
+  otOnly?: boolean;
+  /** File probed to decide whether the data directory is furnished. */
+  probe?: string;
 }
 
 /**
@@ -22,6 +26,8 @@ export const TRANSLATIONS: Translation[] = [
   { id: "ylt", name: "Young's Literal Translation", abbrev: "YLT", year: "1898", dir: "translations/ylt", license: "Public domain" },
   { id: "bbe", name: "Bible in Basic English", abbrev: "BBE", year: "1949", dir: "translations/bbe", license: "Public domain" },
   { id: "darby", name: "Darby Translation", abbrev: "DARBY", year: "1890", dir: "translations/darby", license: "Public domain" },
+  { id: "brenton", name: "Brenton English Septuagint", abbrev: "BRENTON", year: "1851", dir: "translations/brenton", license: "Public domain", otOnly: true, probe: "Genesis.json" },
+  { id: "lxx", name: "Greek Septuagint (Brenton text)", abbrev: "LXX", year: "1851", dir: "lxx", license: "Public domain", otOnly: true, probe: "Genesis.json" },
 ];
 
 export const DEFAULT_TRANSLATION = "kjv";
@@ -38,7 +44,7 @@ export async function getAvailableTranslations(): Promise<Translation[]> {
   const out: Translation[] = [];
   for (const t of TRANSLATIONS) {
     try {
-      await fs.access(path.join(process.cwd(), "data", t.dir, "John.json"));
+      await fs.access(path.join(process.cwd(), "data", t.dir, t.probe ?? "John.json"));
       out.push(t);
     } catch {
       // not furnished — omit from the shelf
@@ -46,4 +52,12 @@ export async function getAvailableTranslations(): Promise<Translation[]> {
   }
   availableCache = out;
   return out;
+}
+
+/** The translations offered on a given book: OT-only texts hide in the NT. */
+export function translationsForBook(
+  available: Translation[],
+  testament: "OT" | "NT"
+): Translation[] {
+  return available.filter((t) => testament === "OT" || !t.otOnly);
 }

@@ -45,7 +45,11 @@ calendar and rule of life; settings with governed Scribe memory and
 whole-graph export/import/delete. Original-language apparatus shipped: TAHOT
 (Hebrew OT) and TAGNT (Greek NT) under the reader, lexicon aggregation at
 `/lexicon/[id]`, and morphology-aware lemma/parsing search as a mode of
-`/search`. The Factbook backbone shipped: TIPNR people and places under
+`/search`. Brenton's English Septuagint and the Greek LXX (Brenton diglot
+text, both public domain via eBible.org) ship as OT-only parallel columns
+(data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
+scripts/build-lxx.mjs); LXX versification is kept as-is, with divergence
+notices and honest gaps instead of silent realignment. The Factbook backbone shipped: TIPNR people and places under
 `data/entities` (scripts/build-entities.mjs, src/lib/entities.ts), entity
 pages at `/library/entity/[id]`, a people-and-places index and filter in the
 Library, an entity group in `/search`, and verse-level mentions in the

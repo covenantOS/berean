@@ -6,6 +6,9 @@ import { DEFAULT_TRANSLATION, getTranslation } from "./translations";
 export interface Verse {
   verse: number;
   text: string;
+  /** Source label when it is not the plain number, e.g. "1b" for LXX
+   *  addition verses in Esther. Numbered under verse by parseInt. */
+  label?: string;
 }
 
 interface RawBook {
@@ -41,7 +44,10 @@ export async function getChapter(
   }
   const ch = raw.chapters[chapter - 1];
   if (!ch) return null;
-  return ch.verses.map((v) => ({ verse: Number(v.verse), text: v.text }));
+  return ch.verses.map((v) => {
+    const n = parseInt(v.verse, 10);
+    return { verse: n, text: v.text, ...(v.verse !== String(n) ? { label: v.verse } : {}) };
+  });
 }
 
 export async function getVerses(

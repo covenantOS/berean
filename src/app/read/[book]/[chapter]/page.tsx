@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adjacentChapter, getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
-import { getAvailableTranslations, getTranslation, DEFAULT_TRANSLATION } from "@/lib/translations";
+import { getAvailableTranslations, getTranslation, translationsForBook, DEFAULT_TRANSLATION } from "@/lib/translations";
+import { isLxxTranslation, lxxNumberingNote } from "@/lib/lxx";
 import { getTaggedChapter, getOriginalChapter, decodeMorph } from "@/lib/tagged";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterCommentary } from "@/lib/commentary";
@@ -32,7 +33,7 @@ export default async function ChapterPage({
   const chapter = Number(chapterStr);
   if (!book || !Number.isInteger(chapter)) notFound();
 
-  const available = await getAvailableTranslations();
+  const available = translationsForBook(await getAvailableTranslations(), book.testament);
   const translationId =
     t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
   const translation = getTranslation(translationId)!;
@@ -49,6 +50,16 @@ export default async function ChapterPage({
     getChapterEntities(slug, chapter),
   ]);
   if (!verses) notFound();
+
+  // The LXX columns keep the Septuagint's own numbering; say so where it
+  // diverges from the KJV, and say when the LXX has no such chapter at all.
+  let parallelNote: string | null = null;
+  if (parallelId && isLxxTranslation(parallelId)) {
+    parallelNote = lxxNumberingNote(slug, chapter);
+    if (!parallelVerses) {
+      parallelNote = `${getTranslation(parallelId)!.abbrev} has no ${book.name} ${chapter} under Septuagint numbering.` + (parallelNote ? ` ${parallelNote}` : "");
+    }
+  }
 
   // Expand morphology codes server-side so the client never guesses.
   const lang = book.testament === "OT" ? ("hebrew" as const) : ("greek" as const);
@@ -125,6 +136,12 @@ export default async function ChapterPage({
               }
             : null
         }
+        parallelRequested={
+          parallelId
+            ? { id: parallelId, abbrev: getTranslation(parallelId)!.abbrev }
+            : null
+        }
+        parallelNote={parallelNote}
         tagged={tagged}
         original={originalDecoded}
         lang={lang}
