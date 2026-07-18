@@ -1,17 +1,34 @@
 "use client";
 
-import { useRef, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type DragEvent as ReactDragEvent,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { getBook } from "@/lib/canon";
 import { useWorkspace } from "./WorkspaceContext";
+import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
 import {
   countLeaves,
+  dockTabForTab,
+  lexiconTab,
   MAX_PANES,
+  readerTab,
+  toolTabForDock,
+  type DockTab,
+  type DropTarget,
   type LeafNode,
   type PaneNode,
   type SplitNode,
+  type Tab,
+  type WorkspaceAction,
 } from "./workspace-state";
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
+import ToolTabBody from "./ToolTabBody";
 import { SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -82,11 +99,97 @@ function SplitView({ split }: { split: SplitNode }) {
   );
 }
 
+/** The label every tab wears, in the strip and on the drag chip. */
+function tabLabel(tab: Tab): string {
+  if (tab.type === "reader") {
+    return `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}${
+      tab.translation ? ` · ${tab.translation.toUpperCase()}` : ""
+    }`;
+  }
+  if (tab.type === "search") return `“${tab.q}”`;
+  if (tab.type === "commentary") return "Commentary";
+  if (tab.type === "crossrefs") return "Cross-refs";
+  return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
+}
+
+/** Translates a dropped payload into the matching workspace action. */
+function dispatchDrop(
+  e: ReactDragEvent,
+  target: DropTarget,
+  dispatch: Dispatch<WorkspaceAction>,
+  lexiconId: string | null
+) {
+  const paneTab = readPayload<{ paneId: string; tabId: string }>(e, DND.paneTab);
+  if (paneTab) {
+    dispatch({ type: "moveTab", fromPaneId: paneTab.paneId, tabId: paneTab.tabId, target });
+    return;
+  }
+  const dockTool = readPayload<{ dock: DockTab }>(e, DND.dockTool);
+  if (dockTool) {
+    const tab = toolTabForDock(dockTool.dock, lexiconId);
+    if (tab) dispatch({ type: "openTab", tab, target });
+    return;
+  }
+  const chapter = readPayload<{ book: string; chapter: number }>(e, DND.chapter);
+  if (chapter && typeof chapter.book === "string") {
+    dispatch({ type: "openTab", tab: readerTab(chapter.book, chapter.chapter), target });
+    return;
+  }
+  if (readPayload(e, DND.libraryLexicon)) {
+    dispatch({ type: "openTab", tab: lexiconTab(), target });
+  }
+}
+
+/** Clears an indicator when a drag ends anywhere, even outside a target. */
+function useDragEndReset(reset: () => void) {
+  const ref = useRef(reset);
+  ref.current = reset;
+  useEffect(() => {
+    const fn = () => ref.current();
+    window.addEventListener("dragend", fn);
+    return () => window.removeEventListener("dragend", fn);
+  }, []);
+}
+
 function Pane({ leaf }: { leaf: LeafNode }) {
   const { state, dispatch } = useWorkspace();
   const isActive = state.activePaneId === leaf.id;
   const panes = countLeaves(state.root);
   const activeTab = leaf.tabs.find((t) => t.id === leaf.activeTabId) ?? null;
+
+  /* Drop indicators: an insertion index on the strip, a tint or split
+   * preview on the body. Both reset on drop, dragleave, and any dragend. */
+  const [insertAt, setInsertAt] = useState<number | null>(null);
+  const [bodyHint, setBodyHint] = useState<"body" | "left" | "right" | "top" | "bottom" | null>(
+    null
+  );
+  const stripDepth = useRef(0);
+  const bodyDepth = useRef(0);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  useDragEndReset(() => {
+    setInsertAt(null);
+    setBodyHint(null);
+    stripDepth.current = 0;
+    bodyDepth.current = 0;
+  });
+
+  /* The insertion index under the pointer; strip background means append. */
+  const stripIndexFrom = (e: ReactDragEvent): number => {
+    const el = (e.target as HTMLElement).closest("[data-tab-index]");
+    if (!(el instanceof HTMLElement)) return leaf.tabs.length;
+    const i = Number(el.dataset.tabIndex);
+    const r = el.getBoundingClientRect();
+    return e.clientX > r.left + r.width / 2 ? i + 1 : i;
+  };
+
+  /* Edge zones open a split. A dragged pane tab may free a slot, so the
+   * zones stay open at MAX_PANES for pane drags; the reducer decides. */
+  const bodyTargetFrom = (e: ReactDragEvent): DropTarget => {
+    const rect = bodyRef.current?.getBoundingClientRect();
+    const splitsOpen = panes < MAX_PANES || e.dataTransfer.types.includes(DND.paneTab);
+    const edge = rect && splitsOpen ? edgeAtPoint(e.clientX, e.clientY, rect) : null;
+    return edge ? { kind: "edge", paneId: leaf.id, edge } : { kind: "body", paneId: leaf.id };
+  };
 
   return (
     <section
@@ -108,21 +211,52 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           role="tablist"
           aria-label="Pane tabs"
           className="flex min-w-0 flex-1 items-stretch overflow-x-auto"
+          onDragEnter={(e) => {
+            if (!hasGridPayload(e)) return;
+            e.preventDefault();
+            stripDepth.current += 1;
+            setInsertAt(stripIndexFrom(e));
+          }}
+          onDragOver={(e) => {
+            if (!hasGridPayload(e)) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            setInsertAt(stripIndexFrom(e));
+          }}
+          onDragLeave={() => {
+            stripDepth.current = Math.max(0, stripDepth.current - 1);
+            if (stripDepth.current === 0) setInsertAt(null);
+          }}
+          onDrop={(e) => {
+            if (!hasGridPayload(e)) return;
+            e.preventDefault();
+            const index = stripIndexFrom(e);
+            stripDepth.current = 0;
+            setInsertAt(null);
+            dispatchDrop(e, { kind: "strip", paneId: leaf.id, index }, dispatch, state.lexiconId);
+          }}
         >
-          {leaf.tabs.map((tab) => {
+          {leaf.tabs.map((tab, i) => {
             const tabActive = tab.id === leaf.activeTabId;
-            const label =
-              tab.type === "reader"
-                ? `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}${
-                    tab.translation ? ` · ${tab.translation.toUpperCase()}` : ""
-                  }`
-                : `“${tab.q}”`;
+            const label = tabLabel(tab);
             return (
               <div
                 key={tab.id}
                 role="tab"
                 aria-selected={tabActive}
                 tabIndex={0}
+                data-tab-index={i}
+                draggable
+                onDragStart={(e) => {
+                  const tool = dockTabForTab(tab);
+                  startModuleDrag(
+                    e,
+                    DND.paneTab,
+                    { paneId: leaf.id, tabId: tab.id },
+                    label,
+                    tool ? { [DND.paneToolTab]: { paneId: leaf.id, tabId: tab.id } } : {}
+                  );
+                }}
                 onClick={() => dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id })}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
@@ -130,12 +264,15 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                     dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
                   }
                 }}
-                className={`group flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                className={`group relative flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                   tabActive
                     ? "bg-paper font-medium text-ink shadow-[inset_0_2px_0_var(--stained-sapphire)]"
                     : "text-muted hover:bg-paper hover:text-ink"
                 }`}
               >
+                {insertAt === i && (
+                  <span aria-hidden="true" className="absolute inset-y-1 left-0 w-0.5 bg-amber" />
+                )}
                 <span>{label}</span>
                 <button
                   type="button"
@@ -153,6 +290,9 @@ function Pane({ leaf }: { leaf: LeafNode }) {
               </div>
             );
           })}
+          {insertAt !== null && insertAt >= leaf.tabs.length && leaf.tabs.length > 0 && (
+            <span aria-hidden="true" className="my-1 w-0.5 shrink-0 bg-amber" />
+          )}
           <button
             type="button"
             title="New tab"
@@ -192,7 +332,36 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           </button>
         </div>
       </div>
-      <div className="min-h-0 flex-1 overflow-hidden">
+      <div
+        ref={bodyRef}
+        className="relative min-h-0 flex-1 overflow-hidden"
+        onDragEnter={(e) => {
+          if (!hasGridPayload(e)) return;
+          e.preventDefault();
+          bodyDepth.current += 1;
+          const t = bodyTargetFrom(e);
+          setBodyHint(t.kind === "edge" ? t.edge : "body");
+        }}
+        onDragOver={(e) => {
+          if (!hasGridPayload(e)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          const t = bodyTargetFrom(e);
+          setBodyHint(t.kind === "edge" ? t.edge : "body");
+        }}
+        onDragLeave={() => {
+          bodyDepth.current = Math.max(0, bodyDepth.current - 1);
+          if (bodyDepth.current === 0) setBodyHint(null);
+        }}
+        onDrop={(e) => {
+          if (!hasGridPayload(e)) return;
+          e.preventDefault();
+          const target = bodyTargetFrom(e);
+          bodyDepth.current = 0;
+          setBodyHint(null);
+          dispatchDrop(e, target, dispatch, state.lexiconId);
+        }}
+      >
         {activeTab ? (
           activeTab.type === "reader" ? (
             <ReaderPane
@@ -201,11 +370,33 @@ function Pane({ leaf }: { leaf: LeafNode }) {
               chapter={activeTab.chapter}
               translation={activeTab.translation}
             />
-          ) : (
+          ) : activeTab.type === "search" ? (
             <SearchPane q={activeTab.q} />
+          ) : (
+            <ToolTabBody paneId={leaf.id} tab={activeTab} />
           )
         ) : (
           <EmptyPane paneId={leaf.id} />
+        )}
+        {bodyHint === "body" && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 border-2 border-amber/60 bg-amber/5"
+          />
+        )}
+        {bodyHint !== null && bodyHint !== "body" && (
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute z-10 bg-amber/10 ${
+              bodyHint === "left"
+                ? "inset-y-0 left-0 w-1/4 border-r-2 border-amber/70"
+                : bodyHint === "right"
+                  ? "inset-y-0 right-0 w-1/4 border-l-2 border-amber/70"
+                  : bodyHint === "top"
+                    ? "inset-x-0 top-0 h-1/4 border-b-2 border-amber/70"
+                    : "inset-x-0 bottom-0 h-1/4 border-t-2 border-amber/70"
+            }`}
+          />
         )}
       </div>
     </section>

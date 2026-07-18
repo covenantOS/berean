@@ -33,15 +33,17 @@ type LoadState =
   | { status: "ready"; entry: LexiconPayload };
 
 /**
- * The dock's lexicon: answers the Strong's number last asked for, from the
+ * The lexicon body: answers the Strong's number last asked for, from the
  * omnibox or anywhere else that dispatches berean:open-lexicon. A word
  * selection in the reader opens the entry directly and pins the word's
  * parsing above it. Strong's definitions render with the Tyndale House
- * extended variants beneath.
+ * extended variants beneath. The dock renders it bare; a lexicon pane tab
+ * passes entryId to pin the tab's own entry.
  */
-export default function LexiconDock() {
+export default function LexiconDock({ entryId }: { entryId?: string | null } = {}) {
   const { state, dispatch } = useWorkspace();
-  const id = state.lexiconId;
+  // A pane tab pins its own entry; the dock answers the workspace's ask.
+  const id = entryId === undefined ? state.lexiconId : entryId;
   const word = state.selection?.kind === "word" ? state.selection : null;
   const [load, setLoad] = useState<LoadState>({ status: "idle" });
 

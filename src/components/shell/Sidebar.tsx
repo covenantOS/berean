@@ -5,6 +5,7 @@ import { CANON } from "@/lib/canon";
 import { documents } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { useWorkspace } from "./WorkspaceContext";
+import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, type RailMode } from "./workspace-state";
 
 const MODE_TITLES: Record<RailMode, string> = {
@@ -127,8 +128,18 @@ function CanonTree() {
                         <button
                           key={ch}
                           type="button"
+                          draggable
+                          onDragStart={(e) =>
+                            startModuleDrag(
+                              e,
+                              DND.chapter,
+                              { book: book.slug, chapter: ch },
+                              `${book.name} ${ch}`
+                            )
+                          }
                           onClick={() => open(book.slug, ch)}
                           aria-current={isCurrent ? "true" : undefined}
+                          title={`${book.name} ${ch}: click to open, drag into the workspace`}
                           className={`flex h-6 w-7 items-center justify-center border text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                             isCurrent
                               ? "border-amber bg-amber/15 font-semibold text-ink"
@@ -204,20 +215,31 @@ function LibrarySections() {
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
             {section.title}
           </div>
-          {section.items.map((item) => (
-            <div
-              key={item.label}
-              className="flex items-baseline justify-between gap-2 px-3 py-[3px] text-[0.8rem] text-ink"
-            >
-              <span>{item.label}</span>
-              {item.note && <span className="text-[0.62rem] text-muted">{item.note}</span>}
-            </div>
-          ))}
+          {section.items.map((item) => {
+            const draggable = section.title === "Lexicon";
+            return (
+              <div
+                key={item.label}
+                draggable={draggable}
+                onDragStart={
+                  draggable ? (e) => startModuleDrag(e, DND.libraryLexicon, {}, item.label) : undefined
+                }
+                title={draggable ? "Drag into the workspace to open the lexicon" : undefined}
+                className={`flex items-baseline justify-between gap-2 px-3 py-[3px] text-[0.8rem] text-ink ${
+                  draggable ? "cursor-grab hover:bg-paper" : ""
+                }`}
+              >
+                <span>{item.label}</span>
+                {item.note && <span className="text-[0.62rem] text-muted">{item.note}</span>}
+              </div>
+            );
+          })}
         </div>
       ))}
       <p className="px-3 py-3 text-[0.7rem] leading-relaxed text-muted">
-        The shelf opens as panes in a later phase; every work is registered in
-        the rights registry.
+        The lexicon entries drag into the workspace; the rest of the shelf
+        opens as panes in a later phase. Every work is registered in the
+        rights registry.
       </p>
     </div>
   );

@@ -6,11 +6,12 @@ import { getBook } from "@/lib/canon";
  * Workspace pane state — the Phase 0 shell's one state tree.
  *
  * The pane grid is a binary tree: split nodes carry a direction and a ratio,
- * leaf nodes carry tabs. Phase 0 has two tab kinds (reader and search);
- * later phases add commentary, lexicon, and document panels as new tab
- * kinds without changing the tree shape. The whole tree, the active ids,
- * the rail mode, and the sidebar/dock visibility persist to localStorage
- * under STORAGE_KEY so the workspace reopens where it was left.
+ * leaf nodes carry tabs. Reader and search tabs came first; the dock's tool
+ * modules (commentary, lexicon, cross-refs) are tab kinds too, so modules
+ * travel between the dock and the grid without changing the tree shape. The
+ * whole tree, the active ids, the rail mode, the dock tray order, and the
+ * sidebar/dock visibility persist to localStorage under STORAGE_KEY so the
+ * workspace reopens where it was left.
  */
 
 export type RailMode =
@@ -55,7 +56,41 @@ export interface SearchTab {
   q: string;
 }
 
-export type Tab = ReaderTab | SearchTab;
+/** The commentary wall, lifted out of the dock into a pane. */
+export interface CommentaryTab {
+  id: string;
+  type: "commentary";
+}
+
+/** The lexicon in a pane; a null entryId prompts for a Strong's id. */
+export interface LexiconTab {
+  id: string;
+  type: "lexicon";
+  entryId: string | null;
+}
+
+/** The cross-reference treasury, lifted out of the dock into a pane. */
+export interface CrossRefsTab {
+  id: string;
+  type: "crossrefs";
+}
+
+/** Tabs that mirror a dock module; they can travel back to the tray. */
+export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
+
+export type Tab = ReaderTab | SearchTab | ToolTab;
+
+/* ---------- drop targets (where a dragged module can land) ---------- */
+
+export type DropEdge = "left" | "right" | "top" | "bottom";
+
+export type DropTarget =
+  /** On a pane's tab strip: a new tab, or a moved tab inserted at index. */
+  | { kind: "strip"; paneId: string; index?: number }
+  /** On a pane's body: a moved tab joins the pane; a dropped chapter retargets it. */
+  | { kind: "body"; paneId: string }
+  /** On an edge zone: the pane splits and the module opens as the new leaf. */
+  | { kind: "edge"; paneId: string; edge: DropEdge };
 
 export interface LeafNode {
   kind: "leaf";
@@ -111,6 +146,8 @@ export interface WorkspaceState {
   sidebarOpen: boolean;
   dockOpen: boolean;
   dockTab: DockTab;
+  /** Tray order for the dock's module tabs; persists with the session. */
+  dockTabOrder: DockTab[];
   /** The Strong's id the dock's Lexicon tab answers, when one was asked for. */
   lexiconId: string | null;
   /** The current selection. Transient by design: never persisted. */
@@ -137,6 +174,34 @@ export function searchTab(q: string): SearchTab {
   return { id: newId("tab"), type: "search", q };
 }
 
+export function commentaryTab(): CommentaryTab {
+  return { id: newId("tab"), type: "commentary" };
+}
+
+export function crossrefsTab(): CrossRefsTab {
+  return { id: newId("tab"), type: "crossrefs" };
+}
+
+export function lexiconTab(entryId: string | null = null): LexiconTab {
+  return { id: newId("tab"), type: "lexicon", entryId };
+}
+
+/** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
+export function toolTabForDock(dock: DockTab, lexiconId: string | null = null): ToolTab | null {
+  if (dock === "commentary") return commentaryTab();
+  if (dock === "crossrefs") return crossrefsTab();
+  if (dock === "lexicon") return lexiconTab(lexiconId);
+  return null;
+}
+
+/** The dock module a tool tab belongs to; null for reader and search tabs. */
+export function dockTabForTab(tab: Tab): DockTab | null {
+  if (tab.type === "commentary") return "commentary";
+  if (tab.type === "lexicon") return "lexicon";
+  if (tab.type === "crossrefs") return "crossrefs";
+  return null;
+}
+
 export function leafNode(tabs: Tab[] = []): LeafNode {
   return {
     kind: "leaf",
@@ -159,6 +224,7 @@ export const DEFAULT_STATE: WorkspaceState = {
   sidebarOpen: true,
   dockOpen: false,
   dockTab: "commentary",
+  dockTabOrder: [...DOCK_TABS],
   lexiconId: null,
   selection: null,
 };
@@ -214,6 +280,19 @@ function updateSplit(node: PaneNode, id: string, fn: (split: SplitNode) => Split
   return node;
 }
 
+/** A 50/50 split of a leaf with a fresh sibling placed on the dragged-to edge. */
+function splitForEdge(edge: DropEdge, leaf: LeafNode, fresh: LeafNode): SplitNode {
+  const direction: SplitDirection = edge === "left" || edge === "right" ? "horizontal" : "vertical";
+  const first = edge === "left" || edge === "top";
+  return {
+    kind: "split",
+    id: newId("split"),
+    direction,
+    ratio: 0.5,
+    children: first ? [fresh, leaf] : [leaf, fresh],
+  };
+}
+
 /** The reference a pane is currently showing (its active reader tab, when it has one). */
 export function paneRef(leaf: LeafNode): { book: string; chapter: number } | null {
   const tab = leaf.tabs.find((t) => t.id === leaf.activeTabId);
@@ -242,6 +321,11 @@ export type WorkspaceAction =
   | { type: "splitPane"; paneId: string; direction: SplitDirection }
   | { type: "closePane"; paneId: string }
   | { type: "setRatio"; splitId: string; ratio: number }
+  | { type: "moveTab"; fromPaneId: string; tabId: string; target: DropTarget }
+  | { type: "openTab"; tab: Tab; target: DropTarget }
+  | { type: "returnTabToDock"; paneId: string; tabId: string }
+  | { type: "setDockTabOrder"; order: DockTab[] }
+  | { type: "setLexiconTabEntry"; paneId: string; tabId: string; entryId: string | null }
   | { type: "applyPreset"; preset: "reading" | "study" };
 
 function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode {
@@ -475,6 +559,218 @@ export function workspaceReducer(
       return { ...state, root: updateSplit(state.root, action.splitId, (s) => ({ ...s, ratio })) };
     }
 
+    case "moveTab": {
+      const source = findLeaf(state.root, action.fromPaneId);
+      if (!source) return state;
+      const tabIndex = source.tabs.findIndex((t) => t.id === action.tabId);
+      const tab = source.tabs[tabIndex];
+      if (!tab) return state;
+      const target = action.target;
+
+      // A drop on the source pane's own body changes nothing.
+      if (target.kind === "body" && target.paneId === source.id) return state;
+
+      // A drop on the source pane's own strip reorders in place; the index
+      // arrives in the strip's current coordinates, before the removal.
+      if (target.kind === "strip" && target.paneId === source.id) {
+        const without = source.tabs.filter((t) => t.id !== tab.id);
+        let index = target.index === undefined ? source.tabs.length : Math.trunc(target.index);
+        index = Math.min(Math.max(0, index), source.tabs.length);
+        if (index > tabIndex) index -= 1;
+        index = Math.min(index, without.length);
+        const tabs = [...without.slice(0, index), tab, ...without.slice(index)];
+        return {
+          ...state,
+          root: updateLeaf(state.root, source.id, (l) => ({ ...l, tabs, activeTabId: tab.id })),
+        };
+      }
+
+      // A drop on the source pane's own edge splits it; what remains stays.
+      if (target.kind === "edge" && target.paneId === source.id) {
+        if (countLeaves(state.root) >= MAX_PANES) return state;
+        const remaining = source.tabs.filter((t) => t.id !== tab.id);
+        const emptied: LeafNode = {
+          ...source,
+          tabs: remaining,
+          activeTabId:
+            source.activeTabId === tab.id
+              ? (remaining[remaining.length - 1]?.id ?? null)
+              : source.activeTabId,
+        };
+        const fresh = leafNode([tab]);
+        return {
+          ...state,
+          root: replaceNode(state.root, source.id, splitForEdge(target.edge, emptied, fresh)),
+          activePaneId: fresh.id,
+        };
+      }
+
+      // Out of the source: an emptied pane collapses, unless it is the last.
+      const remaining = source.tabs.filter((t) => t.id !== tab.id);
+      let root = state.root;
+      if (remaining.length === 0 && countLeaves(root) > 1) {
+        const collapsed = removeLeaf(root, source.id);
+        if (!collapsed) return state;
+        root = collapsed;
+      } else {
+        root = updateLeaf(root, source.id, (l) => ({
+          ...l,
+          tabs: remaining,
+          activeTabId:
+            l.activeTabId === tab.id
+              ? (remaining[remaining.length - 1]?.id ?? null)
+              : l.activeTabId,
+        }));
+      }
+
+      if (target.kind === "edge") {
+        // A collapsed source frees the slot this split needs.
+        if (countLeaves(root) >= MAX_PANES) return state;
+        const targetLeaf = findLeaf(root, target.paneId);
+        if (!targetLeaf) return state;
+        const fresh = leafNode([tab]);
+        return {
+          ...state,
+          root: replaceNode(root, target.paneId, splitForEdge(target.edge, targetLeaf, fresh)),
+          activePaneId: fresh.id,
+        };
+      }
+
+      const targetLeaf = findLeaf(root, target.paneId);
+      if (!targetLeaf) return state;
+      const index =
+        target.kind === "strip" && target.index !== undefined
+          ? Math.min(Math.max(0, Math.trunc(target.index)), targetLeaf.tabs.length)
+          : targetLeaf.tabs.length;
+      return {
+        ...state,
+        activePaneId: target.paneId,
+        root: updateLeaf(root, target.paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs.slice(0, index), tab, ...l.tabs.slice(index)],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTab": {
+      let tab = action.tab;
+      if (tab.type === "reader") {
+        const book = getBook(tab.book);
+        if (!book) return state;
+        const chapter = Math.min(Math.max(1, Math.trunc(tab.chapter)), book.chapters);
+        if (chapter !== tab.chapter || book.slug !== tab.book) {
+          tab = { ...tab, book: book.slug, chapter };
+        }
+      }
+      const target = action.target;
+
+      if (target.kind === "edge") {
+        if (countLeaves(state.root) >= MAX_PANES) return state;
+        const targetLeaf = findLeaf(state.root, target.paneId);
+        if (!targetLeaf) return state;
+        const fresh = leafNode([tab]);
+        return {
+          ...state,
+          root: replaceNode(state.root, target.paneId, splitForEdge(target.edge, targetLeaf, fresh)),
+          activePaneId: fresh.id,
+        };
+      }
+
+      const targetLeaf = findLeaf(state.root, target.paneId);
+      if (!targetLeaf) return state;
+
+      // A chapter dropped on a pane's body retargets it, like the Read tree.
+      if (target.kind === "body" && tab.type === "reader") {
+        return {
+          ...state,
+          activePaneId: targetLeaf.id,
+          selection: null,
+          root: updateLeaf(state.root, targetLeaf.id, (l) =>
+            openRefInLeaf(l, tab.book, tab.chapter)
+          ),
+        };
+      }
+
+      const index =
+        target.kind === "strip" && target.index !== undefined
+          ? Math.min(Math.max(0, Math.trunc(target.index)), targetLeaf.tabs.length)
+          : targetLeaf.tabs.length;
+      return {
+        ...state,
+        activePaneId: targetLeaf.id,
+        root: updateLeaf(state.root, targetLeaf.id, (l) => ({
+          ...l,
+          tabs: [...l.tabs.slice(0, index), tab, ...l.tabs.slice(index)],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "returnTabToDock": {
+      const leaf = findLeaf(state.root, action.paneId);
+      if (!leaf) return state;
+      const tab = leaf.tabs.find((t) => t.id === action.tabId);
+      if (!tab) return state;
+      const dockTab = dockTabForTab(tab);
+      if (!dockTab) return state;
+      // Removal matches closeTab: an emptied pane collapses with its split.
+      const tabs = leaf.tabs.filter((t) => t.id !== action.tabId);
+      let root = state.root;
+      let activePaneId = state.activePaneId;
+      if (tabs.length === 0 && countLeaves(root) > 1) {
+        const collapsed = removeLeaf(root, action.paneId);
+        if (!collapsed) return state;
+        root = collapsed;
+        if (activePaneId === action.paneId) activePaneId = firstLeaf(root).id;
+      } else {
+        root = updateLeaf(root, action.paneId, (l) => ({
+          ...l,
+          tabs,
+          activeTabId:
+            l.activeTabId === action.tabId ? (tabs[tabs.length - 1]?.id ?? null) : l.activeTabId,
+        }));
+      }
+      return {
+        ...state,
+        root,
+        activePaneId,
+        dockTab,
+        dockOpen: true,
+        // A lexicon entry the tab pinned comes home to the dock with it.
+        ...(tab.type === "lexicon" && tab.entryId ? { lexiconId: tab.entryId } : {}),
+      };
+    }
+
+    case "setDockTabOrder": {
+      const order = action.order;
+      if (order.length !== DOCK_TABS.length || !DOCK_TABS.every((t) => order.includes(t))) {
+        return state;
+      }
+      if (order.every((t, i) => t === state.dockTabOrder[i])) return state;
+      return { ...state, dockTabOrder: [...order] };
+    }
+
+    case "setLexiconTabEntry": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "lexicon") return state;
+      const entryId =
+        action.entryId && /^[hg]\d{1,5}$/i.test(action.entryId.trim())
+          ? action.entryId.trim().toUpperCase()
+          : null;
+      if (entryId === tab.entryId) return state;
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "lexicon" ? { ...t, entryId } : t
+          ),
+        })),
+      };
+    }
+
     case "applyPreset": {
       const current = paneRef(findLeaf(state.root, state.activePaneId) ?? firstLeaf(state.root)) ?? {
         book: "genesis",
@@ -521,6 +817,22 @@ function sanitizeNode(node: unknown): PaneNode | null {
         tabs.push({ id: t.id, type: "search", q: t.q });
         continue;
       }
+      if (t.type === "commentary" && typeof t.id === "string") {
+        tabs.push({ id: t.id, type: "commentary" });
+        continue;
+      }
+      if (t.type === "crossrefs" && typeof t.id === "string") {
+        tabs.push({ id: t.id, type: "crossrefs" });
+        continue;
+      }
+      if (t.type === "lexicon" && typeof t.id === "string") {
+        const entryId =
+          typeof t.entryId === "string" && /^[hg]\d{1,5}$/i.test(t.entryId)
+            ? t.entryId.toUpperCase()
+            : null;
+        tabs.push({ id: t.id, type: "lexicon", entryId });
+        continue;
+      }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;
       const book = getBook(t.book);
       if (!book) continue;
@@ -556,6 +868,17 @@ function sanitizeNode(node: unknown): PaneNode | null {
   return null;
 }
 
+/** The persisted tray order; the default when absent (older sessions) or malformed. */
+function sanitizeDockTabOrder(raw: unknown): DockTab[] {
+  if (Array.isArray(raw)) {
+    const order = raw.filter((t): t is DockTab => DOCK_TABS.includes(t as DockTab));
+    if (order.length === DOCK_TABS.length && DOCK_TABS.every((t) => order.includes(t))) {
+      return order;
+    }
+  }
+  return [...DOCK_TABS];
+}
+
 /** Reads the persisted workspace; null when absent or beyond repair. */
 export function loadWorkspace(): WorkspaceState | null {
   if (typeof window === "undefined") return null;
@@ -584,6 +907,7 @@ export function loadWorkspace(): WorkspaceState | null {
     sidebarOpen: p.sidebarOpen !== false,
     dockOpen: p.dockOpen === true,
     dockTab: DOCK_TABS.includes(p.dockTab as DockTab) ? (p.dockTab as DockTab) : "commentary",
+    dockTabOrder: sanitizeDockTabOrder(p.dockTabOrder),
     lexiconId: typeof p.lexiconId === "string" && p.lexiconId ? p.lexiconId : null,
     selection: null,
   };
