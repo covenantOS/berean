@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-/** Jump straight to a Strong's number (H1…H8674, G1…G5624). */
+/** Jump straight to a Strong's number (H1…H8674, G1…G5624, or an extended id like H7225G). */
 export default function LexiconLookup() {
   const router = useRouter();
   const [value, setValue] = useState("");
@@ -13,7 +13,7 @@ export default function LexiconLookup() {
       onSubmit={(e) => {
         e.preventDefault();
         const id = value.trim().toUpperCase().replace(/\s+/g, "");
-        if (/^[GH]\d+$/.test(id)) router.push(`/lexicon/${id}`);
+        if (/^[GH]\d+[A-Z]?$/.test(id)) router.push(`/lexicon/${id}`);
       }}
       className="flex gap-2"
     >

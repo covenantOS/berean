@@ -140,7 +140,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Shipped as the Strong's-tagged KJV (data/kjv-strongs) and the Hebrew and Greek dictionaries (data/lexicon/strongs-hebrew.json, strongs-greek.json) behind the reader word-tap and /lexicon. Deeper lexical work moves to TBESH/TBESG and public-domain Thayer's and BDB.",
+      "Shipped as the Strong's-tagged KJV (data/kjv-strongs) and the Hebrew and Greek dictionaries (data/lexicon/strongs-hebrew.json, strongs-greek.json) behind the reader word-tap and /lexicon. Each entry is aggregated with its TBESH/TBESG extended-Strong's variants by scripts/build-lexicons.mjs.",
     status: "shipped",
   },
   {
@@ -179,8 +179,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abridged-BDB-style brief Hebrew lexicon keyed to extended Strong's numbers. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); the lexicon build that consumes it is next on the roadmap (Tier 1 item 3).",
-    status: "planned",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abridged-BDB-style brief Hebrew lexicon keyed to extended Strong's numbers, aggregated onto every Hebrew base entry in data/lexicon/strongs-hebrew.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution at /lexicon/[id]. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
+    status: "shipped",
   },
   {
     id: "tbesg",
@@ -192,8 +192,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abbott-Smith-based brief Greek lexicon keyed to extended Strong's numbers. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); the lexicon build that consumes it is next on the roadmap (Tier 1 item 3).",
-    status: "planned",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abbott-Smith-based brief Greek lexicon keyed to extended Strong's numbers, aggregated onto every Greek base entry in data/lexicon/strongs-greek.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution at /lexicon/[id]. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
+    status: "shipped",
   },
   {
     id: "tipnr",

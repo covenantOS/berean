@@ -21,7 +21,12 @@ async function searchLexicon(q: string): Promise<Row[]> {
           entry.lemma?.toLowerCase().includes(needle) ||
           entry.xlit?.toLowerCase().includes(needle) ||
           entry.kjv_def?.toLowerCase().includes(needle) ||
-          entry.strongs_def?.toLowerCase().includes(needle)
+          entry.strongs_def?.toLowerCase().includes(needle) ||
+          entry.tyndale?.some(
+            (v) =>
+              v.gloss.toLowerCase().includes(needle) ||
+              v.def.toLowerCase().includes(needle)
+          )
         ) {
           out.push({ id, entry });
           if (out.length >= 60) return out;
@@ -55,9 +60,10 @@ export default async function LexiconIndex({
       <header className="mb-6">
         <h1 className="text-3xl">The Lexicon</h1>
         <p className="mt-2 text-sm text-muted">
-          Strong&apos;s Hebrew and Greek dictionaries (public domain). Enter a
-          Strong&apos;s number — H7225, G26 — or search a transliteration or
-          definition.
+          Strong&apos;s Hebrew and Greek dictionaries (public domain),
+          aggregated with the Tyndale brief lexicons TBESH and TBESG (CC BY
+          4.0). Enter a Strong&apos;s number — H7225, G26 — or search a
+          transliteration or definition.
         </p>
       </header>
 

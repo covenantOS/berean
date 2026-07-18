@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
 import { findOccurrences } from "@/lib/tagged";
 
@@ -21,8 +21,12 @@ export default async function LexiconPage({
   const { id } = await params;
   const hit = await getLexiconEntry(id);
   if (!hit) notFound();
+  // Extended ids (H7225G) and padded forms (G0025) resolve to the base entry.
+  if (id.trim().toUpperCase() !== hit.id) redirect(`/lexicon/${hit.id}`);
   const { entry } = hit;
   const isHebrew = hit.id.startsWith("H");
+  const tyndale = entry.tyndale ?? [];
+  const gloss = tyndale[0]?.gloss;
   const { occurrences, total, byBook } = await findOccurrences(hit.id, 300);
   const maxCount = Math.max(1, ...byBook.map((b) => b.count));
 
@@ -38,40 +42,76 @@ export default async function LexiconPage({
       <header className="mb-8">
         <p className="small-caps text-xs text-muted">
           {isHebrew ? "Hebrew" : "Greek"} · Strong&apos;s {hit.id}
+          {gloss ? ` · ${gloss}` : ""}
         </p>
         <h1 className="mt-1 flex flex-wrap items-baseline gap-4">
           <span className={`${isHebrew ? "lang-hebrew" : "lang-greek"} text-4xl`}>
-            {entry.lemma}
+            {entry.lemma ?? tyndale[0]?.lemma}
           </span>
-          <span className="font-editorial text-2xl text-muted">{entry.xlit}</span>
+          <span className="font-editorial text-2xl text-muted">
+            {entry.xlit ?? tyndale[0]?.xlit}
+          </span>
           {entry.pron && <span className="text-base italic text-muted">{entry.pron}</span>}
         </h1>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
         <div className="space-y-6">
-          <section className="rounded-[4px] border border-rule bg-surface p-5">
-            <h2 className="small-caps mb-2 text-sm text-muted">Definition</h2>
-            {entry.strongs_def && (
-              <p className="font-[family-name:var(--font-reader)] text-lg leading-relaxed">
-                {entry.strongs_def}
+          {(entry.strongs_def || entry.derivation || entry.kjv_def) && (
+            <section className="rounded-[4px] border border-rule bg-surface p-5">
+              <h2 className="small-caps mb-2 text-sm text-muted">Strong&apos;s</h2>
+              {entry.strongs_def && (
+                <p className="font-[family-name:var(--font-reader)] text-lg leading-relaxed">
+                  {entry.strongs_def}
+                </p>
+              )}
+              {entry.derivation && (
+                <p className="mt-3 text-sm text-muted">
+                  <span className="font-semibold">Derivation:</span> {entry.derivation}
+                </p>
+              )}
+              {entry.kjv_def && (
+                <p className="mt-3 text-sm">
+                  <span className="font-semibold">The KJV renders it:</span> {entry.kjv_def}
+                </p>
+              )}
+              <p className="mt-4 border-t border-rule pt-3 text-xs text-muted">
+                Strong&apos;s Exhaustive Concordance (public domain), via the Open
+                Scriptures edition.
               </p>
-            )}
-            {entry.derivation && (
-              <p className="mt-3 text-sm text-muted">
-                <span className="font-semibold">Derivation:</span> {entry.derivation}
+            </section>
+          )}
+
+          {tyndale.length > 0 && (
+            <section className="rounded-[4px] border border-rule bg-surface p-5">
+              <h2 className="small-caps mb-2 text-sm text-muted">
+                {isHebrew ? "TBESH · Tyndale Brief Lexicon (Hebrew)" : "TBESG · Tyndale Brief Lexicon (Greek)"}
+              </h2>
+              <div className="space-y-5">
+                {tyndale.map((v) => (
+                  <div key={v.id}>
+                    <p className="flex flex-wrap items-baseline gap-3">
+                      <span className="small-caps text-xs text-muted">{v.id}</span>
+                      <span className="font-semibold">{v.gloss}</span>
+                      {v.pos && <span className="text-xs italic text-muted">{v.pos}</span>}
+                      {v.rel && v.u !== v.id && (
+                        <span className="text-xs text-muted">
+                          {v.rel} {v.u}
+                        </span>
+                      )}
+                    </p>
+                    <p className="mt-1 whitespace-pre-line font-[family-name:var(--font-reader)] text-base leading-relaxed">
+                      {v.def}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 border-t border-rule pt-3 text-xs text-muted">
+                Data created by www.STEPBible.org based on work at Tyndale House
+                Cambridge (CC BY 4.0).
               </p>
-            )}
-            {entry.kjv_def && (
-              <p className="mt-3 text-sm">
-                <span className="font-semibold">The KJV renders it:</span> {entry.kjv_def}
-              </p>
-            )}
-            <p className="mt-4 border-t border-rule pt-3 text-xs text-muted">
-              Strong&apos;s Exhaustive Concordance (public domain), via the Open
-              Scriptures edition.
-            </p>
-          </section>
+            </section>
+          )}
 
           <section>
             <h2 className="section-rule small-caps mb-4 text-sm">

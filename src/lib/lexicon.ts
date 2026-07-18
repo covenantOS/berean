@@ -1,6 +1,24 @@
 import { promises as fs } from "fs";
 import path from "path";
 
+/** One extended (disambiguated) Strong's variant from TBESH/TBESG. */
+export interface TyndaleVariant {
+  /** Extended Strong's id (H7225G) or padded base id (G0025). */
+  id: string;
+  /** Unified Strong's id linking related variants. */
+  u: string;
+  lemma: string;
+  xlit: string;
+  /** Part-of-speech tag as tagged in the Tyndale House texts. */
+  pos: string;
+  /** Tyndale scholars' gloss. */
+  gloss: string;
+  /** Brief definition, source markup flattened to plain text. */
+  def: string;
+  /** Relation the extended id bears to its unified id, when stated. */
+  rel?: string;
+}
+
 export interface LexiconEntry {
   lemma?: string;
   xlit?: string;
@@ -8,6 +26,7 @@ export interface LexiconEntry {
   derivation?: string;
   strongs_def?: string;
   kjv_def?: string;
+  tyndale?: TyndaleVariant[];
 }
 
 type Dictionary = Record<string, LexiconEntry>;
@@ -28,9 +47,12 @@ async function loadDict(which: "hebrew" | "greek"): Promise<Dictionary | null> {
   }
 }
 
-/** Normalize a Strong's ref like "g26", "G0026", "H1" → "G26" / "H1". */
+/**
+ * Normalize a Strong's ref like "g26", "G0026", "H1", or an extended id
+ * like "H7225G" → "G26" / "H1" (extended ids resolve to their base entry).
+ */
 export function normalizeStrongs(id: string): string | null {
-  const m = id.trim().toUpperCase().match(/^([GH])0*(\d+)$/);
+  const m = id.trim().toUpperCase().match(/^([GH])0*(\d+)[A-Z]?$/);
   if (!m) return null;
   return `${m[1]}${m[2]}`;
 }
