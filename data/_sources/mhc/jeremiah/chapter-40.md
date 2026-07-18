@@ -1,0 +1,23 @@
+---
+title: "Jeremiah 40 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "40"
+description: "In this chapter: Jeremiah is directed to go to Gedaliah. (1-6). A conspiracy against Gedaliah. (7-16)."
+weight: 40
+---
+
+# Jeremiah 40 
+
+## Chapter Outline
+
+- Jeremiah is directed to go to Gedaliah. (1-6)
+- A conspiracy against Gedaliah. (7-16)
+
+## Verses 1-6
+
+The captain of the guard seems to glory that he had been God's instrument to fulfil, what Jeremiah had been God's messenger to foretell. Many can see God's justice and truth with regard to others, who are heedless and blind as to themselves and their own sins. But, sooner or later, all men shall be made sensible that their sin is the cause of all their miseries. Jeremiah has leave to dispose of himself; but is advised to go to Gedaliah, governor of the land under the king of Babylon. It is doubtful whether Jeremiah acted right in this decision. But those who desire the salvation of sinners, and the good of the church, are apt to expect better times from slight appearances, and they will prefer the hope of being useful, to the most secure situations without it.
+
+## Verses 7-16
+
+Jeremiah had never in his prophecies spoken of any good days for the Jews, to come immediately after the captivity; yet Providence seemed to encourage such an expectation. But how soon is this hopeful prospect blighted! When God begins a judgment, he will complete it. While pride, ambition, or revenge, bears rule in the heart, men will form new projects, and be restless in mischief, which commonly ends in their own ruin. Who would have thought, that after the destruction of Jerusalem, rebellion would so soon have sprung up? There can be no thorough change but what grace makes. And if the miserable, who are kept in everlasting chains for the judgment of the great day, were again permitted to come on earth, the sin and evil of their nature would be unchanged. Lord, give us new hearts, and that new mind in which the new birth consists, since thou hast said we cannot without it see thy heavenly kingdom.
+
+

@@ -1,0 +1,23 @@
+---
+title: "Jeremiah 10 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "10"
+description: "In this chapter: The absurdity of idolatry. (1-16). Destruction denounced against Jerusalem. (17-25)."
+weight: 10
+---
+
+# Jeremiah 10 
+
+## Chapter Outline
+
+- The absurdity of idolatry. (1-16)
+- Destruction denounced against Jerusalem. (17-25)
+
+## Verses 1-16
+
+The prophet shows the glory of Israel's God, and exposes the folly of idolaters. Charms and other attempts to obtain supernatural help, or to pry into futurity, are copied from the wicked customs of the heathen. Let us stand in awe, and not dare provoke God, by giving that glory to another which is due to him alone. He is ready to forgive, and save all who repent and believe in the name of his Son Jesus Christ. Faith learns these blessed truths from the word of God; but all knowledge not from that source, leads to doctrines of vanity.
+
+## Verses 17-25
+
+The Jews who continued in their own land, felt secure. But, sooner or later, sinners will find all things as the word of God has declared, and that its threatenings are not empty terrors. Submission will support the believer under every grief allotted to him; but what can render the load of Divine vengeance easy to be borne by those who fall under it in sullen despair? Those cannot expect to prosper, who do not, by faith and prayer, take God with them in all their ways. The report of the enemy's approach was very dreadful. Yet the designs which men lay deep, and think well formed, are dashed to pieces in a moment. Events are often overruled, so as to be quite contrary to what we intended and expected. If the Lord has directed our steps into the ways of peace and righteousness, let us entreat him to enable us to walk therein. Say not, Lord, do not correct me; but, Lord, do not correct me in anger. We may bear the smart of God's rod, but we cannot bear the weight of his wrath. Those who restrain prayer, prove that they know not God; for those who know him will seek him, and seek his favour. If even severe corrections lead sinners to be convinced of wholesome truths, they will have abundant cause for gratitude. And they will then humble themselves before the Lord.
+
+

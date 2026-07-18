@@ -1,0 +1,38 @@
+---
+title: "Daniel 6 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "6"
+description: "In this chapter: The malice of Daniel's enemies. (1-5). His constancy in prayer. (6-10). He is cast into the lion's den. (11-17). His miraculous preservation. (18-24). The decree of Darius. (25-28)."
+weight: 6
+---
+
+# Daniel 6 
+
+## Chapter Outline
+
+- The malice of Daniel's enemies. (1-5)
+- His constancy in prayer. (6-10)
+- He is cast into the lion's den. (11-17)
+- His miraculous preservation. (18-24)
+- The decree of Darius. (25-28)
+
+## Verses 1-5
+
+We notice to the glory of God, that though Daniel was now very old, yet he was able for business, and had continued faithful to his religion. It is for the glory of God, when those who profess religion, conduct themselves so that their most watchful enemies may find no occasion for blaming them, save only in the matters of their God, in which they walk according to their consciences.
+
+## Verses 6-10
+
+To forbid prayer for thirty days, is, for so long, to rob God of all the tribute he has from man, and to rob man of all the comfort he has in God. Does not every man's heart direct him, when in want or distress, to call upon God? We could not live a day without God; and can men live thirty days without prayer? Yet it is to be feared that those who, without any decree forbidding them, present no hearty, serious petitions to God for more than thirty days together, are far more numerous than those who serve him continually, with humble, thankful hearts. Persecuting laws are always made on false pretences; but it does not become Christians to make bitter complaints, or to indulge in revilings. It is good to have hours for prayer. Daniel prayed openly and avowedly; and though a man of vast business, he did not think that would excuse him from daily exercises of devotion. How inexcusable are those who have but little to do in the world, yet will not do thus much for their souls! In trying times we must take heed, lest, under pretence of discretion, we are guilty of cowardice in the cause of God. All who throw away their souls, as those certainly do that live without prayer, even if it be to save their lives, at the end will be found to be fools. Nor did Daniel only pray, and not give thanks, cutting off some part of the service to make the time of danger shorter; but he performed the whole. In a word, the duty of prayer is founded upon the sufficiency of God as an almighty Creator and Redeemer, and upon our wants as sinful creatures. To Christ we must turn our eyes. Thither let the Christian look, thither let him pray, in this land of his captivity.
+
+## Verses 11-17
+
+It is no new thing for what is done faithfully, in conscience toward God, to be misrepresented as done obstinately, and in contempt of the civil powers. Through want of due thought, we often do that which afterwards, like Darius, we see cause a thousand times to wish undone again. Daniel, that venerable man, is brought as the vilest of malefactors, and is thrown into the den of lions, to be devoured, only for worshipping his God. No doubt the placing the stone was ordered by the providence of God, that the miracle of Daniel's deliverance might appear more plain; and the king sealed it with his own signet, probably lest Daniel's enemies should kill him. Let us commit our lives and souls unto God, in well-doing. We cannot place full confidence even in men whom we faithfully serve; but believers may, in all cases, be sure of the Divine favour and consolation.
+
+## Verses 18-24
+
+The best way to have a good night, is to keep a good conscience. We are sure of what the king doubted, that the servants of the living God have a Master well able to protect them. See the power of God over the fiercest creatures, and believe his power to restrain the roaring lion that goeth about continually seeking to devour. Daniel was kept perfectly safe, because he believed in his God. Those who boldly and cheerfully trust in God to protect them in the way of duty, shall always find him a present help. Thus the righteous is delivered out of trouble, and the wicked cometh in his stead. The short triumph of the wicked will end in their ruin.
+
+## Verses 25-28
+
+If we live in the fear of God, and walk according to that rule, peace shall be upon us. The kingdom, the power, and the glory, for ever, are the Lord's; but many are employed in making known his wonderful works to others, who themselves remain strangers to his saving grace. May we be doers, as well as believers of his word, least at the last we should be found to have deceived ourselves.
+
+

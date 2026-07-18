@@ -1,0 +1,28 @@
+---
+title: "Ezekiel 39 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "39"
+description: "In this chapter: The destruction of Gog. (1-10). Its extent. (11-22). Israel again favoured. (23-29)."
+weight: 39
+---
+
+# Ezekiel 39 
+
+## Chapter Outline
+
+- The destruction of Gog. (1-10)
+- Its extent. (11-22)
+- Israel again favoured. (23-29)
+
+## Verses 1-10
+
+The Lord will make the most careless and hardened transgressors know his holy name, either by his righteous anger, or by the riches of his mercy and grace. The weapons formed against Zion shall not prosper. Though this prophecy is to be fulfilled in the latter days, it is certain. From the language used, it seems that the army of Gog will be destroyed by miracle.
+
+## Verses 11-22
+
+How numerous the enemies which God destroyed for the defence of his people Israel! Times of great deliverances should be times of reformation. Every one should help the utmost he can, toward cleansing the land from reproach. Sin is an enemy every man should strive against. Those engaged in public work, especially of cleansing and reforming a land, ought to be men who will go through with what they undertake, who will be always employed. When good work is to be done, every one should further it. Having received special favours from God, let us cleanse ourselves from all evil. It is a work which will require persevering diligence, that search may be made into the secret recesses of sin. The judgments of the Lord, brought upon sin and sinners, are a sacrifice to the justice of God, and a feast to the faith and hope of God's people. See how evil pursues sinners, even after death. After all that ambitious and covetous men do and look for, "a place of graves" is all the Lord gives them on earth, while their guilty souls are doomed to misery in another world.
+
+## Verses 23-29
+
+When the Lord shall have mercy on the whole house of Israel, by converting them to Christianity, and when they shall have borne the shame of being cast off for their sins, then the nations shall learn to know, worship, and serve him. Then Israel also shall know the Lord, as revealed in and by Christ. Past events do not answer to these predictions. The pouring out of the Spirit is a pledge that God's favour will continue. He will hide his face no more from those on whom he has poured out his Spirit. When we pray that God would never cast us from his presence, we must as earnestly pray that, in order thereto, he would never take his Holy Spirit from us.
+
+

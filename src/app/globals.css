@@ -1,25 +1,43 @@
 @import "tailwindcss";
 
 /*
- * Berean design tokens — shared Covenant product-family values.
- * Source: docs/COVENANT_DESIGN_LANGUAGE.md (Covenant OS revision 460c77b).
- * Bright, legible, print-and-architecture. Stained glass is signal, not wallpaper.
+ * Berean design tokens — "Built From Stone" (berean-plan §3).
+ * Deep charcoal ink on warm parchment; stained glass supplies the accents:
+ * window blue, burgundy, warm gold — used the way light falls through a
+ * lancet window onto a stone floor. Candlelight evening mode renders the
+ * whole study warm, never inverted white.
  */
 :root {
-  --signal-ink: #19272f;
-  --signal-paper: #f4f7f6;
-  --surface: #ffffff;
-  --stained-ruby: #a42548;
-  --stained-sapphire: #176b91;
-  --stained-amber: #cf8e18;
-  --stained-emerald: #24705a;
-  --stained-violet: #634a8e;
-  --rule: #d6dedd;
-  --ink-muted: #51636d;
+  --signal-ink: #262016;
+  --signal-paper: #f3ecdd;
+  --surface: #faf5e9;
+  --stained-ruby: #7d2d3e;
+  --stained-sapphire: #2d5977;
+  --stained-amber: #a97a1f;
+  --stained-emerald: #3d6b52;
+  --stained-violet: #5d4a78;
+  --rule: #d9cdb4;
+  --ink-muted: #6d5f4b;
+  --gold-leaf: #c9a227;
 
   --font-interface: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-editorial: "Libre Baskerville", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-reader: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --font-editorial: var(--font-garamond, "EB Garamond"), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-reader: var(--font-garamond, "EB Garamond"), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+/* Candlelight — the whole study by lamplight, not inverted white. */
+html[data-candle] {
+  --signal-ink: #e6d8bc;
+  --signal-paper: #1d1812;
+  --surface: #262019;
+  --stained-ruby: #c96f80;
+  --stained-sapphire: #7fa8c4;
+  --stained-amber: #d9ac4a;
+  --stained-emerald: #7fa98f;
+  --stained-violet: #a08fc0;
+  --rule: #3d3427;
+  --ink-muted: #a4906e;
+  --gold-leaf: #d9b45e;
 }
 
 @theme inline {
@@ -33,6 +51,7 @@
   --color-violet: var(--stained-violet);
   --color-rule: var(--rule);
   --color-muted: var(--ink-muted);
+  --color-gold: var(--gold-leaf);
   --font-interface: var(--font-interface);
   --font-editorial: var(--font-editorial);
   --font-reader: var(--font-reader);
@@ -44,8 +63,21 @@ html {
   font-family: var(--font-interface);
 }
 
+/* Vellum grain — a whisper of texture, never wallpaper. */
+body {
+  background-image: radial-gradient(
+      ellipse at 50% -20%,
+      color-mix(in srgb, var(--surface) 55%, transparent),
+      transparent 60%
+    );
+}
+
+h1, h2, h3 {
+  font-family: var(--font-editorial);
+}
+
 ::selection {
-  background: color-mix(in srgb, var(--stained-sapphire) 22%, transparent);
+  background: color-mix(in srgb, var(--stained-amber) 26%, transparent);
 }
 
 a {
@@ -53,8 +85,8 @@ a {
 }
 
 /*
- * Reading modes apply to the reader surface only — navigation, controls,
- * and apparatus stay on the bright shell (design-language rule 4).
+ * Reading modes on the reader surface. Paper follows the study's own light;
+ * warm and evening remain available independent of the shell.
  */
 .reader-surface {
   font-family: var(--font-reader);
@@ -63,7 +95,7 @@ a {
   transition: background 0.3s ease, color 0.3s ease;
 }
 .reader-surface[data-mode="warm"] {
-  background: #faf6ec;
+  background: #f8f1df;
   color: #241f18;
 }
 .reader-surface[data-mode="evening"] {
@@ -75,6 +107,10 @@ a {
 }
 .reader-surface[data-mode="evening"] .has-note .verse-num {
   color: #d9b45e;
+}
+html[data-candle] .reader-surface[data-mode="warm"] {
+  background: #2a2118;
+  color: #e8ddc8;
 }
 
 .verse-num {
@@ -100,13 +136,13 @@ a {
 }
 
 .prose-verses {
-  font-size: 1.14rem;
+  font-size: 1.22rem;
   line-height: 1.85;
   text-align: justify;
   hyphens: auto;
 }
 .poetry-verses {
-  font-size: 1.14rem;
+  font-size: 1.22rem;
   line-height: 1.8;
 }
 .poetry-verses .verse-line {
@@ -115,14 +151,31 @@ a {
   margin-bottom: 0.35rem;
 }
 
+/* Tap-a-word apparatus: words carrying Strong's numbers. */
+.tagged-word {
+  cursor: pointer;
+  border-bottom: 1px dotted transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.tagged-word:hover {
+  border-bottom-color: var(--stained-sapphire);
+  background: color-mix(in srgb, var(--stained-sapphire) 10%, transparent);
+}
+.tagged-word.word-active {
+  background: color-mix(in srgb, var(--stained-amber) 22%, transparent);
+  border-bottom-color: var(--stained-amber);
+}
+
+/* Illuminated capital — burgundy letter, gold-leaf shoulder. */
 .drop-cap::first-letter {
   font-family: var(--font-editorial);
-  font-size: 3.2em;
-  line-height: 0.85;
+  font-size: 3.4em;
+  line-height: 0.82;
   float: left;
-  padding-right: 0.09em;
+  padding-right: 0.1em;
   padding-top: 0.04em;
   color: var(--stained-ruby);
+  text-shadow: 2px 2px 0 color-mix(in srgb, var(--gold-leaf) 55%, transparent);
 }
 
 /* The leaded-window mark: four panes with lead lines. */
@@ -145,6 +198,32 @@ a {
 .small-caps {
   font-variant-caps: all-small-caps;
   letter-spacing: 0.06em;
+}
+
+/* Section rule — a centered mark between rules, ornament by typography. */
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ink-muted);
+}
+.section-rule::before,
+.section-rule::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--rule);
+}
+
+/* Greek and Hebrew set properly inline. */
+.lang-hebrew {
+  font-family: "SBL Hebrew", "Ezra SIL", "Times New Roman", serif;
+  font-size: 1.25em;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+.lang-greek {
+  font-family: "SBL Greek", "Gentium Plus", "Palatino Linotype", Georgia, serif;
+  font-size: 1.05em;
 }
 
 @media (prefers-reduced-motion: reduce) {

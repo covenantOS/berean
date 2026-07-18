@@ -1,0 +1,28 @@
+---
+title: "Hosea 8 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "8"
+description: "In this chapter: Destruction threatened for the impiety of Israel. (1-4). For their idolatry. (5-10). Further threatenings for the same sins. (11-14)."
+weight: 8
+---
+
+# Hosea 8 
+
+## Chapter Outline
+
+- Destruction threatened for the impiety of Israel. (1-4)
+- For their idolatry. (5-10)
+- Further threatenings for the same sins. (11-14)
+
+## Verses 1-4
+
+When Israel was hard pressed, they would claim protection from God, but this would be disregarded. What stead will it stand in to say, My God, I know thee, if we cannot say, My God, I love thee, serve thee, and cleave to thee only?
+
+## Verses 5-10
+
+They promised themselves plenty, peace, and victory, by worshipping idols, but their expectations came to nothing. What they sow has no stalk, no blade, or, if it have, the bud shall yield no fruit, there was nothing in them. The works of darkness are unfruitful; nay, the end of those things is death. The hopes of sinners will deceive them, and their gains will be snares. In times of danger, especially in the day of judgment, all carnal devices will fail. They take a course by themselves, and like a wild ass by himself, they will be the easier and surer prey for the lion. Man is in nothing more like the wild ass's colt, than in seeking for that succour and that satisfaction in the creature, which are to be had in God only. Though men may sorrow a little, yet if it is not after a godly sort, they will be brought to sorrow everlastingly.
+
+## Verses 11-14
+
+It is a great sin to corrupt the worship of God, and will be charged as sin on all who do it, how plausible soever their excuses may seem to be. The Lord had caused his law to be written for them, but they cared not to know, and would not obey it. Man seems by the temples he builds to be mindful of his Maker, yet really he has forgotten him, because he has cast off all his fear; but none ever hardened his heart against God and prospered. So long as men despise the truths and precepts of God's word, and the ordinances of his worship, all the observances and offerings, however costly, of their own devising, will be unto them for sin; for those services only are acceptable to God, which are done according to his word, and through Jesus Christ.
+
+

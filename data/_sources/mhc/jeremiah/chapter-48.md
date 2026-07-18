@@ -1,0 +1,23 @@
+---
+title: "Jeremiah 48 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "48"
+description: "In this chapter: Prophecies against Moab for pride and security. (1-13). For carnal confidence and contempt of God. (14-47)."
+weight: 48
+---
+
+# Jeremiah 48 
+
+## Chapter Outline
+
+- Prophecies against Moab for pride and security. (1-13)
+- For carnal confidence and contempt of God. (14-47)
+
+## Verses 1-13
+
+The Chaldeans are to destroy the Moabites. We should be thankful that we are required to seek the salvation of men's lives, and the salvation of their souls, not to shed their blood; but we shall be the more without excuse if we do this pleasant work deceitfully. The cities shall be laid in ruins, and the country shall be wasted. There will be great sorrow. There will be great hurry. If any could give wings to sinners, still they could not fly out of the reach of Divine indignation. There are many who persist in unrepented iniquity, yet long enjoy outward prosperity. They had been long corrupt and unreformed, secure and sensual in prosperity. They have no changes of their peace and prosperity, therefore their hearts and lives are unchanged, Ps. 55:19.
+
+## Verses 14-47
+
+The destruction of Moab is further prophesied, to awaken them by national repentance and reformation to prevent the trouble, or by a personal repentance and reformation to prepare for it. In reading this long roll of threatenings, and mediating on the terror, it will be of more use to us to keep in view the power of God's anger and the terror of his judgments, and to have our hearts possessed with a holy awe of God and of his wrath, than to search into all the figures and expressions here used. Yet it is not perpetual destruction. The chapter ends with a promise of their return out of captivity in the latter days. Even with Moabites God will not contend for ever, nor be always wroth. The Jews refer it to the days of the Messiah; then the captives of the Gentiles, under the yoke of sin and Satan, shall be brought back by Divine grace, which shall make them free indeed.
+
+

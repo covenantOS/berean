@@ -1,0 +1,22 @@
+---
+title: "Ezekiel 26 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "26"
+description: "In this chapter: A prophecy against Tyre. (1-21)."
+weight: 26
+---
+
+# Ezekiel 26 
+
+## Chapter Outline
+
+- A prophecy against Tyre. (1-21)
+
+## Verses 1-14
+
+To be secretly pleased with the death or decay of others, when we are likely to get by it; or with their fall, when we may thrive upon it, is a sin that easily besets us, yet is not thought so bad as really it is. But it comes from a selfish, covetous principle, and from that love of the world as our happiness, which the love of God expressly forbids. He often blasts the projects of those who would raise themselves on the ruin of others. The maxims most current in the trading world, are directly opposed to the law of God. But he will show himself against the money-loving, selfish traders, whose hearts, like those of Tyre, are hardened by the love of riches. Men have little cause to glory in things which stir up the envy and rapacity of others, and which are continually shifting from one to another; and in getting, keeping, and spending which, men provoke that God whose wrath turns joyous cities into ruinous heaps.
+
+## Verses 15-21
+
+See how high, how great Tyre had been. See how low Tyre is made. The fall of others should awaken us out of security. Every discovery of the fulfilment of a Scripture prophecy, is like a miracle to confirm our faith. All that is earthly is vanity and vexation. Those who now have the most established prosperity, will soon be out of sight and forgotten.
+
+

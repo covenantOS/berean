@@ -1,23 +1,28 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { searchCanon } from "@/lib/bible";
+import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
 
 export const metadata: Metadata = { title: "Concordance" };
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; t?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, t } = await searchParams;
   const query = (q ?? "").trim();
-  const results = query.length >= 2 ? await searchCanon(query, 200) : null;
+  const available = await getAvailableTranslations();
+  const translation =
+    t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
+  const results =
+    query.length >= 2 ? await searchCanon(query, 200, translation) : null;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <h1 className="font-editorial mb-1 text-2xl font-bold">Concordance</h1>
       <p className="mb-6 text-sm text-muted">
-        Search every word of the canon (KJV). Results open the passage at the verse.
+        Search every word of the canon. Results open the passage at the verse.
       </p>
 
       <form action="/search" method="get" className="mb-8 flex gap-2">
@@ -29,9 +34,21 @@ export default async function SearchPage({
           aria-label="Search the canon"
           className="w-full rounded-[4px] border border-rule bg-surface px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
         />
+        <select
+          name="t"
+          defaultValue={translation}
+          aria-label="Translation"
+          className="rounded-[4px] border border-rule bg-surface px-2 py-2 text-sm"
+        >
+          {available.map((x) => (
+            <option key={x.id} value={x.id}>
+              {x.abbrev}
+            </option>
+          ))}
+        </select>
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
         >
           Search
         </button>

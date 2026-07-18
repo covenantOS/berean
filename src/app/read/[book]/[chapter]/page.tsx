@@ -2,6 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adjacentChapter, getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
+import { getAvailableTranslations, getTranslation, DEFAULT_TRANSLATION } from "@/lib/translations";
+import { getTaggedChapter } from "@/lib/tagged";
+import { getChapterCrossRefs } from "@/lib/crossrefs";
+import { getCommentary } from "@/lib/commentary";
 import ChapterReader from "@/components/ChapterReader";
 
 export async function generateMetadata({
@@ -16,22 +20,46 @@ export async function generateMetadata({
 
 export default async function ChapterPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ book: string; chapter: string }>;
+  searchParams: Promise<{ t?: string; p?: string }>;
 }) {
   const { book: slug, chapter: chapterStr } = await params;
+  const { t, p } = await searchParams;
   const book = getBook(slug);
   const chapter = Number(chapterStr);
   if (!book || !Number.isInteger(chapter)) notFound();
-  const verses = await getChapter(slug, chapter);
+
+  const available = await getAvailableTranslations();
+  const translationId =
+    t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
+  const translation = getTranslation(translationId)!;
+  const parallelId =
+    p && p !== translationId && available.some((x) => x.id === p) ? p : null;
+
+  const [verses, parallelVerses, tagged, crossrefs, commentary] = await Promise.all([
+    getChapter(slug, chapter, translationId),
+    parallelId ? getChapter(slug, chapter, parallelId) : Promise.resolve(null),
+    translationId === "kjv" ? getTaggedChapter(slug, chapter) : Promise.resolve(null),
+    getChapterCrossRefs(slug, chapter),
+    getCommentary("mhc", slug, chapter),
+  ]);
   if (!verses) notFound();
 
   const prev = adjacentChapter(slug, chapter, -1);
   const next = adjacentChapter(slug, chapter, 1);
   const isPsalm = slug === "psalms";
+  const keepQuery = (() => {
+    const q = new URLSearchParams();
+    if (translationId !== DEFAULT_TRANSLATION) q.set("t", translationId);
+    if (parallelId) q.set("p", parallelId);
+    const s = q.toString();
+    return s ? `?${s}` : "";
+  })();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <nav className="mb-6 flex items-center justify-between text-sm">
         <span className="text-muted">
           <Link href="/read" className="text-sapphire no-underline hover:underline">
@@ -46,7 +74,7 @@ export default async function ChapterPage({
         <span className="flex gap-2">
           {prev && (
             <Link
-              href={`/read/${prev.book.slug}/${prev.chapter}`}
+              href={`/read/${prev.book.slug}/${prev.chapter}${keepQuery}`}
               className="rounded-[4px] border border-rule bg-surface px-3 py-1 text-ink no-underline hover:bg-paper"
               rel="prev"
             >
@@ -55,7 +83,7 @@ export default async function ChapterPage({
           )}
           {next && (
             <Link
-              href={`/read/${next.book.slug}/${next.chapter}`}
+              href={`/read/${next.book.slug}/${next.chapter}${keepQuery}`}
               className="rounded-[4px] border border-rule bg-surface px-3 py-1 text-ink no-underline hover:bg-paper"
               rel="next"
             >
@@ -72,6 +100,21 @@ export default async function ChapterPage({
         verses={verses}
         poetry={!!book.poetry}
         heading={isPsalm ? `Psalm ${chapter}` : `${book.name} ${chapter}`}
+        translationId={translationId}
+        translationAbbrev={translation.abbrev}
+        translations={available.map((x) => ({ id: x.id, abbrev: x.abbrev, name: x.name }))}
+        parallel={
+          parallelId && parallelVerses
+            ? {
+                id: parallelId,
+                abbrev: getTranslation(parallelId)!.abbrev,
+                verses: parallelVerses,
+              }
+            : null
+        }
+        tagged={tagged}
+        crossrefs={crossrefs}
+        commentary={commentary}
       />
     </div>
   );

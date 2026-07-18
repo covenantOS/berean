@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { Book, getBook } from "./canon";
+import { DEFAULT_TRANSLATION, getTranslation } from "./translations";
 
 export interface Verse {
   verse: number;
@@ -14,19 +15,30 @@ interface RawBook {
 
 const cache = new Map<string, RawBook>();
 
-async function loadBook(book: Book): Promise<RawBook> {
-  const hit = cache.get(book.file);
+async function loadBook(book: Book, translation = DEFAULT_TRANSLATION): Promise<RawBook> {
+  const t = getTranslation(translation) ?? getTranslation(DEFAULT_TRANSLATION)!;
+  const key = `${t.id}/${book.file}`;
+  const hit = cache.get(key);
   if (hit) return hit;
-  const file = path.join(process.cwd(), "data", "kjv", `${book.file}.json`);
+  const file = path.join(process.cwd(), "data", t.dir, `${book.file}.json`);
   const raw = JSON.parse(await fs.readFile(file, "utf8")) as RawBook;
-  cache.set(book.file, raw);
+  cache.set(key, raw);
   return raw;
 }
 
-export async function getChapter(slug: string, chapter: number): Promise<Verse[] | null> {
+export async function getChapter(
+  slug: string,
+  chapter: number,
+  translation = DEFAULT_TRANSLATION
+): Promise<Verse[] | null> {
   const book = getBook(slug);
   if (!book || chapter < 1 || chapter > book.chapters) return null;
-  const raw = await loadBook(book);
+  let raw: RawBook;
+  try {
+    raw = await loadBook(book, translation);
+  } catch {
+    return null;
+  }
   const ch = raw.chapters[chapter - 1];
   if (!ch) return null;
   return ch.verses.map((v) => ({ verse: Number(v.verse), text: v.text }));
@@ -36,9 +48,10 @@ export async function getVerses(
   slug: string,
   chapter: number,
   from: number,
-  to: number
+  to: number,
+  translation = DEFAULT_TRANSLATION
 ): Promise<Verse[] | null> {
-  const verses = await getChapter(slug, chapter);
+  const verses = await getChapter(slug, chapter, translation);
   if (!verses) return null;
   return verses.filter((v) => v.verse >= from && v.verse <= to);
 }
@@ -90,14 +103,18 @@ export async function studyWord(word: string): Promise<WordStudy | null> {
 }
 
 /** Case-insensitive whole-canon concordance search. */
-export async function searchCanon(query: string, limit = 200): Promise<{ hits: SearchHit[]; total: number }> {
+export async function searchCanon(
+  query: string,
+  limit = 200,
+  translation = DEFAULT_TRANSLATION
+): Promise<{ hits: SearchHit[]; total: number }> {
   const { CANON } = await import("./canon");
   const needle = query.trim().toLowerCase();
   if (needle.length < 2) return { hits: [], total: 0 };
   const hits: SearchHit[] = [];
   let total = 0;
   for (const book of CANON) {
-    const raw = await loadBook(book);
+    const raw = await loadBook(book, translation);
     for (const ch of raw.chapters) {
       for (const v of ch.verses) {
         if (v.text.toLowerCase().includes(needle)) {

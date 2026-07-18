@@ -1,0 +1,23 @@
+---
+title: "Jeremiah 38 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "38"
+description: "In this chapter: Jeremiah is cast into a dungeon, from whence he is delivered by an Ethiopian. (1-13). He advises the king to surrender to the Chaldeans. (14-28)."
+weight: 38
+---
+
+# Jeremiah 38 
+
+## Chapter Outline
+
+- Jeremiah is cast into a dungeon, from whence he is delivered by an Ethiopian. (1-13)
+- He advises the king to surrender to the Chaldeans. (14-28)
+
+## Verses 1-13
+
+Jeremiah went on in his plain preaching. The princes went on in their malice. It is common for wicked people to look upon God's faithful ministers as enemies, because they show what enemies the wicked are to themselves while impenitent. Jeremiah was put into a dungeon. Many of God's faithful witnesses have been privately made away in prisons. Ebed-melech was an Ethiopian; yet he spoke to the king faithfully, These men have done ill in all they have done to Jeremiah. See how God can raise up friends for his people in distress. Orders were given for the prophet's release, and Ebed-melech saw him drawn up. Let this encourage us to appear boldly for God. Special notice is taken of his tenderness for Jeremiah. What do we behold in the different characters then, but the same we behold in the different characters now, that the Lord's children are conformed to his example, and the children of Satan to their master?
+
+## Verses 14-28
+
+Jeremiah was not forward to repeat the warnings, which seemed only to endanger his own life, and to add to the king's guilt, but asked whether he feared to do the will of God. The less men fear God, the more they fear men; often they dare not act according to their own judgments and consciences.
+
+

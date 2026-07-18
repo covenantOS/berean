@@ -1,0 +1,33 @@
+---
+title: "Jeremiah 3 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "3"
+description: "In this chapter: Exhortations to repentance. (1-5). Judah more guilty than Israel. (6-11). But pardon is promised. (12-20). The children of Israel express their sorrow and repentance. (21-25)."
+weight: 3
+---
+
+# Jeremiah 3 
+
+## Chapter Outline
+
+- Exhortations to repentance. (1-5)
+- Judah more guilty than Israel. (6-11)
+- But pardon is promised. (12-20)
+- The children of Israel express their sorrow and repentance. (21-25)
+
+## Verses 1-5
+
+In repentance, it is good to think upon the sins of which we have been guilty, and the places and companies where they have been committed. How gently the Lord had corrected them! In receiving penitents, he is God, and not man. Whatever thou hast said or done hitherto, wilt thou not from this time apply to me? Will not this grace of God overcome thee? Now pardon is proclaimed, wilt thou not take the benefit? They will hope to find in him the tender compassions of a Father towards a returning prodigal. They will come to him as the Guide of their youth: youth needs a guide. Repenting sinners may encourage themselves that God will not keep his anger to the end. All God's mercies, in every age, suggest encouragement; and what can be so desirable for the young, as to have the Lord for their Father, and the Guide of their youth? Let parents daily direct their children earnestly to seek this blessing.
+
+## Verses 6-11
+
+If we mark the crimes of those who break off from a religious profession, and the consequences, we see abundant reason to shun evil ways. It is dreadful to be proved more criminal than those who have actually perished in their sins; yet it will be small comfort in everlasting punishment, for them to know that others were viler than they.
+
+## Verses 12-20
+
+See God's readiness to pardon sin, and the blessings reserved for gospel times. These words were proclaimed toward the north; to Israel, the ten tribes, captive in Assyria. They are directed how to return. If we confess our sins, the Lord is faithful and just to forgive them. These promises are fully to come to pass in the bringing back the Jews in after-ages. God will graciously receive those that return to him; and by his grace, he takes them out from among the rest. The ark of the covenant was not found after the captivity. The whole of that dispensation was to be done away, which took place after the multitude of believers had been greatly increased by the conversion of the Gentiles, and of the Israelites scattered among them. A happy state of the church is foretold. He can teach all to call him Father; but without thorough change of heart and life, no man can be a child of God, and we have no security for not departing from Him.
+
+## Verses 21-25
+
+Sin is turning aside to crooked ways. And forgetting the Lord our God is at the bottom of all sin. By sin we bring ourselves into trouble. The promise to those that return is, God will heal their backslidings, by his pardoning mercy, his quieting peace, and his renewing grace. They come devoting themselves to God. They come disclaiming all expectations of relief and succour from any but the Lord. Therefore they come depending upon him only. He is the Lord, and he only can save. It points out the great salvation from sin Jesus Christ wrought out for us. They come justifying God in their troubles, and judging themselves for their sins. True penitents learn to call sin shame, even the sin they have been most pleased with. True penitents learn to call sin death and ruin, and to charge upon it all they suffer. While men harden themselves in sin, contempt and misery are their portion: for he that covereth his sins shall not prosper, but he that confesseth and forsaketh them, shall find mercy.
+
+

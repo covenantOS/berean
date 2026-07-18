@@ -1,0 +1,23 @@
+---
+title: "Isaiah 19 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "19"
+description: "In this chapter: Judgments upon Egypt. (1-17). Its deliverance, and the conversion of the people. (18-25)."
+weight: 19
+---
+
+# Isaiah 19 
+
+## Chapter Outline
+
+- Judgments upon Egypt. (1-17)
+- Its deliverance, and the conversion of the people. (18-25)
+
+## Verses 1-17
+
+God shall come into Egypt with his judgments. He will raise up the causes of their destruction from among themselves. When ungodly men escape danger, they are apt to think themselves secure; but evil pursues sinners, and will speedily overtake them, except they repent. The Egyptians will be given over into the hand of one who shall rule them with rigour, as was shortly after fulfilled. The Egyptians were renowned for wisdom and science; yet the Lord would give them up to their own perverse schemes, and to quarrel, till their land would be brought by their contests to become an object of contempt and pity. He renders sinners afraid of those whom they have despised and oppressed; and the Lord of hosts will make the workers of iniquity a terror to themselves, and to each other; and every object around a terror to them.
+
+## Verses 18-25
+
+The words, "In that day," do not always refer to the passage just before. At a time which was to come, the Egyptians shall speak the holy language, the Scripture language; not only understand it, but use it. Converting grace, by changing the heart, changes the language; for out of the abundance of the heart the mouth speaks. So many Jews shall come to Egypt, that they shall soon fill five cities. Where the sun was worshipped, a place infamous for idolatry, even there shall be a wonderful reformation. Christ, the great Altar, who sanctifies every gift, shall be owned, and the gospel sacrifices of prayer and praise shall be offered up. Let the broken-hearted and afflicted, whom the Lord has wounded, and thus taught to return to, and call upon him, take courage; for He will heal their souls, and turn their sorrowing supplications into joyful praises. The Gentile nations shall not only unite with each other in the gospel fold under Christ, the great Shepherd, but they shall all be united with the Jews. They shall be owned together by him; they shall all share in one and the same blessing. Meeting at the same throne of grace, and serving with each other in the same business of religion, should end all disputes, and unite the hearts of believers to each other in holy love.
+
+

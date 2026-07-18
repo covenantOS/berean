@@ -1,0 +1,28 @@
+---
+title: "Ezekiel 36 | Read the Matthew Henry Concise Bible Commentary Online"
+linkTitle: "36"
+description: "In this chapter: The land shall be delivered from heathen oppressors. (1-15). The people are reminded of former sins, and promised deliverance. (16-24). Also holiness, and gospel blessings. (25-38)."
+weight: 36
+---
+
+# Ezekiel 36 
+
+## Chapter Outline
+
+- The land shall be delivered from heathen oppressors. (1-15)
+- The people are reminded of former sins, and promised deliverance. (16-24)
+- Also holiness, and gospel blessings. (25-38)
+
+## Verses 1-15
+
+Those who put contempt and reproach on God's people, will have them turned on themselves. God promises favour to his Israel. We have no reason to complain, if the more unkind men are, the more kind God is. They shall come again to their own border. It was a type of the heavenly Canaan, of which all God's children are heirs, and into which they all shall be brought together. And when God returns in mercy to a people who return to him in duty, all their grievances will be set right. The full completion of this prophecy must be in some future event.
+
+## Verses 16-24
+
+The restoration of that people, being typical of our redemption by Christ, shows that the end aimed at in our salvation is the glory of God. The sin of a people defiles their land; renders it abominable to God, and uncomfortable to themselves. God's holy name is his great name; his holiness is his greatness, nor does any thing else make a man truly great.
+
+## Verses 25-38
+
+Water is an emblem of the cleansing our polluted souls from sin. But no water can do more than take away the filth of the flesh. Water seems in general the sacramental sign of the sanctifying influences of the Holy Ghost; yet this is always connected with the atoning blood of Christ. When the latter is applied by faith to the conscience, to cleanse it from evil works, the former is always applied to the powers of the soul, to purify it from the pollution of sin. All that have an interest in the new covenant, have a new heart and a new spirit, in order to their walking in newness of life. God would give a heart of flesh, a soft and tender heart, complying with his holy will. Renewing grace works as great a change in the soul, as the turning a dead stone into living flesh. God will put his Spirit within, as a Teacher, Guide, and Sanctifier. The promise of God's grace to fit us for our duty, should quicken our constant care and endeavour to do our duty. These are promises to be pleaded by, and will be fulfilled to, all true believers in every age.
+
+

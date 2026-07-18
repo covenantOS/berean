@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EB_Garamond } from "next/font/google";
+import CandleToggle from "@/components/CandleToggle";
 import "./globals.css";
+
+const garamond = EB_Garamond({
+  subsets: ["latin", "greek"],
+  variable: "--font-garamond",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: { default: "Berean", template: "%s · Berean" },
@@ -31,7 +39,7 @@ const NAV = [
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={garamond.variable}>
       <body className="min-h-screen flex flex-col">
         <header className="border-b border-rule bg-surface">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
@@ -56,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {item.label}
                 </Link>
               ))}
+              <CandleToggle />
             </nav>
           </div>
         </header>
