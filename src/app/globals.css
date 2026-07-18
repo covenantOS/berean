@@ -285,3 +285,13 @@ html[data-candle] .reader-surface[data-mode="warm"] {
     color: #000 !important;
   }
 }
+
+/*
+ * Workspace shell (Phase 0): /workspace is an application surface, not a
+ * page. The site's header and footer yield to the shell so the workspace
+ * carries no website chrome. Additive only; the existing site is untouched.
+ */
+body:has(> main > .workspace-shell) > header,
+body:has(> main > .workspace-shell) > footer {
+  display: none;
+}
