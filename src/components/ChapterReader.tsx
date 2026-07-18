@@ -12,8 +12,11 @@ import {
 
 type Mode = "paper" | "warm" | "evening";
 type PanelTab = "margin" | "refs" | "shelf" | "word";
+type Lang = "hebrew" | "greek";
 const MODE_KEY = "berean.readerMode.v1";
 const WORDS_KEY = "berean.originalWords.v1";
+const ORIG_KEY = "berean.originalText.v1";
+const IL_KEY = "berean.interlinear.v1";
 
 interface Verse {
   verse: number;
@@ -28,6 +31,41 @@ interface TaggedWord {
 interface TaggedVerse {
   verse: number;
   words: TaggedWord[];
+}
+
+/** One word of TAHOT/TAGNT original text, with morphology pre-decoded server-side. */
+interface OriginalWord {
+  t: string;
+  s?: string[];
+  m?: string;
+  x?: string;
+  g?: string;
+  l?: string;
+  r?: string;
+  dg?: string;
+  e?: string[];
+  /** Human-readable morphology, decoded on the server. */
+  md?: string;
+}
+
+interface OriginalVerse {
+  verse: number;
+  alt?: string;
+  words: OriginalWord[];
+}
+
+/** The word currently pinned in the Word panel. */
+interface ActiveWord {
+  text: string;
+  strongs: string[];
+  lemma?: string;
+  xlit?: string;
+  morphCode?: string;
+  morphText?: string;
+  gloss?: string;
+  dg?: string;
+  /** TAGNT editions this word is absent from, e.g. ["TR", "Byz"]. */
+  notInEditions?: string[];
 }
 
 interface CrossRef {
@@ -72,6 +110,8 @@ export default function ChapterReader({
   translations,
   parallel,
   tagged,
+  original,
+  lang,
   crossrefs,
   commentary,
 }: {
@@ -86,6 +126,8 @@ export default function ChapterReader({
   translations: TranslationOption[];
   parallel: { id: string; abbrev: string; verses: Verse[] } | null;
   tagged: TaggedVerse[] | null;
+  original: OriginalVerse[] | null;
+  lang: Lang;
   crossrefs: Record<number, CrossRef[]> | null;
   commentary: CommentarySection[] | null;
 }) {
@@ -97,7 +139,9 @@ export default function ChapterReader({
   const [draft, setDraft] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [wordsOn, setWordsOn] = useState(false);
-  const [activeWord, setActiveWord] = useState<{ text: string; strongs: string[] } | null>(null);
+  const [origOn, setOrigOn] = useState(false);
+  const [interlinear, setInterlinear] = useState({ gloss: true, xlit: false });
+  const [activeWord, setActiveWord] = useState<ActiveWord | null>(null);
   const [wordEntries, setWordEntries] = useState<LexiconEntry[]>([]);
   const [wordLoading, setWordLoading] = useState(false);
 
@@ -105,10 +149,25 @@ export default function ChapterReader({
     const stored = window.localStorage.getItem(MODE_KEY) as Mode | null;
     if (stored === "warm" || stored === "evening") setMode(stored);
     setWordsOn(window.localStorage.getItem(WORDS_KEY) === "1");
+    setOrigOn(window.localStorage.getItem(ORIG_KEY) === "1");
+    const il = window.localStorage.getItem(IL_KEY);
+    if (il !== null) setInterlinear({ gloss: il.includes("g"), xlit: il.includes("x") });
     setNotes(listNotes(bookSlug, chapter));
     setSelectedVerse(null);
     setActiveWord(null);
   }, [bookSlug, chapter]);
+
+  // Escape closes a pinned word, the same way an outside tap returns to the margin.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape" && activeWord) {
+        setActiveWord(null);
+        setTab("margin");
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeWord]);
 
   function changeMode(m: Mode) {
     setMode(m);
@@ -119,6 +178,23 @@ export default function ChapterReader({
     const next = !wordsOn;
     setWordsOn(next);
     window.localStorage.setItem(WORDS_KEY, next ? "1" : "0");
+  }
+
+  function toggleOrig() {
+    const next = !origOn;
+    setOrigOn(next);
+    window.localStorage.setItem(ORIG_KEY, next ? "1" : "0");
+  }
+
+  function toggleInterlinear(key: "gloss" | "xlit") {
+    setInterlinear((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      window.localStorage.setItem(
+        IL_KEY,
+        `${next.gloss ? "g" : ""}${next.xlit ? "x" : ""}`
+      );
+      return next;
+    });
   }
 
   const notedVerses = useMemo(() => new Set(notes.map((n) => n.verse)), [notes]);
@@ -152,14 +228,23 @@ export default function ChapterReader({
     if (tab === "word") setTab("margin");
   }
 
-  async function tapWord(w: TaggedWord) {
-    if (!w.s || w.s.length === 0) return;
-    setActiveWord({ text: w.t, strongs: w.s });
+  /** Base Strong's id the lexicon knows, from an extended id like "H7225G". */
+  function baseStrongs(id: string): string {
+    const m = id.match(/^([GH]\d+?)[A-Z]?$/);
+    return m ? m[1] : id;
+  }
+
+  async function openWord(word: ActiveWord) {
+    setActiveWord(word);
     setTab("word");
+    if (word.strongs.length === 0) {
+      setWordEntries([]);
+      return;
+    }
     setWordLoading(true);
     try {
       const entries = await Promise.all(
-        w.s.map(async (id) => {
+        word.strongs.map(async (id) => {
           const res = await fetch(`/api/lexicon/${id}`);
           if (!res.ok) return null;
           return (await res.json()) as LexiconEntry;
@@ -169,6 +254,28 @@ export default function ChapterReader({
     } finally {
       setWordLoading(false);
     }
+  }
+
+  function tapWord(w: TaggedWord) {
+    if (!w.s || w.s.length === 0) return;
+    openWord({ text: w.t, strongs: w.s });
+  }
+
+  /** TAGNT edition witnesses; a word's absence is noted, never its presence. */
+  const ALL_EDITIONS = ["NA28", "NA27", "Tyn", "SBL", "WH", "Treg", "TR", "Byz"];
+
+  function tapOriginalWord(w: OriginalWord) {
+    openWord({
+      text: w.t,
+      strongs: (w.s ?? []).map(baseStrongs),
+      lemma: w.l,
+      xlit: w.x,
+      morphCode: w.m,
+      morphText: w.md,
+      gloss: w.g,
+      dg: w.dg,
+      notInEditions: w.e ? ALL_EDITIONS.filter((ed) => !w.e!.includes(ed)) : undefined,
+    });
   }
 
   function submitNote() {
@@ -194,6 +301,7 @@ export default function ChapterReader({
   }
 
   const showTagged = wordsOn && !parallel && translationId === "kjv" && tagged !== null;
+  const showOriginal = origOn && !parallel && original !== null;
   const parallelByVerse = useMemo(() => {
     const m = new Map<number, string>();
     parallel?.verses.forEach((v) => m.set(v.verse, v.text));
@@ -204,6 +312,32 @@ export default function ChapterReader({
     `verse-target ${notedVerses.has(v) ? "has-note" : ""} ${
       selectedVerse === v ? "verse-selected" : ""
     }`;
+
+  /** One original word: the surface text over its configurable interlinear line. */
+  function renderOrigWord(w: OriginalWord, i: number) {
+    const sub = [
+      interlinear.gloss && w.g ? w.g : null,
+      interlinear.xlit && w.x ? w.x : null,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    return (
+      <span
+        key={i}
+        className={`orig-word tagged-word ${
+          activeWord?.text === w.t && tab === "word" ? "word-active" : ""
+        }`}
+        onClick={() => tapOriginalWord(w)}
+      >
+        <span className={lang === "hebrew" ? "lang-hebrew" : "lang-greek"}>{w.t}</span>
+        {sub && (
+          <span className="orig-sub" dir="ltr">
+            {sub}
+          </span>
+        )}
+      </span>
+    );
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
@@ -255,6 +389,43 @@ export default function ChapterReader({
                 Original words
               </button>
             )}
+            {original !== null && !parallel && (
+              <button
+                onClick={toggleOrig}
+                aria-pressed={origOn}
+                title={lang === "hebrew" ? "Read the Hebrew text (TAHOT)" : "Read the Greek text (TAGNT)"}
+                className={`rounded-[4px] border border-rule px-2 py-1 text-xs ${
+                  origOn ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {lang === "hebrew" ? "עברית" : "Ἑλληνικά"} text
+              </button>
+            )}
+            {showOriginal && (
+              <div
+                className="flex gap-1 rounded-[4px] border border-rule p-0.5 text-xs"
+                role="group"
+                aria-label="Interlinear line"
+              >
+                {(
+                  [
+                    ["gloss", "Gloss"],
+                    ["xlit", "Translit."],
+                  ] as ["gloss" | "xlit", string][]
+                ).map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => toggleInterlinear(key)}
+                    aria-pressed={interlinear[key]}
+                    className={`rounded-[3px] px-2 py-1 ${
+                      interlinear[key] ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
             <div
               className="flex gap-1 rounded-[4px] border border-rule p-0.5 text-xs"
               role="group"
@@ -301,6 +472,30 @@ export default function ChapterReader({
                 <p className="opacity-90">{parallelByVerse.get(v.verse) ?? "—"}</p>
               </div>
             ))}
+          </div>
+        ) : showOriginal ? (
+          <div
+            className="original-verses"
+            dir={lang === "hebrew" ? "rtl" : "ltr"}
+            lang={lang === "hebrew" ? "he" : "grc"}
+          >
+            {original!.map((v) =>
+              v.verse === 0 ? (
+                <p key={0} className="superscription">
+                  {v.words.map((w, i) => renderOrigWord(w, i))}
+                </p>
+              ) : (
+                <span key={v.verse} id={`v${v.verse}`} className={verseClass(v.verse)}>
+                  <VerseNum n={v.verse} onClick={() => openVerse(v.verse)} />
+                  {v.alt && (
+                    <span className="alt-note" dir="ltr">
+                      {lang === "hebrew" ? `Heb. ${v.alt}` : `KJV ${v.alt}`}
+                    </span>
+                  )}
+                  {v.words.map((w, i) => renderOrigWord(w, i))}
+                </span>
+              )
+            )}
           </div>
         ) : showTagged ? (
           <p className="prose-verses drop-cap">
@@ -414,8 +609,10 @@ export default function ChapterReader({
                 activeWord={activeWord}
                 entries={wordEntries}
                 loading={wordLoading}
-                taggedAvailable={tagged !== null}
+                lang={lang}
+                apparatusAvailable={tagged !== null || original !== null}
                 wordsOn={wordsOn}
+                origOn={showOriginal}
               />
             )}
           </div>
@@ -619,16 +816,20 @@ function WordPanel({
   activeWord,
   entries,
   loading,
-  taggedAvailable,
+  lang,
+  apparatusAvailable,
   wordsOn,
+  origOn,
 }: {
-  activeWord: { text: string; strongs: string[] } | null;
+  activeWord: ActiveWord | null;
   entries: LexiconEntry[];
   loading: boolean;
-  taggedAvailable: boolean;
+  lang: Lang;
+  apparatusAvailable: boolean;
   wordsOn: boolean;
+  origOn: boolean;
 }) {
-  if (!taggedAvailable) {
+  if (!apparatusAvailable) {
     return (
       <p className="text-xs text-muted">
         The original-language apparatus is not yet furnished on this
@@ -639,17 +840,67 @@ function WordPanel({
   if (!activeWord) {
     return (
       <p className="text-xs text-muted">
-        {wordsOn
-          ? "Rest on a word in the text and the Greek or Hebrew beneath it surfaces here."
-          : "Switch on “Original words” above the text, then tap any word to see the Greek or Hebrew beneath it."}
+        {origOn
+          ? "Tap any word in the text and its study opens here. Escape returns to the margin."
+          : wordsOn
+            ? "Rest on a word in the text and the Greek or Hebrew beneath it surfaces here."
+            : "Switch on “Original words” above the text, then tap any word to see the Greek or Hebrew beneath it."}
       </p>
     );
   }
+  const langClass = lang === "hebrew" ? "lang-hebrew" : "lang-greek";
+  const isOriginal = activeWord.lemma !== undefined || activeWord.morphCode !== undefined;
   return (
     <div className="space-y-4">
-      <p className="font-[family-name:var(--font-reader)] text-sm">
-        “<span className="font-semibold">{activeWord.text}</span>”
-      </p>
+      {isOriginal ? (
+        <div className="rounded-[4px] border border-rule bg-paper p-3">
+          <p className="flex items-baseline gap-2">
+            <span className={`${langClass} text-xl`}>{activeWord.text}</span>
+            {activeWord.xlit && <span className="text-xs italic text-muted">{activeWord.xlit}</span>}
+            <span className="ml-auto flex gap-1.5">
+              {activeWord.strongs.map((id) => (
+                <Link
+                  key={id}
+                  href={`/lexicon/${id}`}
+                  className="text-xs font-semibold text-sapphire"
+                >
+                  {id}
+                </Link>
+              ))}
+            </span>
+          </p>
+          {activeWord.lemma && activeWord.lemma !== activeWord.text && (
+            <p className="mt-1 text-xs text-muted">
+              Lemma <span className={langClass}>{activeWord.lemma}</span>
+            </p>
+          )}
+          {activeWord.morphText && (
+            <p className="mt-2 text-[0.84rem] leading-relaxed">{activeWord.morphText}</p>
+          )}
+          {activeWord.morphCode && (
+            <p className="mt-0.5 text-[0.68rem] text-muted">{activeWord.morphCode}</p>
+          )}
+          {activeWord.gloss && (
+            <p className="mt-2 text-[0.84rem]">
+              <span className="font-semibold">In context:</span> {activeWord.gloss}
+            </p>
+          )}
+          {activeWord.dg && (
+            <p className="mt-1 text-xs text-muted">
+              <span className="font-semibold">Lexicon:</span> {activeWord.dg}
+            </p>
+          )}
+          {activeWord.notInEditions && activeWord.notInEditions.length > 0 && (
+            <p className="mt-2 border-t border-rule pt-1.5 text-[0.68rem] text-muted">
+              Not present in {activeWord.notInEditions.join(", ")}.
+            </p>
+          )}
+        </div>
+      ) : (
+        <p className="font-[family-name:var(--font-reader)] text-sm">
+          “<span className="font-semibold">{activeWord.text}</span>”
+        </p>
+      )}
       {loading && <p className="text-xs text-muted">Opening the lexicon…</p>}
       {!loading && entries.length === 0 && (
         <p className="text-xs text-muted">No lexicon entry found for this word.</p>

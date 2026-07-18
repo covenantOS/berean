@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { adjacentChapter, getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 import { getAvailableTranslations, getTranslation, DEFAULT_TRANSLATION } from "@/lib/translations";
-import { getTaggedChapter } from "@/lib/tagged";
+import { getTaggedChapter, getOriginalChapter, decodeMorph } from "@/lib/tagged";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getCommentary } from "@/lib/commentary";
 import ChapterReader from "@/components/ChapterReader";
@@ -38,14 +38,25 @@ export default async function ChapterPage({
   const parallelId =
     p && p !== translationId && available.some((x) => x.id === p) ? p : null;
 
-  const [verses, parallelVerses, tagged, crossrefs, commentary] = await Promise.all([
+  const [verses, parallelVerses, tagged, original, crossrefs, commentary] = await Promise.all([
     getChapter(slug, chapter, translationId),
     parallelId ? getChapter(slug, chapter, parallelId) : Promise.resolve(null),
     translationId === "kjv" ? getTaggedChapter(slug, chapter) : Promise.resolve(null),
+    getOriginalChapter(slug, chapter),
     getChapterCrossRefs(slug, chapter),
     getCommentary("mhc", slug, chapter),
   ]);
   if (!verses) notFound();
+
+  // Expand morphology codes server-side so the client never guesses.
+  const lang = book.testament === "OT" ? ("hebrew" as const) : ("greek" as const);
+  const originalDecoded = original
+    ? original.map((v) => ({
+        verse: v.verse,
+        alt: v.alt,
+        words: v.words.map((w) => ({ ...w, md: decodeMorph(w.m, lang) })),
+      }))
+    : null;
 
   const prev = adjacentChapter(slug, chapter, -1);
   const next = adjacentChapter(slug, chapter, 1);
@@ -113,6 +124,8 @@ export default async function ChapterPage({
             : null
         }
         tagged={tagged}
+        original={originalDecoded}
+        lang={lang}
         crossrefs={crossrefs}
         commentary={commentary}
       />
