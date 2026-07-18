@@ -2,10 +2,12 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   type Dispatch,
   type ReactNode,
 } from "react";
@@ -16,9 +18,23 @@ import {
   paneRef,
   saveWorkspace,
   workspaceReducer,
+  type LinkSet,
   type WorkspaceAction,
   type WorkspaceState,
 } from "./workspace-state";
+
+/**
+ * A pane's report of its topmost visible verse, broadcast to the rest of its
+ * link set so linked readers scroll together. Transient by design: it lives
+ * in a listener set, never in the persisted state tree.
+ */
+export interface LinkedVerseNotice {
+  paneId: string;
+  linkSet: LinkSet;
+  book: string;
+  chapter: number;
+  verse: number;
+}
 
 interface WorkspaceContextValue {
   state: WorkspaceState;
@@ -27,6 +43,10 @@ interface WorkspaceContextValue {
   hydrated: boolean;
   /** The passage the pane in focus shows; the dock's tools answer it. */
   activeRef: { book: string; chapter: number } | null;
+  /** Broadcasts a topmost-visible-verse report to the pane's link set. */
+  reportLinkedVerse: (notice: LinkedVerseNotice) => void;
+  /** Subscribes to linked-verse reports; returns the unsubscribe. */
+  subscribeLinkedVerse: (listener: (notice: LinkedVerseNotice) => void) => () => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -109,9 +129,28 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     return leaf ? paneRef(leaf) : null;
   }, [state.root, state.activePaneId]);
 
+  /*
+   * The scroll-sync bus for link sets. Kept outside React state so a
+   * throttled scroll report does not re-render the whole shell; only the
+   * linked readers listen. Stable identities keep the context value calm.
+   */
+  const verseListeners = useRef(new Set<(notice: LinkedVerseNotice) => void>());
+  const reportLinkedVerse = useCallback((notice: LinkedVerseNotice) => {
+    for (const listener of verseListeners.current) listener(notice);
+  }, []);
+  const subscribeLinkedVerse = useCallback(
+    (listener: (notice: LinkedVerseNotice) => void) => {
+      verseListeners.current.add(listener);
+      return () => {
+        verseListeners.current.delete(listener);
+      };
+    },
+    []
+  );
+
   const value = useMemo(
-    () => ({ state, dispatch, hydrated, activeRef }),
-    [state, hydrated, activeRef]
+    () => ({ state, dispatch, hydrated, activeRef, reportLinkedVerse, subscribeLinkedVerse }),
+    [state, hydrated, activeRef, reportLinkedVerse, subscribeLinkedVerse]
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

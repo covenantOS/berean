@@ -4,9 +4,11 @@ import {
   Fragment,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
+  type UIEvent as ReactUIEvent,
 } from "react";
 import { adjacentChapter } from "@/lib/canon";
 import {
@@ -27,6 +29,7 @@ import {
 } from "@/lib/highlights";
 import { verseCardSvg } from "@/lib/verseCard";
 import { useWorkspace } from "./WorkspaceContext";
+import { findLeaf } from "./workspace-state";
 
 interface Verse {
   verse: number;
@@ -112,7 +115,7 @@ export default function ReaderPane({
   chapter: number;
   translation?: string;
 }) {
-  const { state, dispatch } = useWorkspace();
+  const { state, dispatch, reportLinkedVerse, subscribeLinkedVerse } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [apparatus, setApparatus] = useState<Apparatus>({ status: "idle" });
   const [wordsOn, setWordsOn] = useState(false);
@@ -120,6 +123,17 @@ export default function ReaderPane({
   const [glossOn, setGlossOn] = useState(true);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
+
+  /*
+   * Link-set scroll sync. This pane reports its topmost visible verse,
+   * throttled, and follows reports from panes wearing the same letter. The
+   * echo guard: after applying a programmatic scroll, this pane stays quiet
+   * for 300ms so the set does not chase its own tail.
+   */
+  const linkSet = findLeaf(state.root, paneId)?.linkSet ?? null;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const ignoreUntil = useRef(0);
+  const scrollTimer = useRef<number | null>(null);
 
   // The chapter text, lean; the word apparatus stays behind its flags.
   useEffect(() => {
@@ -154,6 +168,67 @@ export default function ReaderPane({
       unMarks();
     };
   }, [book, chapter]);
+
+  // A retargeted chapter opens at its head; the set finds out the same way
+  // (its own navigation), so the reset does not broadcast.
+  useEffect(() => {
+    ignoreUntil.current = Date.now() + 300;
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [book, chapter]);
+
+  // A navigation or unlink drops any throttled report still waiting to fire.
+  useEffect(() => {
+    return () => {
+      if (scrollTimer.current !== null) {
+        window.clearTimeout(scrollTimer.current);
+        scrollTimer.current = null;
+      }
+    };
+  }, [book, chapter, linkSet]);
+
+  // Follow the set: a linked pane's report scrolls the same verse into view.
+  // Reports for another chapter are left to chapter-level sync.
+  useEffect(() => {
+    if (!linkSet) return;
+    return subscribeLinkedVerse((notice) => {
+      if (notice.paneId === paneId || notice.linkSet !== linkSet) return;
+      if (notice.book !== book || notice.chapter !== chapter) return;
+      const container = scrollRef.current;
+      if (!container) return;
+      const el = container.querySelector(`[data-verse="${notice.verse}"]`);
+      if (!(el instanceof HTMLElement)) return;
+      ignoreUntil.current = Date.now() + 300;
+      const cRect = container.getBoundingClientRect();
+      const eRect = el.getBoundingClientRect();
+      container.scrollTop += eRect.top - cRect.top;
+    });
+  }, [linkSet, book, chapter, paneId, subscribeLinkedVerse]);
+
+  /** The topmost verse in view; the scroll handler reports it to the set. */
+  const reportTopVerse = () => {
+    const container = scrollRef.current;
+    if (!container || !linkSet) return;
+    const cTop = container.getBoundingClientRect().top;
+    for (const el of container.querySelectorAll<HTMLElement>("[data-verse]")) {
+      if (el.getBoundingClientRect().bottom > cTop + 1) {
+        const verse = Number(el.dataset.verse);
+        if (Number.isInteger(verse)) {
+          reportLinkedVerse({ paneId, linkSet, book, chapter, verse });
+        }
+        return;
+      }
+    }
+  };
+
+  const onScroll = (_e: ReactUIEvent<HTMLDivElement>) => {
+    if (!linkSet || Date.now() < ignoreUntil.current) return;
+    if (scrollTimer.current !== null) return;
+    scrollTimer.current = window.setTimeout(() => {
+      scrollTimer.current = null;
+      if (Date.now() < ignoreUntil.current) return;
+      reportTopVerse();
+    }, 200);
+  };
 
   const ready = load.status === "ready" ? load.data : null;
   const wantApparatus = wordsOn || view === "original";
@@ -273,14 +348,24 @@ export default function ReaderPane({
     ) : null;
 
   const renderPlainVerse = (v: Verse) => (
-    <span key={v.verse} className={verseClass(v.verse)} onClick={() => tapVerse(v.verse)}>
+    <span
+      key={v.verse}
+      data-verse={v.verse}
+      className={verseClass(v.verse)}
+      onClick={() => tapVerse(v.verse)}
+    >
       <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
       {v.text}{" "}
     </span>
   );
 
   const renderTaggedVerse = (v: TaggedVerse) => (
-    <span key={v.verse} className={verseClass(v.verse)} onClick={() => tapVerse(v.verse)}>
+    <span
+      key={v.verse}
+      data-verse={v.verse}
+      className={verseClass(v.verse)}
+      onClick={() => tapVerse(v.verse)}
+    >
       <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
       {v.words.map((w, i) => (
         <span key={i}>
@@ -344,7 +429,11 @@ export default function ReaderPane({
     <div className="poetry-verses mx-auto max-w-prose px-6 py-6">
       {verses.map((v) => (
         <Fragment key={v.verse}>
-          <div className={`verse-line ${verseClass(v.verse)}`} onClick={() => tapVerse(v.verse)}>
+          <div
+            className={`verse-line ${verseClass(v.verse)}`}
+            data-verse={v.verse}
+            onClick={() => tapVerse(v.verse)}
+          >
             <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
             {v.label && (
               <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
@@ -372,7 +461,11 @@ export default function ReaderPane({
           </p>
         ) : (
           <Fragment key={v.verse}>
-            <span className={verseClass(v.verse)} onClick={() => tapVerse(v.verse)}>
+            <span
+              className={verseClass(v.verse)}
+              data-verse={v.verse}
+              onClick={() => tapVerse(v.verse)}
+            >
               <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
               {v.alt && (
                 <span className="alt-note" dir="ltr">
@@ -508,7 +601,9 @@ export default function ReaderPane({
           )}
         </div>
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
+      <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 overflow-y-auto">
+        {body}
+      </div>
     </div>
   );
 }

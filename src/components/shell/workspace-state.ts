@@ -40,6 +40,14 @@ export const DOCK_TABS: DockTab[] = ["commentary", "lexicon", "crossrefs", "scri
 /** "horizontal" arranges panes side by side (a row); "vertical" stacks them. */
 export type SplitDirection = "horizontal" | "vertical";
 
+/**
+ * A lettered link set, the Logos mechanic: panes wearing the same letter
+ * navigate together and scroll to the same verse. Null means unlinked.
+ */
+export type LinkSet = "A" | "B" | "C";
+
+export const LINK_SETS: LinkSet[] = ["A", "B", "C"];
+
 export interface ReaderTab {
   id: string;
   type: "reader";
@@ -97,6 +105,8 @@ export interface LeafNode {
   id: string;
   tabs: Tab[];
   activeTabId: string | null;
+  /** The pane's link set; persisted with the session. */
+  linkSet: LinkSet | null;
 }
 
 export interface SplitNode {
@@ -208,6 +218,7 @@ export function leafNode(tabs: Tab[] = []): LeafNode {
     id: newId("pane"),
     tabs,
     activeTabId: tabs.length > 0 ? tabs[tabs.length - 1].id : null,
+    linkSet: null,
   };
 }
 
@@ -218,6 +229,7 @@ export const DEFAULT_STATE: WorkspaceState = {
     id: "pane-default",
     tabs: [{ id: "tab-default", type: "reader", book: "genesis", chapter: 1 }],
     activeTabId: "tab-default",
+    linkSet: null,
   },
   activePaneId: "pane-default",
   railMode: "read",
@@ -326,6 +338,7 @@ export type WorkspaceAction =
   | { type: "returnTabToDock"; paneId: string; tabId: string }
   | { type: "setDockTabOrder"; order: DockTab[] }
   | { type: "setLexiconTabEntry"; paneId: string; tabId: string; entryId: string | null }
+  | { type: "setLinkSet"; paneId: string; linkSet: LinkSet | null }
   | { type: "applyPreset"; preset: "reading" | "study" };
 
 function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode {
@@ -340,6 +353,32 @@ function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode 
   // A search or empty pane keeps its tab; the passage opens beside it.
   const tab = readerTab(book, chapter);
   return { ...leaf, tabs: [...leaf.tabs, tab], activeTabId: tab.id };
+}
+
+/**
+ * Retargets a pane to a reference. When the pane wears a link letter, every
+ * other pane in the same set whose active tab is a reader tab follows; tool
+ * tabs and search tabs are untouched. This is the link-set half of every
+ * navigation, including prev/next chapter inside a ReaderPane (it dispatches
+ * openRef) and a chapter dropped on a pane's body.
+ */
+function retargetLinked(root: PaneNode, paneId: string, book: string, chapter: number): PaneNode {
+  const target = findLeaf(root, paneId);
+  if (!target) return root;
+  const withTarget = updateLeaf(root, paneId, (l) => openRefInLeaf(l, book, chapter));
+  if (!target.linkSet) return withTarget;
+  const set = target.linkSet;
+  const follow = (node: PaneNode): PaneNode => {
+    if (node.kind === "leaf") {
+      if (node.id === paneId || node.linkSet !== set) return node;
+      const active = node.tabs.find((t) => t.id === node.activeTabId);
+      return active && active.type === "reader" ? openRefInLeaf(node, book, chapter) : node;
+    }
+    const a = follow(node.children[0]);
+    const b = a === node.children[0] ? follow(node.children[1]) : node.children[1];
+    return a === node.children[0] && b === node.children[1] ? node : { ...node, children: [a, b] };
+  };
+  return follow(withTarget);
 }
 
 export function workspaceReducer(
@@ -385,7 +424,7 @@ export function workspaceReducer(
         ...state,
         activePaneId: paneId,
         selection: null,
-        root: updateLeaf(state.root, paneId, (l) => openRefInLeaf(l, book.slug, chapter)),
+        root: retargetLinked(state.root, paneId, book.slug, chapter),
       };
     }
 
@@ -686,9 +725,7 @@ export function workspaceReducer(
           ...state,
           activePaneId: targetLeaf.id,
           selection: null,
-          root: updateLeaf(state.root, targetLeaf.id, (l) =>
-            openRefInLeaf(l, tab.book, tab.chapter)
-          ),
+          root: retargetLinked(state.root, targetLeaf.id, tab.book, tab.chapter),
         };
       }
 
@@ -771,6 +808,15 @@ export function workspaceReducer(
       };
     }
 
+    case "setLinkSet": {
+      const leaf = findLeaf(state.root, action.paneId);
+      if (!leaf || leaf.linkSet === action.linkSet) return state;
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({ ...l, linkSet: action.linkSet })),
+      };
+    }
+
     case "applyPreset": {
       const current = paneRef(findLeaf(state.root, state.activePaneId) ?? firstLeaf(state.root)) ?? {
         book: "genesis",
@@ -850,7 +896,12 @@ function sanitizeNode(node: unknown): PaneNode | null {
       typeof n.activeTabId === "string" && tabs.some((t) => t.id === n.activeTabId)
         ? (n.activeTabId as string)
         : (tabs[tabs.length - 1]?.id ?? null);
-    return { kind: "leaf", id: n.id, tabs, activeTabId };
+    // Older sessions predate link sets; an absent or malformed letter reads
+    // as unlinked rather than failing the load.
+    const linkSet: LinkSet | null = LINK_SETS.includes(n.linkSet as LinkSet)
+      ? (n.linkSet as LinkSet)
+      : null;
+    return { kind: "leaf", id: n.id, tabs, activeTabId, linkSet };
   }
   if (
     n.kind === "split" &&

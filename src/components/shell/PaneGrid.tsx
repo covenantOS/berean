@@ -15,12 +15,14 @@ import {
   countLeaves,
   dockTabForTab,
   lexiconTab,
+  LINK_SETS,
   MAX_PANES,
   readerTab,
   toolTabForDock,
   type DockTab,
   type DropTarget,
   type LeafNode,
+  type LinkSet,
   type PaneNode,
   type SplitNode,
   type Tab,
@@ -29,7 +31,7 @@ import {
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
 import ToolTabBody from "./ToolTabBody";
-import { SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
+import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
  * The center pane grid: renders the split tree recursively. Leaves are
@@ -149,6 +151,103 @@ function useDragEndReset(reset: () => void) {
     window.addEventListener("dragend", fn);
     return () => window.removeEventListener("dragend", fn);
   }, []);
+}
+
+/**
+ * The link-set badge: a quiet chip in the pane header wearing the pane's
+ * letter, or a chain glyph when unlinked. The menu offers the three sets and
+ * no link; panes sharing a letter navigate and scroll together.
+ */
+function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | null }) {
+  const { dispatch } = useWorkspace();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (rootRef.current && e.target instanceof Node && !rootRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("pointerdown", onPointer);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", onPointer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const choose = (set: LinkSet | null) => {
+    dispatch({ type: "setLinkSet", paneId, linkSet: set });
+    setOpen(false);
+  };
+
+  return (
+    <div ref={rootRef} className="relative flex items-center">
+      <button
+        type="button"
+        title={
+          linkSet
+            ? `Link set ${linkSet}: panes in a set move together`
+            : "Link this pane with others"
+        }
+        aria-label={linkSet ? `Link set ${linkSet}` : "Link this pane with others"}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`flex h-5 min-w-5 items-center justify-center border px-1 text-[0.62rem] leading-none font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+          linkSet ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
+        }`}
+      >
+        {linkSet ?? <LinkIcon />}
+      </button>
+      {open && (
+        <div
+          role="menu"
+          aria-label="Link set"
+          className="absolute top-full right-0 z-30 mt-1 w-32 border border-rule bg-surface py-0.5"
+        >
+          {LINK_SETS.map((set) => (
+            <button
+              key={set}
+              type="button"
+              role="menuitemradio"
+              aria-checked={linkSet === set}
+              onClick={() => choose(set)}
+              className={`flex w-full items-center gap-2 px-2.5 py-1 text-left text-[0.68rem] hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                linkSet === set ? "text-sapphire" : "text-ink"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`flex h-3.5 w-3.5 items-center justify-center border text-[0.58rem] leading-none font-semibold ${
+                  linkSet === set ? "border-sapphire" : "border-rule text-muted"
+                }`}
+              >
+                {set}
+              </span>
+              Set {set}
+            </button>
+          ))}
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked={linkSet === null}
+            onClick={() => choose(null)}
+            className={`mt-0.5 flex w-full items-center gap-2 border-t border-rule px-2.5 py-1 text-left text-[0.68rem] hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+              linkSet === null ? "text-sapphire" : "text-muted"
+            }`}
+          >
+            No link
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function Pane({ leaf }: { leaf: LeafNode }) {
@@ -303,6 +402,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           </button>
         </div>
         <div className="flex shrink-0 items-center gap-0.5 border-l border-rule px-1">
+          <LinkSetBadge paneId={leaf.id} linkSet={leaf.linkSet} />
           <button
             type="button"
             title="Split right"

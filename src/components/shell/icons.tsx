@@ -132,6 +132,17 @@ export function SplitVerticalIcon() {
   );
 }
 
+/* The link-set badge when the pane is unlinked: a chain glyph. */
+export function LinkIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="square" aria-hidden="true">
+      <path d="M5.5 8.5l3-3" />
+      <path d="M7.5 3.5l1.8-1.8a2.26 2.26 0 0 1 3.2 3.2l-1.8 1.8" />
+      <path d="M6.5 10.5l-1.8 1.8a2.26 2.26 0 0 1-3.2-3.2l1.8-1.8" />
+    </svg>
+  );
+}
+
 /* Right dock tabs. */
 
 export function CommentaryIcon() {
