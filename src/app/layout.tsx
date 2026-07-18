@@ -21,9 +21,12 @@ function LeadedMark() {
 
 const NAV = [
   { href: "/read", label: "Read" },
-  { href: "/study", label: "Study" },
-  { href: "/search", label: "Concordance" },
-  { href: "/sources", label: "Sources" },
+  { href: "/pulpit", label: "Pulpit" },
+  { href: "/chapel", label: "Chapel" },
+  { href: "/desk", label: "Desk" },
+  { href: "/library", label: "Library" },
+  { href: "/almanac", label: "Almanac" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -60,11 +63,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="border-t border-rule bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-muted sm:px-6">
             <span>
-              Scripture text: King James Version (public domain). See{" "}
+              Scripture text: King James Version (public domain) ·{" "}
+              <Link href="/search" className="text-sapphire">
+                Concordance
+              </Link>{" "}
+              ·{" "}
+              <Link href="/plans" className="text-sapphire">
+                Plans
+              </Link>{" "}
+              ·{" "}
+              <Link href="/memory" className="text-sapphire">
+                Memory
+              </Link>{" "}
+              ·{" "}
+              <Link href="/study" className="text-sapphire">
+                Studies
+              </Link>{" "}
+              ·{" "}
               <Link href="/sources" className="text-sapphire">
                 Sources &amp; rights
               </Link>
-              .
             </span>
             <span className="small-caps">Soli Deo Gloria</span>
           </div>

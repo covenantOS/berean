@@ -31,42 +31,61 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Card
           href="/read"
           accent="border-t-sapphire"
-          title="Read"
-          body={`The complete canon — ${CANON.length} books, ${TOTAL_CHAPTERS.toLocaleString()} chapters — set with typographic care. Poetry as poetry, warm paper and evening modes, notes in the margin.`}
+          title="The Reading Desk"
+          body={`The complete canon — ${CANON.length} books, ${TOTAL_CHAPTERS.toLocaleString()} chapters — set with typographic care. Poetry as poetry, warm paper and evening modes, marginalia you own, reading plans, and memory work.`}
         />
         <Card
-          href="/study"
+          href="/pulpit"
           accent="border-t-ruby"
-          title="Study"
-          body="Sermon and teaching projects linked to a passage. The Scribe prepares a cited exegetical brief; every claim opens to the text it stands on."
+          title="The Pulpit"
+          body="Sermon preparation as a craftsman's pipeline: the appointed text, the Scribe's cited brief, then your exegesis, argument, outline, manuscript, and delivery — archived and searchable for life."
         />
         <Card
-          href="/search"
+          href="/chapel"
           accent="border-t-amber"
-          title="Concordance"
-          body="Search every word of the canon. Each result opens the passage at the verse, in context."
+          title="The Chapel"
+          body="The Lord's Day service built from the full historic vocabulary — call to worship, confession, assurance, psalms, the Table, the benediction — with settled forms, printing, and family worship."
         />
         <Card
-          href="/sources"
+          href="/desk"
+          accent="border-t-violet"
+          title="The Writing Desk"
+          body="A manuscript room for theological work. Scripture inserts as verified quotation; footnotes behave; the Scribe reads drafts as an honest critic and holds every quotation to the text."
+        />
+        <Card
+          href="/library"
           accent="border-t-emerald"
-          title="Sources"
-          body="The rights and provenance registry. Berean documents the source and license of every text it ships — nothing is implied that isn't licensed."
+          title="The Library"
+          body="The deep room: whole-canon concordance and word studies today; the original languages and the public-domain commentary shelf as verified texts are secured. It never speaks without footnotes."
+        />
+        <Card
+          href="/almanac"
+          accent="border-t-sapphire"
+          title="The Almanac"
+          body="The room that governs time: the preaching and teaching calendar, reading plans, memory reviews, and the rule of life — the day's appointed portion always laid out before you."
         />
       </section>
 
       <section className="mt-12 rounded-[4px] border border-rule bg-surface p-6">
-        <h2 className="small-caps mb-2 text-sm text-muted">The house being built</h2>
+        <h2 className="small-caps mb-2 text-sm text-muted">One house, one foundation</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-muted">
-          The Chapel, the Writing Desk, the Pulpit, and the Almanac are rooms
-          still to come — liturgy composition, theological writing, the full
-          preaching pipeline, and the ordered calendar — built on this same
-          foundation of passages, sources, notes, and projects. Berean is a
-          sibling product to Covenant OS by Church Posting, and will integrate
-          with the life of the congregation through explicit, approved
+          The rooms share one knowledge graph: a note taken at the Reading Desk is
+          available at the Pulpit, a liturgy drafted in the Chapel answers the
+          sermon being built, and the Almanac watches over all of it. Your work is
+          private by default, exportable in full from{" "}
+          <Link href="/settings" className="text-sapphire">
+            Settings
+          </Link>
+          , and every text Berean ships is documented in{" "}
+          <Link href="/sources" className="text-sapphire">
+            Sources &amp; rights
+          </Link>
+          . Berean is a sibling product to Covenant OS by Church Posting and will
+          integrate with the life of the congregation through explicit, approved
           contracts.
         </p>
       </section>

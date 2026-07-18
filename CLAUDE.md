@@ -25,16 +25,25 @@ Before changing product behavior, read:
 
 - `data/kjv/` — 66 KJV book JSONs (public domain; provenance in the rights registry)
 - `src/lib/canon.ts` — canonical book/chapter identifiers (slugs are the passage-reference scheme)
-- `src/lib/bible.ts` — text loading and whole-canon search
+- `src/lib/bible.ts` — text loading, whole-canon search, word study
+- `src/lib/store.ts` — the one knowledge-graph substrate (all collections, export/import/delete; sync envelope per ADR 0002)
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
-- `src/lib/marginalia.ts`, `src/lib/projects.ts` — client-side stores (placeholder persistence; see ADR 0001 §3)
-- `src/app/read/…` — the reader; `src/app/study/…` — study projects + brief; `src/app/api/brief` — the Scribe
+- `src/lib/refs.ts` — server-side reference parsing and quotation verification
+- Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
+- Rooms: `/read` (+ `/plans`, `/memory`, `/search`), `/pulpit`, `/chapel`, `/desk`, `/library`, `/almanac`, `/study`, `/settings`, `/sources`
+- The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
+- `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory
 
 ## Current status
 
-Foundation + first pastoral job are built (reader, marginalia, concordance,
-rights registry, appointed-text-to-cited-brief). Not yet built: database and
-identity (open decisions), original-language apparatus (needs verified
-datasets), commentary shelf (needs sourced texts), all Covenant OS
-integration, and the Chapel/Pulpit/Writing Desk/Almanac expansions.
+All six rooms are working on the one knowledge graph: reader with marginalia,
+plans, and memory work; Pulpit pipeline and archive; Chapel liturgy composer
+with settled forms, print, and family worship; Writing Desk with verified
+Scripture insertion and the Scribe as critic; Library word study; Almanac
+calendar and rule of life; settings with governed Scribe memory and
+whole-graph export/import/delete. Platform decisions in ADR 0002 (Cloudflare,
+desktop/mobile/web, local-first sync). Not yet built: database and identity
+(open decisions — data is device-local), original-language apparatus and
+commentary/psalter/catechism texts (need verified datasets; registered as
+planned in rights), and all Covenant OS integration (contracts first).

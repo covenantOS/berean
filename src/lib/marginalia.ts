@@ -1,99 +1,64 @@
 "use client";
 
+import { collection, type Record_, type Visibility } from "./store";
+
 /**
- * Private marginalia, stored on this device only.
- *
- * There is no server persistence yet by design: identity and the Neon
- * database boundary are open decisions (see docs/adr/0001). The visibility
+ * Private marginalia — notes in the margins of the text itself, accumulated
+ * across a lifetime. Device-local (see docs/adr/0001 §3); the visibility
  * field exists from day one so notes carry an explicit scope when sync
- * arrives; nothing here ever leaves the device today.
+ * arrives. Nothing here ever leaves the device today.
  */
 
-export type Visibility = "private" | "personal" | "church" | "public";
+export type { Visibility };
 
-export interface MarginNote {
-  id: string;
+export interface MarginNote extends Record_ {
   book: string; // canon slug
   chapter: number;
   verse: number;
   text: string;
-  visibility: Visibility;
-  createdAt: string;
-  updatedAt: string;
 }
 
-const KEY = "berean.marginalia.v1";
-
-function read(): MarginNote[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(window.localStorage.getItem(KEY) ?? "[]") as MarginNote[];
-  } catch {
-    return [];
-  }
-}
-
-function write(notes: MarginNote[]) {
-  window.localStorage.setItem(KEY, JSON.stringify(notes));
-}
+const notes = collection<MarginNote>("berean.marginalia.v1");
+export { notes };
 
 export function listNotes(book?: string, chapter?: number): MarginNote[] {
-  return read().filter(
+  return notes.list(
     (n) => (!book || n.book === book) && (chapter === undefined || n.chapter === chapter)
   );
 }
 
 export function allNotes(): MarginNote[] {
-  return read();
+  return notes.list();
 }
 
 export function saveNote(
-  note: Omit<MarginNote, "id" | "createdAt" | "updatedAt" | "visibility"> & { id?: string }
+  note: Pick<MarginNote, "book" | "chapter" | "verse" | "text"> & { id?: string }
 ): MarginNote {
-  const notes = read();
-  const now = new Date().toISOString();
   if (note.id) {
-    const existing = notes.find((n) => n.id === note.id);
-    if (existing) {
-      existing.text = note.text;
-      existing.updatedAt = now;
-      write(notes);
-      return existing;
-    }
+    const updated = notes.update(note.id, { text: note.text });
+    if (updated) return updated;
   }
-  const created: MarginNote = {
-    id: crypto.randomUUID(),
-    book: note.book,
-    chapter: note.chapter,
-    verse: note.verse,
-    text: note.text,
-    visibility: "private",
-    createdAt: now,
-    updatedAt: now,
-  };
-  notes.push(created);
-  write(notes);
-  return created;
+  return notes.create({ book: note.book, chapter: note.chapter, verse: note.verse, text: note.text });
 }
 
 export function deleteNote(id: string) {
-  write(read().filter((n) => n.id !== id));
+  notes.remove(id);
 }
 
 export function deleteAllNotes() {
-  write([]);
+  notes.removeAll();
 }
 
 export function exportNotesJson(): string {
-  return JSON.stringify(read(), null, 2);
+  return JSON.stringify(notes.list(), null, 2);
 }
 
 export function exportNotesMarkdown(bookName: (slug: string) => string): string {
-  const notes = read().sort(
-    (a, b) => a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse
-  );
+  const sorted = notes
+    .list()
+    .sort((a, b) => a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse);
   const lines = ["# Marginalia", ""];
-  for (const n of notes) {
+  for (const n of sorted) {
     lines.push(`## ${bookName(n.book)} ${n.chapter}:${n.verse}`);
     lines.push("");
     lines.push(n.text);

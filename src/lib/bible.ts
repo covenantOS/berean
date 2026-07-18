@@ -50,6 +50,45 @@ export interface SearchHit {
   text: string;
 }
 
+export interface WordStudy {
+  word: string;
+  total: number;
+  /** Occurrence count per book slug, canon order, zero-count books omitted. */
+  byBook: { book: Book; count: number }[];
+  first: SearchHit | null;
+  last: SearchHit | null;
+}
+
+/** Whole-word usage across the canon — the Library's word-study apparatus. */
+export async function studyWord(word: string): Promise<WordStudy | null> {
+  const { CANON } = await import("./canon");
+  const needle = word.trim().toLowerCase();
+  if (needle.length < 2) return null;
+  const re = new RegExp(`\\b${needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi");
+  const byBook: { book: Book; count: number }[] = [];
+  let total = 0;
+  let first: SearchHit | null = null;
+  let last: SearchHit | null = null;
+  for (const book of CANON) {
+    const raw = await loadBook(book);
+    let count = 0;
+    for (const ch of raw.chapters) {
+      for (const v of ch.verses) {
+        const matches = v.text.match(re);
+        if (matches) {
+          count += matches.length;
+          const hit = { book, chapter: Number(ch.chapter), verse: Number(v.verse), text: v.text };
+          if (!first) first = hit;
+          last = hit;
+        }
+      }
+    }
+    if (count > 0) byBook.push({ book, count });
+    total += count;
+  }
+  return { word: needle, total, byBook, first, last };
+}
+
 /** Case-insensitive whole-canon concordance search. */
 export async function searchCanon(query: string, limit = 200): Promise<{ hits: SearchHit[]; total: number }> {
   const { CANON } = await import("./canon");

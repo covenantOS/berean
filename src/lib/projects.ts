@@ -1,74 +1,122 @@
 "use client";
 
 import type { ExegeticalBrief } from "./brief";
+import { collection, type Record_ } from "./store";
 
 /**
- * Sermon/teaching study projects, stored on this device only (same
- * placeholder-persistence rationale as marginalia — see docs/adr/0001).
+ * Study and sermon projects — one project model shared by the Reading Desk,
+ * the Library, and the Pulpit. A sermon is a study project carried through
+ * the Pulpit's pipeline stages; nothing is duplicated between rooms.
  */
 
-export interface StudyProject {
-  id: string;
+export const PIPELINE_STAGES = [
+  { key: "exegesis", label: "Exegetical notes" },
+  { key: "argument", label: "Argument of the sermon" },
+  { key: "outline", label: "Outline" },
+  { key: "manuscript", label: "Manuscript" },
+  { key: "delivery", label: "Delivery notes" },
+] as const;
+
+export type StageKey = (typeof PIPELINE_STAGES)[number]["key"];
+
+export type ProjectKind = "study" | "sermon" | "lesson";
+export type ProjectStatus = "preparing" | "delivered" | "archived";
+
+export interface StudyProject extends Record_ {
   title: string;
+  kind: ProjectKind;
   book: string; // canon slug
   chapter: number;
+  /** Free study notes (the Reading Desk's contribution). */
   notes: string;
+  /** The Scribe's cited brief, if requested. */
   brief: ExegeticalBrief | null;
-  visibility: "private";
-  createdAt: string;
-  updatedAt: string;
+  /** The Pulpit pipeline; each stage is the preacher's own text. */
+  stages: Partial<Record<StageKey, string>>;
+  series?: string;
+  /** ISO date the sermon is appointed for (binds to the Almanac). */
+  appointedFor?: string;
+  status: ProjectStatus;
 }
 
-const KEY = "berean.projects.v1";
+const projects = collection<StudyProject>("berean.projects.v1");
+export { projects };
 
-function read(): StudyProject[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(window.localStorage.getItem(KEY) ?? "[]") as StudyProject[];
-  } catch {
-    return [];
-  }
+/** Older records (pre-Pulpit) lack kind/stages/status; normalize on read. */
+export function normalize(p: StudyProject): StudyProject {
+  return {
+    ...p,
+    kind: p.kind ?? "study",
+    stages: p.stages ?? {},
+    status: p.status ?? "preparing",
+  };
 }
 
-function write(projects: StudyProject[]) {
-  window.localStorage.setItem(KEY, JSON.stringify(projects));
-}
-
-export function listProjects(): StudyProject[] {
-  return read().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+export function listProjects(kind?: ProjectKind): StudyProject[] {
+  return projects
+    .list()
+    .map(normalize)
+    .filter((p) => !kind || p.kind === kind)
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
 
 export function getProject(id: string): StudyProject | undefined {
-  return read().find((p) => p.id === id);
+  const p = projects.get(id);
+  return p ? normalize(p) : undefined;
 }
 
-export function createProject(title: string, book: string, chapter: number): StudyProject {
-  const now = new Date().toISOString();
-  const project: StudyProject = {
-    id: crypto.randomUUID(),
+export function createProject(
+  title: string,
+  book: string,
+  chapter: number,
+  kind: ProjectKind = "study",
+  extra?: Partial<Pick<StudyProject, "series" | "appointedFor">>
+): StudyProject {
+  return projects.create({
     title,
+    kind,
     book,
     chapter,
     notes: "",
     brief: null,
-    visibility: "private",
-    createdAt: now,
-    updatedAt: now,
-  };
-  const projects = read();
-  projects.push(project);
-  write(projects);
-  return project;
+    stages: {},
+    status: "preparing",
+    ...extra,
+  });
 }
 
-export function updateProject(id: string, patch: Partial<Pick<StudyProject, "notes" | "brief" | "title">>) {
-  const projects = read();
-  const p = projects.find((x) => x.id === id);
+export function updateProject(
+  id: string,
+  patch: Partial<
+    Pick<StudyProject, "notes" | "brief" | "title" | "stages" | "series" | "appointedFor" | "status" | "kind">
+  >
+) {
+  projects.update(id, patch);
+}
+
+export function updateStage(id: string, stage: StageKey, text: string) {
+  const p = getProject(id);
   if (!p) return;
-  Object.assign(p, patch, { updatedAt: new Date().toISOString() });
-  write(projects);
+  projects.update(id, { stages: { ...p.stages, [stage]: text } });
 }
 
 export function deleteProject(id: string) {
-  write(read().filter((p) => p.id !== id));
+  projects.remove(id);
+}
+
+/** Lifetime archive search: every completed handling of the Word, searchable. */
+export function searchArchive(query: string): StudyProject[] {
+  const q = query.trim().toLowerCase();
+  return listProjects().filter((p) => {
+    if (q.length === 0) return true;
+    const haystack = [p.title, p.series ?? "", p.notes, ...Object.values(p.stages ?? {})]
+      .join("\n")
+      .toLowerCase();
+    return haystack.includes(q);
+  });
+}
+
+/** Past projects on the same chapter — "you handled this text four years ago." */
+export function priorHandlings(book: string, chapter: number, excludeId?: string): StudyProject[] {
+  return listProjects().filter((p) => p.book === book && p.chapter === chapter && p.id !== excludeId);
 }

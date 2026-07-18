@@ -59,7 +59,7 @@ You are preparing an exegetical brief on one chapter, from the King James Versio
 Produce: an overview, then sections covering (as the chapter warrants) the structure and flow of the argument or narrative, key terms and repeated words as they function in this chapter, the chapter's place in the book's larger movement so far as the text itself shows it, and questions the text raises that the preacher must settle. Ground every claim in citations.`;
 
 export async function POST(req: NextRequest) {
-  let body: { book?: string; chapter?: number };
+  let body: { book?: string; chapter?: number; charge?: string; notes?: string };
   try {
     body = await req.json();
   } catch {
@@ -101,7 +101,14 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Prepare the exegetical brief for ${book.name} ${chapter} (KJV). The complete chapter text, with verse numbers in brackets:\n\n${chapterText}`,
+          content:
+            `Prepare the exegetical brief for ${book.name} ${chapter} (KJV). The complete chapter text, with verse numbers in brackets:\n\n${chapterText}` +
+            (body.charge?.trim()
+              ? `\n\n---\nThe reader's standing charge (their declared confession and preferences — operate inside these walls; where the charge touches disputed questions, still present the readings honestly):\n${body.charge.trim().slice(0, 4000)}`
+              : "") +
+            (body.notes?.trim()
+              ? `\n\n---\nThe reader's own working notes on this passage (shared with you by their explicit setting; engage them where useful):\n${body.notes.trim().slice(0, 8000)}`
+              : ""),
         },
       ],
     });

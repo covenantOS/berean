@@ -13,7 +13,7 @@ export default function StudyPage() {
   const selectedBook = getBook(book);
 
   useEffect(() => {
-    setProjects(listProjects());
+    setProjects(listProjects("study"));
   }, []);
 
   function add(e: React.FormEvent) {
@@ -22,13 +22,13 @@ export default function StudyPage() {
     if (!b) return;
     const name = title.trim() || `${b.name} ${chapter}`;
     createProject(name, book, chapter);
-    setProjects(listProjects());
+    setProjects(listProjects("study"));
     setTitle("");
   }
 
   function remove(id: string) {
     deleteProject(id);
-    setProjects(listProjects());
+    setProjects(listProjects("study"));
   }
 
   return (
