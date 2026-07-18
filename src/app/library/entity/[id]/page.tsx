@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBook } from "@/lib/canon";
 import { getEntity, Entity, EntityRelation } from "@/lib/entities";
+import LocatorMap from "@/components/LocatorMap";
 
 export async function generateMetadata({
   params,
@@ -80,10 +81,18 @@ export default async function EntityPage({
       </p>
 
       {entity.geo && (
-        <p className="mb-6 text-sm text-muted">
-          Located at {entity.geo.lat.toFixed(5)}, {entity.geo.lng.toFixed(5)}
-          {entity.area ? ` · ${entity.area}` : ""}
-        </p>
+        <div className="mb-6 flex flex-wrap items-start gap-6">
+          <p className="text-sm text-muted">
+            Located at {entity.geo.lat.toFixed(5)}, {entity.geo.lng.toFixed(5)}
+            {entity.area ? ` · ${entity.area}` : ""}
+          </p>
+          <LocatorMap
+            id={entity.id}
+            name={entity.name}
+            lat={entity.geo.lat}
+            lng={entity.geo.lng}
+          />
+        </div>
       )}
 
       {entity.brief && (

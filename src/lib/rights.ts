@@ -387,6 +387,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "naturalearth",
+    title: "Natural Earth, 1:110m Land (vector coastline/land dataset)",
+    kind: "dataset",
+    rightsHolder: "Public domain (Natural Earth)",
+    license: "Public domain",
+    source: "https://github.com/nvkelso/natural-earth-vector (geojson/ne_110m_land.geojson; terms: https://www.naturalearthdata.com/about/terms-of-use/)",
+    sourceRetrieved: "2026-07-18",
+    allowedUses: ["presentation", "export", "offline"],
+    notes:
+      "The land base under the Atlas at /library/atlas and the locator maps on place entity pages. Vendored as GeoJSON under data/_sources/naturalearth (see PROVENANCE.md), projected and rendered to SVG by src/lib/atlas.ts at request time; no tile server and no mapping library is used.",
+    status: "shipped",
+  },
+  {
     id: "tvtms",
     title: "TVTMS: Translators Versification Traditions with Methodology for Standardisation",
     kind: "dataset",

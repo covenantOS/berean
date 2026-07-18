@@ -145,7 +145,8 @@ export default async function LibraryPage({
         <p className="mb-4 max-w-2xl text-sm text-muted">
           Every individualised name in the canon — {kindCounts.person.toLocaleString()} people,{" "}
           {kindCounts.place.toLocaleString()} places — with family relationships and exhaustive
-          references. From STEPBible&apos;s TIPNR dataset (CC BY 4.0).
+          references. From STEPBible&apos;s TIPNR dataset (CC BY 4.0). The places with coordinates
+          are plotted in <Link href="/library/atlas" className="text-sapphire no-underline hover:underline">the Atlas</Link>.
         </p>
         <form action="/library" method="get" className="mb-4 flex flex-wrap gap-2">
           <input
