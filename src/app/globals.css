@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/*
+ * Berean design tokens — shared Covenant product-family values.
+ * Source: docs/COVENANT_DESIGN_LANGUAGE.md (Covenant OS revision 460c77b).
+ * Bright, legible, print-and-architecture. Stained glass is signal, not wallpaper.
+ */
+:root {
+  --signal-ink: #19272f;
+  --signal-paper: #f4f7f6;
+  --surface: #ffffff;
+  --stained-ruby: #a42548;
+  --stained-sapphire: #176b91;
+  --stained-amber: #cf8e18;
+  --stained-emerald: #24705a;
+  --stained-violet: #634a8e;
+  --rule: #d6dedd;
+  --ink-muted: #51636d;
+
+  --font-interface: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-editorial: "Libre Baskerville", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-reader: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+}
+
+@theme inline {
+  --color-ink: var(--signal-ink);
+  --color-paper: var(--signal-paper);
+  --color-surface: var(--surface);
+  --color-ruby: var(--stained-ruby);
+  --color-sapphire: var(--stained-sapphire);
+  --color-amber: var(--stained-amber);
+  --color-emerald: var(--stained-emerald);
+  --color-violet: var(--stained-violet);
+  --color-rule: var(--rule);
+  --color-muted: var(--ink-muted);
+  --font-interface: var(--font-interface);
+  --font-editorial: var(--font-editorial);
+  --font-reader: var(--font-reader);
+}
+
+html {
+  background: var(--signal-paper);
+  color: var(--signal-ink);
+  font-family: var(--font-interface);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--stained-sapphire) 22%, transparent);
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+/*
+ * Reading modes apply to the reader surface only — navigation, controls,
+ * and apparatus stay on the bright shell (design-language rule 4).
+ */
+.reader-surface {
+  font-family: var(--font-reader);
+  background: var(--surface);
+  color: var(--signal-ink);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.reader-surface[data-mode="warm"] {
+  background: #faf6ec;
+  color: #241f18;
+}
+.reader-surface[data-mode="evening"] {
+  background: #211c15;
+  color: #e8ddc8;
+}
+.reader-surface[data-mode="evening"] .verse-num {
+  color: #a08c62;
+}
+.reader-surface[data-mode="evening"] .has-note .verse-num {
+  color: #d9b45e;
+}
+
+.verse-num {
+  font-family: var(--font-interface);
+  font-size: 0.62em;
+  font-weight: 600;
+  color: var(--stained-sapphire);
+  vertical-align: super;
+  line-height: 0;
+  margin-right: 0.28em;
+  cursor: pointer;
+  user-select: none;
+}
+.has-note .verse-num {
+  color: var(--stained-amber);
+}
+.verse-target {
+  scroll-margin-top: 6rem;
+}
+.verse-selected {
+  background: color-mix(in srgb, var(--stained-amber) 16%, transparent);
+  border-radius: 2px;
+}
+
+.prose-verses {
+  font-size: 1.14rem;
+  line-height: 1.85;
+  text-align: justify;
+  hyphens: auto;
+}
+.poetry-verses {
+  font-size: 1.14rem;
+  line-height: 1.8;
+}
+.poetry-verses .verse-line {
+  padding-left: 1.75rem;
+  text-indent: -1.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.drop-cap::first-letter {
+  font-family: var(--font-editorial);
+  font-size: 3.2em;
+  line-height: 0.85;
+  float: left;
+  padding-right: 0.09em;
+  padding-top: 0.04em;
+  color: var(--stained-ruby);
+}
+
+/* The leaded-window mark: four panes with lead lines. */
+.leaded-mark {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: var(--signal-ink);
+  border: 2px solid var(--signal-ink);
+  width: 22px;
+  height: 26px;
+  border-radius: 11px 11px 2px 2px;
+}
+.leaded-mark span:nth-child(1) { background: var(--stained-sapphire); border-radius: 9px 0 0 0; }
+.leaded-mark span:nth-child(2) { background: var(--stained-ruby); border-radius: 0 9px 0 0; }
+.leaded-mark span:nth-child(3) { background: var(--stained-amber); }
+.leaded-mark span:nth-child(4) { background: var(--stained-emerald); }
+
+.small-caps {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  header, nav, .no-print {
+    display: none !important;
+  }
+  html, .reader-surface {
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
