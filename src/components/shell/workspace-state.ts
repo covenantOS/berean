@@ -116,6 +116,15 @@ export interface TopicGuideTab {
   title: string;
 }
 
+/** A saved passage or word list, pinned to its document id. */
+export interface ListDocTab {
+  id: string;
+  type: "listdoc";
+  docId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -126,7 +135,8 @@ export type Tab =
   | GuideTab
   | WordStudyTab
   | ExegeticalTab
-  | TopicGuideTab;
+  | TopicGuideTab
+  | ListDocTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -254,6 +264,10 @@ export function topicGuideTab(
   title: string
 ): TopicGuideTab {
   return { id: newId("tab"), type: "topicguide", work, topicId, title };
+}
+
+export function listDocTab(docId: string, title: string): ListDocTab {
+  return { id: newId("tab"), type: "listdoc", docId, title };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -388,6 +402,7 @@ export type WorkspaceAction =
   | { type: "openWordStudy"; strongsId: string; paneId?: string }
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
+  | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -581,6 +596,27 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       if (!findLeaf(state.root, paneId)) return state;
       const tab = topicGuideTab(action.work, topicId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openListDoc": {
+      const docId = action.docId.trim();
+      if (!docId) return state;
+      const title = action.title.trim() || "Untitled list";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the list pins its document at open time; edits land in
+      // the collection and the pane reads them live.
+      const tab = listDocTab(docId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -1052,6 +1088,13 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : t.topicId;
         tabs.push({ id: t.id, type: "topicguide", work: t.work, topicId: t.topicId, title });
+        continue;
+      }
+      if (t.type === "listdoc" && typeof t.id === "string") {
+        if (typeof t.docId !== "string" || !t.docId.trim()) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Untitled list";
+        tabs.push({ id: t.id, type: "listdoc", docId: t.docId, title });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;

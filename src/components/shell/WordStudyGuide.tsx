@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { listDocuments, type WordItem } from "@/lib/documents";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import SearchChart, { type ChartKind } from "./SearchChart";
@@ -90,6 +91,30 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const maxCount = Math.max(1, ...s.occurrences.byBook.map((b) => b.count));
   const shown = s.occurrences.list.slice(0, LIST_SHOWN);
 
+  /** The study's lemmas as a word list: the Tyndale variants when present, the bare entry otherwise. */
+  const saveWordList = () => {
+    const items: WordItem[] =
+      e.tyndale && e.tyndale.length > 0
+        ? e.tyndale.map((v) => ({ strongs: s.id, lemma: v.lemma, xlit: v.xlit, gloss: v.gloss }))
+        : [{ strongs: s.id, lemma: e.lemma, xlit: e.xlit, gloss: e.strongs_def }];
+    const doc = listDocuments.create({
+      title: `Word list: ${e.lemma ?? s.id}`,
+      kind: "word-list",
+      items,
+    });
+    dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
+  };
+
+  /** The study's occurrence list as a passage list. */
+  const savePassageList = () => {
+    const doc = listDocuments.create({
+      title: `Occurrences of ${e.lemma ?? s.id}`,
+      kind: "passage-list",
+      items: s.occurrences.list.map((o) => ({ book: o.slug, chapter: o.chapter, verse: o.verse })),
+    });
+    dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
+  };
+
   return (
     <div className="space-y-6">
       <header className="border-b border-rule pb-2">
@@ -105,6 +130,14 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
             className="ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Open in lexicon
+          </button>
+          <button
+            type="button"
+            title="Save this study's lemmas as a word list document"
+            onClick={saveWordList}
+            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save as word list
           </button>
         </h2>
       </header>
@@ -176,6 +209,14 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
               First {shown.length} of {s.occurrences.total.toLocaleString()} occurrences listed.
             </p>
           )}
+          <button
+            type="button"
+            title="Save the listed occurrences as a passage list document"
+            onClick={savePassageList}
+            className="mt-2 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save occurrences as passage list
+          </button>
         </GuideSection>
       )}
 

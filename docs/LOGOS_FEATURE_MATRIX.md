@@ -63,7 +63,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Specialized search tabs: Factbook Search, Maps Search, Media Search, Bookstore Search.
 - [ ] [SW] Result views: Verses, Aligned, Grid, and Analysis arrangements for Bible and morph results.
 - [x] [SW] Charts tool: bar, column, pie, donut, line, and area frequency graphs of results by book or chapter; also launched from word study translation rings.
-- [ ] [SW] Result handoffs: save results as a Passage List, Word List, Visual Filter, or Favorite; re-run anything from History.
+- [x] [SW] Result handoffs: save results as a Passage List, Word List, Visual Filter, or Favorite; re-run anything from History. (Passage List, Word List, Favorite, and History ship; the Visual Filter handoff is deferred: the highlight store is one tint per verse with no named, toggleable result sets.)
 - [ ] [SW] Milestones: indexed navigation points inside books so searches and guides land on the right article.
 
 ## 3. Guides and Workflows

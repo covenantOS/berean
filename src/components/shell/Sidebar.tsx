@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CANON } from "@/lib/canon";
-import { documents } from "@/lib/documents";
+import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { useWorkspace } from "./WorkspaceContext";
@@ -328,26 +328,70 @@ function LibrarySections() {
   );
 }
 
-/* ---------- Documents: the user's own writing ---------- */
+/* ---------- Documents: the user's own writing and saved lists ---------- */
 
 function DocumentsList() {
+  const { dispatch } = useWorkspace();
   const docs = useCollection(documents);
-  if (docs.length === 0) {
+  const lists = useCollection(listDocuments);
+  if (docs.length === 0 && lists.length === 0) {
     return (
-      <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy." />
+      <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them." />
     );
   }
   return (
-    <ul className="py-1">
-      {docs.map((doc) => (
-        <li
-          key={doc.id}
-          className="flex items-baseline justify-between gap-2 px-3 py-[3px] text-[0.8rem] text-ink"
-        >
-          <span className="truncate">{doc.title || "Untitled"}</span>
-          <span className="shrink-0 text-[0.62rem] text-muted">{doc.kind}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="py-1">
+      {docs.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+            Manuscripts
+          </div>
+          <ul>
+            {docs.map((doc) => (
+              <li
+                key={doc.id}
+                className="flex items-baseline justify-between gap-2 px-3 py-[3px] text-[0.8rem] text-ink"
+              >
+                <span className="truncate">{doc.title || "Untitled"}</span>
+                <span className="shrink-0 text-[0.62rem] text-muted">{doc.kind}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {lists.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+            Lists
+          </div>
+          <ul>
+            {lists.map((doc) => (
+              <li key={doc.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: "openListDoc", docId: doc.id, title: doc.title })}
+                  title={`Open ${doc.title}`}
+                  className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {doc.title || "Untitled list"}
+                </button>
+                <span className="shrink-0 text-[0.62rem] text-muted">
+                  {listKindLabel(doc.kind)} · {doc.items.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => listDocuments.remove(doc.id)}
+                  title="Delete this list"
+                  aria-label={`Delete ${doc.title || "Untitled list"}`}
+                  className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
   );
 }

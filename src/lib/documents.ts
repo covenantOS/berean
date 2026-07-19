@@ -32,3 +32,50 @@ export const documents = collection<StudyDocument>("berean.documents.v1");
 export function wordCount(body: string): number {
   return body.trim().length === 0 ? 0 : body.trim().split(/\s+/).length;
 }
+
+/* ---------- List documents: reference-aware saved sets ---------- */
+
+/**
+ * Passage and word lists, the handoff target for search results and guides.
+ * A passage list is an ordered set of verse references; a word list is an
+ * ordered set of lemmas keyed by Strong's id. Both carry an optional note
+ * per item. They live in their own collection so existing manuscripts load
+ * unchanged; the envelope fields ride along from day one as everywhere.
+ */
+
+export type ListKind = "passage-list" | "word-list";
+
+export const LIST_KINDS: { key: ListKind; label: string }[] = [
+  { key: "passage-list", label: "Passage list" },
+  { key: "word-list", label: "Word list" },
+];
+
+export interface PassageItem {
+  book: string; // canon slug
+  chapter: number;
+  verse: number;
+  note?: string;
+}
+
+export interface WordItem {
+  /** Base Strong's id the lexicon and word study answer. */
+  strongs: string;
+  lemma?: string;
+  xlit?: string;
+  gloss?: string;
+  note?: string;
+}
+
+export type ListItem = PassageItem | WordItem;
+
+export interface ListDocument extends Record_ {
+  title: string;
+  kind: ListKind;
+  items: ListItem[];
+}
+
+export const listDocuments = collection<ListDocument>("berean.listdocs.v1");
+
+export function listKindLabel(kind: ListKind): string {
+  return LIST_KINDS.find((k) => k.key === kind)?.label ?? kind;
+}

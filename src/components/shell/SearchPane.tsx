@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CANON, getBook } from "@/lib/canon";
+import { listDocuments } from "@/lib/documents";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
+import { useWorkspace } from "./WorkspaceContext";
 
 interface Hit {
   book: string;
@@ -69,6 +71,7 @@ function openRef(book: string, chapter: number, verse?: number) {
  * header pin keeps the query among the Search rail's pinned searches.
  */
 export default function SearchPane({ q }: { q: string }) {
+  const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [view, setView] = useState<View>("verses");
   const { favorites } = useSearchSaves();
@@ -108,6 +111,24 @@ export default function SearchPane({ q }: { q: string }) {
         >
           {pinned ? "Pinned" : "Pin search"}
         </button>
+        {load.status === "ready" && load.hits.length > 0 && (
+          <button
+            type="button"
+            title="Save the listed verses as a passage list document"
+            onClick={() => {
+              if (load.status !== "ready") return;
+              const doc = listDocuments.create({
+                title: `Passages for “${q}”`,
+                kind: "passage-list",
+                items: load.hits.map((h) => ({ book: h.book, chapter: h.chapter, verse: h.verse })),
+              });
+              dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
+            }}
+            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save as passage list
+          </button>
+        )}
       </header>
       <nav
         aria-label="Result views"

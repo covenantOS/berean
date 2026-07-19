@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
+import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { useWorkspace } from "./WorkspaceContext";
 import type { WordSelection } from "./workspace-state";
@@ -132,7 +134,10 @@ export function VerseContextMenu({
 }) {
   const { dispatch } = useWorkspace();
   const [mentions, setMentions] = useState<Mention[] | null>(null);
-  const { ref, style } = useFloatingMenu(x, y, onClose, { deps: [mentions] });
+  /** True once "Add to passage list" opens its chooser inside the menu. */
+  const [pickingList, setPickingList] = useState(false);
+  const passageLists = useCollection(listDocuments, (d) => d.kind === "passage-list");
+  const { ref, style } = useFloatingMenu(x, y, onClose, { deps: [mentions, pickingList] });
   const reference = `${bookName} ${chapter}:${verse}`;
 
   useEffect(() => {
@@ -156,6 +161,26 @@ export function VerseContextMenu({
     navigator.clipboard
       ?.writeText(`${text} (${reference})`)
       .catch(() => {});
+    onClose();
+  };
+
+  /** Appends the verse to an existing list, or starts a new one around it. */
+  const addToPassageList = (docId: string | null) => {
+    if (docId) {
+      const doc = listDocuments.get(docId);
+      const dupe = doc?.items.some(
+        (it) => "book" in it && it.book === book && it.chapter === chapter && it.verse === verse
+      );
+      if (doc && !dupe) {
+        listDocuments.update(docId, { items: [...doc.items, { book, chapter, verse }] });
+      }
+    } else {
+      listDocuments.create({
+        title: `Passages from ${bookName}`,
+        kind: "passage-list",
+        items: [{ book, chapter, verse }],
+      });
+    }
     onClose();
   };
 
@@ -218,6 +243,29 @@ export function VerseContextMenu({
         <button type="button" className={ROW} onClick={copy}>
           Copy verse
         </button>
+        {pickingList ? (
+          <div className="mt-1 border-t border-rule pt-1">
+            <p className={HEAD}>Add to passage list</p>
+            {passageLists.map((doc) => (
+              <button
+                key={doc.id}
+                type="button"
+                className={ROW}
+                onClick={() => addToPassageList(doc.id)}
+              >
+                {doc.title || "Untitled list"}
+                <span className="ml-auto pl-3 text-[0.62rem] text-muted">{doc.items.length}</span>
+              </button>
+            ))}
+            <button type="button" className={ROW} onClick={() => addToPassageList(null)}>
+              New passage list
+            </button>
+          </div>
+        ) : (
+          <button type="button" className={ROW} onClick={() => setPickingList(true)}>
+            Add to passage list
+          </button>
+        )}
         <div className="mt-1 flex items-center gap-1.5 border-t border-rule px-3 pt-1.5">
           <Swatches
             onPick={(color) => {

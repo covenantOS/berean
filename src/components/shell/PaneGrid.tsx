@@ -35,6 +35,7 @@ import PassageGuide from "./PassageGuide";
 import WordStudyGuide from "./WordStudyGuide";
 import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
+import ListDocPane from "./ListDocPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -123,6 +124,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "topicguide") {
     return `Topic: ${tab.title.replace(/\b\w/g, (c) => c.toUpperCase())}`;
   }
+  if (tab.type === "listdoc") return `List: ${tab.title}`;
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -499,6 +501,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "topicguide" ? (
             <div className="h-full overflow-y-auto p-4">
               <TopicGuide work={activeTab.work} topicId={activeTab.topicId} />
+            </div>
+          ) : activeTab.type === "listdoc" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ListDocPane docId={activeTab.docId} />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />
