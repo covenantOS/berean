@@ -132,6 +132,34 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
           : (activeRefRef.current?.chapter ?? 1);
       dispatch({ type: "openGuide", book, chapter });
     };
+    const onOpenCustomGuide = (e: Event) => {
+      const detail = (
+        e as CustomEvent<{ guideId?: string; name?: string; book?: string; chapter?: number }>
+      ).detail;
+      if (!detail || typeof detail.guideId !== "string" || !detail.guideId.trim()) return;
+      // Like the built-in guides, an absent ref takes the pane in focus.
+      const book =
+        typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({
+        type: "openCustomGuide",
+        guideId: detail.guideId,
+        name: typeof detail.name === "string" ? detail.name : "",
+        book,
+        chapter,
+      });
+    };
+    const onOpenGuideEditor = (e: Event) => {
+      const detail = (e as CustomEvent<{ guideId?: string }>).detail;
+      dispatch({
+        type: "openGuideEditor",
+        guideId: detail && typeof detail.guideId === "string" ? detail.guideId : null,
+      });
+    };
     const onOpenWordStudy = (e: Event) => {
       const detail = (e as CustomEvent<{ id?: string }>).detail;
       if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
@@ -215,6 +243,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:search", onSearch);
     window.addEventListener("berean:open-lexicon", onOpenLexicon);
     window.addEventListener("berean:open-guide", onOpenGuide);
+    window.addEventListener("berean:open-customguide", onOpenCustomGuide);
+    window.addEventListener("berean:open-guideeditor", onOpenGuideEditor);
     window.addEventListener("berean:open-wordstudy", onOpenWordStudy);
     window.addEventListener("berean:open-exegetical", onOpenExegetical);
     window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
@@ -230,6 +260,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:search", onSearch);
       window.removeEventListener("berean:open-lexicon", onOpenLexicon);
       window.removeEventListener("berean:open-guide", onOpenGuide);
+      window.removeEventListener("berean:open-customguide", onOpenCustomGuide);
+      window.removeEventListener("berean:open-guideeditor", onOpenGuideEditor);
       window.removeEventListener("berean:open-wordstudy", onOpenWordStudy);
       window.removeEventListener("berean:open-exegetical", onOpenExegetical);
       window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);

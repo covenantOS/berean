@@ -2,15 +2,18 @@
 
 import { useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
+import { guides } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
 import { recordSearch, useSearchSaves } from "@/lib/search-history";
 import { layoutState, layouts } from "./layouts";
 import { useWorkspace } from "./WorkspaceContext";
 import {
   concordanceTab,
+  customGuideTab,
   docSearchTab,
   exegeticalTab,
   findLeaf,
+  guideEditorTab,
   guideTab,
   libraryTab,
   readerTab,
@@ -61,6 +64,8 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
   const { state, dispatch } = useWorkspace();
   const { history } = useSearchSaves();
   const saved = useCollection(layouts);
+  /** The user's custom guides, offered against the pinned passage. */
+  const customGuides = useCollection(guides);
   const [q, setQ] = useState("");
 
   const ref = tab.book && tab.chapter ? { book: tab.book, chapter: tab.chapter } : null;
@@ -148,6 +153,19 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
                 <span className={HINT}>Original languages</span>
               </button>
             </li>
+            {customGuides.map((g) => (
+              <li key={g.id}>
+                <button
+                  type="button"
+                  title={`Run ${g.name} on ${bookName} ${ref.chapter}`}
+                  className={ROW}
+                  onClick={() => choose(customGuideTab(g.id, g.name, ref.book, ref.chapter))}
+                >
+                  <span className="min-w-0 flex-1 truncate">{g.name}</span>
+                  <span className={HINT}>Custom guide</span>
+                </button>
+              </li>
+            ))}
             <li>
               <button
                 type="button"
@@ -197,6 +215,12 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(libraryTab())}>
             Browse the Library
             <span className={HINT}>Catalog</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(guideEditorTab(null))}>
+            Compose a guide
+            <span className={HINT}>Guide editor</span>
           </button>
         </li>
       </ul>

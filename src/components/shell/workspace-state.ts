@@ -100,6 +100,33 @@ export interface GuideTab {
   chapter: number;
 }
 
+/**
+ * A custom guide (src/lib/guides.ts) run on one chapter: the Passage Guide's
+ * report filtered and ordered to the named composition. The guide's name is
+ * captured at open time for the tab strip; the pane reads the collection
+ * live, so edits and renames apply to the open tab, and a deleted guide
+ * degrades the way a deleted list document does.
+ */
+export interface CustomGuideTab {
+  id: string;
+  type: "customguide";
+  guideId: string;
+  /** The guide's name, captured at open time for the tab strip. */
+  name: string;
+  book: string;
+  chapter: number;
+}
+
+/**
+ * The Guide Editor: compose, rename, reorder, and delete custom guides. A
+ * guideId opens that guide in the editor; null opens the guide list.
+ */
+export interface GuideEditorTab {
+  id: string;
+  type: "guideeditor";
+  guideId: string | null;
+}
+
 /** The Bible Word Study: one Strong's number's lexical report. */
 export interface WordStudyTab {
   id: string;
@@ -188,6 +215,8 @@ export type Tab =
   | DocSearchTab
   | ToolTab
   | GuideTab
+  | CustomGuideTab
+  | GuideEditorTab
   | WordStudyTab
   | ExegeticalTab
   | TopicGuideTab
@@ -341,6 +370,19 @@ export function lexiconTab(entryId: string | null = null): LexiconTab {
 
 export function guideTab(book = "genesis", chapter = 1): GuideTab {
   return { id: newId("tab"), type: "guide", book, chapter };
+}
+
+export function customGuideTab(
+  guideId: string,
+  name: string,
+  book = "genesis",
+  chapter = 1
+): CustomGuideTab {
+  return { id: newId("tab"), type: "customguide", guideId, name, book, chapter };
+}
+
+export function guideEditorTab(guideId: string | null = null): GuideEditorTab {
+  return { id: newId("tab"), type: "guideeditor", guideId };
 }
 
 export function wordStudyTab(strongsId: string): WordStudyTab {
@@ -636,6 +678,15 @@ export type WorkspaceAction =
   | { type: "openDocSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
   | { type: "openGuide"; book: string; chapter: number; paneId?: string }
+  | {
+      type: "openCustomGuide";
+      guideId: string;
+      name: string;
+      book: string;
+      chapter: number;
+      paneId?: string;
+    }
+  | { type: "openGuideEditor"; guideId?: string | null; paneId?: string }
   | { type: "openWordStudy"; strongsId: string; paneId?: string }
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
@@ -919,6 +970,49 @@ export function workspaceReducer(
       if (!findLeaf(state.root, paneId)) return state;
       // A guide pins its passage at open time; it never follows the pane.
       const tab = guideTab(book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openCustomGuide": {
+      const guideId = action.guideId.trim();
+      if (!guideId) return state;
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like the Passage Guide, the run pins its passage at open time.
+      const name = action.name.trim() || "Custom guide";
+      const tab = customGuideTab(guideId, name, book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openGuideEditor": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const guideId =
+        typeof action.guideId === "string" && action.guideId.trim()
+          ? action.guideId.trim()
+          : null;
+      const tab = guideEditorTab(guideId);
       return {
         ...state,
         activePaneId: paneId,
@@ -1637,6 +1731,32 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? Math.min(Math.max(1, t.chapter), book.chapters)
             : 1;
         tabs.push({ id: t.id, type: "guide", book: book.slug, chapter });
+        continue;
+      }
+      if (
+        t.type === "customguide" &&
+        typeof t.id === "string" &&
+        typeof t.guideId === "string" &&
+        t.guideId.trim() &&
+        typeof t.book === "string"
+      ) {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        // The guide itself may be gone; the tab still loads and degrades at
+        // render, the way a deleted list document's tab does.
+        const name =
+          typeof t.name === "string" && t.name.trim() ? t.name : "Custom guide";
+        tabs.push({ id: t.id, type: "customguide", guideId: t.guideId, name, book: book.slug, chapter });
+        continue;
+      }
+      if (t.type === "guideeditor" && typeof t.id === "string") {
+        const guideId =
+          typeof t.guideId === "string" && t.guideId.trim() ? t.guideId : null;
+        tabs.push({ id: t.id, type: "guideeditor", guideId });
         continue;
       }
       if (t.type === "wordstudy" && typeof t.id === "string") {

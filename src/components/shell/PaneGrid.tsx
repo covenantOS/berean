@@ -33,6 +33,8 @@ import SearchPane from "./SearchPane";
 import DocSearchPane from "./DocSearchPane";
 import ToolTabBody from "./ToolTabBody";
 import PassageGuide from "./PassageGuide";
+import CustomGuidePane from "./CustomGuidePane";
+import GuideEditorPane from "./GuideEditorPane";
 import WordStudyGuide from "./WordStudyGuide";
 import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
@@ -124,6 +126,10 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "commentary") return "Commentary";
   if (tab.type === "crossrefs") return "Cross-refs";
   if (tab.type === "guide") return `Guide: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  if (tab.type === "customguide") {
+    return `${tab.name}: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  }
+  if (tab.type === "guideeditor") return "Guide editor";
   if (tab.type === "wordstudy") return `Word Study: ${tab.strongsId}`;
   if (tab.type === "exegetical") {
     return `Exegetical: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
@@ -508,6 +514,18 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "guide" ? (
             <div className="h-full overflow-y-auto p-4">
               <PassageGuide book={activeTab.book} chapter={activeTab.chapter} />
+            </div>
+          ) : activeTab.type === "customguide" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <CustomGuidePane
+                guideId={activeTab.guideId}
+                book={activeTab.book}
+                chapter={activeTab.chapter}
+              />
+            </div>
+          ) : activeTab.type === "guideeditor" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <GuideEditorPane guideId={activeTab.guideId} />
             </div>
           ) : activeTab.type === "wordstudy" ? (
             <div className="h-full overflow-y-auto p-4">

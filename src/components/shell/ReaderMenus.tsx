@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatCitation } from "@/lib/citation";
 import { listDocuments } from "@/lib/documents";
 import { addFavorite, listFolders } from "@/lib/favorites";
+import { guides } from "@/lib/guides";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
 import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
@@ -205,6 +206,8 @@ export function VerseContextMenu({
   const [pickingList, setPickingList] = useState(false);
   /** True once "Clip verse" opens its clippings chooser inside the menu. */
   const [pickingClips, setPickingClips] = useState(false);
+  /** True once "Custom guide" opens its chooser inside the menu. */
+  const [pickingGuide, setPickingGuide] = useState(false);
   /** True once "Bookmark" opens its folder chooser inside the menu. */
   const [pickingFolder, setPickingFolder] = useState(false);
   /** True once the chooser's "New folder" row swaps for its name input. */
@@ -213,6 +216,8 @@ export function VerseContextMenu({
   /** True once "Note" swaps the menu for inline capture. */
   const [writingNote, setWritingNote] = useState(false);
   const passageLists = useCollection(listDocuments, (d) => d.kind === "passage-list");
+  /** The reader's custom guides; each runs on this chapter from the chooser. */
+  const customGuides = useCollection(guides);
   const verseNotes = useCollection(
     marginNotes,
     (n) => n.book === book && n.chapter === chapter && n.verse === verse
@@ -222,7 +227,7 @@ export function VerseContextMenu({
     s.items.some((it) => it.book === book && it.chapter === chapter && it.verse === verse)
   );
   const { ref, style } = useFloatingMenu(x, y, onClose, {
-    deps: [mentions, pickingList, pickingClips, pickingFolder, namingFolder, writingNote, verseSets],
+    deps: [mentions, pickingList, pickingClips, pickingFolder, pickingGuide, namingFolder, writingNote, verseSets],
   });
   const reference = `${bookName} ${chapter}:${verse}`;
 
@@ -363,6 +368,53 @@ export function VerseContextMenu({
             }}
           >
             Exegetical guide
+          </button>
+        )}
+        {pickingGuide ? (
+          <div className="mt-1 border-t border-rule pt-1">
+            <p className={HEAD}>Custom guide</p>
+            {customGuides.map((g) => (
+              <button
+                key={g.id}
+                type="button"
+                title={`Run ${g.name} on this chapter`}
+                className={ROW}
+                onClick={() => {
+                  dispatch({
+                    type: "openCustomGuide",
+                    guideId: g.id,
+                    name: g.name,
+                    book,
+                    chapter,
+                    paneId,
+                  });
+                  onClose();
+                }}
+              >
+                {g.name}
+                <span className="ml-auto pl-3 text-[0.62rem] text-muted">{g.sections.length}</span>
+              </button>
+            ))}
+            <button
+              type="button"
+              title="Compose, rename, and reorder custom guides"
+              className={ROW}
+              onClick={() => {
+                dispatch({ type: "openGuideEditor", guideId: null, paneId });
+                onClose();
+              }}
+            >
+              Guide editor
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            title="Run one of your custom guides on this chapter"
+            className={ROW}
+            onClick={() => setPickingGuide(true)}
+          >
+            Custom guide
           </button>
         )}
         <button type="button" className={ROW} onClick={copy}>

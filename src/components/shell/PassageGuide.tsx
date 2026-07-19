@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
+import { GUIDE_SECTIONS, type GuideSectionKey } from "@/lib/guides";
 import { copyReferences } from "@/lib/powerLookup";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -79,8 +80,24 @@ type LoadState =
  * commentary's verses and a cross-reference open the passage, a person or
  * place opens its factbook, a notable word opens the lexicon. Sections
  * with nothing to say stay out of the report.
+ *
+ * A custom guide (src/lib/guides.ts) runs through this same pane: it passes
+ * its section keys in its own order and its name, and the report renders
+ * only those sections, in that order, under that name.
  */
-export default function PassageGuide({ book, chapter }: { book: string; chapter: number }) {
+export default function PassageGuide({
+  book,
+  chapter,
+  sections,
+  guideName,
+}: {
+  book: string;
+  chapter: number;
+  /** A custom guide's section keys in its order; absent renders every section. */
+  sections?: GuideSectionKey[];
+  /** A custom guide's name, worn in the header in place of "Passage Guide". */
+  guideName?: string;
+}) {
   const { dispatch, reportHoverRef } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy actions; clears itself. */
@@ -161,35 +178,12 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
     </li>
   );
 
-  return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
-        <p className="small-caps text-xs font-semibold text-amber">Passage Guide</p>
-        <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
-        <p className="no-print mt-1 flex items-center gap-3">
-          {g.crossRefs.length > 0 && (
-            <button
-              type="button"
-              title="Copy the KJV text of every reference on this page"
-              onClick={copyAllTexts}
-              className={ACTION}
-            >
-              {copied === "texts" ? "Copied" : "Copy referenced texts"}
-            </button>
-          )}
-          <button
-            type="button"
-            title={`Copy a link that reopens ${reference} in the reader`}
-            onClick={copyLink}
-            className={ACTION}
-          >
-            {copied === "link" ? "Copied" : "Copy link"}
-          </button>
-          <PrintButton />
-        </p>
-      </header>
-
-      {g.commentary.length > 0 && (
+  /* The section renderers, one per section the guide API composes. A custom
+   * guide filters and orders this record; the full guide renders it in the
+   * registry's order. A section with nothing to say stays null either way. */
+  const sectionNodes: Record<GuideSectionKey, ReactNode> = {
+    commentary:
+      g.commentary.length > 0 ? (
         <GuideSection
           title="Commentaries"
           hint={`${g.commentary.length} ${g.commentary.length === 1 ? "work" : "works"} on the shelf`}
@@ -218,9 +212,10 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
             ))}
           </div>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.crossRefs.length > 0 && (
+    crossRefs:
+      g.crossRefs.length > 0 ? (
         <GuideSection title="Cross References" hint="Treasury of Scripture Knowledge, top by votes">
           <ul className="space-y-1.5">
             {g.crossRefs.map((r, i) => (
@@ -247,27 +242,31 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
             ))}
           </ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.people.length > 0 && (
+    people:
+      g.people.length > 0 ? (
         <GuideSection title="People" hint={`${g.people.length} mentioned`}>
           <ul className="space-y-1.5">{g.people.map(mentionRow)}</ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.places.length > 0 && (
+    places:
+      g.places.length > 0 ? (
         <GuideSection title="Places" hint={`${g.places.length} mentioned`}>
           <ul className="space-y-1.5">{g.places.map(mentionRow)}</ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.others.length > 0 && (
+    others:
+      g.others.length > 0 ? (
         <GuideSection title="Things" hint={`${g.others.length} mentioned`} defaultOpen={false}>
           <ul className="space-y-1.5">{g.others.map(mentionRow)}</ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.topics.length > 0 && (
+    topics:
+      g.topics.length > 0 ? (
         <GuideSection title="Topics" hint="Nave's and Torrey's citing this chapter">
           <ul className="space-y-1.5">
             {g.topics.map((t) => (
@@ -290,9 +289,10 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
             ))}
           </ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.timeline.length > 0 && (
+    timeline:
+      g.timeline.length > 0 ? (
         <GuideSection title="Timeline" hint="events touching this chapter">
           <ul className="space-y-2">
             {g.timeline.map((e) => (
@@ -329,9 +329,10 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
             ))}
           </ul>
         </GuideSection>
-      )}
+      ) : null,
 
-      {g.notableWords.length > 0 && (
+    notableWords:
+      g.notableWords.length > 0 ? (
         <GuideSection title="Notable Words" hint="most frequent in the chapter's tagging">
           <ul className="space-y-1.5">
             {g.notableWords.map((w) => (
@@ -356,7 +357,46 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
             ))}
           </ul>
         </GuideSection>
-      )}
+      ) : null,
+  };
+
+  /* The full guide wears the registry's order; a custom guide wears its own.
+   * The copy action is honest about what the page shows: without the
+   * cross-reference and timeline sections there are no referenced texts. */
+  const order = sections ?? GUIDE_SECTIONS.map((s) => s.key);
+  const showsReferences = order.includes("crossRefs") || order.includes("timeline");
+
+  return (
+    <div className="space-y-6" data-print-root>
+      <header className="border-b border-rule pb-2">
+        <p className="small-caps text-xs font-semibold text-amber">{guideName ?? "Passage Guide"}</p>
+        <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
+        <p className="no-print mt-1 flex items-center gap-3">
+          {showsReferences && g.crossRefs.length > 0 && (
+            <button
+              type="button"
+              title="Copy the KJV text of every reference on this page"
+              onClick={copyAllTexts}
+              className={ACTION}
+            >
+              {copied === "texts" ? "Copied" : "Copy referenced texts"}
+            </button>
+          )}
+          <button
+            type="button"
+            title={`Copy a link that reopens ${reference} in the reader`}
+            onClick={copyLink}
+            className={ACTION}
+          >
+            {copied === "link" ? "Copied" : "Copy link"}
+          </button>
+          <PrintButton />
+        </p>
+      </header>
+
+      {order.map((key) => (
+        <Fragment key={key}>{sectionNodes[key]}</Fragment>
+      ))}
 
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
         Composed from the datasets shipped on this installation; every section

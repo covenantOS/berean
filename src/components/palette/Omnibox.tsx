@@ -27,6 +27,10 @@
  *   "berean:open-lexicon"      { id }            Strong's id, e.g. "G25".
  *   "berean:open-guide"        { book?, chapter? }  Passage Guide; absent ref
  *                              means the passage in focus.
+ *   "berean:open-customguide"  { guideId, name, book?, chapter? }  A custom
+ *                              guide; absent ref means the passage in focus.
+ *   "berean:open-guideeditor"  { guideId? }        The Guide Editor; absent id
+ *                              opens the guide list.
  *   "berean:open-wordstudy"    { id }            Word study for a Strong's id.
  *   "berean:open-exegetical"   { book?, chapter? }  Exegetical Guide; absent
  *                              ref means the passage in focus.
@@ -60,6 +64,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { dailyRef } from "@/lib/daily-verse";
+import { guides } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
 import { layouts } from "@/components/shell/layouts";
 import { LAYOUT_PRESETS } from "@/components/shell/workspace-state";
@@ -192,6 +197,7 @@ const COMMANDS: Command[] = [
   })),
   { id: "guide", label: "Passage guide for this passage", meta: "Guide" },
   { id: "exegetical", label: "Exegetical guide for this passage", meta: "Guide" },
+  { id: "guideeditor", label: "Open the guide editor", meta: "Guide" },
   { id: "concordance", label: "Concordance for this book", meta: "Tool" },
   { id: "toggle-dock", label: "Toggle right dock" },
   { id: "daily", label: "Go to daily verse" },
@@ -212,6 +218,8 @@ export default function Omnibox() {
   const [recents, setRecents] = useState<Recent[]>([]);
   /** The user's named layouts, listed as action rows beside the presets. */
   const savedLayouts = useCollection(layouts);
+  /** The user's custom guides, listed as guide rows on a parsed reference. */
+  const customGuides = useCollection(guides);
 
   const closePalette = useCallback(() => setOpen(false), []);
   const togglePalette = useCallback(() => setOpen((o) => !o), []);
@@ -313,6 +321,8 @@ export default function Omnibox() {
       emit("berean:open-guide", {});
     } else if (id === "exegetical") {
       emit("berean:open-exegetical", {});
+    } else if (id === "guideeditor") {
+      emit("berean:open-guideeditor", {});
     } else if (id === "concordance") {
       emit("berean:open-concordance", {});
     } else if (id === "toggle-dock") {
@@ -412,6 +422,23 @@ export default function Omnibox() {
           closePalette();
         },
       });
+      for (const g of customGuides) {
+        items.push({
+          key: `ref-customguide-${g.id}`,
+          group: "References",
+          label: `${g.name}: ${parsed.label}`,
+          sub: "Your custom guide",
+          run: () => {
+            emit("berean:open-customguide", {
+              guideId: g.id,
+              name: g.name,
+              book: parsed.book,
+              chapter: parsed.chapter,
+            });
+            closePalette();
+          },
+        });
+      }
       items.push({
         key: "ref-textcompare",
         group: "References",
