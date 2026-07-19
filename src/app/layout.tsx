@@ -29,7 +29,7 @@ function LeadedMark() {
 
 const NAV = [
   { href: "/workspace", label: "Read" },
-  { href: "/pulpit", label: "Pulpit" },
+  { href: "/workspace?tab=pulpit", label: "Pulpit" },
   { href: "/chapel", label: "Chapel" },
   { href: "/workspace?tab=desk", label: "Desk" },
   { href: "/workspace?tab=library", label: "Library" },
@@ -97,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Prayers
               </Link>{" "}
               ·{" "}
-              <Link href="/study" className="text-sapphire">
+              <Link href="/workspace?tab=pulpit" className="text-sapphire">
                 Studies
               </Link>{" "}
               ·{" "}

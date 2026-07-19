@@ -41,7 +41,7 @@ export default function AlmanacPage() {
       date: e.date,
       title: e.title,
       series: e.series,
-      href: e.projectId ? `/pulpit/${e.projectId}` : e.liturgyId ? `/chapel/${e.liturgyId}` : undefined,
+      href: e.projectId ? `/workspace?tab=project:${e.projectId}` : e.liturgyId ? `/chapel/${e.liturgyId}` : undefined,
       kind: e.type as string,
       removable: true,
     })),
@@ -50,7 +50,7 @@ export default function AlmanacPage() {
       date: p.appointedFor!,
       title: p.title,
       series: p.series,
-      href: `/pulpit/${p.id}`,
+      href: `/workspace?tab=project:${p.id}`,
       kind: "sermon",
       removable: false,
     })),
@@ -215,7 +215,7 @@ export default function AlmanacPage() {
           {upcoming.length === 0 && past.length === 0 ? (
             <p className="text-sm text-muted">
               The calendar is empty. Sermons appointed with a date at the{" "}
-              <Link href="/pulpit" className="text-sapphire no-underline hover:underline">
+              <Link href="/workspace?tab=pulpit" className="text-sapphire no-underline hover:underline">
                 Pulpit
               </Link>{" "}
               appear here of themselves.

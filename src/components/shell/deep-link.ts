@@ -4,6 +4,7 @@ import {
   ENTITY_ID_PATTERN,
   EVENT_ID_PATTERN,
   MEMORY_ID_PATTERN,
+  PROJECT_ID_PATTERN,
 } from "./workspace-state";
 
 /**
@@ -48,6 +49,9 @@ import {
  *                     The Writing Desk takes two forms:
  *                       desk                     the desk itself, a singleton
  *                       manuscript:<id>          a manuscript open for editing
+ *                     The Pulpit takes two forms:
+ *                       pulpit                   the project list, a singleton
+ *                       project:<id>             a project open at its pipeline
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -111,6 +115,8 @@ export type DeepLinkTab =
   | { kind: "plans" }
   | { kind: "desk" }
   | { kind: "manuscript"; docId: string }
+  | { kind: "pulpit" }
+  | { kind: "project"; projectId: string }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -130,6 +136,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "prayers") return { kind: "prayers" };
     if (kind === "plans") return { kind: "plans" };
     if (kind === "desk") return { kind: "desk" };
+    if (kind === "pulpit") return { kind: "pulpit" };
     return null;
   }
   if (i === 0) return null;
@@ -167,6 +174,12 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       // the pane says the manuscript is gone, the way a missing list does.
       if (!DOCUMENT_ID_PATTERN.test(payload)) return null;
       return { kind: "manuscript", docId: payload };
+    }
+    case "project": {
+      // The manuscript's rule: a well-formed id opens even unanswered, and
+      // the pane says the project is gone.
+      if (!PROJECT_ID_PATTERN.test(payload)) return null;
+      return { kind: "project", projectId: payload };
     }
     case "topicguide": {
       const j = payload.indexOf(":");

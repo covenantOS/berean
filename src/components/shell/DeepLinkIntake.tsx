@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { documents } from "@/lib/documents";
+import { getProject } from "@/lib/projects";
 import { useWorkspace } from "./WorkspaceContext";
 import { lexiconTab } from "./workspace-state";
 import { parseDeepLinkRef, parseDeepLinkTab } from "./deep-link";
@@ -116,6 +117,21 @@ function Intake() {
             type: "openManuscript",
             docId: tab.docId,
             title: doc?.title ?? "Untitled manuscript",
+            paneId,
+          });
+          break;
+        }
+        case "pulpit":
+          dispatch({ type: "openPulpit", paneId });
+          break;
+        case "project": {
+          // The manuscript's rule: the title resolves when the record
+          // answers; a missing one opens anyway and the pane degrades.
+          const project = getProject(tab.projectId);
+          dispatch({
+            type: "openProject",
+            projectId: tab.projectId,
+            title: project?.title ?? "Untitled project",
             paneId,
           });
           break;

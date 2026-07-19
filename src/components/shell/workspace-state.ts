@@ -184,6 +184,28 @@ export interface ManuscriptTab {
   title: string;
 }
 
+/**
+ * The Pulpit: the project list with its kind and series filters and the
+ * archive. A singleton with no payload; the pane opens on the list itself.
+ */
+export interface PulpitTab {
+  id: string;
+  type: "pulpit";
+}
+
+/**
+ * A study or sermon project open at its pipeline, pinned to its record id.
+ * One record model serves both rooms (src/lib/projects.ts): a sermon is a
+ * study project carried through the pipeline stages.
+ */
+export interface ProjectTab {
+  id: string;
+  type: "project";
+  projectId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** The Factbook: one TIPNR entity's report, pinned to its entity id. */
 export interface FactbookTab {
   id: string;
@@ -313,6 +335,8 @@ export type Tab =
   | ListDocTab
   | DeskTab
   | ManuscriptTab
+  | PulpitTab
+  | ProjectTab
   | FactbookTab
   | LibraryTab
   | TextCompareTab
@@ -516,6 +540,14 @@ export function manuscriptTab(docId: string, title: string): ManuscriptTab {
   return { id: newId("tab"), type: "manuscript", docId, title };
 }
 
+export function pulpitTab(): PulpitTab {
+  return { id: newId("tab"), type: "pulpit" };
+}
+
+export function projectTab(projectId: string, title: string): ProjectTab {
+  return { id: newId("tab"), type: "project", projectId, title };
+}
+
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
 export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
 
@@ -528,6 +560,9 @@ export const MEMORY_ID_PATTERN =
 
 /** Manuscript ids are the store's UUIDs, the same shape memory passage ids take. */
 export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Project ids are the store's UUIDs, the same shape memory passage ids take. */
+export const PROJECT_ID_PATTERN = MEMORY_ID_PATTERN;
 
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
@@ -852,6 +887,8 @@ export type WorkspaceAction =
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "openDesk"; paneId?: string }
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
+  | { type: "openPulpit"; paneId?: string }
+  | { type: "openProject"; projectId: string; title: string; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1317,6 +1354,64 @@ export function workspaceReducer(
         };
       }
       const tab = manuscriptTab(docId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openPulpit": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One pulpit per pane: a second open activates the tab already there,
+      // the desk's singleton pattern.
+      const existing = leaf.tabs.find((t) => t.type === "pulpit");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = pulpitTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openProject": {
+      const projectId = action.projectId.trim();
+      if (!PROJECT_ID_PATTERN.test(projectId)) return state;
+      const title = action.title.trim() || "Untitled project";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per project per pane: reopening the same record activates
+      // the tab already there, the manuscript's pattern keyed by projectId.
+      // Edits land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "project" && t.projectId === projectId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = projectTab(projectId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -2123,6 +2218,20 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled manuscript";
         tabs.push({ id: t.id, type: "manuscript", docId: t.docId, title });
+        continue;
+      }
+      if (t.type === "pulpit" && typeof t.id === "string") {
+        // A singleton; it carries nothing to validate.
+        tabs.push({ id: t.id, type: "pulpit" });
+        continue;
+      }
+      if (t.type === "project" && typeof t.id === "string") {
+        // Like a manuscript, a malformed id drops the tab and an unanswered
+        // one loads anyway; the pane says the project is gone.
+        if (typeof t.projectId !== "string" || !PROJECT_ID_PATTERN.test(t.projectId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Untitled project";
+        tabs.push({ id: t.id, type: "project", projectId: t.projectId, title });
         continue;
       }
       if (t.type === "factbook" && typeof t.id === "string") {

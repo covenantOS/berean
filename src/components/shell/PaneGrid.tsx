@@ -42,6 +42,8 @@ import TopicGuide from "./TopicGuide";
 import ListDocPane from "./ListDocPane";
 import DeskPane from "./DeskPane";
 import ManuscriptPane from "./ManuscriptPane";
+import PulpitPane from "./PulpitPane";
+import ProjectPane from "./ProjectPane";
 import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
 import TextCompare from "./TextCompare";
@@ -153,6 +155,8 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "listdoc") return `List: ${tab.title}`;
   if (tab.type === "desk") return "Writing";
   if (tab.type === "manuscript") return tab.title;
+  if (tab.type === "pulpit") return "Pulpit";
+  if (tab.type === "project") return tab.title;
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "library") return "Library";
   if (tab.type === "textcompare") {
@@ -583,6 +587,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "manuscript" ? (
             <div className="h-full overflow-y-auto p-4">
               <ManuscriptPane docId={activeTab.docId} />
+            </div>
+          ) : activeTab.type === "pulpit" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <PulpitPane />
+            </div>
+          ) : activeTab.type === "project" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ProjectPane projectId={activeTab.projectId} />
             </div>
           ) : activeTab.type === "factbook" ? (
             <div className="h-full overflow-y-auto p-4">

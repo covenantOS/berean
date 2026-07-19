@@ -21,6 +21,7 @@ import {
 import { isDue, memoryPassages } from "@/lib/memory";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
+import { normalize, projects as projectsCollection } from "@/lib/projects";
 import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
@@ -800,12 +801,15 @@ const LIBRARY_SECTIONS: { title: string; items: { label: string; note?: string }
 
 /**
  * The Study rail: the Writing Desk's manuscripts, each opening in its own
- * tab, beside the desk itself as the manage surface. Studies, projects, and
- * the sermon pipeline gather here when their panels land.
+ * tab, beside the desk itself as the manage surface. Projects gather under
+ * their own heading, sermons and studies alike, each opening at its
+ * pipeline; the Pulpit pane carries the filters, the appointed dates, and
+ * the archive.
  */
 function StudyPanel() {
   const { dispatch } = useWorkspace();
   const docs = useCollection(documents);
+  const projectRows = useCollection(projectsCollection).map(normalize);
   return (
     <div className="py-1">
       <div className="px-3 pt-2 pb-1">
@@ -816,6 +820,16 @@ function StudyPanel() {
           className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Open the Writing Desk
+        </button>
+      </div>
+      <div className="px-3 pt-1 pb-1">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openPulpit" })}
+          title="Open the Pulpit as a pane"
+          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Open the Pulpit
         </button>
       </div>
       <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -845,10 +859,31 @@ function StudyPanel() {
           ))}
         </ul>
       )}
-      <p className="px-3 py-3 text-[0.7rem] leading-relaxed text-muted">
-        Studies, projects, and the sermon pipeline will gather here. Until
-        then, open a passage and split the pane.
-      </p>
+      <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+        Projects
+      </div>
+      {projectRows.length === 0 ? (
+        <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+          No projects yet. Appoint a text in the Pulpit pane and it waits
+          here too.
+        </p>
+      ) : (
+        <ul>
+          {projectRows.map((p) => (
+            <li key={p.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "openProject", projectId: p.id, title: p.title })}
+                title={`Open ${p.title} at its pipeline`}
+                className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {p.title}
+              </button>
+              <span className="shrink-0 text-[0.62rem] text-muted">{p.kind}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
