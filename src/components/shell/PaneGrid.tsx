@@ -30,6 +30,7 @@ import {
 } from "./workspace-state";
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
+import DocSearchPane from "./DocSearchPane";
 import ToolTabBody from "./ToolTabBody";
 import PassageGuide from "./PassageGuide";
 import WordStudyGuide from "./WordStudyGuide";
@@ -117,6 +118,7 @@ function tabLabel(tab: Tab): string {
     }`;
   }
   if (tab.type === "search") return `“${tab.q}”`;
+  if (tab.type === "docsearch") return `“${tab.q}” · Docs`;
   if (tab.type === "commentary") return "Commentary";
   if (tab.type === "crossrefs") return "Cross-refs";
   if (tab.type === "guide") return `Guide: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
@@ -495,6 +497,8 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             />
           ) : activeTab.type === "search" ? (
             <SearchPane q={activeTab.q} />
+          ) : activeTab.type === "docsearch" ? (
+            <DocSearchPane q={activeTab.q} />
           ) : activeTab.type === "guide" ? (
             <div className="h-full overflow-y-auto p-4">
               <PassageGuide book={activeTab.book} chapter={activeTab.chapter} />

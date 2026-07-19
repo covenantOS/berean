@@ -86,15 +86,43 @@ function Placeholder({ text }: { text: string }) {
  * The Search rail: every query the workspace runs is remembered here
  * (src/lib/search-history.ts), newest first, and any of them re-runs with a
  * click. A pinned search never ages out; the pin toggles from a row's star
- * or from the search pane's own header.
+ * or from the search pane's own header. The documents box on top searches
+ * the user's own collections instead of the canon; its queries stay out of
+ * the concordance history, which re-runs everything as a Bible search.
  */
 function SearchPanel() {
   const { dispatch } = useWorkspace();
   const { history, favorites } = useSearchSaves();
   const rerun = (q: string) => dispatch({ type: "openSearch", q });
+  /** The Docs Search box: prose over the user's own collections. */
+  const [docQuery, setDocQuery] = useState("");
+
+  const runDocSearch = () => {
+    const q = docQuery.trim();
+    if (q.length < 2) return;
+    dispatch({ type: "openDocSearch", q });
+    setDocQuery("");
+  };
 
   return (
     <div className="py-1">
+      <div className="px-3 pt-2 pb-1">
+        <input
+          type="search"
+          value={docQuery}
+          aria-label="Search your notes, manuscripts, lists, and prayers"
+          placeholder="Search your documents…"
+          onChange={(e) => setDocQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") runDocSearch();
+          }}
+          className="w-full border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+        <p className="pt-1 text-[0.68rem] leading-relaxed text-muted">
+          Your notes, manuscripts, lists, and prayers answer; Enter opens the
+          Docs Search pane.
+        </p>
+      </div>
       <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
         Pinned searches
       </div>
@@ -777,11 +805,17 @@ const byCanon = (
 ) => bookIndex(a.book) - bookIndex(b.book) || a.chapter - b.chapter || a.verse - b.verse;
 
 function DocumentsList() {
-  const { dispatch } = useWorkspace();
+  const { dispatch, activeRef } = useWorkspace();
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const filterSets = useCollection(visualFilters);
   const notes = useCollection(marginNotes).slice().sort(byCanon);
+  /** The "This passage" filter: only notes inside the pane in focus show. */
+  const [thisPassage, setThisPassage] = useState(false);
+  const shownNotes =
+    thisPassage && activeRef
+      ? notes.filter((n) => n.book === activeRef.book && n.chapter === activeRef.chapter)
+      : notes;
   if (docs.length === 0 && lists.length === 0 && filterSets.length === 0 && notes.length === 0) {
     return (
       <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them, and the marginalia you write on verses collect below." />
@@ -862,11 +896,37 @@ function DocumentsList() {
       )}
       {notes.length > 0 && (
         <>
-          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
-            Notes
+          <div className="flex items-baseline justify-between gap-2 px-3 pt-3 pb-1">
+            <div className="small-caps text-[0.62rem] font-semibold text-muted">Notes</div>
+            <button
+              type="button"
+              aria-pressed={thisPassage}
+              title={
+                thisPassage
+                  ? "Show every note again"
+                  : "Show only the notes inside the passage in front of you"
+              }
+              onClick={() => setThisPassage((v) => !v)}
+              className={`text-[0.62rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                thisPassage ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
+              }`}
+            >
+              This passage
+            </button>
           </div>
+          {thisPassage && !activeRef && (
+            <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+              Open a passage and the notes beside it gather here.
+            </p>
+          )}
+          {thisPassage && activeRef && shownNotes.length === 0 && (
+            <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+              No notes on {getBook(activeRef.book)?.name ?? activeRef.book} {activeRef.chapter}{" "}
+              yet.
+            </p>
+          )}
           <ul>
-            {notes.map((n) => {
+            {shownNotes.map((n) => {
               const reference = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
               return (
                 <li key={n.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">

@@ -57,9 +57,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Smart Bible Search: question in, verified verses out, with AI candidates confirmed against the actual licensed text; all tiers.
 - [ ] [DATA] Speaker and Addressee extensions: {Speaker <Person Jesus>} and {Addressee <Person Peter>} over the reported speech dataset.
 - [ ] [DATA] Datatype and label search: <Person Peter>, {Label ...}, {Section ...}, {Milestone ...} reach every dataset.
-- [ ] [SW] Search Templates: fill-in forms for common morph, clause, and dataset queries.
+- [x] [SW] Search Templates: fill-in forms for common morph, clause, and dataset queries. (Five forms ship in the search pane's Templates strip (src/components/shell/SearchPane.tsx): two words near each other (a WITHIN n WORDS OF b, multiword inputs quoted as phrases), a phrase in a book ("..." in:slug with the book name resolved through canon.ts), any of these words (an OR chain), one word but not another (a NOT b), and a Strong's number in a book (G26 in:romans). The first four run as ordinary searches and enter the rail's history; the Strong's form links to the /search page's original mode, which answers Greek and Hebrew numbers the concordance cannot. Clause and dataset forms await their datasets.)
 - [x] [SW] Inline Search: find box scoped to the open book with match navigation. (Shipped scoped to the open chapter rather than the whole book: a Find toggle on the reader pane opens a quiet find row that searches the fetched chapter text client-side, marks every hit in violet (.find-match in src/app/globals.css, a third channel beside the highlight tints and the filter underlines), and walks the hits with prev/next, a live count, and scroll-into-view. Enter and Shift+Enter step, Escape closes and clears. The Words and Original views render their own words, so the box keeps to the plain chapter text and closes when those views take over. Whole-book scope would fetch every chapter of the book through /api/pane/chapter; left future.)
-- [ ] [SW] Docs Search (Logos 10): search tab over your own notes, sermons, clippings, and documents.
+- [x] [SW] Docs Search (Logos 10): search tab over your own notes, sermons, clippings, and documents. (Ships as a docsearch pane tab kind: the Search rail's documents box opens it, and it matches case-folded substrings across marginalia, Writing Desk manuscripts, passage and word lists, and prayer requests (src/lib/docsearch.ts), read live from the collections so new writing answers without a re-index. Hits carry context snippets and open their targets: a note opens its verse with the context strip, a manuscript links to /desk/[id], a list opens its listdoc tab, a prayer links to /prayers, and the header handoff runs the same words against the canon. Matching is plain substring, the right shape at one device's scale; the precise grammar stays with the concordance. Clippings do not exist yet, so nothing searches them.)
 - [ ] [SW] Specialized search tabs: Factbook Search, Maps Search, Media Search, Bookstore Search.
 - [ ] [SW] Result views: Verses, Aligned, Grid, and Analysis arrangements for Bible and morph results.
 - [x] [SW] Charts tool: bar, column, pie, donut, line, and area frequency graphs of results by book or chapter; also launched from word study translation rings.
@@ -139,8 +139,8 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Notes import: Wordsearch and BibleWorks importers for migrating users.
 - [ ] [SW] Print and export for notes and clippings.
 - [ ] [SW] Journaling: date-based notebooks and filters used as a journal.
-- [ ] [SW] Reference-range filtering: the Notes panel filters everything to the passage in front of you.
-- [ ] [SW] Docs indexing: notes and highlights flow into Docs Search and All Search.
+- [x] [SW] Reference-range filtering: the Notes panel filters everything to the passage in front of you. (A "This passage" toggle on the Documents rail's Notes section (src/components/shell/Sidebar.tsx) narrows the list to notes inside the active pane's chapter, following the workspace's activeRef as the pane navigates; default off, session-local state, with quiet lines for no open passage and for a chapter without notes.)
+- [ ] [SW] Docs indexing: notes and highlights flow into Docs Search and All Search. (Notes already answer in Docs Search, read live from the collection so no indexing step exists; highlights and an All Search remain.)
 
 ## 6. Layouts and Linking
 

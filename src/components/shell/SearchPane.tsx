@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { CANON, getBook } from "@/lib/canon";
+import Link from "next/link";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { CANON, getBook, resolveBookName } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
-import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
+import { recordSearch, toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { createVisualFilter } from "@/lib/visualfilters";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
 import PrintButton from "./PrintButton";
@@ -99,6 +100,15 @@ export default function SearchPane({ q }: { q: string }) {
   const [filterSaved, setFilterSaved] = useState(false);
   /** The syntax quick reference under the header. */
   const [showSyntax, setShowSyntax] = useState(false);
+  /** The fill-in query forms under the header. */
+  const [showTemplates, setShowTemplates] = useState(false);
+
+  /* A template's generated query runs as an ordinary search: the rail's
+   * history records it, and a fresh concordance pane answers it. */
+  const runGenerated = (generated: string) => {
+    recordSearch(generated);
+    dispatch({ type: "openSearch", q: generated });
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -183,6 +193,17 @@ export default function SearchPane({ q }: { q: string }) {
         )}
         <button
           type="button"
+          title="Fill-in forms that write a precise query for you"
+          aria-expanded={showTemplates}
+          onClick={() => setShowTemplates((v) => !v)}
+          className={`no-print ml-3 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            showTemplates ? "text-sapphire" : "text-muted hover:text-ink"
+          }`}
+        >
+          Templates
+        </button>
+        <button
+          type="button"
           title="Search syntax"
           aria-expanded={showSyntax}
           onClick={() => setShowSyntax((v) => !v)}
@@ -210,6 +231,7 @@ export default function SearchPane({ q }: { q: string }) {
           </p>
         </div>
       )}
+      {showTemplates && <TemplatesPanel onRun={runGenerated} />}
       {namingFilter && load.status === "ready" && (
         <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
           <label htmlFor="vf-name" className="text-[0.72rem] text-muted">
@@ -507,5 +529,234 @@ function ChartView({ books, truncated, listed }: { books: BookBucket[]; truncate
           : "A book drills into its chapters."}
       </p>
     </div>
+  );
+}
+
+/* ---------- Templates: fill-in forms that write the query ---------- */
+
+/** One query term: a bare word, or a quoted phrase when the input carries spaces. */
+function termOf(input: string): string {
+  const t = input.trim().replace(/["“”]/g, "").replace(/\s+/g, " ");
+  return t.includes(" ") ? `"${t}"` : t;
+}
+
+const TPL_INPUT =
+  "border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire";
+const TPL_RUN =
+  "border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink no-underline hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+
+/**
+ * The templates strip: a small set of forms for the questions the precise
+ * grammar answers, so the syntax is never a prerequisite. Each form builds
+ * its query live under the inputs; running one dispatches an ordinary
+ * search. The Strong's form is the exception: Greek and Hebrew numbers are
+ * original-language questions, so it links to the /search page's original
+ * mode, which answers them; the concordance never sees the query.
+ */
+function TemplatesPanel({ onRun }: { onRun: (q: string) => void }) {
+  return (
+    <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+      <p className="pb-1 text-[0.72rem] text-muted">
+        Fill a form and the query writes itself; it runs as an ordinary search and enters the
+        rail&apos;s history.
+      </p>
+      <NearTemplate onRun={onRun} />
+      <PhraseTemplate onRun={onRun} />
+      <AnyOfTemplate onRun={onRun} />
+      <WithoutTemplate onRun={onRun} />
+      <StrongsTemplate />
+    </div>
+  );
+}
+
+/** One form row: the label, the inputs, the run action, the live query. */
+function TemplateRow({
+  label,
+  ready,
+  onRun,
+  preview,
+  children,
+}: {
+  label: string;
+  ready: boolean;
+  onRun?: () => void;
+  preview: string;
+  children: ReactNode;
+}) {
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (ready && onRun) onRun();
+  };
+  return (
+    <form
+      onSubmit={submit}
+      className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-rule/60 py-1.5 first:border-t-0"
+    >
+      <span className="small-caps w-44 shrink-0 text-[0.68rem] font-semibold text-muted">
+        {label}
+      </span>
+      {children}
+      {onRun && (
+        <button type="submit" disabled={!ready} className={TPL_RUN}>
+          Search
+        </button>
+      )}
+      {ready && <span className="text-[0.68rem] text-muted">{preview}</span>}
+    </form>
+  );
+}
+
+/** grace WITHIN 5 WORDS OF truth */
+function NearTemplate({ onRun }: { onRun: (q: string) => void }) {
+  const [a, setA] = useState("");
+  const [b, setB] = useState("");
+  const [windowInput, setWindowInput] = useState("5");
+  const n = Number(windowInput);
+  const ready =
+    a.trim().length > 0 && b.trim().length > 0 && Number.isInteger(n) && n >= 1 && n <= 20;
+  const q = ready ? `${termOf(a)} WITHIN ${n} WORDS OF ${termOf(b)}` : "";
+  return (
+    <TemplateRow label="Two words near each other" ready={ready} onRun={() => onRun(q)} preview={q}>
+      <input
+        value={a}
+        onChange={(e) => setA(e.target.value)}
+        placeholder="grace"
+        aria-label="First word"
+        className={`w-28 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">within</span>
+      <input
+        value={windowInput}
+        onChange={(e) => setWindowInput(e.target.value)}
+        inputMode="numeric"
+        aria-label="Word window"
+        className={`w-12 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">words of</span>
+      <input
+        value={b}
+        onChange={(e) => setB(e.target.value)}
+        placeholder="truth"
+        aria-label="Second word"
+        className={`w-28 ${TPL_INPUT}`}
+      />
+    </TemplateRow>
+  );
+}
+
+/** "grace and truth" in:john */
+function PhraseTemplate({ onRun }: { onRun: (q: string) => void }) {
+  const [phrase, setPhrase] = useState("");
+  const [book, setBook] = useState("");
+  const resolved = resolveBookName(book);
+  const p = phrase.trim().replace(/["“”]/g, "").replace(/\s+/g, " ");
+  const ready = p.length > 0 && resolved !== undefined;
+  const q = ready ? `"${p}" in:${resolved!.slug}` : "";
+  return (
+    <TemplateRow label="A phrase in a book" ready={ready} onRun={() => onRun(q)} preview={q}>
+      <input
+        value={phrase}
+        onChange={(e) => setPhrase(e.target.value)}
+        placeholder="grace and truth"
+        aria-label="Phrase"
+        className={`w-44 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">in</span>
+      <input
+        value={book}
+        onChange={(e) => setBook(e.target.value)}
+        placeholder="john"
+        aria-label="Book"
+        className={`w-24 ${TPL_INPUT}`}
+      />
+      {book.trim().length > 0 && !resolved && (
+        <span className="text-[0.68rem] text-ruby">No book answers to that name.</span>
+      )}
+    </TemplateRow>
+  );
+}
+
+/** faith OR hope OR love */
+function AnyOfTemplate({ onRun }: { onRun: (q: string) => void }) {
+  const [words, setWords] = useState("");
+  const tokens = words.split(/[\s,]+/).filter(Boolean);
+  const ready = tokens.length >= 2;
+  const q = ready ? tokens.join(" OR ") : "";
+  return (
+    <TemplateRow label="Any of these words" ready={ready} onRun={() => onRun(q)} preview={q}>
+      <input
+        value={words}
+        onChange={(e) => setWords(e.target.value)}
+        placeholder="faith hope love"
+        aria-label="Words, separated by spaces or commas"
+        className={`w-56 ${TPL_INPUT}`}
+      />
+    </TemplateRow>
+  );
+}
+
+/** justified NOT works */
+function WithoutTemplate({ onRun }: { onRun: (q: string) => void }) {
+  const [keep, setKeep] = useState("");
+  const [drop, setDrop] = useState("");
+  const ready = keep.trim().length > 0 && drop.trim().length > 0;
+  const q = ready ? `${termOf(keep)} NOT ${termOf(drop)}` : "";
+  return (
+    <TemplateRow label="One word but not another" ready={ready} onRun={() => onRun(q)} preview={q}>
+      <input
+        value={keep}
+        onChange={(e) => setKeep(e.target.value)}
+        placeholder="justified"
+        aria-label="Word to find"
+        className={`w-28 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">but not</span>
+      <input
+        value={drop}
+        onChange={(e) => setDrop(e.target.value)}
+        placeholder="works"
+        aria-label="Word to exclude"
+        className={`w-28 ${TPL_INPUT}`}
+      />
+    </TemplateRow>
+  );
+}
+
+/** G26 in:romans, answered by the original-language search page */
+function StrongsTemplate() {
+  const [id, setId] = useState("");
+  const [book, setBook] = useState("");
+  const resolved = resolveBookName(book);
+  const sid = id.trim().toUpperCase();
+  const ready = /^[GH]\d{1,5}$/.test(sid) && resolved !== undefined;
+  const q = ready ? `${sid} in:${resolved!.slug}` : "";
+  return (
+    <TemplateRow label="Strong's number in a book" ready={ready} preview={q}>
+      <input
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        placeholder="G26"
+        aria-label="Strong's number"
+        className={`w-20 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">in</span>
+      <input
+        value={book}
+        onChange={(e) => setBook(e.target.value)}
+        placeholder="romans"
+        aria-label="Book"
+        className={`w-24 ${TPL_INPUT}`}
+      />
+      {ready ? (
+        <Link href={`/search?mode=original&q=${encodeURIComponent(q)}`} className={TPL_RUN}>
+          Search
+        </Link>
+      ) : (
+        <button type="submit" disabled className={TPL_RUN}>
+          Search
+        </button>
+      )}
+      <span className="text-[0.68rem] text-muted">runs on the original-language search page</span>
+    </TemplateRow>
   );
 }
