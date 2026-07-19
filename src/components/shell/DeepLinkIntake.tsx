@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { documents } from "@/lib/documents";
+import { liturgies } from "@/lib/liturgy";
 import { getProject } from "@/lib/projects";
 import { useWorkspace } from "./WorkspaceContext";
 import { lexiconTab } from "./workspace-state";
@@ -136,6 +137,24 @@ function Intake() {
           });
           break;
         }
+        case "chapel":
+          dispatch({ type: "openChapel", paneId });
+          break;
+        case "service": {
+          // The project's rule: the title resolves when the record answers;
+          // a missing one opens anyway and the pane degrades.
+          const service = liturgies.get(tab.serviceId);
+          dispatch({
+            type: "openService",
+            serviceId: tab.serviceId,
+            title: service?.title ?? "Order of Worship",
+            paneId,
+          });
+          break;
+        }
+        case "almanac":
+          dispatch({ type: "openAlmanac", paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

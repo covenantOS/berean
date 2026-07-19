@@ -206,6 +206,28 @@ export interface ProjectTab {
   title: string;
 }
 
+/**
+ * The Chapel: the orders of worship with the settled forms and the evening
+ * family order. A singleton with no payload; the pane opens on the list
+ * itself.
+ */
+export interface ChapelTab {
+  id: string;
+  type: "chapel";
+}
+
+/**
+ * An order of service open in the composer, pinned to its liturgy record id
+ * (src/lib/liturgy.ts).
+ */
+export interface ServiceTab {
+  id: string;
+  type: "service";
+  serviceId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** The Factbook: one TIPNR entity's report, pinned to its entity id. */
 export interface FactbookTab {
   id: string;
@@ -293,6 +315,16 @@ export interface PlansTab {
 }
 
 /**
+ * The Almanac: the preaching and teaching calendar with the rule of life
+ * and the day's appointed work. A singleton with no payload; the pane opens
+ * on the calendar itself.
+ */
+export interface AlmanacTab {
+  id: string;
+  type: "almanac";
+}
+
+/**
  * The Timeline: the curated chronology in era bands. An event id opens the
  * chart with that event selected, the way the retired page's ?event= did.
  */
@@ -337,6 +369,8 @@ export type Tab =
   | ManuscriptTab
   | PulpitTab
   | ProjectTab
+  | ChapelTab
+  | ServiceTab
   | FactbookTab
   | LibraryTab
   | TextCompareTab
@@ -347,6 +381,7 @@ export type Tab =
   | JournalTab
   | PrayersTab
   | PlansTab
+  | AlmanacTab
   | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -548,6 +583,18 @@ export function projectTab(projectId: string, title: string): ProjectTab {
   return { id: newId("tab"), type: "project", projectId, title };
 }
 
+export function chapelTab(): ChapelTab {
+  return { id: newId("tab"), type: "chapel" };
+}
+
+export function serviceTab(serviceId: string, title: string): ServiceTab {
+  return { id: newId("tab"), type: "service", serviceId, title };
+}
+
+export function almanacTab(): AlmanacTab {
+  return { id: newId("tab"), type: "almanac" };
+}
+
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
 export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
 
@@ -563,6 +610,9 @@ export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
 
 /** Project ids are the store's UUIDs, the same shape memory passage ids take. */
 export const PROJECT_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Liturgy service ids are the store's UUIDs, the same shape memory passage ids take. */
+export const SERVICE_ID_PATTERN = MEMORY_ID_PATTERN;
 
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
@@ -889,6 +939,9 @@ export type WorkspaceAction =
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
   | { type: "openPulpit"; paneId?: string }
   | { type: "openProject"; projectId: string; title: string; paneId?: string }
+  | { type: "openChapel"; paneId?: string }
+  | { type: "openService"; serviceId: string; title: string; paneId?: string }
+  | { type: "openAlmanac"; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1412,6 +1465,91 @@ export function workspaceReducer(
         };
       }
       const tab = projectTab(projectId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openChapel": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One chapel per pane: a second open activates the tab already there,
+      // the pulpit's singleton pattern.
+      const existing = leaf.tabs.find((t) => t.type === "chapel");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = chapelTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openService": {
+      const serviceId = action.serviceId.trim();
+      if (!SERVICE_ID_PATTERN.test(serviceId)) return state;
+      const title = action.title.trim() || "Order of Worship";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per service per pane: reopening the same record activates
+      // the tab already there, the project's pattern keyed by serviceId.
+      // Edits land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "service" && t.serviceId === serviceId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = serviceTab(serviceId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openAlmanac": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One almanac per pane: a second open activates the tab already there,
+      // the pulpit's singleton pattern.
+      const existing = leaf.tabs.find((t) => t.type === "almanac");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = almanacTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -2234,6 +2372,20 @@ function sanitizeNode(node: unknown): PaneNode | null {
         tabs.push({ id: t.id, type: "project", projectId: t.projectId, title });
         continue;
       }
+      if (t.type === "chapel" && typeof t.id === "string") {
+        // A singleton; it carries nothing to validate.
+        tabs.push({ id: t.id, type: "chapel" });
+        continue;
+      }
+      if (t.type === "service" && typeof t.id === "string") {
+        // The project's rule: a malformed id drops the tab and an unanswered
+        // one loads anyway; the pane says the service is gone.
+        if (typeof t.serviceId !== "string" || !SERVICE_ID_PATTERN.test(t.serviceId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Order of Worship";
+        tabs.push({ id: t.id, type: "service", serviceId: t.serviceId, title });
+        continue;
+      }
       if (t.type === "factbook" && typeof t.id === "string") {
         if (typeof t.entityId !== "string" || !ENTITY_ID_PATTERN.test(t.entityId)) continue;
         const title =
@@ -2303,7 +2455,7 @@ function sanitizeNode(node: unknown): PaneNode | null {
         continue;
       }
       if (
-        (t.type === "journal" || t.type === "prayers" || t.type === "plans") &&
+        (t.type === "journal" || t.type === "prayers" || t.type === "plans" || t.type === "almanac") &&
         typeof t.id === "string"
       ) {
         // Singletons carry nothing to validate.

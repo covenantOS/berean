@@ -44,6 +44,9 @@ import DeskPane from "./DeskPane";
 import ManuscriptPane from "./ManuscriptPane";
 import PulpitPane from "./PulpitPane";
 import ProjectPane from "./ProjectPane";
+import ChapelPane from "./ChapelPane";
+import ServicePane from "./ServicePane";
+import AlmanacPane from "./AlmanacPane";
 import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
 import TextCompare from "./TextCompare";
@@ -157,6 +160,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "manuscript") return tab.title;
   if (tab.type === "pulpit") return "Pulpit";
   if (tab.type === "project") return tab.title;
+  if (tab.type === "chapel") return "Chapel";
+  if (tab.type === "service") return tab.title;
+  if (tab.type === "almanac") return "Almanac";
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "library") return "Library";
   if (tab.type === "textcompare") {
@@ -595,6 +601,18 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "project" ? (
             <div className="h-full overflow-y-auto p-4">
               <ProjectPane projectId={activeTab.projectId} />
+            </div>
+          ) : activeTab.type === "chapel" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ChapelPane />
+            </div>
+          ) : activeTab.type === "service" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ServicePane serviceId={activeTab.serviceId} />
+            </div>
+          ) : activeTab.type === "almanac" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <AlmanacPane />
             </div>
           ) : activeTab.type === "factbook" ? (
             <div className="h-full overflow-y-auto p-4">

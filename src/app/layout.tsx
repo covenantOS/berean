@@ -30,10 +30,10 @@ function LeadedMark() {
 const NAV = [
   { href: "/workspace", label: "Read" },
   { href: "/workspace?tab=pulpit", label: "Pulpit" },
-  { href: "/chapel", label: "Chapel" },
+  { href: "/workspace?tab=chapel", label: "Chapel" },
   { href: "/workspace?tab=desk", label: "Desk" },
   { href: "/workspace?tab=library", label: "Library" },
-  { href: "/almanac", label: "Almanac" },
+  { href: "/workspace?tab=almanac", label: "Almanac" },
   { href: "/settings", label: "Settings" },
 ];
 

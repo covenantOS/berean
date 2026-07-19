@@ -227,7 +227,8 @@ function ModeTag({ mode }: { mode?: SearchEntry["mode"] }) {
  * plan's reading for today, each chapter opening in the workspace with a
  * click, and the prayer requests that stand due, marked prayed in place.
  * The plans pane remains the home for beginning, marking, and adjusting;
- * the calendar and rule of life arrive with their panels.
+ * the calendar and the rule of life live in the Almanac pane, a click away
+ * at the top.
  */
 function AlmanacPanel() {
   const { dispatch } = useWorkspace();
@@ -242,33 +243,42 @@ function AlmanacPanel() {
     .filter((x): x is NonNullable<typeof x> => x !== null);
   const due = dueRequests(prayers);
   const dueMemory = memory.filter((p) => isDue(p));
-
-  if (active.length === 0 && due.length === 0 && dueMemory.length === 0) {
-    return (
-      <p className="px-3 py-4 text-xs leading-relaxed text-muted">
-        Nothing is appointed for today. Begin a plan in the{" "}
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "openPlans" })}
-          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-        >
-          plans pane
-        </button>{" "}
-        or a list in the{" "}
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "openPrayers" })}
-          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-        >
-          prayers pane
-        </button>{" "}
-        and the day&apos;s portion waits here.
-      </p>
-    );
-  }
+  const empty = active.length === 0 && due.length === 0 && dueMemory.length === 0;
 
   return (
     <div className="py-1">
+      <div className="px-3 pt-2 pb-1">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openAlmanac" })}
+          title="Open the Almanac as a pane"
+          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Open the calendar
+        </button>
+      </div>
+      {empty ? (
+        <p className="px-3 py-4 text-xs leading-relaxed text-muted">
+          Nothing is appointed for today. Begin a plan in the{" "}
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "openPlans" })}
+            className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            plans pane
+          </button>{" "}
+          or a list in the{" "}
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "openPrayers" })}
+            className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            prayers pane
+          </button>{" "}
+          and the day&apos;s portion waits here.
+        </p>
+      ) : (
+        <>
       {active.length > 0 && (
         <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
           Today&apos;s readings
@@ -399,6 +409,8 @@ function AlmanacPanel() {
         </button>
         .
       </p>
+        </>
+      )}
     </div>
   );
 }

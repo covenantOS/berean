@@ -30,7 +30,7 @@ Before changing product behavior, read:
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
-- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/search`), `/chapel`, `/almanac`, `/settings`, `/sources`
+- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, `/chapel`, `/almanac`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/search`), `/settings`, `/sources`
 - The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
 - `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory

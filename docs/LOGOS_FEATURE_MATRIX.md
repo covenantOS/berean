@@ -238,14 +238,14 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 - [x] [SW] Bible reading plan generator: any range and pace with automatic session division, catch-up, and adjustment. (The plans pane builds a plan from any canon range at a pace set in chapters per day or in days, dividing the chapters evenly across the sessions (src/lib/plans.ts); single-chapter books and cross-testament ranges divide whole, and days clamp to the chapter count so no session comes up empty. A plan that falls behind offers Catch up, which redistributes the unread remainder over the days remaining, holding the plan's original pace when the end date has passed. Named historic calendars still wait on verified source tables.)
 - [ ] [SW] Book reading plans: schedule any library book by sessions, pages, or milestones.
-- [x] [SW] Plan tracking: mark done, progress bars, Dashboard cards, mobile reminders; syncs across devices. (Days mark done from the plans pane, and each plan carries a progress bar counting chapters read against the whole. The day's reading deep-links into the reader from the plans pane, the Almanac, and the Chapel, and opens straight into the workspace from the Almanac rail. Dashboard cards and mobile reminders do not ship, and records stay on this device until the sync layer lands.)
+- [x] [SW] Plan tracking: mark done, progress bars, Dashboard cards, mobile reminders; syncs across devices. (Days mark done from the plans pane, and each plan carries a progress bar counting chapters read against the whole. The day's reading deep-links into the reader from the plans pane, the almanac pane, and the chapel pane, and opens straight into the workspace from the Almanac rail. Dashboard cards and mobile reminders do not ship, and records stay on this device until the sync layer lands.)
 - [ ] [SW] Group plans: share reading plans to Faithlife groups.
 - [ ] [DATA][LICENSED] Lectionary and daily readings content (Catholic Daily Readings and similar) as ready-made plans.
 
 ## 13. Prayer Lists
 
 - [x] [SW] Prayer list documents: requests with tags, categories, and custom fields. (Requests carry a title, optional details, free-form tags and category, and an optional passage that deep-links into the reader; named lists live in their own collection with the sync envelope. Custom field schemas do not ship; tags and a free-form category carry the sorting load honestly.)
-- [x] [SW] Prayer scheduling: per-request frequency settings with last-prayed tracking. (Each request waits daily, weekly, or as it comes; a pray-now mark records the last-prayed timestamp, and a due-today view derives from frequency and that mark in the prayers pane, in the Almanac, and in the workspace rail.)
+- [x] [SW] Prayer scheduling: per-request frequency settings with last-prayed tracking. (Each request waits daily, weekly, or as it comes; a pray-now mark records the last-prayed timestamp, and a due-today view derives from frequency and that mark in the prayers pane, in the almanac pane, and in the workspace rail.)
 - [x] [SW] Answered prayer tracking: mark requests answered and keep the history. (Marking answered records the date and an optional note and rests the request in a per-list answered history, newest first, which can be read back and the request carried again.)
 - [ ] [SW] Sharing: prayer lists share to Faithlife groups like other documents.
 - [ ] [SW] Cross-device sync and mobile access.
@@ -255,7 +255,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [DATA] Word List documents: vocabulary lists with lemma, gloss, and occurrence counts pulled from any passage or search.
 - [ ] [SW] Flashcard drilling: word lists sync to companion flashcard mobile apps. (Skipped for now: no companion apps exist to sync to.)
 - [x] [SW] Word Find Puzzle generator: printable puzzles built from any word list. (A word list's Puzzle action seats its glosses and transliterations on a hand-rolled letter grid, eight directions with honest crossings, no dependency; the puzzle prints through the shared report print rules and is regenerated, never stored.)
-- [ ] [SW] Gap note: Logos has no native verse memorization trainer; the legacy Faithlife Bible Memory app is defunct. Berean can outflank them here. (Outflanked: Berean ships the trainer. Verses are taken up from the reader's context menu or the workspace's memory tab, drilled by first letters, missing words, or full recall over the real text, and an honest self-grade drives a widening review ladder that surfaces beside the prayers in the Almanac.)
+- [ ] [SW] Gap note: Logos has no native verse memorization trainer; the legacy Faithlife Bible Memory app is defunct. Berean can outflank them here. (Outflanked: Berean ships the trainer. Verses are taken up from the reader's context menu or the workspace's memory tab, drilled by first letters, missing words, or full recall over the real text, and an honest self-grade drives a widening review ladder that surfaces beside the prayers in the almanac pane.)
 
 ## 15. Word Study
 

@@ -5,6 +5,7 @@ import {
   EVENT_ID_PATTERN,
   MEMORY_ID_PATTERN,
   PROJECT_ID_PATTERN,
+  SERVICE_ID_PATTERN,
 } from "./workspace-state";
 
 /**
@@ -52,6 +53,11 @@ import {
  *                     The Pulpit takes two forms:
  *                       pulpit                   the project list, a singleton
  *                       project:<id>             a project open at its pipeline
+ *                     The Chapel takes two forms:
+ *                       chapel                   the orders of worship, a singleton
+ *                       service:<id>             a service open in the composer
+ *                     The Almanac carries no payload:
+ *                       almanac                  the preaching calendar tab
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -117,6 +123,9 @@ export type DeepLinkTab =
   | { kind: "manuscript"; docId: string }
   | { kind: "pulpit" }
   | { kind: "project"; projectId: string }
+  | { kind: "chapel" }
+  | { kind: "service"; serviceId: string }
+  | { kind: "almanac" }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -137,6 +146,8 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "plans") return { kind: "plans" };
     if (kind === "desk") return { kind: "desk" };
     if (kind === "pulpit") return { kind: "pulpit" };
+    if (kind === "chapel") return { kind: "chapel" };
+    if (kind === "almanac") return { kind: "almanac" };
     return null;
   }
   if (i === 0) return null;
@@ -180,6 +191,12 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       // the pane says the project is gone.
       if (!PROJECT_ID_PATTERN.test(payload)) return null;
       return { kind: "project", projectId: payload };
+    }
+    case "service": {
+      // The project's rule: a well-formed id opens even unanswered, and the
+      // pane says the service is gone.
+      if (!SERVICE_ID_PATTERN.test(payload)) return null;
+      return { kind: "service", serviceId: payload };
     }
     case "topicguide": {
       const j = payload.indexOf(":");
