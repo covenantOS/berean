@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type UIEvent as ReactUIEvent,
@@ -34,7 +35,7 @@ import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
 import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
-import { findLeaf, type WordSelection } from "./workspace-state";
+import { findLeaf, READER_FONT_SCALE_DEFAULT, type WordSelection } from "./workspace-state";
 
 interface Verse {
   verse: number;
@@ -104,6 +105,11 @@ type Apparatus =
   | { status: "loading" }
   | { status: "ready"; tagged: TaggedVerse[] | null; original: OriginalVerse[] | null };
 
+/* Text size: five steps of a multiplier over the reader's base size, applied
+ * as --reader-scale on the pane's surface (globals.css reads it in the verse
+ * blocks). The step lives on the tab and persists with the session. */
+const FONT_SCALES = [0.85, 1, 1.15, 1.35, 1.6];
+
 /** Base Strong's id the lexicon knows, from an extended id like "H7225G". */
 function baseStrongs(id: string): string {
   const m = id.match(/^([GH]\d+?)[A-Z]?$/);
@@ -145,18 +151,22 @@ function translationShelf(): Promise<ShelfTranslation[]> {
  * Original toggles arm word-level taps that broadcast to the lexicon.
  * Right-click raises the context menus, a drag selection raises the hover
  * toolbar, and a double-click on a tagged word keylinks into the lexicon;
- * all three live in ReaderMenus.tsx.
+ * all three live in ReaderMenus.tsx. The header's A steppers scale the text
+ * (the tab keeps the step), and Reading raises the text over the whole
+ * window as a component-level overlay.
  */
 export default function ReaderPane({
   paneId,
   book,
   chapter,
   translation,
+  fontScale,
 }: {
   paneId: string;
   book: string;
   chapter: number;
   translation?: string;
+  fontScale?: number;
 }) {
   const { state, dispatch, reportLinkedVerse, subscribeLinkedVerse } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
@@ -169,6 +179,9 @@ export default function ReaderPane({
    * one verse per line. Per pane while the tab lives, like the toggles above. */
   const [textOnly, setTextOnly] = useState(false);
   const [verseLines, setVerseLines] = useState(false);
+  /* Reading view: a component-level overlay of this pane's text over the
+   * whole window. The workspace state never moves for it; Escape exits. */
+  const [reading, setReading] = useState(false);
   /* Inline find: the open chapter's text searched client-side, the matches
    * marked in place and walked with prev/next. The box closes on a retarget. */
   const [find, setFind] = useState<{ open: boolean; q: string; index: number }>({
@@ -250,6 +263,16 @@ export default function ReaderPane({
     setMenu(null);
     setFind({ open: false, q: "", index: 0 });
   }, [book, chapter]);
+
+  // Reading view leaves on Escape, unless a floating menu owns the key.
+  useEffect(() => {
+    if (!reading || menu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setReading(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [reading, menu]);
 
   // Words and the original text render their own words; find keeps to the
   // plain chapter text, so it closes when those views take over.
@@ -402,6 +425,19 @@ export default function ReaderPane({
       tabId,
       translation: id === "kjv" ? undefined : id,
     });
+  };
+
+  /* Text size: the tab's step (1–5, default 2) drives --reader-scale; the
+   * header's steppers walk it and the session keeps it. */
+  const scaleStep = Math.min(Math.max(1, fontScale ?? READER_FONT_SCALE_DEFAULT), 5);
+  const scaleStyle = {
+    "--reader-scale": String(FONT_SCALES[scaleStep - 1]),
+  } as CSSProperties;
+
+  const stepScale = (dir: -1 | 1) => {
+    const tabId = paneLeaf?.activeTabId;
+    if (!tabId) return;
+    dispatch({ type: "setReaderFontScale", paneId, tabId, fontScale: scaleStep + dir });
   };
 
   const sel = state.selection;
@@ -808,8 +844,103 @@ export default function ReaderPane({
       on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
     }`;
 
+  /* The floating menus, shared by the workspace frame and the reading
+   * overlay so a right-click answers the same way in both. */
+  const menus = (
+    <>
+      {menu && ready && menu.kind === "verse" && (
+        <VerseContextMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          book={book}
+          chapter={chapter}
+          verse={menu.verse}
+          bookName={ready.bookName}
+          text={verseText(menu.verse)}
+          hasOriginal={ready.hasOriginal}
+          onClose={closeMenu}
+        />
+      )}
+      {menu && ready && menu.kind === "word" && (
+        <WordContextMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          bookName={ready.bookName}
+          word={menu.word}
+          onClose={closeMenu}
+        />
+      )}
+      {menu && ready && menu.kind === "selection" && (
+        <SelectionMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          book={book}
+          chapter={chapter}
+          verse={menu.verse}
+          bookName={ready.bookName}
+          abbrev={ready.translation}
+          text={menu.text}
+          onClose={closeMenu}
+        />
+      )}
+    </>
+  );
+
+  /* Reading view: this pane's text over the whole window. Rail, sidebar,
+   * dock, and pane chrome stay mounted beneath the overlay, so nothing in
+   * the workspace state moves. Escape or the exit control returns; the
+   * chapter arrows keep paging without leaving. */
+  if (reading) {
+    return (
+      <div className="reader-surface fixed inset-0 z-40 flex flex-col" style={scaleStyle}>
+        <header className="flex h-9 shrink-0 items-center border-b border-rule px-6 font-[family-name:var(--font-interface)]">
+          <div className="flex flex-1 items-center gap-0.5">
+            <button
+              type="button"
+              title="Previous chapter"
+              aria-label="Previous chapter"
+              disabled={!adjacentChapter(book, chapter, -1)}
+              onClick={() => go(-1)}
+              className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              title="Next chapter"
+              aria-label="Next chapter"
+              disabled={!adjacentChapter(book, chapter, 1)}
+              onClick={() => go(1)}
+              className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              ›
+            </button>
+          </div>
+          <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
+            {ready ? `${ready.bookName} ${ready.chapter}` : "\u00A0"}
+          </h2>
+          <div className="flex flex-1 items-center justify-end">
+            <button
+              type="button"
+              title="Return to the workspace"
+              onClick={() => setReading(false)}
+              className={toggleBtn(false)}
+            >
+              Exit
+            </button>
+          </div>
+        </header>
+        <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
+        {menus}
+      </div>
+    );
+  }
+
   return (
-    <div className="reader-surface flex h-full min-h-0 flex-col">
+    <div className="reader-surface flex h-full min-h-0 flex-col" style={scaleStyle}>
       <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
         <div className="flex flex-1 items-center gap-0.5">
           <button
@@ -878,6 +1009,28 @@ export default function ReaderPane({
           )}
         </h2>
         <div className="flex flex-1 items-center justify-end gap-1">
+          <span className="flex items-center" role="group" aria-label="Text size">
+            <button
+              type="button"
+              title="Smaller text"
+              aria-label="Smaller text"
+              disabled={scaleStep <= 1}
+              onClick={() => stepScale(-1)}
+              className="border border-rule px-1.5 py-0.5 text-[0.6rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              A−
+            </button>
+            <button
+              type="button"
+              title="Larger text"
+              aria-label="Larger text"
+              disabled={scaleStep >= 5}
+              onClick={() => stepScale(1)}
+              className="border-y border-r border-rule px-1.5 py-0.5 text-[0.75rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              A+
+            </button>
+          </span>
           {ready && view === "text" && !wordsOn && (
             <button
               type="button"
@@ -955,6 +1108,16 @@ export default function ReaderPane({
               className={toggleBtn(verseLines)}
             >
               Lines
+            </button>
+          )}
+          {ready && (
+            <button
+              type="button"
+              title="Distraction-free reading over the whole window; Escape exits"
+              onClick={() => setReading(true)}
+              className={toggleBtn(false)}
+            >
+              Reading
             </button>
           )}
           {ready && ready.hasOriginal && (
@@ -1048,44 +1211,7 @@ export default function ReaderPane({
         {insightsOn && <InsightsRail paneId={paneId} book={book} chapter={chapter} />}
         {body}
       </div>
-      {menu && ready && menu.kind === "verse" && (
-        <VerseContextMenu
-          x={menu.x}
-          y={menu.y}
-          paneId={paneId}
-          book={book}
-          chapter={chapter}
-          verse={menu.verse}
-          bookName={ready.bookName}
-          text={verseText(menu.verse)}
-          hasOriginal={ready.hasOriginal}
-          onClose={closeMenu}
-        />
-      )}
-      {menu && ready && menu.kind === "word" && (
-        <WordContextMenu
-          x={menu.x}
-          y={menu.y}
-          paneId={paneId}
-          bookName={ready.bookName}
-          word={menu.word}
-          onClose={closeMenu}
-        />
-      )}
-      {menu && ready && menu.kind === "selection" && (
-        <SelectionMenu
-          x={menu.x}
-          y={menu.y}
-          paneId={paneId}
-          book={book}
-          chapter={chapter}
-          verse={menu.verse}
-          bookName={ready.bookName}
-          abbrev={ready.translation}
-          text={menu.text}
-          onClose={closeMenu}
-        />
-      )}
+      {menus}
     </div>
   );
 }

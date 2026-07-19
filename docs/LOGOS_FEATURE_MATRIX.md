@@ -154,11 +154,11 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Command box: type references, commands, or tool names to open anything.
 - [ ] [SW] New Tab panel (2025): opening a tab offers everything or reference-aware suggestions keyed to the active passage.
 - [ ] [SW] Toolbar and shortcuts: customizable toolbar, draggable shortcut targets, full keyboard map.
-- [ ] [SW] Favorites tool: bookmark tree with folders plus nine keyboard bookmarks.
-- [ ] [SW] Reading view and full screen: distraction-free reading with columns and page view.
-- [ ] [SW] Per-resource display controls: columns, text size, font, and the visual filter menu per panel.
+- [x] [SW] Favorites tool: bookmark tree with folders plus nine keyboard bookmarks. (Honest subset: bookmarked passages with folders ship in berean.favorites.v1 (src/lib/favorites.ts), registered in GRAPH_KEYS so export, import, and delete see them. The verse context menu captures a bookmark with a folder choice (an existing folder, a new one named inline, or unfiled); the Read rail surfaces them grouped by folder, each opening its passage with the verse selected, and folders rename inline and bookmarks delete in place. The nine keyboard bookmarks stay out: number chords belong to the browser's own tab strip.)
+- [x] [SW] Reading view and full screen: distraction-free reading with columns and page view. (Honest subset: a reader pane's Reading button raises a component-level overlay of the text column over the whole window (ReaderPane.tsx); rail, sidebar, dock, and pane chrome stay mounted beneath, so no workspace state moves, and Escape or the Exit control returns. Chapter paging works inside the overlay and the right-click menus still answer. Columns and page view are unbuilt.)
+- [x] [SW] Per-resource display controls: columns, text size, font, and the visual filter menu per panel. (Honest subset: per-pane text size ships as small-A/large-A steppers in the reader header, five steps applied as --reader-scale over the verse blocks (globals.css). The step lives on the reader tab (fontScale in workspace-state.ts) and persists with the session under sanitizeNode validation, one pane at a time like a translation swap. Columns, per-resource font families, and a per-panel visual filter menu are unbuilt.)
 - [ ] [SW] Program Settings: global fonts, scaling, citation style, transliteration, internet use, update behavior.
-- [ ] [SW] Theme switching and dark mode; interface language switching across six-plus languages.
+- [x] [SW] Theme switching and dark mode; interface language switching across six-plus languages. (One dark theme, no language switching: candlelight mode swaps every design token app-wide under html[data-candle] (globals.css), the workspace included, toggled from the site header (CandleToggle.tsx) and persisted on the device. Interface language switching is unbuilt.)
 - [ ] [SW] Hebrew and Greek input methods; Bible book abbreviations recognized across many languages.
 - [ ] [SW] Deep links: logosres: and ref.ly URLs into exact library locations for docs and web sharing.
 

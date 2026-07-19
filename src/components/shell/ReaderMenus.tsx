@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { listDocuments } from "@/lib/documents";
+import { addFavorite, listFolders } from "@/lib/favorites";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
 import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
@@ -196,6 +197,11 @@ export function VerseContextMenu({
   const [mentions, setMentions] = useState<Mention[] | null>(null);
   /** True once "Add to passage list" opens its chooser inside the menu. */
   const [pickingList, setPickingList] = useState(false);
+  /** True once "Bookmark" opens its folder chooser inside the menu. */
+  const [pickingFolder, setPickingFolder] = useState(false);
+  /** True once the chooser's "New folder" row swaps for its name input. */
+  const [namingFolder, setNamingFolder] = useState(false);
+  const [folderDraft, setFolderDraft] = useState("");
   /** True once "Note" swaps the menu for inline capture. */
   const [writingNote, setWritingNote] = useState(false);
   const passageLists = useCollection(listDocuments, (d) => d.kind === "passage-list");
@@ -208,7 +214,7 @@ export function VerseContextMenu({
     s.items.some((it) => it.book === book && it.chapter === chapter && it.verse === verse)
   );
   const { ref, style } = useFloatingMenu(x, y, onClose, {
-    deps: [mentions, pickingList, writingNote, verseSets],
+    deps: [mentions, pickingList, pickingFolder, namingFolder, writingNote, verseSets],
   });
   const reference = `${bookName} ${chapter}:${verse}`;
 
@@ -241,6 +247,12 @@ export function VerseContextMenu({
     navigator.clipboard
       ?.writeText(`${window.location.origin}/read/${book}/${chapter}#v${verse}`)
       .catch(() => {});
+    onClose();
+  };
+
+  /** Files the verse under a folder; "" leaves it unfiled at the top. */
+  const bookmark = (folder: string) => {
+    addFavorite(book, chapter, verse, folder);
     onClose();
   };
 
@@ -365,6 +377,47 @@ export function VerseContextMenu({
         >
           Memorize
         </button>
+        {pickingFolder ? (
+          <div className="mt-1 border-t border-rule pt-1">
+            <p className={HEAD}>Bookmark in folder</p>
+            {listFolders().map((f) => (
+              <button key={f} type="button" className={ROW} onClick={() => bookmark(f)}>
+                {f}
+              </button>
+            ))}
+            {namingFolder ? (
+              <div className="px-3 py-1">
+                <input
+                  autoFocus
+                  value={folderDraft}
+                  aria-label="New folder name"
+                  placeholder="Folder name"
+                  onChange={(e) => setFolderDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && folderDraft.trim()) bookmark(folderDraft);
+                  }}
+                  className="w-full border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:outline focus:outline-2 focus:outline-sapphire"
+                />
+              </div>
+            ) : (
+              <button type="button" className={ROW} onClick={() => setNamingFolder(true)}>
+                New folder
+              </button>
+            )}
+            <button type="button" className={ROW} onClick={() => bookmark("")}>
+              No folder
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            title="File this verse under a folder in the Read rail"
+            className={ROW}
+            onClick={() => setPickingFolder(true)}
+          >
+            Bookmark
+          </button>
+        )}
         {pickingList ? (
           <div className="mt-1 border-t border-rule pt-1">
             <p className={HEAD}>Add to passage list</p>

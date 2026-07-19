@@ -55,6 +55,8 @@ export interface ReaderTab {
   chapter: number;
   /** Translation id when not the default (a compare tab, e.g. "web"). */
   translation?: string;
+  /** Text size step, 1 (smallest) through 5 (largest); absent reads as 2. */
+  fontScale?: number;
 }
 
 /** A concordance search, opened as a pane by the omnibox. */
@@ -338,6 +340,9 @@ export function libraryTab(): LibraryTab {
  */
 export const COMPARE_BASE_DEFAULT = "kjv";
 
+/** The text size step a reader tab falls back to when it carries none. */
+export const READER_FONT_SCALE_DEFAULT = 2;
+
 export function textCompareTab(
   book = "genesis",
   chapter = 1,
@@ -574,6 +579,7 @@ export type WorkspaceAction =
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
+  | { type: "setReaderFontScale"; paneId: string; tabId: string; fontScale: number }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -1374,6 +1380,30 @@ export function workspaceReducer(
       };
     }
 
+    case "setReaderFontScale": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "reader") return state;
+      const fontScale = Math.trunc(action.fontScale);
+      if (fontScale < 1 || fontScale > 5) return state;
+      if ((tab.fontScale ?? READER_FONT_SCALE_DEFAULT) === fontScale) return state;
+      // In place, one pane only, like a translation swap: a resize never
+      // dispatches navigation, so link-set partners keep their own scale.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) => {
+            if (t.id !== action.tabId || t.type !== "reader") return t;
+            const next = { ...t };
+            if (fontScale === READER_FONT_SCALE_DEFAULT) delete next.fontScale;
+            else next.fontScale = fontScale;
+            return next;
+          }),
+        })),
+      };
+    }
+
     case "setLinkSet": {
       const leaf = findLeaf(state.root, action.paneId);
       if (!leaf || leaf.linkSet === action.linkSet) return state;
@@ -1509,7 +1539,22 @@ function sanitizeNode(node: unknown): PaneNode | null {
         typeof t.translation === "string" && /^[a-z0-9-]{2,12}$/i.test(t.translation)
           ? t.translation.toLowerCase()
           : undefined;
-      tabs.push({ id: t.id, type: "reader", book: book.slug, chapter, ...(translation ? { translation } : {}) });
+      // Older sessions predate text scaling; an absent or malformed step
+      // reads as the default rather than failing the load.
+      const fontScale =
+        typeof t.fontScale === "number" && Number.isInteger(t.fontScale)
+          ? Math.min(Math.max(1, t.fontScale), 5)
+          : undefined;
+      tabs.push({
+        id: t.id,
+        type: "reader",
+        book: book.slug,
+        chapter,
+        ...(translation ? { translation } : {}),
+        ...(fontScale !== undefined && fontScale !== READER_FONT_SCALE_DEFAULT
+          ? { fontScale }
+          : {}),
+      });
     }
     const activeTabId =
       typeof n.activeTabId === "string" && tabs.some((t) => t.id === n.activeTabId)

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
+import { favorites, removeFavorite, renameFolder, type Favorite } from "@/lib/favorites";
 import { useCollection } from "@/lib/hooks";
 import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
 import { isDue, memoryPassages } from "@/lib/memory";
@@ -26,10 +27,11 @@ const MODE_TITLES: Record<RailMode, string> = {
 };
 
 /**
- * The left sidebar: one tree or section list per rail mode. The Read tree,
- * the Search rail's pinned searches and history, the Documents list, and the
- * Almanac rail's daily readings and due prayers carry real data; the rest
- * are quiet placeholders until their panels land in a later phase.
+ * The left sidebar: one tree or section list per rail mode. The Read tree
+ * and its bookmarked passages, the Search rail's pinned searches and
+ * history, the Documents list, and the Almanac rail's daily readings and
+ * due prayers carry real data; the rest are quiet placeholders until their
+ * panels land in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -53,7 +55,12 @@ export default function Sidebar() {
         </button>
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {state.railMode === "read" && <CanonTree />}
+        {state.railMode === "read" && (
+          <>
+            <CanonTree />
+            <FavoritesSection />
+          </>
+        )}
         {state.railMode === "library" && <LibrarySections />}
         {state.railMode === "documents" && <DocumentsList />}
         {state.railMode === "study" && (
@@ -410,6 +417,123 @@ function CanonTree() {
   );
 }
 
+/* ---------- Read: bookmarked passages ---------- */
+
+/**
+ * Favorites: bookmarked verses grouped by folder (src/lib/favorites.ts).
+ * A row opens its passage and selects the verse so the context strip rises
+ * with it; a folder renames inline and a bookmark deletes in place. Capture
+ * lives on the verse's right-click menu in the reader.
+ */
+function FavoritesSection() {
+  const { dispatch } = useWorkspace();
+  const rows = useCollection(favorites);
+  if (rows.length === 0) return null;
+
+  const open = (f: Favorite) => {
+    dispatch({ type: "openRef", book: f.book, chapter: f.chapter });
+    dispatch({ type: "selectVerse", book: f.book, chapter: f.chapter, verse: f.verse });
+  };
+
+  /* Folders alphabetized; the unfiled bookmarks lead under the heading. */
+  const folders = [...new Set(rows.map((f) => f.folder).filter((f) => f !== ""))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+  const row = (f: Favorite) => {
+    const reference = `${getBook(f.book)?.name ?? f.book} ${f.chapter}:${f.verse}`;
+    return (
+      <li key={f.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+        <button
+          type="button"
+          onClick={() => open(f)}
+          title={`Open ${reference}`}
+          className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          {reference}
+        </button>
+        <button
+          type="button"
+          onClick={() => removeFavorite(f.id)}
+          title="Delete this bookmark"
+          aria-label={`Delete the bookmark on ${reference}`}
+          className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          ×
+        </button>
+      </li>
+    );
+  };
+
+  return (
+    <div className="mt-1 border-t border-rule py-1">
+      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+        Bookmarks
+      </div>
+      <ul>{rows.filter((f) => f.folder === "").sort(byCanon).map(row)}</ul>
+      {folders.map((folder) => {
+        const inFolder = rows.filter((f) => f.folder === folder).sort(byCanon);
+        return (
+          <div key={folder}>
+            <FolderHeading folder={folder} count={inFolder.length} />
+            <ul>{inFolder.map(row)}</ul>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** A folder heading in the bookmarks list; the name renames inline. */
+function FolderHeading({ folder, count }: { folder: string; count: number }) {
+  const [renaming, setRenaming] = useState(false);
+  const [draft, setDraft] = useState(folder);
+
+  const commit = () => {
+    const name = draft.trim();
+    if (name && name !== folder) renameFolder(folder, name);
+    setRenaming(false);
+  };
+
+  if (renaming) {
+    return (
+      <div className="px-3 pt-2 pb-1">
+        <input
+          autoFocus
+          value={draft}
+          aria-label="Folder name"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commit();
+            // Reset before closing so the blur commit finds nothing to write.
+            if (e.key === "Escape") {
+              setDraft(folder);
+              setRenaming(false);
+            }
+          }}
+          className="w-full border border-rule bg-paper px-1 py-0.5 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setDraft(folder);
+        setRenaming(true);
+      }}
+      title={`Rename the ${folder} folder`}
+      className="small-caps flex w-full items-baseline gap-2 px-3 pt-3 pb-1 text-left text-[0.62rem] font-semibold text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+    >
+      <span className="truncate">{folder}</span>
+      <span className="shrink-0 font-normal">{count}</span>
+    </button>
+  );
+}
+
 /* ---------- Library: the reference shelf ---------- */
 
 const LIBRARY_SECTIONS: { title: string; items: { label: string; note?: string }[] }[] = [
@@ -508,8 +632,10 @@ function LibrarySections() {
 /* ---------- Documents: the user's own writing and saved lists ---------- */
 
 /** Canon order, then chapter and verse, the way a bound Bible runs. */
-const byCanon = (a: MarginNote, b: MarginNote) =>
-  bookIndex(a.book) - bookIndex(b.book) || a.chapter - b.chapter || a.verse - b.verse;
+const byCanon = (
+  a: { book: string; chapter: number; verse: number },
+  b: { book: string; chapter: number; verse: number }
+) => bookIndex(a.book) - bookIndex(b.book) || a.chapter - b.chapter || a.verse - b.verse;
 
 function DocumentsList() {
   const { dispatch } = useWorkspace();

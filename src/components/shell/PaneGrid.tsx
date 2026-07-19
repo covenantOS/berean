@@ -491,6 +491,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
               book={activeTab.book}
               chapter={activeTab.chapter}
               translation={activeTab.translation}
+              fontScale={activeTab.fontScale}
             />
           ) : activeTab.type === "search" ? (
             <SearchPane q={activeTab.q} />

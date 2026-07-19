@@ -201,13 +201,13 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 }
 
 .prose-verses {
-  font-size: 1.22rem;
+  font-size: calc(1.22rem * var(--reader-scale, 1));
   line-height: 1.85;
   text-align: justify;
   hyphens: auto;
 }
 .poetry-verses {
-  font-size: 1.22rem;
+  font-size: calc(1.22rem * var(--reader-scale, 1));
   line-height: 1.8;
 }
 .poetry-verses .verse-line {
@@ -237,7 +237,7 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 
 /* Original-text mode: each word carries its own quiet interlinear line. */
 .original-verses {
-  font-size: 1.15rem;
+  font-size: calc(1.15rem * var(--reader-scale, 1));
   line-height: 2.2;
 }
 .orig-word {
