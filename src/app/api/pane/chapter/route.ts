@@ -3,6 +3,7 @@ import { getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 import { DEFAULT_TRANSLATION, getTranslation } from "@/lib/translations";
 import { getPericopes } from "@/lib/pericopes";
+import { getChapterAudio } from "@/lib/audio";
 import { decodeMorph, getOriginalChapter, getTaggedChapter } from "@/lib/tagged";
 
 /**
@@ -14,7 +15,9 @@ import { decodeMorph, getOriginalChapter, getTaggedChapter } from "@/lib/tagged"
  * flags that let a pane offer word-level toggles without fetching the
  * apparatus first. ?tagged=1 adds the Strong's-tagged KJV words and
  * ?original=1 adds the TAHOT/TAGNT words with morphology pre-decoded
- * server-side (md), so word interaction needs no new routes.
+ * server-side (md), so word interaction needs no new routes. KJV chapters
+ * also carry their LibriVox recording (src/lib/audio.ts), null where no
+ * chapter recording is mapped.
  */
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
@@ -28,12 +31,14 @@ export async function GET(req: NextRequest) {
   const wantTagged = params.get("tagged") === "1";
   const wantOriginal = params.get("original") === "1";
   const lang = book.testament === "OT" ? ("hebrew" as const) : ("greek" as const);
-  const [verses, tagged, original, pericopes] = await Promise.all([
+  const [verses, tagged, original, pericopes, audio] = await Promise.all([
     getChapter(book.slug, chapter, translation.id),
     // The tagged apparatus is KJV-only; other texts report it as absent.
     translation.id === "kjv" ? getTaggedChapter(book.slug, chapter) : Promise.resolve(null),
     getOriginalChapter(book.slug, chapter),
     getPericopes(book.slug, chapter),
+    // The recordings are the KJV read aloud; other texts report none.
+    translation.id === "kjv" ? getChapterAudio(book.slug, chapter) : Promise.resolve(null),
   ]);
   if (!verses) return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   return NextResponse.json({
@@ -49,6 +54,7 @@ export async function GET(req: NextRequest) {
     hasOriginal: original !== null,
     verses,
     pericopes,
+    audio,
     ...(wantTagged && tagged ? { tagged } : {}),
     ...(wantOriginal && original
       ? {

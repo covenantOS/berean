@@ -84,6 +84,14 @@ interface Pericope {
   parallels?: string;
 }
 
+/** The chapter's LibriVox recording, as /api/pane/chapter reports it. */
+interface ChapterAudioInfo {
+  url: string;
+  reader: string | null;
+  seconds: number | null;
+  sourceUrl: string;
+}
+
 interface ChapterPayload {
   book: string;
   bookName: string;
@@ -97,6 +105,7 @@ interface ChapterPayload {
   hasOriginal: boolean;
   verses: Verse[];
   pericopes: Pericope[];
+  audio: ChapterAudioInfo | null;
   tagged?: TaggedVerse[] | null;
   original?: OriginalVerse[] | null;
 }
@@ -111,6 +120,17 @@ interface FindMatch {
   verse: number;
   start: number;
   end: number;
+}
+
+/* One system-speech pass over the chapter: the verses read in order, one
+ * utterance at a time. cancelled retires the run so a stale chain never
+ * speaks after a stop; utterance pins the live utterance against the
+ * collector, which some browsers run mid-speech. */
+interface SpeechRun {
+  cancelled: boolean;
+  verses: Verse[];
+  idx: number;
+  utterance: SpeechSynthesisUtterance | null;
 }
 
 /** The word apparatus, fetched lazily the first time a word toggle opens. */
@@ -172,6 +192,9 @@ function translationShelf(): Promise<ShelfTranslation[]> {
  * only both drop; the locator rail under the header tracks the reading
  * position with pericope ticks and prev/next stepping; and a reference chip
  * hovered anywhere in the workspace outlines its verses here (ref-hover).
+ * The header's Listen reads the chapter aloud: the LibriVox recording
+ * where the KJV has one, the system voice elsewhere, the spoken verse
+ * marked in a read-aloud channel and followed gently down the pane.
  */
 export default function ReaderPane({
   paneId,
@@ -215,6 +238,22 @@ export default function ReaderPane({
     q: "",
     index: 0,
   });
+  /* Read aloud. A KJV chapter carrying a LibriVox recording streams the
+   * narrator (a real reader beats synthesis); anything else falls to the
+   * system voice, which reads the pane's verses one by one and marks the
+   * verse being spoken in a read-aloud channel. One source per pane:
+   * starting either stops the other, and a retarget, a translation swap,
+   * or the pane's close silences everything. */
+  const [listen, setListen] = useState<"idle" | "record" | "speech">("idle");
+  const [listenPaused, setListenPaused] = useState(false);
+  const [listenRate, setListenRate] = useState(1);
+  const [spokenVerse, setSpokenVerse] = useState<number | null>(null);
+  /* System speech exists only in the browser; the flag arms after mount so
+   * the server render and the first client pass agree. */
+  const [speechOk, setSpeechOk] = useState(false);
+  const recordRef = useRef<HTMLAudioElement | null>(null);
+  const speechRun = useRef<SpeechRun | null>(null);
+  const listenRateRef = useRef(1);
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
@@ -297,6 +336,62 @@ export default function ReaderPane({
     setHoverVerses(null);
     setLocator({ progress: 0, current: 0, top: 0 });
   }, [book, chapter]);
+
+  /* Stop silences both sources: the speech run is cancelled before the
+   * queue drains so nothing orphaned speaks, and the recording element is
+   * paused and dropped so a fresh Listen starts the chapter over. */
+  const stopAudio = useCallback(() => {
+    const run = speechRun.current;
+    if (run) {
+      run.cancelled = true;
+      speechRun.current = null;
+    }
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    const el = recordRef.current;
+    if (el) {
+      el.pause();
+      recordRef.current = null;
+    }
+    setListen("idle");
+    setListenPaused(false);
+    setSpokenVerse(null);
+  }, []);
+
+  /* System speech: one utterance at a time, chained on end, so a rate
+   * change lands on the next verse and a stop never leaves a queue behind.
+   * Each utterance marks its verse as it starts. */
+  const speakVerse = useCallback(
+    (run: SpeechRun) => {
+      if (run.cancelled) return;
+      const v = run.verses[run.idx];
+      if (!v) {
+        stopAudio();
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(v.text);
+      u.rate = listenRateRef.current;
+      u.onstart = () => {
+        if (!run.cancelled) setSpokenVerse(v.verse);
+      };
+      u.onend = () => {
+        if (run.cancelled) return;
+        run.idx += 1;
+        run.utterance = null;
+        speakVerse(run);
+      };
+      run.utterance = u;
+      window.speechSynthesis.speak(u);
+    },
+    [stopAudio]
+  );
+
+  // System speech is client-only; the speech fallback arms after mount.
+  useEffect(() => {
+    setSpeechOk("speechSynthesis" in window);
+  }, []);
+
+  // A retarget, a translation swap, or the pane's close stops the audio.
+  useEffect(() => stopAudio, [book, chapter, translation, stopAudio]);
 
   /*
    * Hover emphasis (Emphasize Active References). A reference chip anywhere
@@ -480,6 +575,86 @@ export default function ReaderPane({
   const go = (dir: -1 | 1) => {
     const next = adjacentChapter(book, chapter, dir);
     if (next) dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
+  };
+
+  /* The recording wins where both exist: a narrator beats synthesis. The
+   * element lives in a ref, never in the tree, so the reading overlay's
+   * separate branch cannot unmount it mid-play. */
+  const startRecording = () => {
+    const info = ready?.audio;
+    if (!info) return;
+    const run = speechRun.current;
+    if (run) {
+      run.cancelled = true;
+      speechRun.current = null;
+      window.speechSynthesis.cancel();
+      setSpokenVerse(null);
+    }
+    const el = new Audio(info.url);
+    el.preload = "none";
+    el.playbackRate = listenRateRef.current;
+    el.onended = () => stopAudio();
+    recordRef.current = el;
+    setListen("record");
+    setListenPaused(false);
+    el.play().catch(() => stopAudio());
+  };
+
+  /* The fallback: the system voice over the pane's own verses, recording
+   * or not. Starting it silences the recorder. */
+  const startSpeech = () => {
+    if (!ready || !("speechSynthesis" in window)) return;
+    const el = recordRef.current;
+    if (el) {
+      el.pause();
+      recordRef.current = null;
+    }
+    window.speechSynthesis.cancel();
+    const run: SpeechRun = { cancelled: false, verses: ready.verses, idx: 0, utterance: null };
+    speechRun.current = run;
+    setListen("speech");
+    setListenPaused(false);
+    speakVerse(run);
+  };
+
+  const toggleListen = () => {
+    if (listen !== "idle") {
+      stopAudio();
+    } else if (ready?.audio) {
+      startRecording();
+    } else {
+      startSpeech();
+    }
+  };
+
+  const toggleListenPause = () => {
+    if (listen === "record") {
+      const el = recordRef.current;
+      if (!el) return;
+      if (listenPaused) {
+        el.play().catch(() => stopAudio());
+      } else {
+        el.pause();
+      }
+    } else if (listen === "speech" && "speechSynthesis" in window) {
+      if (listenPaused) {
+        window.speechSynthesis.resume();
+      } else {
+        window.speechSynthesis.pause();
+      }
+    } else {
+      return;
+    }
+    setListenPaused(!listenPaused);
+  };
+
+  /* The recording takes a new rate at once; speech reads it as each
+   * verse's utterance is made. */
+  const changeListenRate = (r: number) => {
+    setListenRate(r);
+    listenRateRef.current = r;
+    const el = recordRef.current;
+    if (el) el.playbackRate = r;
   };
 
   /* Left and right arrows page the chapter when this pane is the one in
@@ -721,6 +896,23 @@ export default function ReaderPane({
     setFind((f) => ({ ...f, index: (findIndex + dir + findMatches.length) % findMatches.length }));
   };
 
+  /* Follow-along: the spoken verse scrolls into view when it drifts out
+   * of frame, gently; a verse already visible stays where the reader put
+   * it. */
+  useEffect(() => {
+    if (spokenVerse === null) return;
+    const container = scrollRef.current;
+    const el = container?.querySelector(`[data-verse="${spokenVerse}"]`);
+    if (!(container && el instanceof HTMLElement)) return;
+    const cRect = container.getBoundingClientRect();
+    const eRect = el.getBoundingClientRect();
+    if (eRect.top >= cRect.top + 32 && eRect.bottom <= cRect.bottom - 8) return;
+    container.scrollTo({
+      top: container.scrollTop + eRect.top - cRect.top - cRect.height / 3,
+      behavior: "smooth",
+    });
+  }, [spokenVerse]);
+
   const closeFind = () => setFind({ open: false, q: "", index: 0 });
 
   /** The verse text with its find matches marked; untouched when find is off. */
@@ -833,6 +1025,7 @@ export default function ReaderPane({
       notesByVerse.has(v) ? "has-note" : "",
       selVerse === v ? "verse-selected" : "",
       hoverVerses && v >= hoverVerses.from && v <= hoverVerses.to ? "ref-hover" : "",
+      spokenVerse === v ? "read-aloud" : "",
     ]
       .filter(Boolean)
       .join(" ");
@@ -1276,6 +1469,21 @@ export default function ReaderPane({
               Find
             </button>
           )}
+          {ready && (ready.audio !== null || speechOk) && (
+            <button
+              type="button"
+              aria-pressed={listen !== "idle"}
+              title={
+                ready.audio
+                  ? "Listen to this chapter read from the LibriVox recording"
+                  : "Read this chapter aloud with the system voice"
+              }
+              onClick={toggleListen}
+              className={toggleBtn(listen !== "idle")}
+            >
+              Listen
+            </button>
+          )}
           <button
             type="button"
             aria-pressed={insightsOn}
@@ -1508,6 +1716,63 @@ export default function ReaderPane({
             title="Close find"
             aria-label="Close find"
             onClick={closeFind}
+            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      {listen !== "idle" && ready && (
+        /* The listen bar: pause, speed, and stop for whichever source is
+         * playing, with the recording's provenance or the fallback named. */
+        <div className="flex h-8 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
+          <span className="small-caps text-[0.68rem] text-muted">Listen</span>
+          <button
+            type="button"
+            title={listenPaused ? "Resume" : "Pause"}
+            aria-label={listenPaused ? "Resume" : "Pause"}
+            onClick={toggleListenPause}
+            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {listenPaused ? "▶" : "❚❚"}
+          </button>
+          <select
+            aria-label="Reading speed"
+            title="Reading speed"
+            value={listenRate}
+            onChange={(e) => changeListenRate(Number(e.target.value))}
+            className="cursor-pointer border border-transparent bg-transparent text-[0.65rem] text-muted hover:border-rule focus:border-sapphire focus:outline-none"
+          >
+            {[0.75, 1, 1.25, 1.5, 2].map((r) => (
+              <option key={r} value={r}>
+                {r}×
+              </option>
+            ))}
+          </select>
+          <span className="min-w-0 flex-1 truncate text-[0.65rem] text-muted">
+            {listen === "record" && ready.audio ? (
+              <>
+                {ready.audio.reader ? `Read by ${ready.audio.reader}. ` : ""}
+                LibriVox recording, public domain, streamed from{" "}
+                <a
+                  href={ready.audio.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sapphire no-underline hover:underline"
+                >
+                  archive.org
+                </a>
+                .
+              </>
+            ) : (
+              "System voice, verse by verse."
+            )}
+          </span>
+          <button
+            type="button"
+            title="Stop"
+            aria-label="Stop"
+            onClick={stopAudio}
             className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ×

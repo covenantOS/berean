@@ -294,7 +294,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] iOS and Android apps with the full owned library and store access.
 - [ ] [SW] Offline reading: download any owned resource; sync verification on device.
 - [ ] [SW] Tabbed browsing and split screen with linked panels on tablets and phones.
-- [ ] [SW] Read Aloud: system or enhanced neural voices, plus audiobook resources with follow-along.
+- [x] [SW] Read Aloud: system or enhanced neural voices, plus audiobook resources with follow-along. (The workspace reader's header carries a Listen control: a KJV chapter with a LibriVox recording (383 chapters, mapped in data/audio/manifest.json, streamed from archive.org, surfaced by /api/pane/chapter) plays the narrator with pause, speed, and stop, and every other chapter falls to the system voice, which reads the pane's verses one by one with pause, speed, and stop, the spoken verse marked in a fifth read-aloud channel (sapphire, a left edge beside ref-hover's ring) and scrolled gently into view. The recording wins where both exist, a narrator over synthesis. Audiobook follow-along is chapter-level since the recordings carry no verse timing; verse-level follow-along comes from system speech. One audio source per pane: starting either stops the other, and navigation, a translation swap, or a pane close silences playback. Enhanced neural voices and store audiobook resources do not ship.)
 - [ ] [SW] Verse image sharing: Visual Copy style cards straight to social apps.
 - [ ] [SW] Reference Scanner: camera OCR turns a printed verse list into a passage list.
 - [ ] [SW] Draw On Screen markup (see Canvas group).

@@ -231,6 +231,18 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--stained-sapphire) 50%, transparent);
   border-radius: 2px;
 }
+/*
+ * Read aloud: the verse the system voice is on, a fifth channel beside the
+ * highlight tint, the filter underline, the find wash, and the reference
+ * ring. Sapphire like the references, but a left edge instead of a ring so
+ * a verse under both never reads as one mark; listed last so the wash
+ * reads over the selection's amber when a spoken verse is also selected.
+ */
+.read-aloud {
+  background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
+  border-radius: 2px;
+}
 
 /* Pericope headings: quiet small-caps over the passage they name, with the
  * source's parallel references in a smaller line beneath (BSB paratext). */
