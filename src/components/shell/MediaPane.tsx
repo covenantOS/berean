@@ -9,6 +9,7 @@ import {
   useCardHistory,
   type CardEntry,
 } from "@/lib/cardHistory";
+import { canShareCard, shareCard } from "@/lib/shareCard";
 import {
   verseCardSvg,
   type VerseCardSize,
@@ -17,8 +18,11 @@ import {
 
 /**
  * The Media studio: a verse card composed from any reference, styled within
- * the letterpress renderer's honest reach, previewed live, and downloaded as
- * SVG. Berean's media is generated, not stocked: there is no collection to
+ * the letterpress renderer's honest reach, previewed live, and taken away as
+ * SVG: downloaded, or handed to the device's share sheet where one exists
+ * (src/lib/shareCard.ts). The card travels as the SVG it is; there is no PNG
+ * conversion, and a sheet that refuses SVG falls back to the download.
+ * Berean's media is generated, not stocked: there is no collection to
  * browse by tag or type, so the studio says so and keeps the recent cards
  * for re-download instead (src/lib/cardHistory.ts).
  *
@@ -97,7 +101,13 @@ export default function MediaPane({
   const [theme, setTheme] = useState<VerseCardTheme>("paper");
   const [showRef, setShowRef] = useState(true);
   const [showTag, setShowTag] = useState(true);
+  /** Set after mount: the share sheet and its file support are client facts. */
+  const [shareable, setShareable] = useState(false);
   const history = useCardHistory();
+
+  useEffect(() => {
+    setShareable(canShareCard("card.svg"));
+  }, []);
 
   /** Fetches the passage's KJV text and sets it in the composer. */
   const composeRef = useCallback(
@@ -211,6 +221,18 @@ export default function MediaPane({
     if (!ready || !svg) return;
     downloadSvg(svg, cardFilename(ready));
     recordCard({ ...ready, size, theme, reference: showRef, translation: showTag });
+  };
+
+  /** The device's share sheet takes the card as an SVG file; a sheet that
+   *  refuses it falls back to the download, which always works. */
+  const share = async () => {
+    if (!ready || !svg) return;
+    const outcome = await shareCard(svg, cardFilename(ready), reference);
+    if (outcome === "shared") {
+      recordCard({ ...ready, size, theme, reference: showRef, translation: showTag });
+    } else if (outcome === "failed") {
+      download();
+    }
   };
 
   /** A history row back in the composer, text and style, without a refetch. */
@@ -362,7 +384,7 @@ export default function MediaPane({
             dangerouslySetInnerHTML={{ __html: svg }}
           />
 
-          <p>
+          <p className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={download}
@@ -370,6 +392,16 @@ export default function MediaPane({
             >
               Download SVG
             </button>
+            {shareable && (
+              <button
+                type="button"
+                title="Send this card through your device's share sheet, as an SVG file"
+                onClick={() => void share()}
+                className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Share
+              </button>
+            )}
           </p>
         </section>
       )}

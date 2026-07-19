@@ -26,6 +26,8 @@ import {
   unitsOfKind,
   type MeasureKind,
 } from "@/lib/measures";
+import { NT_NAMES, OT_NAMES, type NameOfGod } from "@/lib/namesOfGod";
+import { REIGN_TABLES } from "@/lib/reigns";
 import { useWorkspace } from "./WorkspaceContext";
 
 type ToolSection =
@@ -34,6 +36,8 @@ type ToolSection =
   | "numerals"
   | "transliteration"
   | "cantillations"
+  | "names"
+  | "reigns"
   | "commandments"
   | "goliath";
 
@@ -43,6 +47,8 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
   { id: "numerals", label: "Numerals" },
   { id: "transliteration", label: "Transliteration" },
   { id: "cantillations", label: "Cantillations" },
+  { id: "names", label: "Names of God" },
+  { id: "reigns", label: "Reigns" },
   { id: "commandments", label: "Commandments" },
   { id: "goliath", label: "Goliath" },
 ];
@@ -54,8 +60,11 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
  * a flash-style self-test; Numerals spells a number in letters and sums
  * letters back; Transliteration walks Greek and Hebrew script to
  * transliteration (and Greek back); Cantillations tables the accents the
- * pointed text carries; Commandments lays the three numberings side by
- * side; Goliath sends the reader to the comparison tool for the two texts.
+ * pointed text carries; Names of God tables the received names and titles
+ * with meaning and first occurrence; Reigns tables the kings, judges,
+ * prophets, and high priests in order; Commandments lays the three
+ * numberings side by side; Goliath sends the reader to the comparison tool
+ * for the two texts.
  */
 export default function ToolsPane({ paneId }: { paneId: string }) {
   const [section, setSection] = useState<ToolSection>("measures");
@@ -86,6 +95,8 @@ export default function ToolsPane({ paneId }: { paneId: string }) {
       {section === "numerals" && <NumeralsTool />}
       {section === "transliteration" && <TransliterationTool />}
       {section === "cantillations" && <CantillationsTool />}
+      {section === "names" && <NamesTool paneId={paneId} />}
+      {section === "reigns" && <ReignsTool paneId={paneId} />}
       {section === "commandments" && <CommandmentsTool paneId={paneId} />}
       {section === "goliath" && <GoliathTool paneId={paneId} />}
     </div>
@@ -524,6 +535,126 @@ function CantillationsTool() {
         carries: the disjunctives mark the verse&rsquo;s pauses, the conjunctives bind a word to
         the next.
       </p>
+    </section>
+  );
+}
+
+/* ---------- names of God ---------- */
+
+function NameTable({
+  paneId,
+  names,
+}: {
+  paneId: string;
+  names: NameOfGod[];
+}) {
+  const { dispatch } = useWorkspace();
+  return (
+    <table className="w-full border-y border-rule text-[0.78rem]">
+      <thead>
+        <tr className="text-left">
+          <th className={`${HEAD3} py-1 pr-2`}>Name</th>
+          <th className={`${HEAD3} py-1 pr-2`}>Meaning</th>
+          <th className={`${HEAD3} py-1 pr-2`}>First named</th>
+          <th className={`${HEAD3} py-1`}>Note</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-rule">
+        {names.map((n) => (
+          <tr key={n.name}>
+            <td className="py-1 pr-2 font-semibold text-ink">{n.name}</td>
+            <td className="py-1 pr-2 text-muted">{n.meaning}</td>
+            <td className="py-1 pr-2">
+              <button
+                type="button"
+                title={`Open ${n.ref.label}`}
+                onClick={() =>
+                  dispatch({ type: "openRef", book: n.ref.book, chapter: n.ref.chapter, paneId })
+                }
+                className="small-caps text-[0.68rem] font-semibold text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {n.ref.label}
+              </button>
+            </td>
+            <td className="py-1 text-muted">{n.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function NamesTool({ paneId }: { paneId: string }) {
+  return (
+    <section className="space-y-3">
+      <NameTable paneId={paneId} names={OT_NAMES} />
+      <NameTable paneId={paneId} names={NT_NAMES} />
+      <p className={NOTE}>
+        The received names and titles with their meanings; renderings of the compound names differ
+        among the reference works (Yahweh-Yireh as &ldquo;will provide&rdquo; or &ldquo;will see to
+        it&rdquo;), and the table gives the received sense.
+      </p>
+    </section>
+  );
+}
+
+/* ---------- prophets, priests, regents, and judges ---------- */
+
+function ReignsTool({ paneId }: { paneId: string }) {
+  const { dispatch } = useWorkspace();
+  const [tableId, setTableId] = useState("united");
+  const table = REIGN_TABLES.find((t) => t.id === tableId) ?? REIGN_TABLES[0];
+  return (
+    <section className="space-y-3">
+      <div className="flex flex-wrap items-center gap-1.5">
+        {REIGN_TABLES.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => setTableId(t.id)}
+            className={`border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+              table.id === t.id ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <table className="w-full border-y border-rule text-[0.78rem]">
+        <thead>
+          <tr className="text-left">
+            <th className={`${HEAD3} py-1 pr-2`}>Name</th>
+            <th className={`${HEAD3} py-1 pr-2`}>Years</th>
+            <th className={`${HEAD3} py-1 pr-2`}>Note</th>
+            <th className={`${HEAD3} py-1`}>Key reference</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-rule">
+          {table.rows.map((r) => (
+            <tr key={r.name}>
+              <td className="py-1 pr-2 font-semibold text-ink">{r.name}</td>
+              <td className="whitespace-nowrap py-1 pr-2 text-muted">{r.years}</td>
+              <td className="py-1 pr-2 text-muted">{r.note}</td>
+              <td className="py-1">
+                {r.ref && (
+                  <button
+                    type="button"
+                    title={`Open ${r.ref.label}`}
+                    onClick={() =>
+                      dispatch({ type: "openRef", book: r.ref!.book, chapter: r.ref!.chapter, paneId })
+                    }
+                    className="small-caps text-[0.68rem] font-semibold text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    {r.ref.label}
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className={NOTE}>{table.note}</p>
     </section>
   );
 }

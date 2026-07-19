@@ -10,6 +10,7 @@ import {
   listNotes,
   saveNote,
 } from "@/lib/marginalia";
+import { shareCard, canShareCard } from "@/lib/shareCard";
 import { verseCardSvg } from "@/lib/verseCard";
 
 type Mode = "paper" | "warm" | "evening";
@@ -181,6 +182,12 @@ export default function ChapterReader({
   const [activeWord, setActiveWord] = useState<ActiveWord | null>(null);
   const [wordEntries, setWordEntries] = useState<LexiconEntry[]>([]);
   const [wordLoading, setWordLoading] = useState(false);
+  /** Set after mount: the share sheet and its file support are client facts. */
+  const [shareable, setShareable] = useState(false);
+
+  useEffect(() => {
+    setShareable(canShareCard("card.svg"));
+  }, []);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(MODE_KEY) as Mode | null;
@@ -340,27 +347,43 @@ export default function ChapterReader({
     setEditingId(null);
   }
 
-  /** Print/export aid: the selected verse as a letterpress card, downloaded
-   *  as SVG. No engagement mechanics; the card carries only text, reference,
-   *  and translation tag. */
-  function exportCard() {
-    if (selectedVerse === null) return;
+  /** Print/export aid: the selected verse as a letterpress card. No
+   *  engagement mechanics; the card carries only text, reference, and
+   *  translation tag. */
+  function composeCard(): { svg: string; filename: string; reference: string } | null {
+    if (selectedVerse === null) return null;
     const entries = baseByVerse.get(selectedVerse) ?? [];
-    if (entries.length === 0) return;
+    if (entries.length === 0) return null;
     const text = entries
       .map((v) => (v.label ? `${v.label} ${v.text}` : v.text))
       .join(" ");
     const reference = `${bookName} ${chapter}:${selectedVerse}`;
     const svg = verseCardSvg(text, reference, translationAbbrev);
-    const blob = new Blob([svg], { type: "image/svg+xml" });
+    const filename = `${bookSlug}-${chapter}-${selectedVerse}-${translationAbbrev.toLowerCase()}.svg`;
+    return { svg, filename, reference };
+  }
+
+  function exportCard() {
+    const card = composeCard();
+    if (!card) return;
+    const blob = new Blob([card.svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${bookSlug}-${chapter}-${selectedVerse}-${translationAbbrev.toLowerCase()}.svg`;
+    a.download = card.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  /** The device's share sheet takes the card as an SVG file; a sheet that
+   *  refuses it falls back to the download, which always works. */
+  async function shareVerseCard() {
+    const card = composeCard();
+    if (!card) return;
+    const outcome = await shareCard(card.svg, card.filename, card.reference);
+    if (outcome === "failed") exportCard();
   }
 
   const showTagged = wordsOn && !parallel && translationId === "kjv" && tagged !== null;
@@ -751,6 +774,7 @@ export default function ChapterReader({
                 removeNote={removeNote}
                 openVerse={openVerse}
                 exportCard={exportCard}
+                shareCard={shareable ? shareVerseCard : null}
                 entities={entities}
                 verseTopics={verseTopics}
                 cancel={() => {
@@ -803,6 +827,8 @@ function MarginPanel(props: {
   removeNote: (id: string) => void;
   openVerse: (v: number) => void;
   exportCard: () => void;
+  /** Set where the device offers a share sheet that takes SVG files. */
+  shareCard: (() => void) | null;
   entities: Record<number, EntityMention[]> | null;
   verseTopics: Record<number, VerseTopicMention[]> | null;
   cancel: () => void;
@@ -819,6 +845,7 @@ function MarginPanel(props: {
     removeNote,
     openVerse,
     exportCard,
+    shareCard,
     entities,
     verseTopics,
     cancel,
@@ -865,6 +892,15 @@ function MarginPanel(props: {
             >
               Export card
             </button>
+            {shareCard && (
+              <button
+                onClick={shareCard}
+                title="Send this verse's card through your device's share sheet, as an SVG file"
+                className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
+              >
+                Share card
+              </button>
+            )}
             <button
               onClick={cancel}
               className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
