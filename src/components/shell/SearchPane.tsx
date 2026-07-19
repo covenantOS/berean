@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { alignedScope, alignedTextIds } from "@/lib/aligned";
 import { CANON, getBook, resolveBookName } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
@@ -11,10 +12,11 @@ import {
 } from "@/lib/morphfilters";
 import { recordSearch, toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { createVisualFilter } from "@/lib/visualfilters";
+import { translationShelf } from "./ReaderPane";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
-import { searchTab, type SearchMode } from "./workspace-state";
+import { preferredTranslation, searchTab, type SearchMode } from "./workspace-state";
 
 interface Hit {
   book: string;
@@ -31,10 +33,11 @@ type LoadState =
   | { status: "ready"; hits: Hit[]; total: number };
 
 /** The arrangements the pane offers over one fetched result set. */
-type View = "verses" | "grid" | "analysis" | "chart";
+type View = "verses" | "aligned" | "grid" | "analysis" | "chart";
 
 const VIEWS: { key: View; label: string }[] = [
   { key: "verses", label: "Verses" },
+  { key: "aligned", label: "Aligned" },
   { key: "grid", label: "Grid" },
   { key: "analysis", label: "Analysis" },
   { key: "chart", label: "Chart" },
@@ -152,9 +155,11 @@ function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; p
  * The concordance pane: opened by the omnibox's berean:search event. One
  * fetch to /api/pane/search carries the whole working set; the Verses,
  * Grid, Analysis, and Chart arrangements are different readings of that
- * same set, computed on the client, never re-fetched. Every row in every
- * view dispatches berean:open-ref, carrying the pane to the passage. The
- * header pin keeps the query among the Search rail's pinned searches.
+ * same set, computed on the client, never re-fetched, while the Aligned
+ * arrangement batches the hit set's chapters through the multiview route.
+ * Every row in every view dispatches berean:open-ref, carrying the pane to
+ * the passage. The header pin keeps the query among the Search rail's
+ * pinned searches.
  */
 function BiblePane({ q, paneId, tabId }: PaneProps) {
   const { dispatch } = useWorkspace();
@@ -397,6 +402,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
         {load.status === "ready" && load.total > 0 && (
           <>
             {view === "verses" && <VersesView hits={load.hits} total={load.total} />}
+            {view === "aligned" && <AlignedView hits={load.hits} total={load.total} />}
             {view === "grid" && <GridView hits={load.hits} total={load.total} />}
             {view === "analysis" && (
               <AnalysisView books={books} total={load.total} truncated={truncated} listed={load.hits.length} />
@@ -467,6 +473,170 @@ function GridView({ hits, total }: { hits: Hit[]; total: number }) {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/* ---------- Aligned: hit verses in more than one translation ---------- */
+
+interface AlignedColumnPayload {
+  id: string;
+  abbrev: string;
+  name: string;
+  /** The LXX numbering note where the Septuagint counts differently. */
+  note: string | null;
+  /** True when the text has no such chapter at all. */
+  missing: boolean;
+  verses: { verse: number; text: string }[];
+}
+
+interface AlignedChapterPayload {
+  book: string;
+  bookName: string;
+  chapter: number;
+  columns: AlignedColumnPayload[];
+}
+
+type AlignedLoad =
+  | { status: "loading" }
+  | { status: "error" }
+  | { status: "ready"; chapters: Map<string, AlignedChapterPayload> };
+
+/**
+ * The Aligned arrangement: each hit verse in the reader's preferred text
+ * beside the KJV and one more witness, the multiview report fetched once
+ * per chapter the capped hit set touches (src/lib/aligned.ts). Rows align
+ * by verse number under each text's own numbering, a verse a text does not
+ * number naming the gap, the multiview pane's discipline. Unlike the other
+ * arrangements this one fetches per view, so the cap keeps the batch
+ * honest: the first ALIGNED_HIT_CAP hits align, and the header note says so
+ * when the set runs longer.
+ */
+function AlignedView({ hits, total }: { hits: Hit[]; total: number }) {
+  const scope = useMemo(() => alignedScope(hits), [hits]);
+  const [load, setLoad] = useState<AlignedLoad>({ status: "loading" });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoad({ status: "loading" });
+    let texts = "kjv,web";
+    translationShelf()
+      .then((shelf) => {
+        const hasNT = scope.hits.some((h) => getBook(h.book)?.testament === "NT");
+        texts = alignedTextIds(preferredTranslation(), shelf, hasNT).join(",");
+        return Promise.all(
+          scope.chapters.map(async (c) => {
+            const q = new URLSearchParams({
+              book: c.book,
+              chapter: String(c.chapter),
+              texts,
+            });
+            const res = await fetch(`/api/pane/multiview?${q}`, { signal: controller.signal });
+            if (!res.ok) throw new Error(String(res.status));
+            return [c.key, (await res.json()) as AlignedChapterPayload] as const;
+          })
+        );
+      })
+      .then((entries) => setLoad({ status: "ready", chapters: new Map(entries) }))
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setLoad({ status: "error" });
+      });
+    return () => controller.abort();
+  }, [scope]);
+
+  /* The fetched chapters share one column set (the request resolves against
+   * the shelf first), so the header row reads from any payload. */
+  const columns = useMemo(() => {
+    if (load.status !== "ready") return [];
+    const first = load.chapters.values().next().value;
+    return first ? first.columns.map((c) => ({ id: c.id, abbrev: c.abbrev, name: c.name })) : [];
+  }, [load]);
+
+  /* Cell lookup by verse number, one map per chapter per column. */
+  const cellText = useMemo(() => {
+    if (load.status !== "ready") return new Map<string, Map<string, Map<number, string>>>();
+    const out = new Map<string, Map<string, Map<number, string>>>();
+    for (const [key, p] of load.chapters) {
+      out.set(
+        key,
+        new Map(p.columns.map((c) => [c.id, new Map(c.verses.map((v) => [v.verse, v.text]))]))
+      );
+    }
+    return out;
+  }, [load]);
+
+  return (
+    <div className="px-4 py-3">
+      <p className="mb-2 text-xs text-muted">
+        {total.toLocaleString()} {total === 1 ? "verse answers" : "verses answer"}
+        {total > scope.hits.length
+          ? `; the first ${scope.hits.length.toLocaleString()} are aligned`
+          : ""}
+        {columns.length > 0 ? `, each in ${columns.map((c) => c.abbrev).join(" · ")}` : ""}.
+      </p>
+      {load.status === "loading" && (
+        <p className="py-8 text-center text-xs text-muted">Laying out the columns…</p>
+      )}
+      {load.status === "error" && (
+        <p className="py-8 text-center text-xs text-muted">The columns could not be laid out.</p>
+      )}
+      {load.status === "ready" && (
+        <div
+          className="grid"
+          style={{
+            gridTemplateColumns: `6.5rem repeat(${columns.length}, minmax(0, 1fr))`,
+          }}
+        >
+          <div aria-hidden="true" className="sticky top-0 z-10 border-b border-rule bg-surface" />
+          {columns.map((c) => (
+            <div
+              key={c.id}
+              className="sticky top-0 z-10 border-b border-l border-rule bg-surface px-3 py-1.5"
+            >
+              <span className="small-caps text-xs font-semibold text-muted" title={c.name}>
+                {c.abbrev}
+              </span>
+            </div>
+          ))}
+          {scope.hits.map((h) => {
+            const chapter = load.chapters.get(`${h.book}:${h.chapter}`);
+            return (
+              <Fragment key={`${h.book}-${h.chapter}-${h.verse}`}>
+                <div className="border-b border-rule/50 py-2 pr-2">
+                  <button
+                    type="button"
+                    onClick={() => openRef(h.book, h.chapter, h.verse)}
+                    className="small-caps text-[0.7rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    {h.bookName} {h.chapter}:{h.verse}
+                  </button>
+                </div>
+                {columns.map((c) => {
+                  const column = chapter?.columns.find((x) => x.id === c.id);
+                  const cell = cellText.get(`${h.book}:${h.chapter}`)?.get(c.id)?.get(h.verse);
+                  return (
+                    <div
+                      key={c.id}
+                      className="border-b border-l border-rule/50 px-3 py-2 font-reader text-[0.84rem] leading-relaxed"
+                    >
+                      {cell !== undefined ? (
+                        cell
+                      ) : (
+                        <span className="text-[0.68rem] text-muted">
+                          {column?.missing
+                            ? `No ${h.bookName} ${h.chapter} under this text's numbering.`
+                            : `No verse ${h.verse} under this text's numbering.`}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -855,8 +1025,8 @@ type MorphLoad =
  * number, or letters in the script, with in: scoping; the "Narrow by
  * parsing" strip adds the Greek and Hebrew morphology filters. One fetch to
  * /api/pane/morph carries the working set; the Verses view keeps the old
- * page's parsing and gloss display, while Grid, Analysis, and Chart read
- * the hits as the verse list they group into. A matched word with a plain
+ * page's parsing and gloss display, while Aligned, Grid, Analysis, and
+ * Chart read the hits as the verse list they group into. A matched word with a plain
  * Strong's number opens its word study. Filter-only searches stay with the
  * /search page: a workspace tab keys on its query, so a question with no
  * query has nothing to persist or re-run.
@@ -1153,6 +1323,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
             {view === "verses" && (
               <OriginalVersesView hits={load.hits} total={load.total} verses={load.verses} />
             )}
+            {view === "aligned" && <AlignedView hits={verseHits} total={load.verses} />}
             {view === "grid" && <GridView hits={verseHits} total={load.verses} />}
             {view === "analysis" && (
               <AnalysisView books={books} total={load.verses} truncated={truncated} listed={verseHits.length} />

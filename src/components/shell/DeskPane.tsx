@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DOCUMENT_KINDS, DocumentKind, documents, wordCount } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
+import { importSermons, type SermonImportRow } from "@/lib/sermonimport";
 import { useWorkspace } from "./WorkspaceContext";
 
 type SortKey = "updated" | "date" | "title";
@@ -11,8 +12,10 @@ type SortKey = "updated" | "date" | "title";
  * The Writing Desk pane: the manuscript list, moved from the retired /desk
  * page. Kinds and series filter, three sorts answer, and a new manuscript
  * opens straight into its own tab. Rows open the same way; delete stays on
- * the row. Everything reads and writes the documents collection, so the
- * rails and Docs Search follow every change.
+ * the row. The Import affordance reads .md/.txt files into sermon
+ * manuscripts with detected metadata (src/lib/sermonimport.ts), the report
+ * showing what was set. Everything reads and writes the documents
+ * collection, so the rails and Docs Search follow every change.
  */
 export default function DeskPane() {
   const { dispatch } = useWorkspace();
@@ -22,6 +25,8 @@ export default function DeskPane() {
   const [kindFilter, setKindFilter] = useState<"all" | DocumentKind>("all");
   const [seriesFilter, setSeriesFilter] = useState("all");
   const [sort, setSort] = useState<SortKey>("updated");
+  /** The last import's report: one row per file, what the detection set. */
+  const [report, setReport] = useState<SermonImportRow[] | null>(null);
 
   function add(e: React.FormEvent) {
     e.preventDefault();
@@ -29,6 +34,23 @@ export default function DeskPane() {
     setTitle("");
     dispatch({ type: "openManuscript", docId: doc.id, title: doc.title });
   }
+
+  /* Each picked file becomes a sermon manuscript at once; the report shows
+   * what the detection set so a wrong guess is fixed, not buried. */
+  const pickSermons = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const read = (f: File) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(f);
+      });
+    const picked = await Promise.all(
+      [...files].map(async (f) => ({ name: f.name, body: await read(f) }))
+    );
+    setReport(importSermons(picked));
+  };
 
   const filtered = rows
     .filter((d) => kindFilter === "all" || d.kind === kindFilter)
@@ -86,6 +108,68 @@ export default function DeskPane() {
           Open a manuscript
         </button>
       </form>
+
+      <div className="no-print mb-8 flex flex-wrap items-center gap-3">
+        <label
+          title="Import .md or .txt files as sermons; a DOCX converts through Word or Google Docs first"
+          className="cursor-pointer rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm text-ink hover:border-sapphire"
+        >
+          Import sermons
+          <input
+            type="file"
+            multiple
+            accept=".md,.markdown,.txt,text/plain,text/markdown"
+            onChange={(e) => {
+              void pickSermons(e.target.files);
+              e.target.value = "";
+            }}
+            className="hidden"
+          />
+        </label>
+        <p className="text-[0.68rem] text-muted">
+          The first heading becomes the title, a Series: first line fills the series, and the
+          passage is detected from the text&apos;s own references; the report shows what was set.
+        </p>
+      </div>
+
+      {report && (
+        <section className="no-print mb-8 rounded-[4px] border border-rule bg-surface p-4">
+          <div className="mb-2 flex items-baseline justify-between">
+            <p className="small-caps text-xs font-semibold text-muted">
+              Imported {report.length} {report.length === 1 ? "sermon" : "sermons"}
+            </p>
+            <button
+              type="button"
+              onClick={() => setReport(null)}
+              className="text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Dismiss
+            </button>
+          </div>
+          <ul className="space-y-2">
+            {report.map((r) => (
+              <li key={r.docId} className="border-t border-rule/60 pt-2 text-xs first:border-t-0 first:pt-0">
+                <button
+                  type="button"
+                  title={`Open ${r.title} for editing`}
+                  onClick={() => dispatch({ type: "openManuscript", docId: r.docId, title: r.title })}
+                  className="font-semibold text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {r.title}
+                </button>
+                <span className="text-muted"> from {r.file}</span>
+                <p className="mt-0.5 text-muted">
+                  Title from {r.titleFrom === "heading" ? "its first heading" : "the filename"}
+                  {r.series ? ` · series “${r.series}”` : " · no series"}
+                  {r.passage
+                    ? ` · passage ${r.passage}`
+                    : " · no reference found; set the passage in the editor"}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="no-print mb-6 flex flex-wrap gap-2">
         <select

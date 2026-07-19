@@ -911,13 +911,14 @@ export const COMPARE_BASE_DEFAULT = "kjv";
 /**
  * The translation new reader tabs open in, the workspace's default text. A
  * device-local scalar like the candle key, written by the Settings rail and
- * read here at tab creation; a tab already open keeps its own text, and a
- * pane's swap still wins. KJV stores as nothing, the way a tab carrying no
- * translation already means the default text.
+ * read here at tab creation and by the search pane's Aligned columns; a tab
+ * already open keeps its own text, and a pane's swap still wins. KJV stores
+ * as nothing, the way a tab carrying no translation already means the
+ * default text.
  */
 export const PREFERRED_TRANSLATION_KEY = "berean.preferred-translation.v1";
 
-function preferredTranslation(): string | undefined {
+export function preferredTranslation(): string | undefined {
   if (typeof window === "undefined") return undefined;
   const v = window.localStorage.getItem(PREFERRED_TRANSLATION_KEY)?.trim();
   return v && v !== "kjv" && /^[a-z]+$/.test(v) ? v : undefined;
