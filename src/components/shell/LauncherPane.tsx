@@ -20,6 +20,7 @@ import {
   readerTab,
   searchTab,
   textCompareTab,
+  toolsTab,
   type LauncherTab,
   type LeafNode,
   type NavEntry,
@@ -236,6 +237,12 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(libraryTab())}>
             Browse the Library
             <span className={HINT}>Catalog</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(toolsTab())}>
+            Tools
+            <span className={HINT}>Measures, alphabets, numerals</span>
           </button>
         </li>
         <li>

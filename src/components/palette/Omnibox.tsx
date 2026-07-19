@@ -49,6 +49,7 @@
  *                              berean.layouts.v1 (shell/layouts.ts).
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
  *   "berean:open-settings"     {}                The Settings tab.
+ *   "berean:open-tools"        {}                The Tools tab.
  * Topic rows open the Topic Guide as a pane tab; entity rows open the
  * Factbook as a pane tab (the old /library/entity/[id] URLs redirect into
  * it).
@@ -203,6 +204,7 @@ const COMMANDS: Command[] = [
   { id: "toggle-dock", label: "Toggle right dock" },
   { id: "daily", label: "Go to daily verse" },
   { id: "settings", label: "Open settings" },
+  { id: "tools", label: "Open tools", meta: "Tool" },
 ];
 
 /* -------------------------------- component ------------------------------- */
@@ -334,6 +336,8 @@ export default function Omnibox() {
       return;
     } else if (id === "settings") {
       emit("berean:open-settings", {});
+    } else if (id === "tools") {
+      emit("berean:open-tools", {});
     }
     closePalette();
   }

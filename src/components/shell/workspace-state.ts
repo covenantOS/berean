@@ -397,6 +397,16 @@ export interface LauncherTab {
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
+/**
+ * The Tools pane: the small utilities — measures, alphabets, numerals,
+ * transliteration, and their kin — under one roof. A singleton with no
+ * payload; the pane opens on the utilities themselves.
+ */
+export interface ToolsTab {
+  id: string;
+  type: "tools";
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -430,7 +440,8 @@ export type Tab =
   | AlmanacTab
   | TopicsTab
   | SettingsTab
-  | LauncherTab;
+  | LauncherTab
+  | ToolsTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -657,6 +668,10 @@ export function topicsTab(): TopicsTab {
 
 export function settingsTab(): SettingsTab {
   return { id: newId("tab"), type: "settings" };
+}
+
+export function toolsTab(): ToolsTab {
+  return { id: newId("tab"), type: "tools" };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -1010,6 +1025,7 @@ export type WorkspaceAction =
   | { type: "openAlmanac"; paneId?: string }
   | { type: "openTopics"; paneId?: string }
   | { type: "openSettings"; paneId?: string }
+  | { type: "openTools"; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1712,6 +1728,32 @@ export function workspaceReducer(
         };
       }
       const tab = settingsTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTools": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tools tab per pane, the settings singleton's pattern.
+      const existing = leaf.tabs.find((t) => t.type === "tools");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = toolsTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -2640,7 +2682,8 @@ function sanitizeNode(node: unknown): PaneNode | null {
           t.type === "plans" ||
           t.type === "almanac" ||
           t.type === "topics" ||
-          t.type === "settings") &&
+          t.type === "settings" ||
+          t.type === "tools") &&
         typeof t.id === "string"
       ) {
         // Singletons carry nothing to validate.

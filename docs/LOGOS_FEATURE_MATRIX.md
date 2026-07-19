@@ -224,7 +224,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [DATA] Biblical Event Navigator and NT Use of the OT interactives.
 - [ ] [DATA] Miracles of the Bible, Names of God, and Narrative Character Maps interactives.
 - [ ] [DATA][LICENSED] Before and After: Biblical Sites interactive: then-and-now photo sliders.
-- [ ] [SW] Utility interactives: Hebrew Cantillations, Greek and Hebrew Alphabet Tutors, Counting the Ten Commandments, Weights and Measures Converter, Numeric Converter, Text Converter, Who Killed Goliath.
+- [x] [SW] Utility interactives: Hebrew Cantillations, Greek and Hebrew Alphabet Tutors, Counting the Ten Commandments, Weights and Measures Converter, Numeric Converter, Text Converter, Who Killed Goliath. (Shipped as the Tools pane: measures converter with deep-linked occurrences, alphabet tables with a flash self-test, letter-value numerals both directions, script-to-transliteration with Greek reversible, a cantillation reference table, the three commandment numberings, and Goliath as a Text Compare deep link; a scored quiz engine is out.)
 - [ ] [DATA] Bible Outline Browser: stacked comparison of how your books outline the current passage.
 
 ## 11. Canvas and Whiteboard
