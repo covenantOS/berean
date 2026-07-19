@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CANON, getBook } from "@/lib/canon";
 import { useRecord } from "@/lib/hooks";
 import {
@@ -14,6 +14,7 @@ import {
   type StudyDocument,
 } from "@/lib/documents";
 import PrintButton from "./PrintButton";
+import { renderMarkdown } from "./markdown";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface Critique {
@@ -612,88 +613,4 @@ function PreachOverlay({
       </div>
     </div>
   );
-}
-
-/* The manuscript's Markdown subset, rendered as read-only React: headings,
- * blockquotes, lists, and paragraphs with bold, italic, and footnote marks
- * inline. No HTML is injected; the words stay text. */
-function renderMarkdown(body: string): ReactNode[] {
-  return body.split(/\n{2,}/).map((block, i) => {
-    const lines = block.split("\n");
-    const heading = /^(#{1,6})\s+(.*)$/.exec(lines[0]);
-    if (heading && lines.length === 1) {
-      const depth = Math.min(heading[1].length, 3);
-      const Tag = `h${depth}` as "h1" | "h2" | "h3";
-      return (
-        <Tag key={i} className="font-editorial mb-3 mt-8 text-[1.15em] font-bold leading-tight">
-          {inline(heading[2])}
-        </Tag>
-      );
-    }
-    if (lines.every((l) => /^>\s?/.test(l))) {
-      return (
-        <blockquote
-          key={i}
-          className="mb-5 border-l-2 border-rule pl-4 text-[0.85em] italic text-muted"
-        >
-          {lines.map((l, j) => (
-            <span key={j}>
-              {inline(l.replace(/^>\s?/, ""))}
-              {j < lines.length - 1 ? " " : ""}
-            </span>
-          ))}
-        </blockquote>
-      );
-    }
-    if (lines.every((l) => /^[-*]\s+/.test(l))) {
-      return (
-        <ul key={i} className="mb-5 list-disc pl-6">
-          {lines.map((l, j) => (
-            <li key={j}>{inline(l.replace(/^[-*]\s+/, ""))}</li>
-          ))}
-        </ul>
-      );
-    }
-    if (lines.every((l) => /^\d+[.)]\s+/.test(l))) {
-      return (
-        <ol key={i} className="mb-5 list-decimal pl-6">
-          {lines.map((l, j) => (
-          <li key={j}>{inline(l.replace(/^\d+[.)]\s+/, ""))}</li>
-          ))}
-        </ol>
-      );
-    }
-    return (
-      <p key={i} className="mb-5">
-        {lines.map((l, j) => (
-          <span key={j}>
-            {inline(l)}
-            {j < lines.length - 1 ? " " : ""}
-          </span>
-        ))}
-      </p>
-    );
-  });
-}
-
-function inline(text: string): ReactNode[] {
-  const parts: ReactNode[] = [];
-  const re = /(\*\*[^*]+\*\*|\*[^*]+\*|\[\^\w+\](?!:))/g;
-  let last = 0;
-  let k = 0;
-  for (const m of text.matchAll(re)) {
-    if (m.index > last) parts.push(text.slice(last, m.index));
-    const tok = m[0];
-    if (tok.startsWith("**")) parts.push(<strong key={k++}>{tok.slice(2, -2)}</strong>);
-    else if (tok.startsWith("*")) parts.push(<em key={k++}>{tok.slice(1, -1)}</em>);
-    else
-      parts.push(
-        <sup key={k++} className="text-sapphire">
-          {tok.slice(2, -1)}
-        </sup>
-      );
-    last = m.index + tok.length;
-  }
-  if (last < text.length) parts.push(text.slice(last));
-  return parts;
 }

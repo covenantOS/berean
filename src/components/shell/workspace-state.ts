@@ -228,6 +228,20 @@ export interface ManuscriptTab {
 }
 
 /**
+ * A personal book (src/lib/personalbooks.ts) open for reading, pinned to its
+ * record id. The title is captured at open time for the tab strip; the pane
+ * reads the collection live, and a deleted book degrades the way a deleted
+ * manuscript does.
+ */
+export interface PersonalBookTab {
+  id: string;
+  type: "personalbook";
+  bookId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
+/**
  * The Pulpit: the project list with its kind and series filters and the
  * archive. A singleton with no payload; the pane opens on the list itself.
  */
@@ -469,6 +483,7 @@ export type Tab =
   | DiagramTab
   | DeskTab
   | ManuscriptTab
+  | PersonalBookTab
   | PulpitTab
   | ProjectTab
   | ChapelTab
@@ -698,6 +713,10 @@ export function manuscriptTab(docId: string, title: string): ManuscriptTab {
   return { id: newId("tab"), type: "manuscript", docId, title };
 }
 
+export function personalBookTab(bookId: string, title: string): PersonalBookTab {
+  return { id: newId("tab"), type: "personalbook", bookId, title };
+}
+
 export function pulpitTab(): PulpitTab {
   return { id: newId("tab"), type: "pulpit" };
 }
@@ -742,6 +761,9 @@ export const MEMORY_ID_PATTERN =
 
 /** Manuscript ids are the store's UUIDs, the same shape memory passage ids take. */
 export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Personal book ids are the store's UUIDs, the same shape memory passage ids take. */
+export const PERSONALBOOK_ID_PATTERN = MEMORY_ID_PATTERN;
 
 /** Canvas ids are the store's UUIDs, the same shape memory passage ids take. */
 export const CANVAS_ID_PATTERN = MEMORY_ID_PATTERN;
@@ -1119,6 +1141,7 @@ export type WorkspaceAction =
   | { type: "openDiagram"; diagramId: string; title: string; paneId?: string }
   | { type: "openDesk"; paneId?: string }
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
+  | { type: "openPersonalBook"; bookId: string; title: string; paneId?: string }
   | { type: "openPulpit"; paneId?: string }
   | { type: "openProject"; projectId: string; title: string; paneId?: string }
   | { type: "openChapel"; paneId?: string }
@@ -1697,6 +1720,37 @@ export function workspaceReducer(
         };
       }
       const tab = manuscriptTab(docId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openPersonalBook": {
+      const bookId = action.bookId.trim();
+      if (!PERSONALBOOK_ID_PATTERN.test(bookId)) return state;
+      const title = action.title.trim() || "Untitled book";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per book per pane: reopening the same book activates the tab
+      // already there, the manuscript's pattern keyed by bookId. Edits land
+      // in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "personalbook" && t.bookId === bookId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = personalBookTab(bookId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -2853,6 +2907,14 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled manuscript";
         tabs.push({ id: t.id, type: "manuscript", docId: t.docId, title });
+        continue;
+      }
+      if (t.type === "personalbook" && typeof t.id === "string") {
+        // The manuscript's rule: a malformed id drops the tab; an id that
+        // answers to no book loads anyway and the pane says the book is gone.
+        if (typeof t.bookId !== "string" || !PERSONALBOOK_ID_PATTERN.test(t.bookId)) continue;
+        const title = typeof t.title === "string" && t.title.trim() ? t.title : "Untitled book";
+        tabs.push({ id: t.id, type: "personalbook", bookId: t.bookId, title });
         continue;
       }
       if (t.type === "pulpit" && typeof t.id === "string") {

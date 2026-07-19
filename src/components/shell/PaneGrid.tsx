@@ -46,6 +46,7 @@ import CanvasPane from "./CanvasPane";
 import DiagramPane from "./DiagramPane";
 import DeskPane from "./DeskPane";
 import ManuscriptPane from "./ManuscriptPane";
+import PersonalBookPane from "./PersonalBookPane";
 import PulpitPane from "./PulpitPane";
 import ProjectPane from "./ProjectPane";
 import ChapelPane from "./ChapelPane";
@@ -171,6 +172,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "diagram") return `Diagram: ${tab.title}`;
   if (tab.type === "desk") return "Writing";
   if (tab.type === "manuscript") return tab.title;
+  if (tab.type === "personalbook") return tab.title;
   if (tab.type === "pulpit") return "Pulpit";
   if (tab.type === "project") return tab.title;
   if (tab.type === "chapel") return "Chapel";
@@ -627,6 +629,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "manuscript" ? (
             <div className="h-full overflow-y-auto p-4">
               <ManuscriptPane docId={activeTab.docId} />
+            </div>
+          ) : activeTab.type === "personalbook" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <PersonalBookPane bookId={activeTab.bookId} />
             </div>
           ) : activeTab.type === "pulpit" ? (
             <div className="h-full overflow-y-auto p-4">

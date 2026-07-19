@@ -12,6 +12,7 @@ import {
 } from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
 import { isAnchored, notes as marginNotes, type AnchoredNote } from "@/lib/marginalia";
+import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
@@ -53,6 +54,7 @@ export default function AllSearchPane({ q }: { q: string }) {
   const customStyles = useCollection(highlightStyles);
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
+  const books = useCollection(personalbooks);
   const prayers = useCollection(prayerLists);
   const [scripture, setScripture] = useState<ScriptureState>({ status: "loading" });
 
@@ -90,8 +92,16 @@ export default function AllSearchPane({ q }: { q: string }) {
   }, [marks, customStyles]);
 
   const docResults = useMemo(
-    () => searchDocs(q, { notes, highlights: highlightRows, documents: docs, lists, prayers }),
-    [q, notes, highlightRows, docs, lists, prayers]
+    () =>
+      searchDocs(q, {
+        notes,
+        highlights: highlightRows,
+        documents: docs,
+        lists,
+        personalBooks: books,
+        prayers,
+      }),
+    [q, notes, highlightRows, docs, lists, books, prayers]
   );
 
   /* A verse row carries the pane to its passage and selects the verse, the
@@ -210,7 +220,7 @@ function ScriptureGroup({
 
 /* ---------- Documents: the user's own collections, first hits ---------- */
 
-/** One flattened row across the five collections, in the Docs pane's order. */
+/** One flattened row across the six collections, in the Docs pane's order. */
 interface DocRow {
   key: string;
   kindLabel: string;
@@ -295,6 +305,17 @@ function DocumentsGroup({
       snippet: h.snippet,
       open: () => dispatch({ type: "openListDoc", docId: h.doc.id, title: h.doc.title }),
       title: `Open ${h.doc.title || "Untitled list"}`,
+    });
+  }
+  for (const h of results.personalBooks) {
+    rows.push({
+      key: h.book.id,
+      kindLabel: "Personal book",
+      heading: h.book.title,
+      snippet: h.snippet,
+      open: () =>
+        dispatch({ type: "openPersonalBook", bookId: h.book.id, title: h.book.title }),
+      title: `Open ${h.book.title}`,
     });
   }
   for (const h of results.prayers) {

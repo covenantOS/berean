@@ -25,6 +25,7 @@ import {
   setRating,
   type LibraryMeta,
 } from "@/lib/librarymeta";
+import { importBook, personalbooks } from "@/lib/personalbooks";
 import { RIGHTS_REGISTRY, type RightsEntry } from "@/lib/rights";
 import { useWorkspace } from "./WorkspaceContext";
 import {
@@ -420,6 +421,8 @@ export default function LibraryPane() {
         </ul>
       )}
 
+      <PersonalBooksSection />
+
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
         Facets follow what the registry genuinely carries: kind, status, and
         license class, plus your tags and ratings. Language and era wait on
@@ -432,8 +435,171 @@ export default function LibraryPane() {
   );
 }
 
-function FacetSelect({
-  label,
+/**
+ * The Personal Books shelf: the reader's own texts imported as read-only
+ * resources, listed beside the catalog the way Logos shelves a compiled
+ * personal book. Import is paste or a .md/.txt file read on the device; a
+ * DOCX converts through Word or Google Docs first, the same road Logos
+ * sends its PDFs down, and the form says so. Detected references link when
+ * the book opens; the stored text is never rewritten.
+ */
+function PersonalBooksSection() {
+  const { state, dispatch } = useWorkspace();
+  const books = useCollection(personalbooks);
+  const [importing, setImporting] = useState(false);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [body, setBody] = useState("");
+
+  /* A chosen file loads into the form for review; nothing imports until
+   * Import is pressed, the paste path and the file path sharing one step. */
+  const pickFile = (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setBody(typeof reader.result === "string" ? reader.result : "");
+      setTitle((t) => t || file.name.replace(/\.(md|markdown|txt)$/i, ""));
+    };
+    reader.readAsText(file);
+  };
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!body.trim()) return;
+    const book = importBook({ title, author, body });
+    setImporting(false);
+    setTitle("");
+    setAuthor("");
+    setBody("");
+    dispatch({
+      type: "openPersonalBook",
+      bookId: book.id,
+      title: book.title,
+      paneId: state.activePaneId,
+    });
+  };
+
+  return (
+    <section className="border-t border-rule pt-3">
+      <div className="flex items-baseline gap-2">
+        <p className="small-caps text-xs font-semibold text-muted">
+          Personal books · {books.length}
+        </p>
+        {!importing && (
+          <button
+            type="button"
+            onClick={() => setImporting(true)}
+            className="ml-auto border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Import a book
+          </button>
+        )}
+      </div>
+
+      {importing && (
+        <form onSubmit={submit} className="mt-2 space-y-2 border border-rule bg-surface p-3">
+          <div className="flex flex-wrap gap-2">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+              aria-label="Book title"
+              spellCheck={false}
+              autoComplete="off"
+              className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <input
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Author"
+              aria-label="Book author"
+              spellCheck={false}
+              autoComplete="off"
+              className="w-44 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <label className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire">
+              Choose .md or .txt
+              <input
+                type="file"
+                accept=".md,.markdown,.txt,text/plain,text/markdown"
+                onChange={(e) => pickFile(e.target.files)}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="Paste the text here, or choose a file above. Markdown headings and lists render in the reader."
+            aria-label="Book text"
+            spellCheck={false}
+            className="h-36 w-full resize-y border border-rule bg-paper px-2 py-1.5 font-mono text-xs leading-relaxed text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+          />
+          <div className="flex items-center gap-2">
+            <button
+              type="submit"
+              disabled={!body.trim()}
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Import
+            </button>
+            <button
+              type="button"
+              onClick={() => setImporting(false)}
+              className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Cancel
+            </button>
+            <p className="text-[0.68rem] text-muted">
+              Plain text or Markdown. A DOCX converts through Word or Google Docs first, the same
+              road Logos sends its PDFs down. Scripture references link when the book opens.
+            </p>
+          </div>
+        </form>
+      )}
+
+      {books.length > 0 && (
+        <ul className="mt-2 space-y-1">
+          {books.map((b) => (
+            <li key={b.id} className="flex items-center gap-2 border border-rule bg-surface px-3 py-2">
+              <button
+                type="button"
+                onClick={() =>
+                  dispatch({
+                    type: "openPersonalBook",
+                    bookId: b.id,
+                    title: b.title,
+                    paneId: state.activePaneId,
+                  })
+                }
+                title={`Open ${b.title}`}
+                className="min-w-0 flex-1 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                <span className="block truncate text-sm font-medium text-ink">{b.title}</span>
+                <span className="block text-[0.68rem] text-muted">
+                  {b.author ? `${b.author} · ` : ""}imported{" "}
+                  {new Date(b.importedAt).toLocaleDateString()}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => personalbooks.remove(b.id)}
+                title={`Delete ${b.title}`}
+                aria-label={`Delete ${b.title}`}
+                className="border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function FacetSelect({  label,
   value,
   onChange,
   options,

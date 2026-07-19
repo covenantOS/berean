@@ -205,7 +205,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [LICENSED] Mobile Ed courses: video courseware with transcripts and self tests, driven by the Courses tool.
 - [ ] [LICENSED] Audiobooks and read-aloud editions in the catalog.
 - [ ] [SW] Store conveniences: wishlists, payment plans, monthly free book, subscriber storewide discount.
-- [ ] [SW] Personal Books: compile DOCX into tagged library resources with automatic Bible reference linking; PDFs convert through Word or Google Docs.
+- [x] [SW] Personal Books: compile DOCX into tagged library resources with automatic Bible reference linking; PDFs convert through Word or Google Docs. (Import ships honestly for a local app: paste or a .md/.txt file read on the device becomes a read-only personal book in berean.personalbooks.v1, with a DOCX converting through Word or Google Docs first, the same road Logos sends its PDFs down. Automatic reference linking ships: the scanner (src/lib/refscan.ts) finds chapter:verse and chapter-only references in the prose with word-boundary and chapter-bounds discipline against the canon name table, and the reader pane renders them as working berean:open-ref links at render time, never rewriting the stored text. Books open as per-id tabs from the Personal Books section of the Library pane, edit or delete from the pane or the list, and index into Docs Search and All Search by title, author, and body. Milestones, tagging beyond the search index, and print-book page numbers do not ship.)
 - [ ] [SW] Bookstore Search: buy from inside the app with preview snippets of unowned books.
 
 ## 10. Atlas, Timeline, Media

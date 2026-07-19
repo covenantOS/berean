@@ -16,6 +16,7 @@ import {
   notes as marginNotes,
   type AnchoredNote,
 } from "@/lib/marginalia";
+import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
@@ -27,8 +28,8 @@ import { useWorkspace } from "./WorkspaceContext";
  * so a note written while the pane stands open answers on its own. Each hit
  * opens its target: a note carries the workspace to its verse, a highlight
  * to its passage, a manuscript to its own tab, a list to its pane tab, a
- * prayer to the prayers pane. The header handoff runs the same query
- * against the canon.
+ * personal book to its reader, a prayer to the prayers pane. The header
+ * handoff runs the same query against the canon.
  */
 export default function DocSearchPane({ q }: { q: string }) {
   const { dispatch } = useWorkspace();
@@ -37,6 +38,7 @@ export default function DocSearchPane({ q }: { q: string }) {
   const customStyles = useCollection(highlightStyles);
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
+  const books = useCollection(personalbooks);
   const prayers = useCollection(prayerLists);
 
   /* A highlight answers by its verse's reference and its style's name. */
@@ -56,12 +58,21 @@ export default function DocSearchPane({ q }: { q: string }) {
   }, [marks, customStyles]);
 
   const results = useMemo(
-    () => searchDocs(q, { notes, highlights: highlightRows, documents: docs, lists, prayers }),
-    [q, notes, highlightRows, docs, lists, prayers]
+    () =>
+      searchDocs(q, {
+        notes,
+        highlights: highlightRows,
+        documents: docs,
+        lists,
+        personalBooks: books,
+        prayers,
+      }),
+    [q, notes, highlightRows, docs, lists, books, prayers]
   );
   const total = resultCount(results);
   const empty =
-    notes.length + marks.length + docs.length + lists.length + prayers.length === 0;
+    notes.length + marks.length + docs.length + lists.length + books.length + prayers.length ===
+    0;
 
   /* A note opens its anchor passage and selects the verse, so the context
    * strip rises with the note, the same ride the Documents rail gives. */
@@ -99,8 +110,8 @@ export default function DocSearchPane({ q }: { q: string }) {
         {empty ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
             Nothing of yours is gathered yet. Notes on verses, highlighted verses, manuscripts
-            from the Writing Desk, saved lists, and prayer requests all answer here once they
-            exist.
+            from the Writing Desk, saved lists, personal books, and prayer requests all answer
+            here once they exist.
           </p>
         ) : total === 0 ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
@@ -110,7 +121,7 @@ export default function DocSearchPane({ q }: { q: string }) {
           <div className="mx-auto max-w-prose px-6 py-4">
             <p className="mb-3 text-xs text-muted">
               {total.toLocaleString()} {total === 1 ? "record answers" : "records answer"} across
-              your notes, highlights, manuscripts, lists, and prayers.
+              your notes, highlights, manuscripts, lists, personal books, and prayers.
             </p>
             {results.notes.length > 0 && (
               <section className="mb-5">
@@ -255,6 +266,43 @@ export default function DocSearchPane({ q }: { q: string }) {
                           </span>
                         </span>
                         <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed">
+                          {h.snippet}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {results.personalBooks.length > 0 && (
+              <section className="mb-5">
+                <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
+                  Personal books · {results.personalBooks.length}
+                </p>
+                <ul>
+                  {results.personalBooks.map((h) => (
+                    <li key={h.book.id} className="border-b border-rule/60">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch({
+                            type: "openPersonalBook",
+                            bookId: h.book.id,
+                            title: h.book.title,
+                          })
+                        }
+                        title={`Open ${h.book.title}`}
+                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      >
+                        <span className="small-caps text-sm font-medium text-sapphire">
+                          {h.book.title}
+                          {h.book.author && (
+                            <span className="ml-2 text-[0.62rem] font-normal text-muted">
+                              {h.book.author}
+                            </span>
+                          )}
+                        </span>
+                        <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
                           {h.snippet}
                         </span>
                       </button>

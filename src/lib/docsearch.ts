@@ -1,6 +1,7 @@
 import type { ListDocument, StudyDocument } from "./documents";
 import type { VerseHighlight } from "./highlights";
 import type { MarginNote } from "./marginalia";
+import type { PersonalBook } from "./personalbooks";
 import type { PrayerList, PrayerRequest } from "./prayers";
 import { getRights } from "./rights";
 
@@ -12,7 +13,8 @@ import { getRights } from "./rights";
  * verse's text stays out, since it lives behind the bible routes and this
  * matcher runs synchronously), Writing Desk manuscripts, passage and word
  * lists, clippings (excerpt and citation both answer), bibliographies (the
- * cited work's registry title and holder answer), and prayer requests.
+ * cited work's registry title and holder answer), personal books (title,
+ * author, and the imported body), and prayer requests.
  * Matching is a plain case-folded substring, honest at the scale of one
  * device's localStorage; the precise grammar in query.ts answers
  * verse-shaped questions and does not compose with prose. Pure over the
@@ -36,6 +38,7 @@ export type DocHit =
   | { kind: "highlight"; row: HighlightRow; snippet: string }
   | { kind: "manuscript"; doc: StudyDocument; snippet: string }
   | { kind: "list"; doc: ListDocument; snippet: string }
+  | { kind: "personalbook"; book: PersonalBook; snippet: string }
   | { kind: "prayer"; list: PrayerList; request: PrayerRequest; snippet: string };
 
 export interface DocResults {
@@ -43,12 +46,18 @@ export interface DocResults {
   highlights: Extract<DocHit, { kind: "highlight" }>[];
   manuscripts: Extract<DocHit, { kind: "manuscript" }>[];
   lists: Extract<DocHit, { kind: "list" }>[];
+  personalBooks: Extract<DocHit, { kind: "personalbook" }>[];
   prayers: Extract<DocHit, { kind: "prayer" }>[];
 }
 
 export function resultCount(r: DocResults): number {
   return (
-    r.notes.length + r.highlights.length + r.manuscripts.length + r.lists.length + r.prayers.length
+    r.notes.length +
+    r.highlights.length +
+    r.manuscripts.length +
+    r.lists.length +
+    r.personalBooks.length +
+    r.prayers.length
   );
 }
 
@@ -82,11 +91,19 @@ export function searchDocs(
     highlights: HighlightRow[];
     documents: StudyDocument[];
     lists: ListDocument[];
+    personalBooks: PersonalBook[];
     prayers: PrayerList[];
   }
 ): DocResults {
   const needle = q.trim().toLowerCase();
-  const out: DocResults = { notes: [], highlights: [], manuscripts: [], lists: [], prayers: [] };
+  const out: DocResults = {
+    notes: [],
+    highlights: [],
+    manuscripts: [],
+    lists: [],
+    personalBooks: [],
+    prayers: [],
+  };
   if (needle.length < 2) return out;
 
   for (const note of collections.notes) {
@@ -127,8 +144,14 @@ export function searchDocs(
     if (snippet !== null) out.lists.push({ kind: "list", doc, snippet });
   }
 
-  for (const list of collections.prayers) {
-    for (const request of list.requests) {
+  for (const book of collections.personalBooks) {
+    /* A personal book answers by its title, its author, and its body: the
+     * whole imported text indexes, the way a manuscript's does. */
+    const snippet = firstMatch([book.title, book.author, book.body], needle);
+    if (snippet !== null) out.personalBooks.push({ kind: "personalbook", book, snippet });
+  }
+
+  for (const list of collections.prayers) {    for (const request of list.requests) {
       const snippet = firstMatch(
         [request.title, request.details, request.category, ...request.tags, list.title],
         needle
