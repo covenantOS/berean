@@ -2,6 +2,7 @@
 
 import { collection, type Record_ } from "./store";
 import { resolveBookName } from "./canon";
+import { scanRefs } from "./refscan";
 
 /**
  * The Writing Desk — long-form theological manuscripts. Bodies are
@@ -114,6 +115,139 @@ export function outlineOf(body: string): OutlineHeading[] {
     out.push({ depth: m[1].length, text: m[2], offset: m.index });
   }
   return out;
+}
+
+/* ---------- Typed blocks: callouts, slides, handouts ---------- */
+
+export type CalloutKind = "illustration" | "question";
+
+export const CALLOUT_KINDS: { key: CalloutKind; label: string }[] = [
+  { key: "illustration", label: "Illustration" },
+  { key: "question", label: "Question" },
+];
+
+/** The marker line that types a blockquote block: `> [!question]`. */
+const CALLOUT_RE = /^>\s?\[!(illustration|question)\]\s*$/i;
+
+/**
+ * A blockquote block reads as a typed callout when its first line carries
+ * the marker; the marker itself never renders. Quote blocks stay plain
+ * blockquotes on purpose: the passage insert has written them that way from
+ * the first manuscript, so every older draft carries quote blocks already
+ * and renders unchanged.
+ */
+export function calloutOf(lines: string[]): { kind: CalloutKind; content: string[] } | undefined {
+  const m = lines[0] ? CALLOUT_RE.exec(lines[0]) : null;
+  if (!m) return undefined;
+  return { kind: m[1].toLowerCase() as CalloutKind, content: lines.slice(1) };
+}
+
+/** The words a `>` block carries with the marks lifted, flowed to one line. */
+function blockText(lines: string[]): string {
+  return lines
+    .map((l) => l.replace(/^>\s?/, ""))
+    .join(" ")
+    .trim();
+}
+
+export interface CalloutMarker {
+  kind: CalloutKind;
+  /** The block's first line of content, for the sidebar's badge. */
+  text: string;
+  /** Character offset of the marker line in the body. */
+  offset: number;
+}
+
+/**
+ * The typed blocks of a manuscript in document order, each with its offset
+ * so the outline sidebar can badge them beside the headings and land the
+ * caret on them. Rebuilt from the body on every render, the way outlineOf
+ * is, so it tracks edits for free.
+ */
+export function calloutMarkersOf(body: string): CalloutMarker[] {
+  const out: CalloutMarker[] = [];
+  const re = /^>\s?\[!(illustration|question)\][^\n]*(?:\n>[ \t]?([^\n]*))?/gim;
+  for (const m of body.matchAll(re)) {
+    out.push({
+      kind: m[1].toLowerCase() as CalloutKind,
+      text: (m[2] ?? "").trim(),
+      offset: m.index,
+    });
+  }
+  return out;
+}
+
+export type SlideKind = "heading" | "quote" | CalloutKind;
+
+export interface SermonSlide {
+  kind: SlideKind;
+  text: string;
+}
+
+/**
+ * The slides a manuscript carries: every heading, every quotation
+ * blockquote, and every typed callout, in document order, one per screen.
+ * Paragraphs and lists stay with the reading mode; a slide only ever
+ * carries words the writer set apart, and an empty block earns none.
+ */
+export function slidesOf(body: string): SermonSlide[] {
+  const slides: SermonSlide[] = [];
+  for (const block of body.split(/\n{2,}/)) {
+    const lines = block.split("\n");
+    const heading = /^(#{1,6})\s+(.*)$/.exec(lines[0]);
+    if (heading && lines.length === 1) {
+      const text = heading[2].trim();
+      if (text) slides.push({ kind: "heading", text });
+      continue;
+    }
+    if (lines.every((l) => /^>\s?/.test(l))) {
+      const callout = calloutOf(lines);
+      const text = blockText(callout ? callout.content : lines);
+      if (text) slides.push({ kind: callout ? callout.kind : "quote", text });
+    }
+  }
+  return slides;
+}
+
+/**
+ * The handout a manuscript generates: a link back to the source on the
+ * first line, then the outline's headings, the question blocks verbatim as
+ * the discussion questions, and the passages the manuscript cites by the
+ * same scanner the reader's links use. Nothing is composed here; the
+ * questions are the writer's own blocks. A section with nothing to say
+ * stays out, and a manuscript with none of the three earns no handout.
+ */
+export function handoutBodyOf(source: { id: string; title: string }, body: string): string {
+  const outline = outlineOf(body);
+  const questions = slidesOf(body).filter((s) => s.kind === "question");
+  const seen = new Set<string>();
+  const passages: string[] = [];
+  for (const r of scanRefs(body)) {
+    const label = `${r.book.name} ${r.chapter}${
+      r.verse ? `:${r.verse}${r.verseEnd && r.verseEnd !== r.verse ? `-${r.verseEnd}` : ""}` : ""
+    }`;
+    if (!seen.has(label)) {
+      seen.add(label);
+      passages.push(label);
+    }
+  }
+  if (outline.length === 0 && questions.length === 0 && passages.length === 0) return "";
+  const lines: string[] = [
+    `_The handout to [${source.title}](/workspace?tab=manuscript:${source.id})._`,
+  ];
+  if (outline.length > 0) {
+    lines.push("", "## Outline", "");
+    for (const h of outline) lines.push(`- ${h.text}`);
+  }
+  if (questions.length > 0) {
+    lines.push("", "## Discussion questions", "");
+    questions.forEach((q, i) => lines.push(`${i + 1}. ${q.text}`));
+  }
+  if (passages.length > 0) {
+    lines.push("", "## The passages", "");
+    for (const p of passages) lines.push(`- ${p}`);
+  }
+  return lines.join("\n") + "\n";
 }
 
 /* ---------- List documents: reference-aware saved sets ---------- */

@@ -2,16 +2,20 @@
 
 import type { ReactNode } from "react";
 import { scanRefs } from "@/lib/refscan";
+import { CALLOUT_KINDS, calloutOf } from "@/lib/documents";
 
 /**
  * The Markdown subset the Writing Desk preaches from, rendered as read-only
- * React: headings, blockquotes, lists, and paragraphs with bold, italic, and
- * footnote marks inline. No HTML is injected; the words stay text. With
- * linkRefs set, Scripture references in the prose render as working links
- * that dispatch berean:open-ref (src/lib/refscan.ts does the finding); the
- * personal book reader uses it, the manuscript does not, since a draft's
- * references are the writer's own business. Detection runs over the rendered
- * text only; the stored body is never rewritten.
+ * React: headings, blockquotes, lists, and paragraphs with bold, italic,
+ * footnote marks, and links inline. A blockquote whose first line carries a
+ * callout marker (`> [!illustration]`, `> [!question]`) renders as a typed
+ * block with its kind in small caps; plain blockquotes stay quotations, the
+ * form the passage insert has always written. No HTML is injected; the
+ * words stay text. With linkRefs set, Scripture references in the prose
+ * render as working links that dispatch berean:open-ref (src/lib/refscan.ts
+ * does the finding); the personal book reader uses it, the manuscript does
+ * not, since a draft's references are the writer's own business. Detection
+ * runs over the rendered text only; the stored body is never rewritten.
  */
 
 export interface MarkdownOptions {
@@ -33,6 +37,32 @@ export function renderMarkdown(body: string, options?: MarkdownOptions): ReactNo
       );
     }
     if (lines.every((l) => /^>\s?/.test(l))) {
+      const callout = calloutOf(lines);
+      /* A typed block: the marker line names the kind and never renders.
+       * The illustration wears the quotation's italic hush; the question
+       * stands in plain ink. */
+      if (callout) {
+        return (
+          <div
+            key={i}
+            className="mb-5 rounded-[4px] border border-rule bg-surface px-4 py-3 text-[0.85em]"
+          >
+            <p className="small-caps mb-1 text-[0.8em] text-muted">
+              {CALLOUT_KINDS.find((k) => k.key === callout.kind)?.label}
+            </p>
+            {callout.content.length > 0 && (
+              <p className={callout.kind === "illustration" ? "italic text-muted" : ""}>
+                {callout.content.map((l, j) => (
+                  <span key={j}>
+                    {inline(l.replace(/^>\s?/, ""), options)}
+                    {j < callout.content.length - 1 ? " " : ""}
+                  </span>
+                ))}
+              </p>
+            )}
+          </div>
+        );
+      }
       return (
         <blockquote
           key={i}
@@ -78,15 +108,34 @@ export function renderMarkdown(body: string, options?: MarkdownOptions): ReactNo
   });
 }
 
+/**
+ * The inline marks of one line (bold, italic, footnotes, links), exported
+ * for callers that set their own block wrapper, the way the slides do.
+ */
+export function renderInline(text: string, options?: MarkdownOptions): ReactNode[] {
+  return inline(text, options);
+}
+
 function inline(text: string, options?: MarkdownOptions): ReactNode[] {
   const parts: ReactNode[] = [];
-  const re = /(\*\*[^*]+\*\*|\*[^*]+\*|\[\^\w+\](?!:))/g;
+  const re = /(\[([^\]]+)\]\((\/[^)\s]*|https?:[^)\s]*)\)|\*\*[^*]+\*\*|\*[^*]+\*|\[\^\w+\](?!:))/g;
   let last = 0;
   let k = 0;
   for (const m of text.matchAll(re)) {
     if (m.index > last) parts.push(...plain(text.slice(last, m.index), options));
     const tok = m[0];
-    if (tok.startsWith("**"))
+    if (m[2] !== undefined && m[3] !== undefined)
+      /* A Markdown link; only app paths and web URLs take the href. */
+      parts.push(
+        <a
+          key={k++}
+          href={m[3]}
+          className="text-sapphire underline underline-offset-2 hover:opacity-80"
+        >
+          {plain(m[2], options)}
+        </a>
+      );
+    else if (tok.startsWith("**"))
       parts.push(<strong key={k++}>{plain(tok.slice(2, -2), options)}</strong>);
     else if (tok.startsWith("*"))
       parts.push(<em key={k++}>{plain(tok.slice(1, -1), options)}</em>);

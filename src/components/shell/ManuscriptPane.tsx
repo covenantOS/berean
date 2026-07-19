@@ -1,21 +1,39 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CANON, getBook } from "@/lib/canon";
-import { useRecord } from "@/lib/hooks";
+import { useCollection, useRecord } from "@/lib/hooks";
 import {
+  CALLOUT_KINDS,
   DOCUMENT_KINDS,
   DocumentKind,
+  calloutMarkersOf,
   documents,
   formatPassageRef,
+  handoutBodyOf,
   outlineOf,
   parsePassageRef,
+  slidesOf,
   wordCount,
+  type CalloutKind,
+  type SermonSlide,
   type StudyDocument,
 } from "@/lib/documents";
+import { formatCitation } from "@/lib/citation";
+import { isAnchored, notes, type MarginNote } from "@/lib/marginalia";
 import PrintButton from "./PrintButton";
-import { renderMarkdown } from "./markdown";
+import { renderInline, renderMarkdown } from "./markdown";
 import { useWorkspace } from "./WorkspaceContext";
+
+/* The block scaffolds the toolbar inserts at the caret. Headings and
+ * quotes are Markdown itself; the callouts carry their marker line, which
+ * the renderer reads and never shows. */
+const BLOCK_BUTTONS: { label: string; snippet: string; title: string }[] = [
+  { label: "Heading", snippet: "\n## \n", title: "A section heading" },
+  { label: "Quote", snippet: "\n> \n", title: "A quotation block, a plain blockquote" },
+  { label: "Illustration", snippet: "\n> [!illustration]\n> \n", title: "An illustration block" },
+  { label: "Question", snippet: "\n> [!question]\n> \n", title: "A discussion question block" },
+];
 
 interface Critique {
   quoteChecks: { ref: string; quote: string; verified: boolean }[];
@@ -49,6 +67,8 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
   const [refError, setRefError] = useState("");
   const [outlineOpen, setOutlineOpen] = useState(true);
   const [preaching, setPreaching] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
+  const marginNotes = useCollection(notes);
 
   const [critique, setCritique] = useState<Critique | null>(null);
   const [critiqueState, setCritiqueState] = useState<"idle" | "working" | "error">("idle");
@@ -72,6 +92,47 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
     const pos = el ? el.selectionStart : body.length;
     onBodyChange(body.slice(0, pos) + snippet + body.slice(pos));
   }
+
+  /* A note arrives with its anchor as the citation, arranged by the active
+   * copy style the way every copied verse is; an unanchored entry brings
+   * its words alone. Click inserts at the caret; literal drag-and-drop
+   * stays out, since the textarea's caret model has no drop position. */
+  function insertNote(n: MarginNote) {
+    if (isAnchored(n)) {
+      const label = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
+      insertAtCursor(`\n${formatCitation(n.text, label)}\n`);
+    } else {
+      insertAtCursor(`\n${n.text}\n`);
+    }
+  }
+
+  /* The handout is extraction, never composition: the outline, the
+   * question blocks, and the cited passages, into a new manuscript that
+   * opens in its own tab. */
+  function createHandout() {
+    if (!doc) return;
+    const md = handoutBodyOf({ id: docId, title: doc.title }, body);
+    if (!md) return;
+    const handout = documents.create({
+      title: `${doc.title} handout`,
+      kind: "lesson",
+      body: md,
+    });
+    dispatch({ type: "openManuscript", docId: handout.id, title: handout.title });
+  }
+
+  /* Notebooks and their notes for the insert panel; unfiled notes gather
+   * at the foot under their own name. */
+  const noteGroups = useMemo(() => {
+    const groups = new Map<string, MarginNote[]>();
+    for (const n of marginNotes) {
+      const name = n.notebook?.trim() || "Unfiled";
+      groups.set(name, [...(groups.get(name) ?? []), n]);
+    }
+    return [...groups.entries()].sort(([a], [b]) =>
+      a === "Unfiled" ? 1 : b === "Unfiled" ? -1 : a.localeCompare(b)
+    );
+  }, [marginNotes]);
 
   async function insertScripture() {
     setInserting(true);
@@ -177,6 +238,17 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
 
   const failedChecks = critique?.quoteChecks.filter((c) => !c.verified) ?? [];
   const outline = outlineOf(body);
+  /* Headings and typed blocks share the sidebar, ordered by where they sit. */
+  const blocks = [
+    ...outline.map((h) => ({ ...h, kind: undefined as CalloutKind | undefined })),
+    ...calloutMarkersOf(body).map((c) => ({
+      depth: 2,
+      text: c.text,
+      offset: c.offset,
+      kind: c.kind as CalloutKind | undefined,
+    })),
+  ].sort((a, b) => a.offset - b.offset);
+  const handoutReady = handoutBodyOf({ id: docId, title: doc.title }, body) !== "";
   const sermonRef = doc.passage ? parsePassageRef(doc.passage) : undefined;
 
   return (
@@ -215,6 +287,14 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
             className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             {critiqueState === "working" ? "The Scribe is reading…" : "Ask the Scribe to read it"}
+          </button>
+          <button
+            onClick={createHandout}
+            disabled={!handoutReady}
+            title="A new manuscript with the outline, the question blocks, and the cited passages"
+            className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-50"
+          >
+            Create handout
           </button>
           <button
             onClick={download}
@@ -355,6 +435,62 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
         {refError && <span className="text-xs text-ruby">{refError}</span>}
       </div>
 
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print">
+        <span className="small-caps text-xs text-muted">Blocks:</span>
+        {BLOCK_BUTTONS.map((b) => (
+          <button
+            key={b.label}
+            onClick={() => insertAtCursor(b.snippet)}
+            title={b.title}
+            className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
+          >
+            {b.label}
+          </button>
+        ))}
+        <button
+          onClick={() => setNotesOpen(!notesOpen)}
+          aria-expanded={notesOpen}
+          className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
+        >
+          Insert from notes {notesOpen ? "▾" : "▸"}
+        </button>
+      </div>
+
+      {notesOpen && (
+        <div className="mb-4 rounded-[4px] border border-rule bg-surface p-3 no-print">
+          {noteGroups.length === 0 ? (
+            <p className="text-xs text-muted">
+              No notes yet. Notes written in the reader&rsquo;s margins file under notebooks and
+              wait here.
+            </p>
+          ) : (
+            noteGroups.map(([name, ns]) => (
+              <div key={name} className="mb-3 last:mb-0">
+                <p className="small-caps mb-1 text-xs text-muted">{name}</p>
+                <ul className="space-y-1">
+                  {ns.map((n) => (
+                    <li key={n.id}>
+                      <button
+                        onClick={() => insertNote(n)}
+                        title="Insert this note at the cursor"
+                        className="block w-full text-left text-sm leading-snug text-ink hover:text-sapphire"
+                      >
+                        {isAnchored(n) && (
+                          <span className="text-muted">
+                            {getBook(n.book)?.name ?? n.book} {n.chapter}:{n.verse} ·{" "}
+                          </span>
+                        )}
+                        {n.text.length > 90 ? `${n.text.slice(0, 90)}…` : n.text}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-[minmax(0,13rem)_minmax(0,2fr)_minmax(0,1fr)]">
         <aside className="no-print">
           <button
@@ -365,20 +501,25 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
             Outline {outlineOpen ? "▾" : "▸"}
           </button>
           {outlineOpen &&
-            (outline.length === 0 ? (
+            (blocks.length === 0 ? (
               <p className="text-xs text-muted">
-                Headings in the manuscript appear here as you write them.
+                Headings and typed blocks appear here as you write them.
               </p>
             ) : (
               <ul className="space-y-1">
-                {outline.map((h, i) => (
+                {blocks.map((b, i) => (
                   <li key={i}>
                     <button
-                      onClick={() => scrollToOffset(h.offset)}
-                      style={{ paddingLeft: `${(h.depth - 1) * 0.75}rem` }}
+                      onClick={() => scrollToOffset(b.offset)}
+                      style={{ paddingLeft: `${(b.depth - 1) * 0.75}rem` }}
                       className="block w-full text-left text-sm leading-snug text-ink hover:text-sapphire"
                     >
-                      {h.text}
+                      {b.kind && (
+                        <span className="small-caps mr-1 text-[0.65rem] text-amber">
+                          {CALLOUT_KINDS.find((k) => k.key === b.kind)?.label}
+                        </span>
+                      )}
+                      {b.text}
                     </button>
                   </li>
                 ))}
@@ -498,6 +639,11 @@ function fmtClock(seconds: number): string {
  * pauses for the announcements. The target adjusts in five-minute steps and
  * persists per device; the readout's wash shifts at two minutes out, again
  * at one, and settles ruby past time, a color change and never a strobe.
+ * A Slides toggle trades the continuous text for one block per screen:
+ * every heading, quotation, and typed callout of the manuscript (slidesOf
+ * in src/lib/documents.ts), paged with the same keys, with a current-of-
+ * total indicator in the header. Slide editing and style controls stay
+ * out; the slides are the manuscript's own blocks, read.
  */
 function PreachOverlay({
   doc,
@@ -510,6 +656,9 @@ function PreachOverlay({
 }) {
   const [size, setSize] = useState(2);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [mode, setMode] = useState<"read" | "slides">("read");
+  const [slide, setSlide] = useState(0);
+  const slides = useMemo(() => slidesOf(body), [body]);
 
   const [target, setTarget] = useState(TIMER_DEFAULT);
   const [elapsed, setElapsed] = useState(0);
@@ -563,6 +712,41 @@ function PreachOverlay({
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onExit();
+        return;
+      }
+      /* Slides page one block at a time with the same keys the reading
+       * mode pages the scroll with. */
+      if (mode === "slides") {
+        switch (e.key) {
+          case "ArrowDown":
+          case "ArrowRight":
+          case "PageDown":
+          case " ":
+            e.preventDefault();
+            setSlide((s) => Math.min(s + 1, slides.length - 1));
+            break;
+          case "ArrowUp":
+          case "ArrowLeft":
+          case "PageUp":
+            e.preventDefault();
+            setSlide((s) => Math.max(s - 1, 0));
+            break;
+          case "Home":
+            e.preventDefault();
+            setSlide(0);
+            break;
+          case "End":
+            e.preventDefault();
+            setSlide(slides.length - 1);
+            break;
+          case "+":
+          case "=":
+            chooseSize(size + 1);
+            break;
+          case "-":
+            chooseSize(size - 1);
+            break;
+        }
         return;
       }
       const el = scrollRef.current;
@@ -634,6 +818,26 @@ function PreachOverlay({
           Arrows or space to page · + and − for text size · Esc to return
         </p>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setMode(mode === "slides" ? "read" : "slides");
+              setSlide(0);
+            }}
+            disabled={slides.length === 0}
+            title={
+              slides.length === 0
+                ? "No headings, quotations, or typed blocks to show as slides"
+                : "One block per screen, paged with the same keys"
+            }
+            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+          >
+            {mode === "slides" ? "Reading" : "Slides"}
+          </button>
+          {mode === "slides" && (
+            <span className="small-caps text-xs text-muted" aria-live="polite">
+              {slide + 1} of {slides.length}
+            </span>
+          )}
           <div
             role="timer"
             aria-label={
@@ -698,23 +902,64 @@ function PreachOverlay({
         </div>
       </header>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div
-          className="mx-auto max-w-prose px-6 py-10 font-reader leading-relaxed"
-          style={{ fontSize: `${SIZES[size]}rem` }}
-        >
-          <h1 className="font-editorial mb-2 text-[1.4em] font-bold leading-tight">{doc.title}</h1>
-          {(ref || doc.series || doc.date || doc.venue) && (
-            <p className="small-caps mb-8 text-[0.5em] text-muted">
-              {ref ? formatPassageRef(ref) : ""}
-              {doc.series ? ` · ${doc.series}` : ""}
-              {doc.date ? ` · ${doc.date}` : ""}
-              {doc.venue ? ` · ${doc.venue}` : ""}
-            </p>
+      {mode === "slides" ? (
+        <div className="flex flex-1 items-center justify-center overflow-hidden px-6">
+          {slides[slide] && (
+            <div
+              className="max-w-prose font-reader leading-relaxed"
+              style={{ fontSize: `${SIZES[size]}rem` }}
+            >
+              <SlideView slide={slides[slide]} />
+            </div>
           )}
-          {renderMarkdown(body)}
         </div>
-      </div>
+      ) : (
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
+          <div
+            className="mx-auto max-w-prose px-6 py-10 font-reader leading-relaxed"
+            style={{ fontSize: `${SIZES[size]}rem` }}
+          >
+            <h1 className="font-editorial mb-2 text-[1.4em] font-bold leading-tight">
+              {doc.title}
+            </h1>
+            {(ref || doc.series || doc.date || doc.venue) && (
+              <p className="small-caps mb-8 text-[0.5em] text-muted">
+                {ref ? formatPassageRef(ref) : ""}
+                {doc.series ? ` · ${doc.series}` : ""}
+                {doc.date ? ` · ${doc.date}` : ""}
+                {doc.venue ? ` · ${doc.venue}` : ""}
+              </p>
+            )}
+            {renderMarkdown(body)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* One slide: a heading, a quotation, or a typed callout, set apart on its
+ * own screen. The kind shows as a small-caps label except on headings,
+ * which speak for themselves, and quotations keep the blockquote's hush. */
+function SlideView({ slide }: { slide: SermonSlide }) {
+  if (slide.kind === "heading") {
+    return (
+      <p className="font-editorial text-[1.3em] font-bold leading-tight">
+        {renderInline(slide.text)}
+      </p>
+    );
+  }
+  if (slide.kind === "quote") {
+    return (
+      <p className="border-l-2 border-rule pl-6 italic text-muted">{renderInline(slide.text)}</p>
+    );
+  }
+  return (
+    <div>
+      <p className="small-caps mb-2 text-[0.45em] text-muted">
+        {CALLOUT_KINDS.find((k) => k.key === slide.kind)?.label}
+      </p>
+      <p className={slide.kind === "illustration" ? "italic" : ""}>{renderInline(slide.text)}</p>
     </div>
   );
 }
