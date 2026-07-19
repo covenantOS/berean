@@ -1,15 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { CANON, getBook, resolveBookName } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
+import {
+  GREEK_FILTER_DEFS,
+  HEBREW_FILTER_DEFS,
+  type FilterDef,
+} from "@/lib/morphfilters";
 import { recordSearch, toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { createVisualFilter } from "@/lib/visualfilters";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
+import { searchTab, type SearchMode } from "./workspace-state";
 
 interface Hit {
   book: string;
@@ -79,6 +84,70 @@ function openRef(book: string, chapter: number, verse?: number) {
   window.dispatchEvent(new CustomEvent("berean:open-ref", { detail: { book, chapter, verse } }));
 }
 
+interface PaneProps {
+  q: string;
+  mode?: SearchMode;
+  paneId: string;
+  tabId: string;
+}
+
+/**
+ * The search pane, opened by the omnibox's berean:search event. The tab's
+ * mode picks the engine: "bible" is the precise KJV concordance, "original"
+ * the morphology-aware Greek and Hebrew search, "semantic" search by
+ * meaning. The header's mode switch re-asks the same query of another
+ * engine, in place.
+ */
+export default function SearchPane({ q, mode = "bible", paneId, tabId }: PaneProps) {
+  if (mode === "original") return <OriginalPane q={q} paneId={paneId} tabId={tabId} />;
+  if (mode === "semantic") return <SemanticPane q={q} paneId={paneId} tabId={tabId} />;
+  return <BiblePane q={q} paneId={paneId} tabId={tabId} />;
+}
+
+/* ---------- The mode switch, shared by every engine's header ---------- */
+
+const SEARCH_MODES: { key: SearchMode; label: string; title: string }[] = [
+  { key: "bible", label: "Bible", title: "The precise KJV concordance" },
+  {
+    key: "original",
+    label: "Original",
+    title: "Lemma, Strong's number, or script letters over the tagged Greek and Hebrew, narrowed by parsing",
+  },
+  {
+    key: "semantic",
+    label: "Meaning",
+    title: "Name a concept; the Scribe names passages, each verified against the canon",
+  },
+];
+
+/** Re-asks the tab's query of another engine, replacing the tab in place. */
+function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; paneId: string; tabId: string }) {
+  const { dispatch } = useWorkspace();
+  return (
+    <span className="no-print ml-3 flex items-center gap-2" role="group" aria-label="Search mode">
+      {SEARCH_MODES.map((m) => (
+        <button
+          key={m.key}
+          type="button"
+          title={m.title}
+          aria-pressed={mode === m.key}
+          onClick={() => {
+            if (m.key === mode) return;
+            dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(q, m.key) });
+          }}
+          className={`text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            mode === m.key ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
+          }`}
+        >
+          {m.label}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+/* ---------- Bible: the precise concordance ---------- */
+
 /**
  * The concordance pane: opened by the omnibox's berean:search event. One
  * fetch to /api/pane/search carries the whole working set; the Verses,
@@ -87,7 +156,7 @@ function openRef(book: string, chapter: number, verse?: number) {
  * view dispatches berean:open-ref, carrying the pane to the passage. The
  * header pin keeps the query among the Search rail's pinned searches.
  */
-export default function SearchPane({ q }: { q: string }) {
+function BiblePane({ q, paneId, tabId }: PaneProps) {
   const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [view, setView] = useState<View>("verses");
@@ -104,10 +173,11 @@ export default function SearchPane({ q }: { q: string }) {
   const [showTemplates, setShowTemplates] = useState(false);
 
   /* A template's generated query runs as an ordinary search: the rail's
-   * history records it, and a fresh concordance pane answers it. */
-  const runGenerated = (generated: string) => {
-    recordSearch(generated);
-    dispatch({ type: "openSearch", q: generated });
+   * history records it, and a fresh search pane answers it. The Strong's
+   * form passes "original", so its query goes to the morph engine. */
+  const runGenerated = (generated: string, mode: SearchMode = "bible") => {
+    recordSearch(generated, mode);
+    dispatch({ type: "openSearch", q: generated, mode });
   };
 
   useEffect(() => {
@@ -152,6 +222,7 @@ export default function SearchPane({ q }: { q: string }) {
           “{q}”
           <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">Concordance</span>
         </h2>
+        <ModeSwitch q={q} mode="bible" paneId={paneId} tabId={tabId} />
         <button
           type="button"
           title={pinned ? "Remove this search from the pinned list" : "Pin this search in the Search rail"}
@@ -550,10 +621,10 @@ const TPL_RUN =
  * grammar answers, so the syntax is never a prerequisite. Each form builds
  * its query live under the inputs; running one dispatches an ordinary
  * search. The Strong's form is the exception: Greek and Hebrew numbers are
- * original-language questions, so it links to the /search page's original
- * mode, which answers them; the concordance never sees the query.
+ * original-language questions, so it runs in the pane's original mode,
+ * which answers them; the concordance never sees the query.
  */
-function TemplatesPanel({ onRun }: { onRun: (q: string) => void }) {
+function TemplatesPanel({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
   return (
     <div className="no-print shrink-0 border-b border-rule px-4 py-2">
       <p className="pb-1 text-[0.72rem] text-muted">
@@ -564,7 +635,7 @@ function TemplatesPanel({ onRun }: { onRun: (q: string) => void }) {
       <PhraseTemplate onRun={onRun} />
       <AnyOfTemplate onRun={onRun} />
       <WithoutTemplate onRun={onRun} />
-      <StrongsTemplate />
+      <StrongsTemplate onRun={onRun} />
     </div>
   );
 }
@@ -722,8 +793,8 @@ function WithoutTemplate({ onRun }: { onRun: (q: string) => void }) {
   );
 }
 
-/** G26 in:romans, answered by the original-language search page */
-function StrongsTemplate() {
+/** G26 in:romans, answered by the pane's original-language mode */
+function StrongsTemplate({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
   const [id, setId] = useState("");
   const [book, setBook] = useState("");
   const resolved = resolveBookName(book);
@@ -731,7 +802,7 @@ function StrongsTemplate() {
   const ready = /^[GH]\d{1,5}$/.test(sid) && resolved !== undefined;
   const q = ready ? `${sid} in:${resolved!.slug}` : "";
   return (
-    <TemplateRow label="Strong's number in a book" ready={ready} preview={q}>
+    <TemplateRow label="Strong's number in a book" ready={ready} onRun={() => onRun(q, "original")} preview={q}>
       <input
         value={id}
         onChange={(e) => setId(e.target.value)}
@@ -747,16 +818,656 @@ function StrongsTemplate() {
         aria-label="Book"
         className={`w-24 ${TPL_INPUT}`}
       />
-      {ready ? (
-        <Link href={`/search?mode=original&q=${encodeURIComponent(q)}`} className={TPL_RUN}>
-          Search
-        </Link>
-      ) : (
-        <button type="submit" disabled className={TPL_RUN}>
+      <span className="text-[0.68rem] text-muted">runs in the original-language mode</span>
+    </TemplateRow>
+  );
+}
+
+/* ---------- Original: the morphology-aware Greek and Hebrew search ---------- */
+
+interface MorphMatch {
+  t: string;
+  parsing: string;
+  gloss?: string;
+  strongs?: string;
+}
+
+interface MorphHit {
+  book: string;
+  bookName: string;
+  testament: "OT" | "NT";
+  chapter: number;
+  verse: number;
+  /** Original-language surface text of the verse. */
+  text: string;
+  matches: MorphMatch[];
+}
+
+type MorphLoad =
+  | { status: "loading" }
+  | { status: "error" }
+  | { status: "invalid"; message: string }
+  | { status: "ready"; hits: MorphHit[]; total: number; verses: number; lang: string };
+
+/**
+ * The original-language mode: the /search page's morph search carried into
+ * the workspace. The query takes a lemma, a transliteration, a Strong's
+ * number, or letters in the script, with in: scoping; the "Narrow by
+ * parsing" strip adds the Greek and Hebrew morphology filters. One fetch to
+ * /api/pane/morph carries the working set; the Verses view keeps the old
+ * page's parsing and gloss display, while Grid, Analysis, and Chart read
+ * the hits as the verse list they group into. A matched word with a plain
+ * Strong's number opens its word study. Filter-only searches stay with the
+ * /search page: a workspace tab keys on its query, so a question with no
+ * query has nothing to persist or re-run.
+ */
+function OriginalPane({ q, paneId, tabId }: PaneProps) {
+  const { dispatch } = useWorkspace();
+  const [load, setLoad] = useState<MorphLoad>({ status: "loading" });
+  const [view, setView] = useState<View>("verses");
+  const { favorites } = useSearchSaves();
+  const pinned = favorites.some(
+    (f) => f.q.toLowerCase() === q.trim().toLowerCase() && (f.mode ?? "bible") === "original"
+  );
+  /** The parsing filters; any change re-runs the fetch. */
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [showFilters, setShowFilters] = useState(false);
+  const [namingFilter, setNamingFilter] = useState(false);
+  const [filterName, setFilterName] = useState("");
+  const [filterColor, setFilterColor] = useState<HighlightColor>("sapphire");
+  const [filterSaved, setFilterSaved] = useState(false);
+
+  /* The query form re-asks the question in place: the rail's history
+   * records it under "original", and the tab wears the new query. */
+  const runQuery = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const query = String(new FormData(e.currentTarget).get("mq") ?? "").trim();
+    if (!query) return;
+    recordSearch(query, "original");
+    dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(query, "original") });
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoad({ status: "loading" });
+    const params = new URLSearchParams({ q });
+    for (const [k, v] of Object.entries(filters)) if (v) params.set(k, v);
+    fetch(`/api/pane/morph?${params.toString()}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as {
+          hits: MorphHit[];
+          total: number;
+          verses: number;
+          lang: string;
+          error?: string;
+        };
+        if (data.error) setLoad({ status: "invalid", message: data.error });
+        else {
+          setLoad({
+            status: "ready",
+            hits: data.hits,
+            total: data.total,
+            verses: data.verses,
+            lang: data.lang,
+          });
+        }
+      })
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setLoad({ status: "error" });
+      });
+    return () => controller.abort();
+  }, [q, filters]);
+
+  /* Grid, Analysis, and Chart read the same verse-list shape the Bible
+   * pane's arrangements do, so the verse-grouped hits map down to it. */
+  const verseHits: Hit[] = useMemo(
+    () =>
+      load.status === "ready"
+        ? load.hits.map((h) => ({
+            book: h.book,
+            bookName: h.bookName,
+            chapter: h.chapter,
+            verse: h.verse,
+            text: h.text,
+          }))
+        : [],
+    [load]
+  );
+  const books = useMemo(() => aggregate(verseHits), [verseHits]);
+  const truncated = load.status === "ready" && load.verses > load.hits.length;
+
+  /* The visual filter handoff, as in the Bible pane: the fetched verses
+   * become a named, tinted set of marks in the reader. */
+  const saveFilter = () => {
+    if (load.status !== "ready" || !filterName.trim()) return;
+    createVisualFilter(
+      filterName.trim(),
+      filterColor,
+      load.hits.map((h) => ({ book: h.book, chapter: h.chapter, verse: h.verse })),
+      q
+    );
+    setNamingFilter(false);
+    setFilterSaved(true);
+    window.setTimeout(() => setFilterSaved(false), 1500);
+  };
+
+  return (
+    <div className="reader-surface flex h-full min-h-0 flex-col" data-print-root>
+      <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
+        <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
+          “{q}”
+          <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">
+            Original languages
+          </span>
+        </h2>
+        <ModeSwitch q={q} mode="original" paneId={paneId} tabId={tabId} />
+        <button
+          type="button"
+          title={pinned ? "Remove this search from the pinned list" : "Pin this search in the Search rail"}
+          onClick={() => toggleFavorite(q, "original")}
+          className="no-print ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          {pinned ? "Pinned" : "Pin search"}
+        </button>
+        {load.status === "ready" && load.hits.length > 0 && (
+          <button
+            type="button"
+            title="Save the listed verses as a passage list document"
+            onClick={() => {
+              if (load.status !== "ready") return;
+              const doc = listDocuments.create({
+                title: `Passages for “${q}”`,
+                kind: "passage-list",
+                items: load.hits.map((h) => ({ book: h.book, chapter: h.chapter, verse: h.verse })),
+              });
+              dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
+            }}
+            className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save as passage list
+          </button>
+        )}
+        {load.status === "ready" && load.hits.length > 0 && (
+          <button
+            type="button"
+            title="Mark the listed verses in the reader as a named, toggleable visual filter"
+            onClick={() => {
+              setFilterName(`“${q}” matches`);
+              setNamingFilter(true);
+            }}
+            className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {filterSaved ? "Saved" : "Save as visual filter"}
+          </button>
+        )}
+        <button
+          type="button"
+          title="Narrow by parsing: part of speech, tense, case, stem, and more"
+          aria-expanded={showFilters}
+          onClick={() => setShowFilters((v) => !v)}
+          className={`no-print ml-3 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            showFilters ? "text-sapphire" : "text-muted hover:text-ink"
+          }`}
+        >
+          Parsing
+        </button>
+        <PrintButton className="ml-3" />
+      </header>
+      <form onSubmit={runQuery} className="no-print flex shrink-0 gap-2 border-b border-rule px-4 py-2">
+        <input
+          key={q}
+          type="search"
+          name="mq"
+          defaultValue={q}
+          placeholder="Lemma, transliteration, Strong's (G25, H1254), or letters in the script (λογ, ברא)"
+          aria-label="Search the Greek and Hebrew text"
+          className="w-full border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+        <button
+          type="submit"
+          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
           Search
         </button>
+      </form>
+      {showFilters && (
+        <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+          <p className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
+            Greek (New Testament)
+          </p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 pb-2 sm:grid-cols-4">
+            {GREEK_FILTER_DEFS.map((def) => (
+              <ParsingSelect key={def.key} def={def} filters={filters} onChange={setFilters} />
+            ))}
+          </div>
+          <p className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
+            Hebrew (Old Testament)
+          </p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">
+            {HEBREW_FILTER_DEFS.map((def) => (
+              <ParsingSelect key={def.key} def={def} filters={filters} onChange={setFilters} />
+            ))}
+          </div>
+        </div>
       )}
-      <span className="text-[0.68rem] text-muted">runs on the original-language search page</span>
-    </TemplateRow>
+      {namingFilter && load.status === "ready" && (
+        <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
+          <label htmlFor="vf-name-orig" className="text-[0.72rem] text-muted">
+            Filter name
+          </label>
+          <input
+            id="vf-name-orig"
+            autoFocus
+            value={filterName}
+            onChange={(e) => setFilterName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") saveFilter();
+              if (e.key === "Escape") setNamingFilter(false);
+            }}
+            className="w-56 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus-visible:outline-sapphire"
+          />
+          <span className="flex items-center gap-1.5">
+            {HIGHLIGHT_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                title={`Tint ${c}`}
+                aria-pressed={filterColor === c}
+                onClick={() => setFilterColor(c)}
+                className={`h-3.5 w-3.5 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  filterColor === c ? "border-ink" : "border-rule"
+                }`}
+                style={{ background: `var(--stained-${c})` }}
+              />
+            ))}
+          </span>
+          <button
+            type="button"
+            onClick={saveFilter}
+            disabled={!filterName.trim()}
+            className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save filter
+          </button>
+          <button
+            type="button"
+            onClick={() => setNamingFilter(false)}
+            className="px-2 py-1 text-[0.72rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Cancel
+          </button>
+          {truncated && (
+            <span className="text-[0.68rem] text-muted">
+              The first {load.hits.length.toLocaleString()} of {load.verses.toLocaleString()}{" "}
+              verses are marked.
+            </span>
+          )}
+        </div>
+      )}
+      <nav
+        aria-label="Result views"
+        className="flex shrink-0 items-center gap-4 border-b border-rule px-4"
+      >
+        {VIEWS.map((v) => (
+          <button
+            key={v.key}
+            type="button"
+            aria-pressed={view === v.key}
+            onClick={() => setView(v.key)}
+            className={`small-caps py-1.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+              view === v.key
+                ? "border-b-2 border-sapphire font-semibold text-sapphire"
+                : "text-muted hover:text-ink"
+            }`}
+          >
+            {v.label}
+          </button>
+        ))}
+      </nav>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {load.status === "loading" && (
+          <p className="px-6 py-8 text-center text-xs text-muted">
+            Searching the tagged Greek and Hebrew…
+          </p>
+        )}
+        {load.status === "error" && (
+          <p className="px-6 py-8 text-center text-xs text-muted">The search could not be run.</p>
+        )}
+        {load.status === "invalid" && (
+          <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
+            {load.message}
+          </p>
+        )}
+        {load.status === "ready" && load.total === 0 && (
+          <p className="px-6 py-8 text-center text-xs text-muted">
+            Nothing in the tagged{" "}
+            {load.lang === "hebrew" ? "Hebrew" : load.lang === "greek" ? "Greek" : "original"}{" "}
+            text answers to “{q}”
+            {Object.values(filters).some(Boolean) ? " with those filters" : ""}.
+          </p>
+        )}
+        {load.status === "ready" && load.total > 0 && (
+          <>
+            {view === "verses" && (
+              <OriginalVersesView hits={load.hits} total={load.total} verses={load.verses} />
+            )}
+            {view === "grid" && <GridView hits={verseHits} total={load.verses} />}
+            {view === "analysis" && (
+              <AnalysisView books={books} total={load.verses} truncated={truncated} listed={verseHits.length} />
+            )}
+            {view === "chart" && (
+              <ChartView
+                key={`${q}:${JSON.stringify(filters)}`}
+                books={books}
+                truncated={truncated}
+                listed={verseHits.length}
+              />
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** One parsing filter: a labeled select feeding the pane's filter state. */
+function ParsingSelect({
+  def,
+  filters,
+  onChange,
+}: {
+  def: FilterDef;
+  filters: Record<string, string>;
+  onChange: (next: Record<string, string>) => void;
+}) {
+  return (
+    <label className="flex flex-col gap-0.5 text-[0.68rem] text-muted">
+      {def.label}
+      <select
+        value={filters[def.key] ?? ""}
+        onChange={(e) => onChange({ ...filters, [def.key]: e.target.value })}
+        className="border border-rule bg-paper px-1.5 py-1 text-[0.75rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+      >
+        <option value="">any</option>
+        {def.options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+/* Verses: the old page's reading list, matched words marked, parsings listed */
+function OriginalVersesView({
+  hits,
+  total,
+  verses,
+}: {
+  hits: MorphHit[];
+  total: number;
+  verses: number;
+}) {
+  const { dispatch } = useWorkspace();
+  return (
+    <div className="mx-auto max-w-prose px-6 py-4">
+      <p className="mb-3 text-xs text-muted">
+        {total.toLocaleString()} {total === 1 ? "occurrence" : "occurrences"} in{" "}
+        {verses.toLocaleString()} {verses === 1 ? "verse" : "verses"}
+        {verses > hits.length ? `; the first ${hits.length} verses are listed` : ""}.
+      </p>
+      <ul>
+        {hits.map((h) => {
+          const matched = new Set(h.matches.map((m) => m.t));
+          return (
+            <li key={`${h.book}-${h.chapter}-${h.verse}`} className="border-b border-rule/60 py-3">
+              <button
+                type="button"
+                onClick={() => openRef(h.book, h.chapter, h.verse)}
+                className="small-caps text-sm font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {h.bookName} {h.chapter}:{h.verse}
+              </button>
+              <p
+                className={`mt-0.5 text-lg leading-relaxed ${
+                  h.testament === "OT" ? "lang-hebrew" : "lang-greek"
+                }`}
+                dir={h.testament === "OT" ? "rtl" : "ltr"}
+              >
+                {h.text.split(" ").map((w, i) =>
+                  matched.has(w) ? (
+                    <mark key={i} className="rounded-[2px] bg-amber/25 px-0.5">
+                      {w}{" "}
+                    </mark>
+                  ) : (
+                    <span key={i}>{w} </span>
+                  )
+                )}
+              </p>
+              <ul className="mt-1 space-y-0.5 text-xs text-muted">
+                {h.matches.map((m, i) => (
+                  <li key={i}>
+                    <span className={h.testament === "OT" ? "lang-hebrew" : "lang-greek"}>
+                      {m.t}
+                    </span>
+                    {" · "}
+                    {m.parsing}
+                    {m.gloss ? ` · “${m.gloss}”` : ""}
+                    {m.strongs ? (
+                      <>
+                        {" · "}
+                        {/^[GH]\d{1,5}$/i.test(m.strongs) ? (
+                          <button
+                            type="button"
+                            title={`Open the word study for ${m.strongs}`}
+                            onClick={() => dispatch({ type: "openWordStudy", strongsId: m.strongs! })}
+                            className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                          >
+                            {m.strongs}
+                          </button>
+                        ) : (
+                          m.strongs
+                        )}
+                      </>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------- Semantic: search by meaning, every reference verified ---------- */
+
+interface SemanticHit {
+  ref: string;
+  book: string;
+  chapter: number;
+  from: number;
+  to: number;
+  text: string;
+  reason: string;
+}
+
+type SemanticLoad =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "ready"; hits: SemanticHit[]; withheld: { ref: string; reason: string }[] };
+
+/**
+ * Search by meaning: the /search page's semantic mode carried into the
+ * workspace. The concept posts to /api/semantic, where the Scribe's
+ * candidate references are verified against the actual canon before one is
+ * shown; anything unverifiable is withheld and reported. The result is a
+ * curated handful of passages, not a result set, so the Verses, Grid,
+ * Analysis, and Chart arrangements do not apply: counting and charting a
+ * curation would dress judgment up as frequency.
+ */
+function SemanticPane({ q, paneId, tabId }: PaneProps) {
+  const { dispatch } = useWorkspace();
+  const [load, setLoad] = useState<SemanticLoad>({ status: "loading" });
+  const { favorites } = useSearchSaves();
+  const pinned = favorites.some(
+    (f) => f.q.toLowerCase() === q.trim().toLowerCase() && (f.mode ?? "bible") === "semantic"
+  );
+  const [scope, setScope] = useState("all");
+  /** The scope the answered question used; the select applies on submit. */
+  const [appliedScope, setAppliedScope] = useState("all");
+
+  /* The concept form re-asks the question in place, the way the original
+   * mode's does; a same-concept submit applies the scope. */
+  const runQuery = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const concept = String(new FormData(e.currentTarget).get("sq") ?? "").trim();
+    if (concept.length < 3) return;
+    recordSearch(concept, "semantic");
+    setAppliedScope(scope);
+    if (concept.toLowerCase() !== q.trim().toLowerCase()) {
+      dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(concept, "semantic") });
+    }
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoad({ status: "loading" });
+    fetch("/api/semantic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ concept: q, scope: appliedScope }),
+      signal: controller.signal,
+    })
+      .then(async (res) => {
+        const data = (await res.json()) as {
+          hits?: SemanticHit[];
+          withheld?: { ref: string; reason: string }[];
+          error?: string;
+        };
+        if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+        setLoad({ status: "ready", hits: data.hits ?? [], withheld: data.withheld ?? [] });
+      })
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setLoad({
+          status: "error",
+          message: err instanceof Error ? err.message : "The search could not be completed.",
+        });
+      });
+    return () => controller.abort();
+  }, [q, appliedScope]);
+
+  return (
+    <div className="reader-surface flex h-full min-h-0 flex-col" data-print-root>
+      <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
+        <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
+          “{q}”
+          <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">By meaning</span>
+        </h2>
+        <ModeSwitch q={q} mode="semantic" paneId={paneId} tabId={tabId} />
+        <button
+          type="button"
+          title={pinned ? "Remove this search from the pinned list" : "Pin this search in the Search rail"}
+          onClick={() => toggleFavorite(q, "semantic")}
+          className="no-print ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          {pinned ? "Pinned" : "Pin search"}
+        </button>
+        <PrintButton className="ml-3" />
+      </header>
+      <form onSubmit={runQuery} className="no-print flex shrink-0 gap-2 border-b border-rule px-4 py-2">
+        <input
+          key={q}
+          type="search"
+          name="sq"
+          defaultValue={q}
+          placeholder="e.g. covenant faithfulness, the fear of the LORD"
+          aria-label="Search by meaning"
+          className="w-full border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+        <select
+          value={scope}
+          onChange={(e) => setScope(e.target.value)}
+          aria-label="Range"
+          className="border border-rule bg-paper px-1.5 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        >
+          <option value="all">Whole canon</option>
+          <option value="ot">Old Testament</option>
+          <option value="nt">New Testament</option>
+        </select>
+        <button
+          type="submit"
+          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Search
+        </button>
+      </form>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-prose px-6 py-4">
+          <p className="mb-3 text-xs text-muted">
+            Name a concept and the Scribe names passages that bear on it. Every reference is
+            verified against the canon before it is shown; the text you read is the actual KJV,
+            not the model&apos;s words.
+          </p>
+          {load.status === "loading" && (
+            <p className="py-8 text-center text-xs text-muted">Asking the Scribe…</p>
+          )}
+          {load.status === "error" && (
+            <p className="border border-rule bg-surface p-4 text-xs text-muted">{load.message}</p>
+          )}
+          {load.status === "ready" && (
+            <>
+              <p className="small-caps mb-4 border-b border-rule pb-2 text-xs text-muted">
+                {load.hits.length} verified {load.hits.length === 1 ? "passage" : "passages"}
+              </p>
+              <ul>
+                {load.hits.map((h) => (
+                  <li
+                    key={`${h.book}-${h.chapter}-${h.from}-${h.to}`}
+                    className="border-b border-rule/60"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => openRef(h.book, h.chapter, h.from)}
+                      className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    >
+                      <span className="small-caps text-sm font-medium text-sapphire">
+                        {h.ref}
+                      </span>
+                      <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed">
+                        {h.text}
+                      </span>
+                      <span className="mt-1 block text-xs text-muted">{h.reason}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {load.hits.length === 0 && (
+                <p className="text-xs text-muted">
+                  The Scribe offered nothing that could be verified for “{q}”.
+                </p>
+              )}
+              {load.withheld.length > 0 && (
+                <p className="mt-6 border-t border-rule pt-4 text-xs text-muted">
+                  {load.withheld.length}{" "}
+                  {load.withheld.length === 1 ? "suggestion was" : "suggestions were"} withheld
+                  because {load.withheld.length === 1 ? "it" : "they"} could not be verified
+                  against the canon
+                  {load.withheld.length <= 3
+                    ? `: ${load.withheld.map((w) => w.ref).join(", ")}`
+                    : ""}
+                  .
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

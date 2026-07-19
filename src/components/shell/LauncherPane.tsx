@@ -230,14 +230,14 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <div className={HEAD}>Recent searches</div>
           <ul>
             {recent.map((entry) => (
-              <li key={entry.q}>
+              <li key={`${entry.q}:${entry.mode ?? "bible"}`}>
                 <button
                   type="button"
                   title={`Search again for “${entry.q}”`}
                   className={ROW}
                   onClick={() => {
-                    recordSearch(entry.q);
-                    choose(searchTab(entry.q));
+                    recordSearch(entry.q, entry.mode);
+                    choose(searchTab(entry.q, entry.mode));
                   }}
                 >
                   <span className="min-w-0 flex-1 truncate">“{entry.q}”</span>

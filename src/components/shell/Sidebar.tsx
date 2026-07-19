@@ -21,7 +21,7 @@ import {
 import { isDue, memoryPassages } from "@/lib/memory";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
-import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
+import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import PrintButton from "./PrintButton";
@@ -103,7 +103,10 @@ function Placeholder({ text }: { text: string }) {
 function SearchPanel() {
   const { dispatch } = useWorkspace();
   const { history, favorites } = useSearchSaves();
-  const rerun = (q: string) => dispatch({ type: "openSearch", q });
+  /* An entry re-runs against the engine that answered it; absent mode reads
+   * as the Bible concordance, the way old history entries do. */
+  const rerun = (q: string, mode?: SearchEntry["mode"]) =>
+    dispatch({ type: "openSearch", q, mode });
   /** The Docs Search box: prose over the user's own collections. */
   const [docQuery, setDocQuery] = useState("");
 
@@ -142,18 +145,19 @@ function SearchPanel() {
         </p>
       ) : (
         favorites.map((f) => (
-          <div key={f.q} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+          <div key={`${f.q}:${f.mode ?? "bible"}`} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
             <button
               type="button"
-              onClick={() => rerun(f.q)}
+              onClick={() => rerun(f.q, f.mode)}
               title={`Search again for “${f.q}”`}
               className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {f.q}
+              <ModeTag mode={f.mode} />
             </button>
             <button
               type="button"
-              onClick={() => toggleFavorite(f.q)}
+              onClick={() => toggleFavorite(f.q, f.mode)}
               title="Unpin this search"
               className="shrink-0 px-1 text-[0.7rem] text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
@@ -172,20 +176,25 @@ function SearchPanel() {
         </p>
       ) : (
         history.map((h) => {
-          const pinned = favorites.some((f) => f.q.toLowerCase() === h.q.toLowerCase());
+          const pinned = favorites.some(
+            (f) =>
+              f.q.toLowerCase() === h.q.toLowerCase() &&
+              (f.mode ?? "bible") === (h.mode ?? "bible")
+          );
           return (
-            <div key={h.q} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+            <div key={`${h.q}:${h.mode ?? "bible"}`} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
               <button
                 type="button"
-                onClick={() => rerun(h.q)}
+                onClick={() => rerun(h.q, h.mode)}
                 title={`Search again for “${h.q}”`}
                 className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 {h.q}
+                <ModeTag mode={h.mode} />
               </button>
               <button
                 type="button"
-                onClick={() => toggleFavorite(h.q)}
+                onClick={() => toggleFavorite(h.q, h.mode)}
                 title={pinned ? "Unpin this search" : "Pin this search"}
                 className={`shrink-0 px-1 text-[0.7rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                   pinned ? "text-amber" : "text-muted hover:text-ink"
@@ -198,6 +207,16 @@ function SearchPanel() {
         })
       )}
     </div>
+  );
+}
+
+/** Marks a history or pinned entry that runs on a non-Bible engine. */
+function ModeTag({ mode }: { mode?: SearchEntry["mode"] }) {
+  if (!mode || mode === "bible") return null;
+  return (
+    <span className="small-caps ml-1.5 text-[0.6rem] text-muted">
+      {mode === "original" ? "Original" : "Meaning"}
+    </span>
   );
 }
 

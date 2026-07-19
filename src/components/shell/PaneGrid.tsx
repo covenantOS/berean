@@ -121,7 +121,11 @@ function tabLabel(tab: Tab): string {
       tab.translation ? ` · ${tab.translation.toUpperCase()}` : ""
     }`;
   }
-  if (tab.type === "search") return `“${tab.q}”`;
+  if (tab.type === "search") {
+    const engine =
+      tab.mode === "original" ? " · Original" : tab.mode === "semantic" ? " · Meaning" : "";
+    return `“${tab.q}”${engine}`;
+  }
   if (tab.type === "docsearch") return `“${tab.q}” · Docs`;
   if (tab.type === "commentary") return "Commentary";
   if (tab.type === "crossrefs") return "Cross-refs";
@@ -508,7 +512,12 @@ function Pane({ leaf }: { leaf: LeafNode }) {
               fontScale={activeTab.fontScale}
             />
           ) : activeTab.type === "search" ? (
-            <SearchPane q={activeTab.q} />
+            <SearchPane
+              q={activeTab.q}
+              mode={activeTab.mode ?? "bible"}
+              paneId={leaf.id}
+              tabId={activeTab.id}
+            />
           ) : activeTab.type === "docsearch" ? (
             <DocSearchPane q={activeTab.q} />
           ) : activeTab.type === "guide" ? (

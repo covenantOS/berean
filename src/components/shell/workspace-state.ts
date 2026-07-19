@@ -59,11 +59,16 @@ export interface ReaderTab {
   fontScale?: number;
 }
 
+/** The engine a search tab runs; "bible" is the precise KJV concordance. */
+export type SearchMode = "bible" | "original" | "semantic";
+
 /** A concordance search, opened as a pane by the omnibox. */
 export interface SearchTab {
   id: string;
   type: "search";
   q: string;
+  /** The engine the pane runs; absent reads as the precise Bible search. */
+  mode?: "original" | "semantic";
 }
 
 /** A search over the user's own notes, manuscripts, lists, and prayers. */
@@ -348,8 +353,13 @@ export function readerTab(book = "genesis", chapter = 1): ReaderTab {
   };
 }
 
-export function searchTab(q: string): SearchTab {
-  return { id: newId("tab"), type: "search", q };
+export function searchTab(q: string, mode?: SearchMode): SearchTab {
+  return {
+    id: newId("tab"),
+    type: "search",
+    q,
+    ...(mode && mode !== "bible" ? { mode } : {}),
+  };
 }
 
 export function docSearchTab(q: string): DocSearchTab {
@@ -674,7 +684,7 @@ export type WorkspaceAction =
   | { type: "openRef"; book: string; chapter: number; paneId?: string }
   | { type: "navigateBack"; paneId: string }
   | { type: "navigateForward"; paneId: string }
-  | { type: "openSearch"; q: string; paneId?: string }
+  | { type: "openSearch"; q: string; mode?: SearchMode; paneId?: string }
   | { type: "openDocSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
   | { type: "openGuide"; book: string; chapter: number; paneId?: string }
@@ -926,7 +936,7 @@ export function workspaceReducer(
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       if (!findLeaf(state.root, paneId)) return state;
-      const tab = searchTab(q);
+      const tab = searchTab(q, action.mode);
       return {
         ...state,
         activePaneId: paneId,
@@ -1695,7 +1705,9 @@ function sanitizeNode(node: unknown): PaneNode | null {
       if (typeof raw !== "object" || raw === null) continue;
       const t = raw as Record<string, unknown>;
       if (t.type === "search" && typeof t.id === "string" && typeof t.q === "string" && t.q.trim()) {
-        tabs.push({ id: t.id, type: "search", q: t.q });
+        // Old search tabs carry no mode and read as the Bible concordance.
+        const mode = t.mode === "original" || t.mode === "semantic" ? t.mode : undefined;
+        tabs.push({ id: t.id, type: "search", q: t.q, ...(mode ? { mode } : {}) });
         continue;
       }
       if (
