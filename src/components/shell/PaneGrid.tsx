@@ -32,6 +32,7 @@ import {
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
 import DocSearchPane from "./DocSearchPane";
+import BooksSearchPane from "./BooksSearchPane";
 import AllSearchPane from "./AllSearchPane";
 import ToolTabBody from "./ToolTabBody";
 import PassageGuide from "./PassageGuide";
@@ -156,6 +157,7 @@ function tabLabel(tab: Tab): string {
     return `“${tab.q}”${engine}`;
   }
   if (tab.type === "docsearch") return `“${tab.q}” · Docs`;
+  if (tab.type === "bookssearch") return `“${tab.q}” · Books`;
   if (tab.type === "allsearch") return `“${tab.q}” · All`;
   if (tab.type === "commentary") return "Commentary";
   if (tab.type === "crossrefs") return "Cross-refs";
@@ -594,6 +596,8 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             />
           ) : activeTab.type === "docsearch" ? (
             <DocSearchPane q={activeTab.q} />
+          ) : activeTab.type === "bookssearch" ? (
+            <BooksSearchPane q={activeTab.q} />
           ) : activeTab.type === "allsearch" ? (
             <AllSearchPane q={activeTab.q} />
           ) : activeTab.type === "guide" ? (
