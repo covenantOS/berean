@@ -70,7 +70,9 @@ presets instead of clutter (the top Logos complaint is jam-packed menus).
   bar, omnibox, presets, session persistence) with the reader as the
   first real panel. Old routes remain reachable until Phase 1 completes.
 - Phase 1: every shipped feature becomes a panel over the same data;
-  link sets; old page routes and website chrome deleted.
+  link sets; old page routes and website chrome deleted. Deep links land
+  in the shell as /workspace?ref= and ?tab= (src/components/shell/
+  deep-link.ts); /read/[book]/[chapter] stays the citation scheme.
 - Phase 2: better-auth + Postgres + sync v1 + SQLite substrate.
 - Phase 3: Cloudflare deploy, Tauri Windows installer, PWA.
 - Phase 4: mobile adaptation, content packs, Zero evaluation.

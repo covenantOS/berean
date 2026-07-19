@@ -1,6 +1,7 @@
 "use client";
 
 import Omnibox from "@/components/palette/Omnibox";
+import DeepLinkIntake from "./DeepLinkIntake";
 import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
 import IconRail from "./IconRail";
 import Sidebar from "./Sidebar";
@@ -14,11 +15,14 @@ import StatusBar from "./StatusBar";
  * route by an additive rule in globals.css (body:has(> main >
  * .workspace-shell)), so the existing site is untouched. The command
  * omnibox mounts once here and listens for Ctrl/Cmd+K and
- * berean:omnibox-toggle itself; the shell answers its events.
+ * berean:omnibox-toggle itself; the shell answers its events. DeepLinkIntake
+ * reads a deep-link URL (?ref=, ?tab=) once on load and dispatches it into
+ * the restored session.
  */
 export default function WorkspaceShell() {
   return (
     <WorkspaceProvider>
+      <DeepLinkIntake />
       <ShellFrame />
       <Omnibox />
     </WorkspaceProvider>
