@@ -887,7 +887,7 @@ function MarginPanel(props: {
             {mentions.map((m) => (
               <li key={m.id}>
                 <Link
-                  href={`/library/entity/${m.id}`}
+                  href={`/workspace?tab=factbook:${m.id}`}
                   title={m.brief || (m.kind === "place" ? "Place" : m.type)}
                   className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
                 >

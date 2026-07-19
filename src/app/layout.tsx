@@ -28,7 +28,7 @@ function LeadedMark() {
 }
 
 const NAV = [
-  { href: "/read", label: "Read" },
+  { href: "/workspace", label: "Read" },
   { href: "/pulpit", label: "Pulpit" },
   { href: "/chapel", label: "Chapel" },
   { href: "/desk", label: "Desk" },

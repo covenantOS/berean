@@ -152,7 +152,7 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
             {entities.map((e) => (
               <li key={e.id} className="text-sm">
                 <Link
-                  href={`/library/entity/${e.id}`}
+                  href={`/workspace?tab=factbook:${e.id}`}
                   className="font-medium text-sapphire no-underline hover:underline"
                 >
                   {e.name}

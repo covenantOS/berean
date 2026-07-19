@@ -11,7 +11,7 @@
     "conventions": {
       "year": "Astronomical-style integer: negative is BC (year -4004 = 4004 BC), positive is AD. There is no year zero handling because no event falls near it.",
       "kind": "event = a point in time; period = a span, rendered as a bar (end = end year).",
-      "entity": "TIPNR entity id, for cross-linking the Factbook at /library/entity/[id].",
+      "entity": "TIPNR entity id, for cross-linking the Factbook at /workspace?tab=factbook:[id].",
       "refs": "Canonical passage references as {slug, chapter, verse?}; verse omitted for whole chapters."
     }
   },

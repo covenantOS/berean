@@ -69,11 +69,11 @@ const RELATION_LABELS: [keyof FactbookPayload["relations"], string][] = [
 
 /**
  * The Factbook pane: one TIPNR entity's report, pinned at open time. Every
- * section renders data the dataset genuinely carries, mirroring the old
- * /library/entity page: identity and prose up top, the atlas locator for
- * geocoded places, the family lists, the timeline join, and the verse
- * mentions as chips that open the reader. Relations with an id open a new
- * Factbook tab; sections with nothing to say stay out of the report.
+ * section renders data the dataset genuinely carries: identity and prose up
+ * top, the atlas locator for geocoded places, the family lists, the timeline
+ * join, and the verse mentions as chips that open the reader. Relations with
+ * an id open a new Factbook tab; sections with nothing to say stay out of
+ * the report.
  */
 export default function Factbook({ entityId }: { entityId: string }) {
   const { dispatch } = useWorkspace();

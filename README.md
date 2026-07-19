@@ -12,7 +12,7 @@ an appointed text carried to a cited exegetical brief.
 
 ## What is here
 
-- **The reader** (`/read`) — the complete KJV canon set with typographic care: poetry as poetry, prose as flowing paragraphs, illuminated drop capitals, and paper / warm / evening reading modes (reader surface only; the shell stays bright).
+- **The reader** (`/read/[book]/[chapter]`, the citation scheme; pickers redirect into `/workspace`) — the complete KJV canon set with typographic care: poetry as poetry, prose as flowing paragraphs, illuminated drop capitals, and paper / warm / evening reading modes (reader surface only; the shell stays bright).
 - **Marginalia** — notes in the margin, attached to verses. Private, stored on-device, exportable and deletable. Visibility scopes are in the data model from day one.
 - **Concordance** (`/search`) — whole-canon text search; every hit opens the passage at the verse.
 - **Study projects** (`/study`) — appoint a passage, keep your notes, and request the Scribe's exegetical brief: schema-constrained, citing only the chapter text, with every quotation verified server-side against the actual verse (failures flagged, never hidden).

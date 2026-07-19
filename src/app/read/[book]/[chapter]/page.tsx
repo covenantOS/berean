@@ -91,11 +91,11 @@ export default async function ChapterPage({
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <nav className="mb-6 flex items-center justify-between text-sm">
         <span className="text-muted">
-          <Link href="/read" className="text-sapphire no-underline hover:underline">
+          <Link href="/workspace" className="text-sapphire no-underline hover:underline">
             Canon
           </Link>{" "}
           /{" "}
-          <Link href={`/read/${book.slug}`} className="text-sapphire no-underline hover:underline">
+          <Link href="/workspace" className="text-sapphire no-underline hover:underline">
             {book.name}
           </Link>{" "}
           / {chapter}

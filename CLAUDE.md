@@ -30,7 +30,7 @@ Before changing product behavior, read:
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
-- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, and `/topics/[work]/[id]` permanently redirect into it), `/read` (+ `/plans`, `/memory`, `/search`), `/pulpit`, `/chapel`, `/desk`, `/almanac`, `/study`, `/settings`, `/sources`
+- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, `/topics/[work]/[id]`, `/library/entity/[id]`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/plans`, `/memory`, `/search`), `/pulpit`, `/chapel`, `/desk`, `/almanac`, `/study`, `/settings`, `/sources`
 - The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
 - `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory
@@ -52,8 +52,9 @@ columns (data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
 scripts/build-lxx.mjs); LXX versification is kept as-is, with divergence
 notices and honest gaps instead of silent realignment. The Factbook backbone
 shipped: TIPNR people and places under `data/entities`
-(scripts/build-entities.mjs, src/lib/entities.ts), entity pages at
-`/library/entity/[id]`, a people-and-places index and filter in the Library,
+(scripts/build-entities.mjs, src/lib/entities.ts), entity factbooks in the
+workspace's factbook tab (`/library/entity/[id]` redirects in), a
+people-and-places index and filter in the Library,
 an entity group in `/search`, and verse-level mentions in the reader margin.
 The topical index shipped: Nave's and Torrey's at `/topics` with full verse
 texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR

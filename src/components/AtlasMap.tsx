@@ -72,7 +72,7 @@ export default function AtlasMap({
           {matches.map((m) => (
             <li key={m.id}>
               <a
-                href={`/library/entity/${m.id}`}
+                href={`/workspace?tab=factbook:${m.id}`}
                 onMouseEnter={() => setHoverId(m.id)}
                 onMouseLeave={() => setHoverId(null)}
                 className="inline-block rounded-[3px] border border-rule bg-surface px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
@@ -100,7 +100,7 @@ export default function AtlasMap({
           const active = p.id === activeId;
           const matched = matchIds.has(p.id);
           return (
-            <a key={p.id} href={`/library/entity/${p.id}`} aria-label={p.name}>
+            <a key={p.id} href={`/workspace?tab=factbook:${p.id}`} aria-label={p.name}>
               <circle
                 cx={p.x}
                 cy={p.y}

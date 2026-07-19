@@ -49,8 +49,8 @@
  *                              berean.layouts.v1 (shell/layouts.ts).
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
  * Topic rows open the Topic Guide as a pane tab; entity rows open the
- * Factbook as a pane tab (the old /library/entity/[id] pages stay
- * reachable for deep links).
+ * Factbook as a pane tab (the old /library/entity/[id] URLs redirect into
+ * it).
  *
  * Data
  * ----

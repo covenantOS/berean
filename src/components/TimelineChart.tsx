@@ -154,7 +154,7 @@ export default function TimelineChart({
           {selected.entity && (
             <p className="mt-2">
               <a
-                href={`/library/entity/${selected.entity}`}
+                href={`/workspace?tab=factbook:${selected.entity}`}
                 className="text-sapphire no-underline hover:underline"
               >
                 Open in the Factbook
