@@ -38,9 +38,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Community Notes visual filter: notes shared by chosen Faithlife groups render inline.
 - [ ] [DATA] Factbook Tags and Community Tags visual filters: inline markers where dataset tags or community tags attach to the text.
 - [ ] [DATA][LICENSED] Discourse and Propositional Outlines visual filters: indentation and discourse markers from the Lexham Discourse and High Definition datasets.
-- [ ] [SW] Context menu: right-click splits into dataset entities on the left (person, place, thing, event, lemma, morph) and actions on the right (guides, searches, Factbook, pronounce).
-- [ ] [SW] Selection menu: hover toolbar on any selection for copy, highlight, note, search, share, and translate.
-- [ ] [DATA] Keylinking: double-click a word to open the prioritized lexicon at its lemma or Strong's number.
+- [x] [SW] Context menu: right-click splits into dataset entities on the left (person, place, thing, event, lemma, morph) and actions on the right (guides, searches, Factbook, pronounce).
+- [x] [SW] Selection menu: hover toolbar on any selection for copy, highlight, note, search, share, and translate.
+- [x] [DATA] Keylinking: double-click a word to open the prioritized lexicon at its lemma or Strong's number.
 
 ## 2. Search (morph, clause, semantic)
 

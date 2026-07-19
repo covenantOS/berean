@@ -2,6 +2,7 @@
 
 import {
   Fragment,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -28,8 +29,9 @@ import {
   type VerseHighlight,
 } from "@/lib/highlights";
 import { verseCardSvg } from "@/lib/verseCard";
+import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
-import { findLeaf } from "./workspace-state";
+import { findLeaf, type WordSelection } from "./workspace-state";
 
 interface Verse {
   verse: number;
@@ -98,11 +100,20 @@ function baseStrongs(id: string): string {
   return m ? m[1] : id;
 }
 
+/** The floating menu currently open in this reader, if one is. */
+type ReaderMenu =
+  | { kind: "verse"; x: number; y: number; verse: number }
+  | { kind: "word"; x: number; y: number; word: WordSelection }
+  | { kind: "selection"; x: number; y: number; verse: number; text: string };
+
 /**
  * The reader panel. Fetches the chapter from /api/pane/chapter so the
  * workspace never reloads the page. Tapping a verse selects it (the dock
  * answers) and opens the context strip under the verse; the Words and
  * Original toggles arm word-level taps that broadcast to the lexicon.
+ * Right-click raises the context menus, a drag selection raises the hover
+ * toolbar, and a double-click on a tagged word keylinks into the lexicon;
+ * all three live in ReaderMenus.tsx.
  */
 export default function ReaderPane({
   paneId,
@@ -123,6 +134,10 @@ export default function ReaderPane({
   const [glossOn, setGlossOn] = useState(true);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
+  const [menu, setMenu] = useState<ReaderMenu | null>(null);
+  /** Set by keylinking: the native double-click selection raises no toolbar. */
+  const suppressSelUntil = useRef(0);
+  const closeMenu = useCallback(() => setMenu(null), []);
 
   /*
    * Link-set scroll sync. This pane reports its topmost visible verse,
@@ -174,7 +189,43 @@ export default function ReaderPane({
   useEffect(() => {
     ignoreUntil.current = Date.now() + 300;
     scrollRef.current?.scrollTo({ top: 0 });
+    setMenu(null);
   }, [book, chapter]);
+
+  /*
+   * The selection toolbar. A non-collapsed text selection anchored inside a
+   * verse raises it above the selection; the anchor verse supplies the
+   * reference. Dismissal lives with the menu itself (outside press, Escape,
+   * scroll), never here: a press on the toolbar may collapse the native
+   * selection on some touch browsers, and the menu must survive its own
+   * click. Selections outside the text (the strip, the header) never raise it.
+   */
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const onChange = () => {
+      if (Date.now() < suppressSelUntil.current) return;
+      const s = window.getSelection();
+      if (!s || s.isCollapsed || s.rangeCount === 0) return;
+      const range = s.getRangeAt(0);
+      const node = range.startContainer;
+      const el = node instanceof Element ? node : node.parentElement;
+      const verseEl = el?.closest("[data-verse]");
+      if (!(verseEl instanceof HTMLElement) || !container.contains(verseEl)) return;
+      const text = s.toString().replace(/\s+/g, " ").trim();
+      if (!text) return;
+      const rect = range.getBoundingClientRect();
+      setMenu({
+        kind: "selection",
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+        verse: Number(verseEl.dataset.verse),
+        text: text.slice(0, 280),
+      });
+    };
+    document.addEventListener("selectionchange", onChange);
+    return () => document.removeEventListener("selectionchange", onChange);
+  }, []);
 
   // A navigation or unlink drops any throttled report still waiting to fire.
   useEffect(() => {
@@ -282,31 +333,66 @@ export default function ReaderPane({
     dispatch({ type: "selectVerse", book, chapter, verse });
   };
 
+  const wordFromTagged = (verse: number, w: TaggedWord): Omit<WordSelection, "kind"> => ({
+    book,
+    chapter,
+    verse,
+    text: w.t,
+    strongs: (w.s ?? []).map(baseStrongs),
+  });
+
+  const wordFromOriginal = (verse: number, w: OriginalWord): Omit<WordSelection, "kind"> => ({
+    book,
+    chapter,
+    verse,
+    text: w.t,
+    strongs: (w.s ?? []).map(baseStrongs),
+    lemma: w.l,
+    xlit: w.x,
+    morph: w.md,
+    gloss: w.g ?? w.dg,
+  });
+
   const tapTaggedWord = (verse: number, w: TaggedWord) => (e: ReactMouseEvent) => {
     e.stopPropagation();
     if (!w.s || w.s.length === 0) return;
-    dispatch({
-      type: "selectWord",
-      word: { book, chapter, verse, text: w.t, strongs: w.s },
-    });
+    dispatch({ type: "selectWord", word: wordFromTagged(verse, w) });
   };
 
   const tapOriginalWord = (verse: number, w: OriginalWord) => (e: ReactMouseEvent) => {
     e.stopPropagation();
-    dispatch({
-      type: "selectWord",
-      word: {
-        book,
-        chapter,
-        verse,
-        text: w.t,
-        strongs: (w.s ?? []).map(baseStrongs),
-        lemma: w.l,
-        xlit: w.x,
-        morph: w.md,
-        gloss: w.g ?? w.dg,
-      },
-    });
+    dispatch({ type: "selectWord", word: wordFromOriginal(verse, w) });
+  };
+
+  /* Right-click: the custom menu, unless a live text selection owns the
+   * gesture (then the native menu and the selection toolbar keep it). */
+  const openVerseMenu = (verse: number) => (e: ReactMouseEvent) => {
+    const s = window.getSelection();
+    if (s && !s.isCollapsed) return;
+    e.preventDefault();
+    setMenu({ kind: "verse", x: e.clientX, y: e.clientY, verse });
+  };
+
+  const openWordMenu = (word: Omit<WordSelection, "kind">) => (e: ReactMouseEvent) => {
+    e.stopPropagation();
+    if (word.strongs.length === 0) return;
+    const s = window.getSelection();
+    if (s && !s.isCollapsed) return;
+    e.preventDefault();
+    setMenu({ kind: "word", x: e.clientX, y: e.clientY, word: { kind: "word", ...word } });
+  };
+
+  /* Keylinking: a double-click opens the lexicon dock at the word's base
+   * Strong's entry. Single-tap behavior is untouched; the native selection
+   * the gesture makes is dropped and hushed so it raises no toolbar. */
+  const keylink = (strongs: string[]) => (e: ReactMouseEvent) => {
+    e.stopPropagation();
+    const first = strongs.map(baseStrongs)[0];
+    if (!first) return;
+    suppressSelUntil.current = Date.now() + 500;
+    window.getSelection()?.removeAllRanges();
+    setMenu((m) => (m?.kind === "selection" ? null : m));
+    dispatch({ type: "openLexicon", id: first.toUpperCase() });
   };
 
   const isActiveWord = (verse: number, text: string) =>
@@ -353,6 +439,7 @@ export default function ReaderPane({
       data-verse={v.verse}
       className={verseClass(v.verse)}
       onClick={() => tapVerse(v.verse)}
+      onContextMenu={openVerseMenu(v.verse)}
     >
       <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
       {v.text}{" "}
@@ -365,6 +452,7 @@ export default function ReaderPane({
       data-verse={v.verse}
       className={verseClass(v.verse)}
       onClick={() => tapVerse(v.verse)}
+      onContextMenu={openVerseMenu(v.verse)}
     >
       <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
       {v.words.map((w, i) => (
@@ -373,6 +461,8 @@ export default function ReaderPane({
             <span
               className={`tagged-word armed ${isActiveWord(v.verse, w.t) ? "word-active" : ""}`}
               onClick={tapTaggedWord(v.verse, w)}
+              onDoubleClick={keylink(w.s)}
+              onContextMenu={openWordMenu(wordFromTagged(v.verse, w))}
             >
               {w.t}
             </span>
@@ -389,6 +479,10 @@ export default function ReaderPane({
       <span
         className={`${lang === "hebrew" ? "lang-hebrew" : "lang-greek"}${wordsOn ? " tagged-word armed" : ""}${isActiveWord(verse, w.t) ? " word-active" : ""}`}
         onClick={wordsOn ? tapOriginalWord(verse, w) : undefined}
+        onDoubleClick={w.s && w.s.length > 0 ? keylink(w.s) : undefined}
+        onContextMenu={
+          w.s && w.s.length > 0 ? openWordMenu(wordFromOriginal(verse, w)) : undefined
+        }
       >
         {w.t}
       </span>
@@ -433,6 +527,7 @@ export default function ReaderPane({
             className={`verse-line ${verseClass(v.verse)}`}
             data-verse={v.verse}
             onClick={() => tapVerse(v.verse)}
+            onContextMenu={openVerseMenu(v.verse)}
           >
             <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
             {v.label && (
@@ -465,6 +560,7 @@ export default function ReaderPane({
               className={verseClass(v.verse)}
               data-verse={v.verse}
               onClick={() => tapVerse(v.verse)}
+              onContextMenu={openVerseMenu(v.verse)}
             >
               <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
               {v.alt && (
@@ -622,6 +718,44 @@ export default function ReaderPane({
       <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 overflow-y-auto">
         {body}
       </div>
+      {menu && ready && menu.kind === "verse" && (
+        <VerseContextMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          book={book}
+          chapter={chapter}
+          verse={menu.verse}
+          bookName={ready.bookName}
+          text={verseText(menu.verse)}
+          hasOriginal={ready.hasOriginal}
+          onClose={closeMenu}
+        />
+      )}
+      {menu && ready && menu.kind === "word" && (
+        <WordContextMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          bookName={ready.bookName}
+          word={menu.word}
+          onClose={closeMenu}
+        />
+      )}
+      {menu && ready && menu.kind === "selection" && (
+        <SelectionMenu
+          x={menu.x}
+          y={menu.y}
+          paneId={paneId}
+          book={book}
+          chapter={chapter}
+          verse={menu.verse}
+          bookName={ready.bookName}
+          abbrev={ready.translation}
+          text={menu.text}
+          onClose={closeMenu}
+        />
+      )}
     </div>
   );
 }
