@@ -91,7 +91,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Workflows engine: step-by-step guided studies with prompts, embedded tools, note capture into auto-titled notebooks, progress rings, and resume from the Dashboard.
 - [ ] [DATA] Prebuilt workflow library: Devotional, Lectio Divina, Praying Scripture, Adoration, Basic and Inductive Bible Study, Biblical Person/Place/Theme/Topic Study, Passage Exegesis, Word Study, Expository Sermon Preparation.
 - [ ] [SW] Workflow Editor: build and share custom workflows from the same section parts.
-- [ ] [SW] Insights panel (2025, all plans): cards inside the Bible panel surfacing study Bibles, commentaries, and references for the current passage without opening a guide.
+- [x] [SW] Insights panel (2025, all plans): cards inside the Bible panel surfacing study Bibles, commentaries, and references for the current passage without opening a guide. (A collapsible rail ships at the chapter's head in the workspace reader, toggled from the pane header, over the Passage Guide composition: commentaries, cross-references, people and places, topics, and notable words, each card handing off to the full guide. A study Bible dataset and AI summaries do not ship, so those card kinds do not appear.)
 
 ## 4. Factbook and Datasets
 

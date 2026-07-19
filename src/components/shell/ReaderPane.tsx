@@ -29,6 +29,7 @@ import {
   type VerseHighlight,
 } from "@/lib/highlights";
 import { verseCardSvg } from "@/lib/verseCard";
+import InsightsRail from "./InsightsRail";
 import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
 import { findLeaf, type WordSelection } from "./workspace-state";
@@ -130,6 +131,7 @@ export default function ReaderPane({
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [apparatus, setApparatus] = useState<Apparatus>({ status: "idle" });
   const [wordsOn, setWordsOn] = useState(false);
+  const [insightsOn, setInsightsOn] = useState(false);
   const [view, setView] = useState<"text" | "original">("text");
   const [glossOn, setGlossOn] = useState(true);
   const [notes, setNotes] = useState<MarginNote[]>([]);
@@ -654,6 +656,15 @@ export default function ReaderPane({
         <div className="flex flex-1 items-center justify-end gap-1">
           <button
             type="button"
+            aria-pressed={insightsOn}
+            title="Resource cards for this chapter, gathered beside the text"
+            onClick={() => setInsightsOn(!insightsOn)}
+            className={toggleBtn(insightsOn)}
+          >
+            Insights
+          </button>
+          <button
+            type="button"
             title="Open the Passage Guide for this chapter"
             onClick={() => dispatch({ type: "openGuide", book, chapter, paneId })}
             className={toggleBtn(false)}
@@ -716,6 +727,7 @@ export default function ReaderPane({
         </div>
       </header>
       <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 overflow-y-auto">
+        {insightsOn && <InsightsRail paneId={paneId} book={book} chapter={chapter} />}
         {body}
       </div>
       {menu && ready && menu.kind === "verse" && (

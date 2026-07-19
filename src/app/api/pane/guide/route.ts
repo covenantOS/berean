@@ -171,6 +171,7 @@ export async function GET(req: NextRequest) {
     chapter,
     commentary,
     crossRefs: crossRefsTop,
+    crossRefsTotal: pooled.length,
     people,
     places,
     others,
