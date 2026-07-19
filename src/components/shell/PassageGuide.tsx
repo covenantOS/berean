@@ -81,7 +81,7 @@ type LoadState =
  * with nothing to say stay out of the report.
  */
 export default function PassageGuide({ book, chapter }: { book: string; chapter: number }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch, reportHoverRef } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy actions; clears itself. */
   const [copied, setCopied] = useState<"texts" | "link" | null>(null);
@@ -229,6 +229,15 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
                 <button
                   type="button"
                   title={`Open ${r.ref}`}
+                  onMouseEnter={() =>
+                    reportHoverRef({
+                      book: r.slug,
+                      chapter: r.chapter,
+                      fromVerse: r.verse,
+                      toVerse: r.endVerse ?? r.verse,
+                    })
+                  }
+                  onMouseLeave={() => reportHoverRef(null)}
                   onClick={() => dispatch({ type: "openRef", book: r.slug, chapter: r.chapter })}
                   className="small-caps text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
@@ -298,6 +307,17 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
                       key={i}
                       type="button"
                       title={`Open ${r.label}`}
+                      onMouseEnter={() => {
+                        if (r.verse !== null) {
+                          reportHoverRef({
+                            book: r.slug,
+                            chapter: r.chapter,
+                            fromVerse: r.verse,
+                            toVerse: r.verse,
+                          });
+                        }
+                      }}
+                      onMouseLeave={() => reportHoverRef(null)}
                       onClick={() => dispatch({ type: "openRef", book: r.slug, chapter: r.chapter })}
                       className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >

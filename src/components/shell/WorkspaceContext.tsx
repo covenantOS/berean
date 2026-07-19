@@ -40,6 +40,19 @@ export interface LinkedVerseNotice {
   verse: number;
 }
 
+/**
+ * The reference under the pointer anywhere in the workspace (a cross-ref
+ * chip, a guide entry), broadcast so open readers showing that chapter can
+ * emphasize the matching verses. Transient by design: a null report clears.
+ */
+export interface HoverRefNotice {
+  book: string;
+  chapter: number;
+  /** First and last verse of the hovered reference, same chapter. */
+  fromVerse: number;
+  toVerse: number;
+}
+
 interface WorkspaceContextValue {
   state: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
@@ -51,6 +64,10 @@ interface WorkspaceContextValue {
   reportLinkedVerse: (notice: LinkedVerseNotice) => void;
   /** Subscribes to linked-verse reports; returns the unsubscribe. */
   subscribeLinkedVerse: (listener: (notice: LinkedVerseNotice) => void) => () => void;
+  /** Broadcasts the hovered reference (or null when the hover ends). */
+  reportHoverRef: (notice: HoverRefNotice | null) => void;
+  /** Subscribes to hovered-reference reports; returns the unsubscribe. */
+  subscribeHoverRef: (listener: (notice: HoverRefNotice | null) => void) => () => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -242,9 +259,46 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  /*
+   * The hover-emphasis bus, same shape as the scroll-sync bus: reference
+   * chips report the passage under the pointer, open readers listen, and a
+   * null report clears. Kept outside React state so a pointer crossing a
+   * dock does not re-render the shell.
+   */
+  const hoverListeners = useRef(new Set<(notice: HoverRefNotice | null) => void>());
+  const reportHoverRef = useCallback((notice: HoverRefNotice | null) => {
+    for (const listener of hoverListeners.current) listener(notice);
+  }, []);
+  const subscribeHoverRef = useCallback(
+    (listener: (notice: HoverRefNotice | null) => void) => {
+      hoverListeners.current.add(listener);
+      return () => {
+        hoverListeners.current.delete(listener);
+      };
+    },
+    []
+  );
+
   const value = useMemo(
-    () => ({ state, dispatch, hydrated, activeRef, reportLinkedVerse, subscribeLinkedVerse }),
-    [state, hydrated, activeRef, reportLinkedVerse, subscribeLinkedVerse]
+    () => ({
+      state,
+      dispatch,
+      hydrated,
+      activeRef,
+      reportLinkedVerse,
+      subscribeLinkedVerse,
+      reportHoverRef,
+      subscribeHoverRef,
+    }),
+    [
+      state,
+      hydrated,
+      activeRef,
+      reportLinkedVerse,
+      subscribeLinkedVerse,
+      reportHoverRef,
+      subscribeHoverRef,
+    ]
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

@@ -199,6 +199,42 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   background: color-mix(in srgb, var(--stained-violet) 32%, transparent);
   box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-violet) 75%, transparent);
 }
+/*
+ * Hover emphasis: resting on a reference chip anywhere in the workspace
+ * outlines the matching verses in every open reader showing that chapter,
+ * a fourth channel beside the highlight tint, the filter underline, and
+ * the find wash. Sapphire, the color references wear, with a soft ring so
+ * it reads over the highlight tints it may share a verse with.
+ */
+.ref-hover {
+  background: color-mix(in srgb, var(--stained-sapphire) 15%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--stained-sapphire) 50%, transparent);
+  border-radius: 2px;
+}
+
+/* Pericope headings: quiet small-caps over the passage they name, with the
+ * source's parallel references in a smaller line beneath (BSB paratext). */
+.pericope-heading {
+  display: block;
+  font-family: var(--font-interface);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  margin-top: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+.pericope-heading:first-child {
+  margin-top: 0;
+}
+.pericope-parallels {
+  font-variant-caps: normal;
+  letter-spacing: normal;
+  font-weight: 400;
+  font-size: 0.65rem;
+  margin-left: 0.5em;
+}
 
 /* --reader-base is the global multiplier from the Settings rail; a pane's
  * own --reader-scale step rides on top of it. */

@@ -16,3 +16,9 @@ data/_sources/clarke/*.zip
 # Raw LXX sources (~3MB); reproducible from each PROVENANCE.md
 data/_sources/brenton/*.zip
 data/_sources/lxx/*.zip
+
+# Raw BSB USFM (~3MB); reproducible from data/_sources/bsb-usfm/PROVENANCE.md
+data/_sources/bsb-usfm/*.zip
+data/_sources/bsb-usfm/*.usfm
+data/_sources/bsb-usfm/*.css
+data/_sources/bsb-usfm/*.asc

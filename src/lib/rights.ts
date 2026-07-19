@@ -131,6 +131,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "bsb-paratext",
+    title: "Berean Standard Bible paratext (pericope headings and parallel references)",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain",
+    source: "https://eBible.org/Scriptures/engbsb_usfm.zip (details: https://ebible.org/find/details.php?id=engbsb)",
+    sourceRetrieved: "2026-07-19",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Section headings and parallel-passage references extracted from the Berean Standard Bible USFM, marked public domain by eBible.org (contributor BSB Publishing, LLC). Only the paratext ships, not the BSB text: pericope boundaries with headings stored per-book as JSON under data/pericopes, worn by every furnished translation since the boundaries anchor by canon reference. Raw USFM kept out of git; provenance in data/_sources/bsb-usfm/PROVENANCE.md; built by scripts/build-pericopes.mjs.",
+    status: "shipped",
+  },
+  {
     id: "matthew-henry",
     title: "Matthew Henry, Concise Commentary on the Whole Bible",
     kind: "commentary",

@@ -90,7 +90,7 @@ export default function InsightsRail({
   book: string;
   chapter: number;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch, reportHoverRef } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
 
   // One composition per chapter, aborted when the passage moves on. The rail
@@ -170,6 +170,15 @@ export default function InsightsRail({
                 key={i}
                 type="button"
                 title={`Open ${r.ref}`}
+                onMouseEnter={() =>
+                  reportHoverRef({
+                    book: r.slug,
+                    chapter: r.chapter,
+                    fromVerse: r.verse,
+                    toVerse: r.endVerse ?? r.verse,
+                  })
+                }
+                onMouseLeave={() => reportHoverRef(null)}
                 onClick={() => dispatch({ type: "openRef", book: r.slug, chapter: r.chapter })}
                 className={CHIP}
               >

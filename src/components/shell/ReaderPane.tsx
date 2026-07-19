@@ -72,6 +72,13 @@ interface OriginalVerse {
   words: OriginalWord[];
 }
 
+/** One pericope: the heading naming the passage that starts at its verse. */
+interface Pericope {
+  verse: number;
+  heading: string;
+  parallels?: string;
+}
+
 interface ChapterPayload {
   book: string;
   bookName: string;
@@ -84,6 +91,7 @@ interface ChapterPayload {
   hasTagged: boolean;
   hasOriginal: boolean;
   verses: Verse[];
+  pericopes: Pericope[];
   tagged?: TaggedVerse[] | null;
   original?: OriginalVerse[] | null;
 }
@@ -154,7 +162,11 @@ function translationShelf(): Promise<ShelfTranslation[]> {
  * toolbar, and a double-click on a tagged word keylinks into the lexicon;
  * all three live in ReaderMenus.tsx. The header's A steppers scale the text
  * (the tab keeps the step), and Reading raises the text over the whole
- * window as a component-level overlay.
+ * window as a component-level overlay. Pericope headings (BSB paratext)
+ * mark the text's passages, quiet small-caps the Headings toggle and Text
+ * only both drop; the locator rail under the header tracks the reading
+ * position with pericope ticks and prev/next stepping; and a reference chip
+ * hovered anywhere in the workspace outlines its verses here (ref-hover).
  */
 export default function ReaderPane({
   paneId,
@@ -169,7 +181,8 @@ export default function ReaderPane({
   translation?: string;
   fontScale?: number;
 }) {
-  const { state, dispatch, reportLinkedVerse, subscribeLinkedVerse } = useWorkspace();
+  const { state, dispatch, reportLinkedVerse, subscribeLinkedVerse, subscribeHoverRef } =
+    useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [apparatus, setApparatus] = useState<Apparatus>({ status: "idle" });
   const [wordsOn, setWordsOn] = useState(false);
@@ -180,6 +193,13 @@ export default function ReaderPane({
    * one verse per line. Per pane while the tab lives, like the toggles above. */
   const [textOnly, setTextOnly] = useState(false);
   const [verseLines, setVerseLines] = useState(false);
+  /* Pericope headings: small-caps markers over the passages they name, from
+   * the BSB paratext the chapter payload carries. On while the tab lives,
+   * like the other view toggles; Text only hides them too. */
+  const [headingsOn, setHeadingsOn] = useState(true);
+  /* Hover emphasis: the reference chip under the pointer anywhere in the
+   * workspace; verses it covers wear the ref-hover channel until it clears. */
+  const [hoverVerses, setHoverVerses] = useState<{ from: number; to: number } | null>(null);
   /* Reading view: a component-level overlay of this pane's text over the
    * whole window. The workspace state never moves for it; Escape exits. */
   const [reading, setReading] = useState(false);
@@ -210,6 +230,11 @@ export default function ReaderPane({
   const scrollRef = useRef<HTMLDivElement>(null);
   const ignoreUntil = useRef(0);
   const scrollTimer = useRef<number | null>(null);
+  /* The locator: the chapter's scroll progress and the index of the pericope
+   * at the reading position. The pericope starts' scroll offsets are measured
+   * from the rendered text (null where a start verse is absent from it). */
+  const [locator, setLocator] = useState({ progress: 0, current: 0, top: 0 });
+  const pericopeOffsets = useRef<(number | null)[]>([]);
 
   // The chapter text, lean; the word apparatus stays behind its flags.
   useEffect(() => {
@@ -263,7 +288,25 @@ export default function ReaderPane({
     scrollRef.current?.scrollTo({ top: 0 });
     setMenu(null);
     setFind({ open: false, q: "", index: 0 });
+    setHoverVerses(null);
+    setLocator({ progress: 0, current: 0, top: 0 });
   }, [book, chapter]);
+
+  /*
+   * Hover emphasis (Emphasize Active References). A reference chip anywhere
+   * in the workspace reports the passage under the pointer; when it names
+   * this chapter, the covered verses wear ref-hover until the report clears.
+   * Reports for other chapters only make sure nothing here stays lit.
+   */
+  useEffect(() => {
+    return subscribeHoverRef((notice) => {
+      if (notice && notice.book === book && notice.chapter === chapter) {
+        setHoverVerses({ from: notice.fromVerse, to: notice.toVerse });
+      } else {
+        setHoverVerses((cur) => (cur === null ? cur : null));
+      }
+    });
+  }, [subscribeHoverRef, book, chapter]);
 
   // Reading view leaves on Escape, unless a floating menu owns the key.
   useEffect(() => {
@@ -360,7 +403,26 @@ export default function ReaderPane({
     }
   };
 
+  /** The locator reads the scroll position directly; the link-set report in
+   *  the scroll handler stays throttled and gated. */
+  const updateLocator = () => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const maxScroll = container.scrollHeight - container.clientHeight;
+    const top = Math.round(container.scrollTop);
+    const progress =
+      maxScroll > 0 ? Math.min(1, Math.max(0, container.scrollTop / maxScroll)) : 1;
+    let current = 0;
+    pericopeOffsets.current.forEach((offset, i) => {
+      if (offset !== null && offset <= container.scrollTop + 8) current = i;
+    });
+    setLocator((prev) =>
+      prev.top === top && prev.current === current ? prev : { progress, current, top }
+    );
+  };
+
   const onScroll = (_e: ReactUIEvent<HTMLDivElement>) => {
+    updateLocator();
     if (!linkSet || Date.now() < ignoreUntil.current) return;
     if (scrollTimer.current !== null) return;
     scrollTimer.current = window.setTimeout(() => {
@@ -414,6 +476,52 @@ export default function ReaderPane({
     if (next) dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
   };
 
+  /* The heading over a pericope's first verse: quiet small-caps, with the
+   * source's parallel passages beneath in a smaller line. Text only reads
+   * without them, the way it hides the verse numbers. */
+  const pericopeHeading = (verse: number) => {
+    if (!headingsOn || textOnly) return null;
+    const p = pericopeByVerse.get(verse);
+    if (!p) return null;
+    return (
+      <span className="pericope-heading">
+        {p.heading}
+        {p.parallels && <span className="pericope-parallels">({p.parallels})</span>}
+      </span>
+    );
+  };
+
+  /** Scroll the chapter so a verse sits at the top of the pane. */
+  const scrollToVerse = (verse: number) => {
+    const container = scrollRef.current;
+    const el = container?.querySelector(`[data-verse="${verse}"]`);
+    if (!(container && el instanceof HTMLElement)) return;
+    const cRect = container.getBoundingClientRect();
+    const eRect = el.getBoundingClientRect();
+    container.scrollTop += eRect.top - cRect.top - 8;
+    updateLocator();
+  };
+
+  /* Pericope stepping: back lands on the current passage's start when the
+   * reading position has drifted past it, then on the passage before. */
+  const stepPericope = (dir: -1 | 1) => {
+    if (!ready || ready.pericopes.length === 0) return;
+    const container = scrollRef.current;
+    if (!container) return;
+    let target: number;
+    if (dir === 1) {
+      target = locator.current + 1;
+    } else {
+      const start = pericopeOffsets.current[locator.current];
+      target =
+        start != null && container.scrollTop > start + 24
+          ? locator.current
+          : locator.current - 1;
+    }
+    if (target < 0 || target >= ready.pericopes.length) return;
+    scrollToVerse(ready.pericopes[target].verse);
+  };
+
   /* The parallel swap: retarget this pane's reader tab to the same passage
    * in another translation. It never dispatches navigation, so link-set
    * partners keep their passage and their own text. */
@@ -441,6 +549,46 @@ export default function ReaderPane({
     dispatch({ type: "setReaderFontScale", paneId, tabId, fontScale: scaleStep + dir });
   };
 
+  /*
+   * Pericope offsets and locator ticks, measured from the rendered verses.
+   * Re-measured on anything that can move the text: the view toggles, the
+   * scale step, the insights rail, the word apparatus, and window resizes.
+   */
+  const [pericopeTicks, setPericopeTicks] = useState<(number | null)[]>([]);
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container || !ready) return;
+    const measure = () => {
+      const maxScroll = container.scrollHeight - container.clientHeight;
+      const cRect = container.getBoundingClientRect();
+      const offsets = ready.pericopes.map((p) => {
+        const el = container.querySelector(`[data-verse="${p.verse}"]`);
+        if (!(el instanceof HTMLElement)) return null;
+        return el.getBoundingClientRect().top - cRect.top + container.scrollTop;
+      });
+      pericopeOffsets.current = offsets;
+      setPericopeTicks(
+        offsets.map((o) => (o !== null && maxScroll > 0 ? Math.min(1, o / maxScroll) : null))
+      );
+      updateLocator();
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [
+    ready,
+    headingsOn,
+    textOnly,
+    verseLines,
+    view,
+    wordsOn,
+    apparatus.status,
+    scaleStep,
+    insightsOn,
+    glossOn,
+    find.open,
+  ]);
+
   const sel = state.selection;
   const selHere = sel && sel.book === book && sel.chapter === chapter ? sel : null;
   const selVerse = selHere?.kind === "verse" ? selHere.verse : null;
@@ -456,6 +604,13 @@ export default function ReaderPane({
   }, [notes]);
 
   const markByVerse = useMemo(() => new Map(marks.map((m) => [m.verse, m])), [marks]);
+
+  /* Pericope by start verse; the heading renderer and the locator read it. */
+  const pericopeByVerse = useMemo(() => {
+    const m = new Map<number, Pericope>();
+    for (const p of ready?.pericopes ?? []) m.set(p.verse, p);
+    return m;
+  }, [ready]);
 
   /* Visible visual filter sets over this chapter: verse to the first set
    * claiming it (a verse in several sets wears one underline). Hidden sets
@@ -631,6 +786,7 @@ export default function ReaderPane({
       filter ? `vf-${filter.color}` : "",
       notesByVerse.has(v) ? "has-note" : "",
       selVerse === v ? "verse-selected" : "",
+      hoverVerses && v >= hoverVerses.from && v <= hoverVerses.to ? "ref-hover" : "",
     ]
       .filter(Boolean)
       .join(" ");
@@ -721,24 +877,33 @@ export default function ReaderPane({
   );
 
   /* Prose modes split at the selected verse so the strip sits directly
-   * beneath it without nesting a block inside the paragraph. */
+   * beneath it without nesting a block inside the paragraph. Pericope
+   * headings ride in front of their first verse. */
   const renderFlow = (verses: Verse[] | TaggedVerse[], tagged: boolean) => {
     const render = tagged
       ? (v: Verse | TaggedVerse) => renderTaggedVerse(v as TaggedVerse)
       : (v: Verse | TaggedVerse) => renderPlainVerse(v as Verse);
+    const withHeading = (v: Verse | TaggedVerse) => (
+      <Fragment key={v.verse}>
+        {pericopeHeading(v.verse)}
+        {render(v)}
+      </Fragment>
+    );
     const idx = selVerse === null ? -1 : verses.findIndex((v) => v.verse === selVerse);
     if (idx < 0) {
-      return <p className="prose-verses mx-auto max-w-prose px-6 py-6">{verses.map(render)}</p>;
+      return (
+        <p className="prose-verses mx-auto max-w-prose px-6 py-6">{verses.map(withHeading)}</p>
+      );
     }
     return (
       <>
         <p className="prose-verses mx-auto max-w-prose px-6 pt-6 pb-4">
-          {verses.slice(0, idx + 1).map(render)}
+          {verses.slice(0, idx + 1).map(withHeading)}
         </p>
         {stripNode}
         {idx + 1 < verses.length && (
           <p className="prose-verses mx-auto max-w-prose px-6 pt-4 pb-6">
-            {verses.slice(idx + 1).map(render)}
+            {verses.slice(idx + 1).map(withHeading)}
           </p>
         )}
       </>
@@ -749,6 +914,7 @@ export default function ReaderPane({
     <div className="poetry-verses mx-auto max-w-prose px-6 py-6">
       {verses.map((v) => (
         <Fragment key={v.verse}>
+          {pericopeHeading(v.verse)}
           <div
             className={`verse-line ${verseClass(v.verse)}`}
             data-verse={v.verse}
@@ -844,6 +1010,16 @@ export default function ReaderPane({
     `border px-1.5 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
       on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
     }`;
+
+  /* The locator's pericope controls: back answers while a passage start sits
+   * above the reading position, forward while one sits below. */
+  const pericopeStart = pericopeOffsets.current[locator.current];
+  const canPrevPericope =
+    ready !== null &&
+    ready.pericopes.length > 0 &&
+    (locator.current > 0 || (pericopeStart != null && locator.top > pericopeStart + 24));
+  const canNextPericope = ready !== null && locator.current < ready.pericopes.length - 1;
+  const currentPericope = ready ? (ready.pericopes[locator.current] ?? null) : null;
 
   /* The floating menus, shared by the workspace frame and the reading
    * overlay so a right-click answers the same way in both. */
@@ -1100,6 +1276,17 @@ export default function ReaderPane({
               Text only
             </button>
           )}
+          {ready && view === "text" && ready.pericopes.length > 0 && (
+            <button
+              type="button"
+              aria-pressed={headingsOn}
+              title="Pericope headings over the passages they name"
+              onClick={() => setHeadingsOn(!headingsOn)}
+              className={toggleBtn(headingsOn)}
+            >
+              Headings
+            </button>
+          )}
           {ready && view === "text" && !ready.poetry && (
             <button
               type="button"
@@ -1155,6 +1342,68 @@ export default function ReaderPane({
           )}
         </div>
       </header>
+      {ready && (
+        /* The locator: the chapter's scroll progress as a rail, pericope
+         * starts as ticks that jump to their passage, and the pericope at the
+         * reading position named at the right edge. */
+        <div className="flex h-6 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
+          {ready.pericopes.length > 0 && (
+            <span className="flex items-center" role="group" aria-label="Pericope navigation">
+              <button
+                type="button"
+                title="Previous pericope"
+                aria-label="Previous pericope"
+                disabled={!canPrevPericope}
+                onClick={() => stepPericope(-1)}
+                className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                title="Next pericope"
+                aria-label="Next pericope"
+                disabled={!canNextPericope}
+                onClick={() => stepPericope(1)}
+                className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                ›
+              </button>
+            </span>
+          )}
+          <div className="relative h-1 flex-1 rounded-full bg-rule">
+            <div
+              className="absolute inset-y-0 left-0 rounded-full bg-sapphire/50"
+              style={{ width: `${locator.progress * 100}%` }}
+            />
+            {ready.pericopes.map((p, i) => {
+              const f = pericopeTicks[i];
+              if (f === null || f === undefined) return null;
+              return (
+                <button
+                  key={p.verse}
+                  type="button"
+                  title={`${p.heading} (verse ${p.verse})`}
+                  aria-label={`Go to ${p.heading}`}
+                  onClick={() => scrollToVerse(p.verse)}
+                  className="absolute top-1/2 h-2.5 w-1 -translate-x-1/2 -translate-y-1/2 bg-muted hover:bg-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  style={{ left: `${f * 100}%` }}
+                />
+              );
+            })}
+          </div>
+          <span
+            className="small-caps max-w-44 truncate text-[0.6rem] text-muted"
+            title={
+              currentPericope
+                ? `${currentPericope.heading}${currentPericope.parallels ? ` (${currentPericope.parallels})` : ""}`
+                : undefined
+            }
+          >
+            {currentPericope ? currentPericope.heading : "\u00A0"}
+          </span>
+        </div>
+      )}
       {find.open && (
         <div className="flex h-8 shrink-0 items-center gap-1.5 border-b border-rule px-4">
           <input

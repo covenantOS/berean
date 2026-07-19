@@ -28,10 +28,11 @@ type LoadState =
  * listed per verse. A verse selection narrows the list to that verse,
  * under a "following" header; Reset lets the selection go. Every reference
  * dispatches berean:open-ref, so a click carries the pane in focus to the
- * linked passage.
+ * linked passage; hovering a chip reports it on the hover bus, and open
+ * readers showing that chapter emphasize the matching verses.
  */
 export default function CrossRefsDock() {
-  const { state, activeRef, dispatch } = useWorkspace();
+  const { state, activeRef, dispatch, reportHoverRef } = useWorkspace();
   const sel = state.selection?.kind === "verse" ? state.selection : null;
   const book = sel?.book ?? activeRef?.book ?? null;
   const chapter = sel?.chapter ?? activeRef?.chapter ?? null;
@@ -125,6 +126,15 @@ export default function CrossRefsDock() {
                   <button
                     type="button"
                     title={`Open ${r.ref}`}
+                    onMouseEnter={() =>
+                      reportHoverRef({
+                        book: r.slug,
+                        chapter: r.chapter,
+                        fromVerse: r.verse,
+                        toVerse: r.endVerse ?? r.verse,
+                      })
+                    }
+                    onMouseLeave={() => reportHoverRef(null)}
                     onClick={() =>
                       window.dispatchEvent(
                         new CustomEvent("berean:open-ref", {

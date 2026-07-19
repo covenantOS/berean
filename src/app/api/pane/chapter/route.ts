@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 import { DEFAULT_TRANSLATION, getTranslation } from "@/lib/translations";
+import { getPericopes } from "@/lib/pericopes";
 import { decodeMorph, getOriginalChapter, getTaggedChapter } from "@/lib/tagged";
 
 /**
@@ -27,11 +28,12 @@ export async function GET(req: NextRequest) {
   const wantTagged = params.get("tagged") === "1";
   const wantOriginal = params.get("original") === "1";
   const lang = book.testament === "OT" ? ("hebrew" as const) : ("greek" as const);
-  const [verses, tagged, original] = await Promise.all([
+  const [verses, tagged, original, pericopes] = await Promise.all([
     getChapter(book.slug, chapter, translation.id),
     // The tagged apparatus is KJV-only; other texts report it as absent.
     translation.id === "kjv" ? getTaggedChapter(book.slug, chapter) : Promise.resolve(null),
     getOriginalChapter(book.slug, chapter),
+    getPericopes(book.slug, chapter),
   ]);
   if (!verses) return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   return NextResponse.json({
@@ -46,6 +48,7 @@ export async function GET(req: NextRequest) {
     hasTagged: tagged !== null,
     hasOriginal: original !== null,
     verses,
+    pericopes,
     ...(wantTagged && tagged ? { tagged } : {}),
     ...(wantOriginal && original
       ? {
