@@ -24,6 +24,7 @@ import { normalize, projects as projectsCollection } from "@/lib/projects";
 import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
+import { WorkflowsSection } from "./WorkflowPane";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
@@ -75,7 +76,12 @@ export default function Sidebar() {
           </>
         )}
         {state.railMode === "library" && <LibrarySections />}
-        {state.railMode === "documents" && <DocumentsList />}
+        {state.railMode === "documents" && (
+          <>
+            <WorkflowsSection />
+            <DocumentsList />
+          </>
+        )}
         {state.railMode === "study" && <StudyPanel />}
         {state.railMode === "search" && <SearchPanel />}
         {state.railMode === "almanac" && <AlmanacPanel />}

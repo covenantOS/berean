@@ -244,6 +244,17 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
             <span className={HINT}>Guide editor</span>
           </button>
         </li>
+        <li>
+          <button
+            type="button"
+            title="Step-by-step guided studies; the library and your runs live in the Documents rail"
+            className={ROW}
+            onClick={() => dispatch({ type: "setRailMode", mode: "documents" })}
+          >
+            Guided studies
+            <span className={HINT}>Workflows</span>
+          </button>
+        </li>
       </ul>
 
       {recent.length > 0 && (

@@ -149,6 +149,21 @@ export interface WordStudyTab {
   strongsId: string;
 }
 
+/**
+ * A workflow run (src/lib/workflows.ts): the guided study standing on one
+ * step of its definition. The run's name is captured at open time for the
+ * tab strip; the pane reads the run collection live, so progress applies to
+ * the open tab, and a deleted run degrades the way a deleted list document
+ * does.
+ */
+export interface WorkflowTab {
+  id: string;
+  type: "workflow";
+  runId: string;
+  /** The workflow's name with its subject, captured at open time. */
+  title: string;
+}
+
 /** The Exegetical Guide: one chapter's original-language report. */
 export interface ExegeticalTab {
   id: string;
@@ -392,6 +407,7 @@ export type Tab =
   | CustomGuideTab
   | GuideEditorTab
   | WordStudyTab
+  | WorkflowTab
   | ExegeticalTab
   | TopicGuideTab
   | ListDocTab
@@ -585,6 +601,10 @@ export function guideEditorTab(guideId: string | null = null): GuideEditorTab {
 
 export function wordStudyTab(strongsId: string): WordStudyTab {
   return { id: newId("tab"), type: "wordstudy", strongsId };
+}
+
+export function workflowTab(runId: string, title: string): WorkflowTab {
+  return { id: newId("tab"), type: "workflow", runId, title };
 }
 
 export function exegeticalTab(book = "genesis", chapter = 1): ExegeticalTab {
@@ -977,6 +997,7 @@ export type WorkspaceAction =
     }
   | { type: "openGuideEditor"; guideId?: string | null; paneId?: string }
   | { type: "openWordStudy"; strongsId: string; paneId?: string }
+  | { type: "openWorkflow"; runId: string; title: string; paneId?: string }
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
@@ -1354,6 +1375,27 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       if (!findLeaf(state.root, paneId)) return state;
       const tab = wordStudyTab(m[0]);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openWorkflow": {
+      const runId = action.runId.trim();
+      if (!runId) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // The run pins at open time; the pane reads the collection live, so
+      // progress shows without reopening and a deleted run degrades in place.
+      const title = action.title.trim() || "Workflow";
+      const tab = workflowTab(runId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -2446,6 +2488,15 @@ function sanitizeNode(node: unknown): PaneNode | null {
       if (t.type === "wordstudy" && typeof t.id === "string") {
         if (typeof t.strongsId !== "string" || !/^[hg]\d{1,5}$/i.test(t.strongsId)) continue;
         tabs.push({ id: t.id, type: "wordstudy", strongsId: t.strongsId.toUpperCase() });
+        continue;
+      }
+      if (t.type === "workflow" && typeof t.id === "string") {
+        // The list document's rule: an unanswered run id loads anyway and the
+        // pane says the run is gone.
+        if (typeof t.runId !== "string" || !t.runId.trim()) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Workflow";
+        tabs.push({ id: t.id, type: "workflow", runId: t.runId, title });
         continue;
       }
       if (t.type === "exegetical" && typeof t.id === "string" && typeof t.book === "string") {

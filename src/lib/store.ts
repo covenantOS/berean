@@ -134,6 +134,7 @@ export const GRAPH_KEYS = [
   "berean.guides.v1",
   "berean.collections.v1",
   "berean.active-collection.v1",
+  "berean.workflows.v1",
 ] as const;
 
 /** Export the entire knowledge graph as one JSON document. */
