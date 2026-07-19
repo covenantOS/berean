@@ -6,6 +6,7 @@ import { CANON, bookIndex, getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
+import { isDue, memoryPassages } from "@/lib/memory";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
@@ -168,6 +169,7 @@ function AlmanacPanel() {
   const { dispatch } = useWorkspace();
   const rows = useCollection(plans);
   const prayers = useCollection(prayerLists);
+  const memory = useCollection(memoryPassages);
   const active = rows
     .map((plan) => {
       const gen = generatorFor(plan);
@@ -175,8 +177,9 @@ function AlmanacPanel() {
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
   const due = dueRequests(prayers);
+  const dueMemory = memory.filter((p) => isDue(p));
 
-  if (active.length === 0 && due.length === 0) {
+  if (active.length === 0 && due.length === 0 && dueMemory.length === 0) {
     return (
       <p className="px-3 py-4 text-xs leading-relaxed text-muted">
         Nothing is appointed for today. Begin a plan on the{" "}
@@ -233,6 +236,28 @@ function AlmanacPanel() {
           </div>
         );
       })}
+      {dueMemory.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+            Memory work due
+          </div>
+          <ul>
+            {dueMemory.map((p) => (
+              <li key={p.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                <Link
+                  href={`/memory?drill=${p.id}`}
+                  title={`Drill ${getBook(p.book)?.name} ${p.chapter}:${p.from}`}
+                  className="min-w-0 flex-1 truncate text-[0.8rem] text-ink no-underline hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {getBook(p.book)?.name} {p.chapter}:{p.from}
+                  {p.to !== p.from ? `–${p.to}` : ""}
+                </Link>
+                <span className="shrink-0 text-[0.62rem] text-muted">drill</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       {due.length > 0 && (
         <>
           <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -282,6 +307,10 @@ function AlmanacPanel() {
         ; the lists and their answered history live on the{" "}
         <Link href="/prayers" className="text-sapphire no-underline hover:underline">
           prayers page
+        </Link>
+        ; memory work lives on the{" "}
+        <Link href="/memory" className="text-sapphire no-underline hover:underline">
+          memory page
         </Link>
         .
       </p>

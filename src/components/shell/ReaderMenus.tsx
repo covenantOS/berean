@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
+import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
@@ -352,6 +353,17 @@ export function VerseContextMenu({
         </button>
         <button type="button" className={ROW} onClick={() => setWritingNote(true)}>
           Note{verseNotes.length > 0 ? ` (${verseNotes.length})` : ""}
+        </button>
+        <button
+          type="button"
+          title="Take this verse up into memory work"
+          className={ROW}
+          onClick={() => {
+            takeUp(book, chapter, verse, verse);
+            onClose();
+          }}
+        >
+          Memorize
         </button>
         {pickingList ? (
           <div className="mt-1 border-t border-rule pt-1">

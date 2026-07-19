@@ -253,9 +253,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 ## 14. Memorization
 
 - [ ] [DATA] Word List documents: vocabulary lists with lemma, gloss, and occurrence counts pulled from any passage or search.
-- [ ] [SW] Flashcard drilling: word lists sync to companion flashcard mobile apps.
-- [ ] [SW] Word Find Puzzle generator: printable puzzles built from any word list.
-- [ ] [SW] Gap note: Logos has no native verse memorization trainer; the legacy Faithlife Bible Memory app is defunct. Berean can outflank them here.
+- [ ] [SW] Flashcard drilling: word lists sync to companion flashcard mobile apps. (Skipped for now: no companion apps exist to sync to.)
+- [x] [SW] Word Find Puzzle generator: printable puzzles built from any word list. (A word list's Puzzle action seats its glosses and transliterations on a hand-rolled letter grid, eight directions with honest crossings, no dependency; the puzzle prints through the shared report print rules and is regenerated, never stored.)
+- [ ] [SW] Gap note: Logos has no native verse memorization trainer; the legacy Faithlife Bible Memory app is defunct. Berean can outflank them here. (Outflanked: Berean ships the trainer. Verses are taken up from the reader's context menu or the memory page, drilled by first letters, missing words, or full recall over the real text, and an honest self-grade drives a widening review ladder that surfaces beside the prayers in the Almanac.)
 
 ## 15. Word Study
 

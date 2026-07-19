@@ -131,7 +131,10 @@ export default function AlmanacPage() {
           {dueMemory.length > 0 && (
             <li>
               Memory work:{" "}
-              <Link href="/memory" className="text-sapphire no-underline hover:underline">
+              <Link
+                href={`/memory?drill=${dueMemory[0].id}`}
+                className="text-sapphire no-underline hover:underline"
+              >
                 {dueMemory.length} passage{dueMemory.length === 1 ? "" : "s"} due for review
               </Link>
             </li>
