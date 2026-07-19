@@ -164,6 +164,9 @@ function Intake() {
         case "settings":
           dispatch({ type: "openSettings", paneId });
           break;
+        case "bookexplorer":
+          dispatch({ type: "openBookExplorer", paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

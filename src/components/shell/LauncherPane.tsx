@@ -10,6 +10,7 @@ import { layoutState, layouts } from "./layouts";
 import { useWorkspace } from "./WorkspaceContext";
 import {
   allSearchTab,
+  bookExplorerTab,
   canvasDocTab,
   concordanceTab,
   customGuideTab,
@@ -262,6 +263,12 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(libraryTab())}>
             Browse the Library
             <span className={HINT}>Catalog</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(bookExplorerTab())}>
+            The Canon
+            <span className={HINT}>Books by author, genre, size, date</span>
           </button>
         </li>
         <li>

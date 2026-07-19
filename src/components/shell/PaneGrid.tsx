@@ -68,6 +68,7 @@ import SettingsPane from "./SettingsPane";
 import LauncherPane from "./LauncherPane";
 import DashboardPane from "./DashboardPane";
 import ToolsPane from "./ToolsPane";
+import BookExplorerPane from "./BookExplorerPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -207,6 +208,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "launcher") return "New tab";
   if (tab.type === "dashboard") return "Today";
   if (tab.type === "tools") return "Tools";
+  if (tab.type === "bookexplorer") return "The Canon";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -729,6 +731,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "tools" ? (
             <div className="h-full overflow-y-auto p-4">
               <ToolsPane paneId={leaf.id} />
+            </div>
+          ) : activeTab.type === "bookexplorer" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <BookExplorerPane />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

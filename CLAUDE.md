@@ -69,7 +69,11 @@ Scribe-assisted search by meaning, every reference verified against the
 canon. Audio shipped: chapter-synced public-domain LibriVox KJV recordings
 in the reader, 383 chapters mapped in `data/audio/manifest.json`. Verse
 cards shipped: a selected verse exports from the reader margin as a
-letterpress SVG card, a print/export aid only. Platform decisions in ADR
+letterpress SVG card, a print/export aid only. The canon explorer shipped:
+all 66 books by author, genre, size, and composition date in the workspace's
+Canon tab, hand-built metadata with honest attributions and approximate
+dates (src/lib/bookmeta.ts), verse and word statistics computed from the
+KJV text. Platform decisions in ADR
 0002 (Cloudflare, desktop/mobile/web, local-first sync). The reader's Shelf
 tab is now a commentary wall: Matthew Henry complete and concise, Calvin,
 JFB, Clarke, and Barnes (NT) ship as per-book JSON under

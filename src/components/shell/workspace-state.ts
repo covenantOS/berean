@@ -465,6 +465,16 @@ export interface ToolsTab {
   type: "tools";
 }
 
+/**
+ * The Bible Books Explorer: the whole canon on one grid, sorted and grouped
+ * by author, genre, size, and composition date. A singleton with no payload;
+ * the pane opens on the grid itself.
+ */
+export interface BookExplorerTab {
+  id: string;
+  type: "bookexplorer";
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -504,7 +514,8 @@ export type Tab =
   | SettingsTab
   | LauncherTab
   | DashboardTab
-  | ToolsTab;
+  | ToolsTab
+  | BookExplorerTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -747,6 +758,10 @@ export function settingsTab(): SettingsTab {
 
 export function toolsTab(): ToolsTab {
   return { id: newId("tab"), type: "tools" };
+}
+
+export function bookExplorerTab(): BookExplorerTab {
+  return { id: newId("tab"), type: "bookexplorer" };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -1150,6 +1165,7 @@ export type WorkspaceAction =
   | { type: "openTopics"; paneId?: string }
   | { type: "openSettings"; paneId?: string }
   | { type: "openTools"; paneId?: string }
+  | { type: "openBookExplorer"; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1974,6 +1990,32 @@ export function workspaceReducer(
         };
       }
       const tab = toolsTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openBookExplorer": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One explorer tab per pane, the settings singleton's pattern.
+      const existing = leaf.tabs.find((t) => t.type === "bookexplorer");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = bookExplorerTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -3034,7 +3076,8 @@ function sanitizeNode(node: unknown): PaneNode | null {
           t.type === "topics" ||
           t.type === "settings" ||
           t.type === "dashboard" ||
-          t.type === "tools") &&
+          t.type === "tools" ||
+          t.type === "bookexplorer") &&
         typeof t.id === "string"
       ) {
         // Singletons carry nothing to validate.

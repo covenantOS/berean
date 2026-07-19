@@ -63,6 +63,8 @@ import {
  *                       service:<id>             a service open in the composer
  *                     The Almanac carries no payload:
  *                       almanac                  the preaching calendar tab
+ *                     The canon explorer carries no payload either:
+ *                       bookexplorer             the Bible Books Explorer tab
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -134,7 +136,8 @@ export type DeepLinkTab =
   | { kind: "almanac" }
   | { kind: "topics" }
   | { kind: "settings" }
-  | { kind: "library" };
+  | { kind: "library" }
+  | { kind: "bookexplorer" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -160,6 +163,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "pulpit") return { kind: "pulpit" };
     if (kind === "chapel") return { kind: "chapel" };
     if (kind === "almanac") return { kind: "almanac" };
+    if (kind === "bookexplorer") return { kind: "bookexplorer" };
     return null;
   }
   if (i === 0) return null;

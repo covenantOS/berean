@@ -602,6 +602,16 @@ function CanonTree() {
 
   return (
     <div className="py-1">
+      <div className="px-3 pt-2 pb-1">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openBookExplorer" })}
+          title="Open the canon explorer: the sixty-six books by author, genre, size, and date"
+          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          The canon at a glance
+        </button>
+      </div>
       {(["OT", "NT"] as const).map((testament) => (
         <div key={testament} className="mb-1">
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
