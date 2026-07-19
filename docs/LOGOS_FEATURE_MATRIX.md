@@ -34,7 +34,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [DATA] Corresponding Words visual filter: hovering a word highlights its aligned counterparts in other open texts.
 - [ ] [DATA] Emphasize Active Lemmas visual filter: every occurrence of the hovered lemma lights up across the panel.
 - [ ] [SW] Emphasize Active References visual filter: hovering a reference link highlights the matching text in open Bibles.
-- [ ] [SW] Corresponding Notes and Highlights visual filter (Logos 10): annotations made in one resource surface in parallel resources.
+- [x] [SW] Corresponding Notes and Highlights visual filter (Logos 10): annotations made in one resource surface in parallel resources. (Marginalia, highlights, and visual filter sets anchor by canon reference, never by translation, so a note or mark made in one version renders in every parallel pane, live over the shared stores.)
 - [ ] [SW] Community Notes visual filter: notes shared by chosen Faithlife groups render inline.
 - [ ] [DATA] Factbook Tags and Community Tags visual filters: inline markers where dataset tags or community tags attach to the text.
 - [ ] [DATA][LICENSED] Discourse and Propositional Outlines visual filters: indentation and discourse markers from the Lexham Discourse and High Definition datasets.
@@ -63,7 +63,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Specialized search tabs: Factbook Search, Maps Search, Media Search, Bookstore Search.
 - [ ] [SW] Result views: Verses, Aligned, Grid, and Analysis arrangements for Bible and morph results.
 - [x] [SW] Charts tool: bar, column, pie, donut, line, and area frequency graphs of results by book or chapter; also launched from word study translation rings.
-- [x] [SW] Result handoffs: save results as a Passage List, Word List, Visual Filter, or Favorite; re-run anything from History. (Passage List, Word List, Favorite, and History ship; the Visual Filter handoff is deferred: the highlight store is one tint per verse with no named, toggleable result sets.)
+- [x] [SW] Result handoffs: save results as a Passage List, Word List, Visual Filter, or Favorite; re-run anything from History. (All five ship. The Visual Filter handoff saves the fetched answer set as a named, tinted, toggleable set of verse marks (src/lib/visualfilters.ts), underlined in the reader over the untouched personal highlights; the search pane names and colors it inline, the Documents rail switches, renames, and deletes sets, and the verse context menu removes single verses from a set.)
 - [ ] [SW] Milestones: indexed navigation points inside books so searches and guides land on the right article.
 
 ## 3. Guides and Workflows

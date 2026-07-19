@@ -6,6 +6,7 @@ import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highl
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
+import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import type { WordSelection } from "./workspace-state";
 
@@ -201,8 +202,12 @@ export function VerseContextMenu({
     marginNotes,
     (n) => n.book === book && n.chapter === chapter && n.verse === verse
   );
+  /** The visual filter sets marking this verse; each offers a removal row. */
+  const verseSets = useCollection(visualFilters, (s) =>
+    s.items.some((it) => it.book === book && it.chapter === chapter && it.verse === verse)
+  );
   const { ref, style } = useFloatingMenu(x, y, onClose, {
-    deps: [mentions, pickingList, writingNote],
+    deps: [mentions, pickingList, writingNote, verseSets],
   });
   const reference = `${bookName} ${chapter}:${verse}`;
 
@@ -368,6 +373,24 @@ export function VerseContextMenu({
             }}
           />
         </div>
+        {verseSets.length > 0 && (
+          <div className="mt-1 border-t border-rule pt-1">
+            {verseSets.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                title={`Remove this verse's mark from ${s.name}; the set stays`}
+                className={ROW}
+                onClick={() => {
+                  removeVerseFromSet(s.id, book, chapter, verse);
+                  onClose();
+                }}
+              >
+                Remove from {s.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

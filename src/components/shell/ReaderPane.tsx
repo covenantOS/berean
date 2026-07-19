@@ -28,7 +28,9 @@ import {
   type HighlightColor,
   type VerseHighlight,
 } from "@/lib/highlights";
+import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
+import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
 import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
@@ -136,6 +138,7 @@ export default function ReaderPane({
   const [glossOn, setGlossOn] = useState(true);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
+  const filterSets = useCollection(visualFilters);
   const [menu, setMenu] = useState<ReaderMenu | null>(null);
   /** Set by keylinking: the native double-click selection raises no toolbar. */
   const suppressSelUntil = useRef(0);
@@ -328,6 +331,22 @@ export default function ReaderPane({
 
   const markByVerse = useMemo(() => new Map(marks.map((m) => [m.verse, m])), [marks]);
 
+  /* Visible visual filter sets over this chapter: verse to the first set
+   * claiming it (a verse in several sets wears one underline). Hidden sets
+   * render nothing. */
+  const filterByVerse = useMemo(() => {
+    const m = new Map<number, VisualFilterSet>();
+    for (const s of filterSets) {
+      if (!s.visible) continue;
+      for (const it of s.items) {
+        if (it.book === book && it.chapter === chapter && !m.has(it.verse)) {
+          m.set(it.verse, s);
+        }
+      }
+    }
+    return m;
+  }, [filterSets, book, chapter]);
+
   /** A tap selects; a drag selection of text is left alone. */
   const tapVerse = (verse: number) => {
     const s = window.getSelection();
@@ -402,9 +421,11 @@ export default function ReaderPane({
 
   const verseClass = (v: number) => {
     const mark = markByVerse.get(v);
+    const filter = filterByVerse.get(v);
     return [
       "verse-target",
       mark ? `hl-${mark.color}` : "",
+      filter ? `vf-${filter.color}` : "",
       notesByVerse.has(v) ? "has-note" : "",
       selVerse === v ? "verse-selected" : "",
     ]

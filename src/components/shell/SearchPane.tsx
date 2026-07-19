@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { CANON, getBook } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
+import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
+import { createVisualFilter } from "@/lib/visualfilters";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -76,6 +78,11 @@ export default function SearchPane({ q }: { q: string }) {
   const [view, setView] = useState<View>("verses");
   const { favorites } = useSearchSaves();
   const pinned = favorites.some((f) => f.q.toLowerCase() === q.trim().toLowerCase());
+  /** The visual filter handoff: an inline name-and-tint capture under the header. */
+  const [namingFilter, setNamingFilter] = useState(false);
+  const [filterName, setFilterName] = useState("");
+  const [filterColor, setFilterColor] = useState<HighlightColor>("sapphire");
+  const [filterSaved, setFilterSaved] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -95,6 +102,21 @@ export default function SearchPane({ q }: { q: string }) {
 
   const books = useMemo(() => (load.status === "ready" ? aggregate(load.hits) : []), [load]);
   const truncated = load.status === "ready" && load.total > load.hits.length;
+
+  /* Saves the fetched answer set as a named, visible visual filter. The cap
+   * is the fetched set itself; the capture row says so when it truncated. */
+  const saveFilter = () => {
+    if (load.status !== "ready" || !filterName.trim()) return;
+    createVisualFilter(
+      filterName.trim(),
+      filterColor,
+      load.hits.map((h) => ({ book: h.book, chapter: h.chapter, verse: h.verse })),
+      q
+    );
+    setNamingFilter(false);
+    setFilterSaved(true);
+    window.setTimeout(() => setFilterSaved(false), 1500);
+  };
 
   return (
     <div className="reader-surface flex h-full min-h-0 flex-col">
@@ -129,7 +151,74 @@ export default function SearchPane({ q }: { q: string }) {
             Save as passage list
           </button>
         )}
+        {load.status === "ready" && load.hits.length > 0 && (
+          <button
+            type="button"
+            title="Mark the listed verses in the reader as a named, toggleable visual filter"
+            onClick={() => {
+              setFilterName(`“${q}” matches`);
+              setNamingFilter(true);
+            }}
+            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {filterSaved ? "Saved" : "Save as visual filter"}
+          </button>
+        )}
       </header>
+      {namingFilter && load.status === "ready" && (
+        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
+          <label htmlFor="vf-name" className="text-[0.72rem] text-muted">
+            Filter name
+          </label>
+          <input
+            id="vf-name"
+            autoFocus
+            value={filterName}
+            onChange={(e) => setFilterName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") saveFilter();
+              if (e.key === "Escape") setNamingFilter(false);
+            }}
+            className="w-56 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+          />
+          <span className="flex items-center gap-1.5">
+            {HIGHLIGHT_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                title={`Tint ${c}`}
+                aria-pressed={filterColor === c}
+                onClick={() => setFilterColor(c)}
+                className={`h-3.5 w-3.5 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  filterColor === c ? "border-ink" : "border-rule"
+                }`}
+                style={{ background: `var(--stained-${c})` }}
+              />
+            ))}
+          </span>
+          <button
+            type="button"
+            onClick={saveFilter}
+            disabled={!filterName.trim()}
+            className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save filter
+          </button>
+          <button
+            type="button"
+            onClick={() => setNamingFilter(false)}
+            className="px-2 py-1 text-[0.72rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Cancel
+          </button>
+          {truncated && (
+            <span className="text-[0.68rem] text-muted">
+              The first {load.hits.length.toLocaleString()} of {load.total.toLocaleString()}{" "}
+              verses are marked.
+            </span>
+          )}
+        </div>
+      )}
       <nav
         aria-label="Result views"
         className="flex shrink-0 items-center gap-4 border-b border-rule px-4"

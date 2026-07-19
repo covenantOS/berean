@@ -6,6 +6,7 @@ import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
+import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, type RailMode } from "./workspace-state";
@@ -339,8 +340,9 @@ function DocumentsList() {
   const { dispatch } = useWorkspace();
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
+  const filterSets = useCollection(visualFilters);
   const notes = useCollection(marginNotes).slice().sort(byCanon);
-  if (docs.length === 0 && lists.length === 0 && notes.length === 0) {
+  if (docs.length === 0 && lists.length === 0 && filterSets.length === 0 && notes.length === 0) {
     return (
       <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them, and the marginalia you write on verses collect below." />
     );
@@ -406,6 +408,18 @@ function DocumentsList() {
           </ul>
         </>
       )}
+      {filterSets.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+            Visual filters
+          </div>
+          <ul>
+            {filterSets.map((s) => (
+              <FilterSetRow key={s.id} set={s} />
+            ))}
+          </ul>
+        </>
+      )}
       {notes.length > 0 && (
         <>
           <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -441,5 +455,81 @@ function DocumentsList() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * One visual filter set in the rail: the swatch switches visibility (a
+ * hidden set keeps its marks and renders nothing), the name renames inline,
+ * the count is the set's verse count, and × deletes the set alone; personal
+ * highlights never move.
+ */
+function FilterSetRow({ set }: { set: VisualFilterSet }) {
+  const [renaming, setRenaming] = useState(false);
+  const [draft, setDraft] = useState(set.name);
+
+  const commit = () => {
+    const name = draft.trim();
+    if (name && name !== set.name) visualFilters.update(set.id, { name });
+    setRenaming(false);
+  };
+
+  return (
+    <li className="flex items-center gap-1.5 px-3 py-[3px] hover:bg-paper">
+      <button
+        type="button"
+        aria-pressed={set.visible}
+        title={set.visible ? "Hide this filter's marks" : "Show this filter's marks"}
+        onClick={() => visualFilters.update(set.id, { visible: !set.visible })}
+        className={`h-3 w-3 shrink-0 border border-rule focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+          set.visible ? "" : "opacity-30"
+        }`}
+        style={{ background: `var(--stained-${set.color})` }}
+      />
+      {renaming ? (
+        <input
+          autoFocus
+          value={draft}
+          aria-label="Filter name"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commit();
+            // Reset before closing so the blur commit finds nothing to write.
+            if (e.key === "Escape") {
+              setDraft(set.name);
+              setRenaming(false);
+            }
+          }}
+          className="min-w-0 flex-1 border border-rule bg-paper px-1 py-0.5 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => {
+            setDraft(set.name);
+            setRenaming(true);
+          }}
+          title={`Rename ${set.name}${set.source ? ` (from the search ${set.source})` : ""}`}
+          className={`min-w-0 flex-1 truncate text-left text-[0.8rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            set.visible ? "text-ink" : "text-muted"
+          }`}
+        >
+          {set.name}
+        </button>
+      )}
+      <span className="shrink-0 text-[0.62rem] text-muted">
+        {set.items.length} {set.items.length === 1 ? "verse" : "verses"}
+      </span>
+      <button
+        type="button"
+        onClick={() => visualFilters.remove(set.id)}
+        title="Delete this visual filter"
+        aria-label={`Delete ${set.name}`}
+        className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        ×
+      </button>
+    </li>
   );
 }
