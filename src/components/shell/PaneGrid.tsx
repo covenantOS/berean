@@ -41,6 +41,7 @@ import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
 import TextCompare from "./TextCompare";
 import ConcordancePane from "./ConcordancePane";
+import LauncherPane from "./LauncherPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -139,6 +140,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "concordance") {
     return `Concordance: ${getBook(tab.book)?.name ?? tab.book}`;
   }
+  if (tab.type === "launcher") return "New tab";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -544,6 +546,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "concordance" ? (
             <div className="h-full overflow-y-auto p-4">
               <ConcordancePane paneId={leaf.id} tabId={activeTab.id} book={activeTab.book} />
+            </div>
+          ) : activeTab.type === "launcher" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <LauncherPane paneId={leaf.id} tab={activeTab} />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

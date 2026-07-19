@@ -1,0 +1,270 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { getBook } from "@/lib/canon";
+import { useCollection } from "@/lib/hooks";
+import { recordSearch, useSearchSaves } from "@/lib/search-history";
+import { layoutState, layouts } from "./layouts";
+import { useWorkspace } from "./WorkspaceContext";
+import {
+  concordanceTab,
+  docSearchTab,
+  exegeticalTab,
+  findLeaf,
+  guideTab,
+  libraryTab,
+  readerTab,
+  searchTab,
+  textCompareTab,
+  type LauncherTab,
+  type LeafNode,
+  type NavEntry,
+  type ReaderTab,
+  type Tab,
+} from "./workspace-state";
+
+/**
+ * The launcher behind every new tab, the Logos New Tab panel: what the
+ * workspace opens, with one-tap suggestions keyed to the passage the pane
+ * was showing when the tab opened (pinned on the tab, the way a guide pins
+ * its passage). Choosing anything hands the tab's slot to the choice through
+ * replaceTab, so the launcher never lingers underneath. Recents come from
+ * what genuinely remembers: the search rail's history and the pane's own
+ * navigation trail.
+ */
+
+const HEAD = "small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted";
+const ROW =
+  "flex w-full items-baseline gap-2 px-3 py-1.5 text-left text-[0.8rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+const HINT = "ml-auto shrink-0 pl-3 text-[0.62rem] text-muted";
+
+/** The pane's trail as recent passages: newest first, deduped, capped. */
+function recentTrail(
+  leaf: LeafNode | null,
+  current: { book: string; chapter: number } | null
+): NavEntry[] {
+  if (!leaf) return [];
+  const out: NavEntry[] = [];
+  for (let i = leaf.history.entries.length - 1; i >= 0 && out.length < 4; i--) {
+    const e = leaf.history.entries[i];
+    // The pinned passage already heads the suggestions above.
+    if (current && e.book === current.book && e.chapter === current.chapter) continue;
+    if (out.some((o) => o.book === e.book && o.chapter === e.chapter && o.translation === e.translation)) {
+      continue;
+    }
+    out.push(e);
+  }
+  return out;
+}
+
+export default function LauncherPane({ paneId, tab }: { paneId: string; tab: LauncherTab }) {
+  const { state, dispatch } = useWorkspace();
+  const { history } = useSearchSaves();
+  const saved = useCollection(layouts);
+  const [q, setQ] = useState("");
+
+  const ref = tab.book && tab.chapter ? { book: tab.book, chapter: tab.chapter } : null;
+  const bookName = ref ? (getBook(ref.book)?.name ?? ref.book) : null;
+  const trail = recentTrail(findLeaf(state.root, paneId), ref);
+  const recent = history.slice(0, 5);
+
+  /** A choice takes the launcher's slot in the strip, in place. */
+  const choose = (next: Tab) =>
+    dispatch({ type: "replaceTab", paneId, tabId: tab.id, tab: next });
+
+  /** A trail stop wears its own text, not the current preferred translation. */
+  const readerFor = (entry: NavEntry): ReaderTab => {
+    const t = readerTab(entry.book, entry.chapter);
+    if (entry.translation) t.translation = entry.translation;
+    else delete t.translation;
+    return t;
+  };
+
+  const runSearch = () => {
+    const query = q.trim();
+    if (!query) return;
+    // Every search, from anywhere, enters the rail's re-runnable history.
+    recordSearch(query);
+    choose(searchTab(query));
+  };
+
+  const runDocSearch = () => {
+    const query = q.trim();
+    if (query.length < 2) return;
+    choose(docSearchTab(query));
+  };
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    runSearch();
+  };
+
+  /** Restores a named layout the way the layouts menu does. */
+  const restoreLayout = (id: string) => {
+    const layout = layouts.get(id);
+    const restored = layout ? layoutState(layout) : null;
+    if (restored) dispatch({ type: "hydrate", state: restored });
+  };
+
+  return (
+    <div className="mx-auto max-w-md py-2">
+      {ref && bookName && (
+        <>
+          <div className={HEAD}>
+            At {bookName} {ref.chapter}
+          </div>
+          <ul>
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(readerFor({ book: ref.book, chapter: ref.chapter }))}
+              >
+                Read {bookName} {ref.chapter}
+                <span className={HINT}>Reader</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(guideTab(ref.book, ref.chapter))}
+              >
+                Passage Guide
+                <span className={HINT}>
+                  {bookName} {ref.chapter}
+                </span>
+              </button>
+            </li>
+            {/* Both testaments carry complete original datasets (data/tahot,
+             * data/tagnt), so the Exegetical Guide answers every passage. */}
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(exegeticalTab(ref.book, ref.chapter))}
+              >
+                Exegetical Guide
+                <span className={HINT}>Original languages</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(textCompareTab(ref.book, ref.chapter))}
+              >
+                Text Compare
+                <span className={HINT}>Translations</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(concordanceTab(ref.book))}
+              >
+                Concordance
+                <span className={HINT}>{bookName}</span>
+              </button>
+            </li>
+          </ul>
+        </>
+      )}
+
+      <div className={HEAD}>Search</div>
+      <form onSubmit={submit} className="flex items-center gap-1.5 px-3 py-1">
+        <input
+          type="search"
+          value={q}
+          aria-label="Search the Bible"
+          placeholder="Search the Bible…"
+          onChange={(e) => setQ(e.target.value)}
+          className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+        <button
+          type="button"
+          title="Search your notes, manuscripts, lists, and prayers"
+          onClick={runDocSearch}
+          disabled={q.trim().length < 2}
+          className="shrink-0 border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Docs
+        </button>
+      </form>
+      <ul>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(libraryTab())}>
+            Browse the Library
+            <span className={HINT}>Catalog</span>
+          </button>
+        </li>
+      </ul>
+
+      {recent.length > 0 && (
+        <>
+          <div className={HEAD}>Recent searches</div>
+          <ul>
+            {recent.map((entry) => (
+              <li key={entry.q}>
+                <button
+                  type="button"
+                  title={`Search again for “${entry.q}”`}
+                  className={ROW}
+                  onClick={() => {
+                    recordSearch(entry.q);
+                    choose(searchTab(entry.q));
+                  }}
+                >
+                  <span className="min-w-0 flex-1 truncate">“{entry.q}”</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {trail.length > 0 && (
+        <>
+          <div className={HEAD}>Recent passages</div>
+          <ul>
+            {trail.map((entry) => {
+              const name = getBook(entry.book)?.name ?? entry.book;
+              return (
+                <li key={`${entry.book}-${entry.chapter}-${entry.translation ?? ""}`}>
+                  <button type="button" className={ROW} onClick={() => choose(readerFor(entry))}>
+                    {name} {entry.chapter}
+                    {entry.translation && (
+                      <span className={HINT}>{entry.translation.toUpperCase()}</span>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+
+      {saved.length > 0 && (
+        <>
+          <div className={HEAD}>Saved layouts</div>
+          <ul>
+            {saved.slice(0, 4).map((layout) => (
+              <li key={layout.id}>
+                <button
+                  type="button"
+                  title={`Restore ${layout.name}`}
+                  className={ROW}
+                  onClick={() => restoreLayout(layout.id)}
+                >
+                  <span className="min-w-0 flex-1 truncate">{layout.name}</span>
+                  <span className={HINT}>Layout</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}

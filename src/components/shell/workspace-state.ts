@@ -166,6 +166,19 @@ export interface ConcordanceTab {
   book: string;
 }
 
+/**
+ * The new-tab launcher: everything the workspace opens, with suggestions
+ * keyed to the pane's passage at open time. A pane with no reader tab opens
+ * a launcher without a passage and the reference-aware rows stay out.
+ */
+export interface LauncherTab {
+  id: string;
+  type: "launcher";
+  /** The pane's passage when the tab opened; absent when the pane had none. */
+  book?: string;
+  chapter?: number;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -182,7 +195,8 @@ export type Tab =
   | FactbookTab
   | LibraryTab
   | TextCompareTab
-  | ConcordanceTab;
+  | ConcordanceTab
+  | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -395,6 +409,11 @@ export function textCompareTab(
 
 export function concordanceTab(book = "genesis"): ConcordanceTab {
   return { id: newId("tab"), type: "concordance", book };
+}
+
+/** The launcher, keyed to the pane's passage at open time when it has one. */
+export function launcherTab(ref?: { book: string; chapter: number }): LauncherTab {
+  return { id: newId("tab"), type: "launcher", ...(ref ? { book: ref.book, chapter: ref.chapter } : {}) };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -634,6 +653,7 @@ export type WorkspaceAction =
   | { type: "clearSelection" }
   | { type: "compareRef"; book: string; chapter: number; translation: string; paneId?: string }
   | { type: "newTab"; paneId?: string }
+  | { type: "replaceTab"; paneId: string; tabId: string; tab: Tab }
   | { type: "closeTab"; paneId: string; tabId: string }
   | { type: "splitPane"; paneId: string; direction: SplitDirection }
   | { type: "closePane"; paneId: string }
@@ -784,6 +804,16 @@ function navigateHistory(state: WorkspaceState, paneId: string, dir: -1 | 1): Wo
       history: { entries: l.history.entries, index: nextIndex },
     })),
   };
+}
+
+/** A reader tab with its passage clamped to the canon; null for an unknown book. */
+function clampReaderTab(tab: ReaderTab): ReaderTab | null {
+  const book = getBook(tab.book);
+  if (!book) return null;
+  const chapter = Math.min(Math.max(1, Math.trunc(tab.chapter)), book.chapters);
+  return chapter !== tab.chapter || book.slug !== tab.book
+    ? { ...tab, book: book.slug, chapter }
+    : tab;
 }
 
 export function workspaceReducer(
@@ -1143,14 +1173,39 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      const ref = paneRef(leaf) ?? { book: "genesis", chapter: 1 };
-      const tab = readerTab(ref.book, ref.chapter);
+      // A new tab opens the launcher, keyed to the pane's passage; the old
+      // plain-reader behavior survives as the launcher's first suggestion.
+      const tab = launcherTab(paneRef(leaf) ?? undefined);
       return {
         ...state,
         activePaneId: paneId,
         root: updateLeaf(state.root, paneId, (l) => ({
           ...l,
           tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "replaceTab": {
+      const leaf = findLeaf(state.root, action.paneId);
+      if (!leaf) return state;
+      const index = leaf.tabs.findIndex((t) => t.id === action.tabId);
+      if (index < 0) return state;
+      let tab = action.tab;
+      if (tab.type === "reader") {
+        const clamped = clampReaderTab(tab);
+        if (!clamped) return state;
+        tab = clamped;
+      }
+      // In place at the same index: the launcher hands its slot to whatever
+      // was chosen, and the choice takes the focus.
+      return {
+        ...state,
+        activePaneId: action.paneId,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t, i) => (i === index ? tab : t)),
           activeTabId: tab.id,
         })),
       };
@@ -1309,12 +1364,9 @@ export function workspaceReducer(
     case "openTab": {
       let tab = action.tab;
       if (tab.type === "reader") {
-        const book = getBook(tab.book);
-        if (!book) return state;
-        const chapter = Math.min(Math.max(1, Math.trunc(tab.chapter)), book.chapters);
-        if (chapter !== tab.chapter || book.slug !== tab.book) {
-          tab = { ...tab, book: book.slug, chapter };
-        }
+        const clamped = clampReaderTab(tab);
+        if (!clamped) return state;
+        tab = clamped;
       }
       const target = action.target;
 
@@ -1646,6 +1698,23 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const book = getBook(t.book);
         if (!book) continue;
         tabs.push({ id: t.id, type: "concordance", book: book.slug });
+        continue;
+      }
+      if (t.type === "launcher" && typeof t.id === "string") {
+        // The pinned passage is validated the way a guide's is; a launcher
+        // without one still loads, with the reference-aware rows staying out.
+        if (typeof t.book === "string") {
+          const book = getBook(t.book);
+          if (book) {
+            const chapter =
+              typeof t.chapter === "number" && Number.isInteger(t.chapter)
+                ? Math.min(Math.max(1, t.chapter), book.chapters)
+                : 1;
+            tabs.push({ id: t.id, type: "launcher", book: book.slug, chapter });
+            continue;
+          }
+        }
+        tabs.push({ id: t.id, type: "launcher" });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;
