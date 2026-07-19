@@ -26,5 +26,13 @@ export default function CustomGuidePane({
     return <p className="text-xs text-muted">This guide is no longer on this device.</p>;
   }
 
-  return <PassageGuide book={book} chapter={chapter} sections={guide.sections} guideName={guide.name} />;
+  return (
+    <PassageGuide
+      book={book}
+      chapter={chapter}
+      sections={guide.sections}
+      guideName={guide.name}
+      commentaryCollectionId={guide.commentaryCollection}
+    />
+  );
 }

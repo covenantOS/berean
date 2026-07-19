@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { collections } from "@/lib/collections";
 import {
   editorOrder,
   GUIDE_SECTIONS,
@@ -14,7 +15,10 @@ import { useCollection } from "@/lib/hooks";
  * The Guide Editor: the compose surface for custom guides. The list names
  * every guide on the device with its section count, Edit, and delete; the
  * draft names a guide, toggles sections on and off, and steps them up and
- * down, the same steppers the commentary wall's priority rows carry. Saving
+ * down, the same steppers the commentary wall's priority rows carry. A
+ * guide running the Commentaries section can pin the collection that
+ * section answers from, overriding the workspace's active collection.
+ * Saving
  * writes the composition to berean.guides.v1, and any tab already running
  * the guide follows. A tab opened with a guide id lands in that guide's
  * draft; a tab opened with none lands on the list.
@@ -28,27 +32,51 @@ interface Draft {
   order: GuideSectionKey[];
   /** The sections the guide runs; order follows draft.order at save. */
   on: GuideSectionKey[];
+  /** The Commentaries section's collection: an id, null for the whole
+   * shelf, undefined to follow the workspace's active collection. */
+  commentaryCollection: string | null | undefined;
 }
 
 const SECTION_TITLES = new Map<string, string>(GUIDE_SECTIONS.map((s) => [s.key, s.title]));
 
 export default function GuideEditorPane({ guideId }: { guideId: string | null }) {
   const saved = useCollection(guides);
+  const savedCollections = useCollection(collections);
   const [draft, setDraft] = useState<Draft | null>(null);
 
   /* A pinned guide id opens its draft; a deleted id falls back to the list. */
   useEffect(() => {
     if (!guideId) return;
     const g = guides.get(guideId);
-    if (g) setDraft({ id: g.id, name: g.name, order: editorOrder(g.sections), on: [...g.sections] });
+    if (g)
+      setDraft({
+        id: g.id,
+        name: g.name,
+        order: editorOrder(g.sections),
+        on: [...g.sections],
+        commentaryCollection: g.commentaryCollection,
+      });
   }, [guideId]);
 
   const startNew = () =>
-    setDraft({ id: null, name: "", order: editorOrder([]), on: GUIDE_SECTIONS.map((s) => s.key) });
+    setDraft({
+      id: null,
+      name: "",
+      order: editorOrder([]),
+      on: GUIDE_SECTIONS.map((s) => s.key),
+      commentaryCollection: undefined,
+    });
 
   const startEdit = (id: string) => {
     const g = guides.get(id);
-    if (g) setDraft({ id: g.id, name: g.name, order: editorOrder(g.sections), on: [...g.sections] });
+    if (g)
+      setDraft({
+        id: g.id,
+        name: g.name,
+        order: editorOrder(g.sections),
+        on: [...g.sections],
+        commentaryCollection: g.commentaryCollection,
+      });
   };
 
   const toggle = (key: GuideSectionKey) => {
@@ -73,7 +101,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
   const save = () => {
     if (!draft) return;
     const sections = draft.order.filter((k) => draft.on.includes(k));
-    if (!saveGuide(draft.id, draft.name, sections)) return;
+    if (!saveGuide(draft.id, draft.name, sections, draft.commentaryCollection)) return;
     setDraft(null);
   };
 
@@ -137,6 +165,37 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
               );
             })}
           </ul>
+          {draft.on.includes("commentary") && (
+            <label className="flex items-center gap-2 text-[0.68rem] text-muted">
+              <span className="small-caps font-semibold">Commentaries answer from</span>
+              <select
+                value={
+                  draft.commentaryCollection === undefined
+                    ? ""
+                    : draft.commentaryCollection === null
+                      ? "shelf"
+                      : draft.commentaryCollection
+                }
+                onChange={(e) =>
+                  setDraft({
+                    ...draft,
+                    commentaryCollection:
+                      e.target.value === "" ? undefined : e.target.value === "shelf" ? null : e.target.value,
+                  })
+                }
+                aria-label="Choose the collection this guide's Commentaries section answers from"
+                className="border border-rule bg-paper px-1 py-1 text-xs text-ink focus:border-sapphire focus:outline-none"
+              >
+                <option value="">The workspace's active collection</option>
+                <option value="shelf">The whole shelf</option>
+                {savedCollections.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <div className="flex items-center gap-2">
             <button
               type="button"

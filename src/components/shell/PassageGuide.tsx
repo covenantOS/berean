@@ -1,7 +1,15 @@
 "use client";
 
 import { Fragment, useEffect, useState, type ReactNode } from "react";
+import {
+  activeCollection,
+  collections,
+  getActiveCollectionId,
+  scopedWallWorkIds,
+} from "@/lib/collections";
 import { GUIDE_SECTIONS, type GuideSectionKey } from "@/lib/guides";
+import { useCollection } from "@/lib/hooks";
+import { librarymeta } from "@/lib/librarymeta";
 import { copyReferences } from "@/lib/powerLookup";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -84,12 +92,19 @@ type LoadState =
  * A custom guide (src/lib/guides.ts) runs through this same pane: it passes
  * its section keys in its own order and its name, and the report renders
  * only those sections, in that order, under that name.
+ *
+ * The Commentaries section honors collection scoping (src/lib/collections.ts):
+ * a custom guide's pinned collection wins, the workspace's active collection
+ * applies otherwise, and with neither the whole shelf answers. The route is
+ * server-side and cannot see device data, so the filter applies here by
+ * work id after the fetch, the same handoff as the dock's wall.
  */
 export default function PassageGuide({
   book,
   chapter,
   sections,
   guideName,
+  commentaryCollectionId,
 }: {
   book: string;
   chapter: number;
@@ -97,11 +112,19 @@ export default function PassageGuide({
   sections?: GuideSectionKey[];
   /** A custom guide's name, worn in the header in place of "Passage Guide". */
   guideName?: string;
+  /** A custom guide's commentaries scope: a collection id, null for the
+   * whole shelf, absent to follow the workspace's active collection. */
+  commentaryCollectionId?: string | null;
 }) {
   const { dispatch, reportHoverRef } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy actions; clears itself. */
   const [copied, setCopied] = useState<"texts" | "link" | null>(null);
+  const savedCollections = useCollection(collections);
+  useCollection(activeCollection);
+  /* Membership reads librarymeta live; subscribing keeps the scope honest
+   * as tags and ratings change. */
+  useCollection(librarymeta);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -128,6 +151,14 @@ export default function PassageGuide({
   }
   const g = load.guide;
   const reference = `${g.bookName} ${g.chapter}`;
+
+  /* A guide's pinned collection wins over the workspace's active one; null
+   * from a guide means the whole shelf, whatever the workspace says. */
+  const scopeId =
+    commentaryCollectionId === undefined ? getActiveCollectionId() : commentaryCollectionId;
+  const scope = savedCollections.find((c) => c.id === scopeId) ?? null;
+  const scopeIds = scope ? scopedWallWorkIds(scope.rules) : null;
+  const commentary = scopeIds ? g.commentary.filter((w) => scopeIds.has(w.id)) : g.commentary;
 
   const confirm = (what: "texts" | "link") => {
     setCopied(what);
@@ -183,13 +214,17 @@ export default function PassageGuide({
    * registry's order. A section with nothing to say stays null either way. */
   const sectionNodes: Record<GuideSectionKey, ReactNode> = {
     commentary:
-      g.commentary.length > 0 ? (
+      commentary.length > 0 ? (
         <GuideSection
           title="Commentaries"
-          hint={`${g.commentary.length} ${g.commentary.length === 1 ? "work" : "works"} on the shelf`}
+          hint={
+            scope
+              ? `${commentary.length} ${commentary.length === 1 ? "work" : "works"} answering from ${scope.name}`
+              : `${commentary.length} ${commentary.length === 1 ? "work" : "works"} on the shelf`
+          }
         >
           <div className="space-y-4">
-            {g.commentary.map((w) => (
+            {commentary.map((w) => (
               <div key={w.id}>
                 <p className="flex items-baseline gap-2">
                   <span className="small-caps text-xs font-semibold text-muted">{w.label}</span>

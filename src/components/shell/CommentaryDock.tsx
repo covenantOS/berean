@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { getBook } from "@/lib/canon";
+import {
+  activeCollection,
+  collections,
+  getActiveCollectionId,
+  scopedWallWorkIds,
+  setActiveCollection,
+} from "@/lib/collections";
 import { useCollection } from "@/lib/hooks";
 import { COMMENTARY_SHELF, librarymeta, orderByPriority } from "@/lib/librarymeta";
 import { sectionsForVerse } from "@/lib/sections";
@@ -35,16 +42,25 @@ const EXCERPT = 320;
  * user's shelf priority (set in the Library pane, held in localStorage)
  * reorders the wall here after the fetch: the route is server-side and
  * cannot see device data, so it answers in the default order and the dock
- * applies the preference.
+ * applies the preference. A workspace-active collection scopes the wall the
+ * same way, client-side by work id: the wall answers from the collection's
+ * members and says so.
  */
 export default function CommentaryDock() {
   const { state, activeRef, dispatch } = useWorkspace();
   const metaRows = useCollection(librarymeta);
+  const savedCollections = useCollection(collections);
+  useCollection(activeCollection);
   const priority = metaRows.find((r) => r.resourceId === COMMENTARY_SHELF)?.order;
   const sel = state.selection?.kind === "verse" ? state.selection : null;
   const book = sel?.book ?? activeRef?.book ?? null;
   const chapter = sel?.chapter ?? activeRef?.chapter ?? null;
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
+
+  /* The workspace-active collection scopes which works answer; the metaRows
+   * subscription above keeps membership live as tags and ratings change. */
+  const scope = savedCollections.find((c) => c.id === getActiveCollectionId()) ?? null;
+  const scopeIds = scope ? scopedWallWorkIds(scope.rules) : null;
 
   useEffect(() => {
     if (book === null || chapter === null) return;
@@ -79,12 +95,39 @@ export default function CommentaryDock() {
     </div>
   ) : null;
 
+  /* The scoping handoff, honest about which works answer: with collections
+   * on the device the wall names its source, the whole shelf or one
+   * collection, and the choice persists as the workspace's active
+   * collection. No collections, no row. */
+  const scopeRow =
+    savedCollections.length > 0 ? (
+      <div className="mb-4 flex items-center gap-2 border-b border-rule pb-2">
+        <label className="flex items-center gap-1 text-[0.68rem] text-muted">
+          <span className="small-caps font-semibold">Answering from</span>
+          <select
+            value={scope?.id ?? ""}
+            onChange={(e) => setActiveCollection(e.target.value || null)}
+            aria-label="Choose the collection the commentary wall answers from"
+            className="border border-rule bg-paper px-1 py-1 text-xs text-ink focus:border-sapphire focus:outline-none"
+          >
+            <option value="">The whole shelf</option>
+            {savedCollections.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+    ) : null;
+
   if (book === null || chapter === null) {
     return <p className="text-xs text-muted">Open a passage and the shelf gathers here.</p>;
   }
   if (load.status === "loading") {
     return (
       <>
+        {scopeRow}
         {header}
         <p className="text-xs text-muted">Taking the volumes down…</p>
       </>
@@ -93,33 +136,39 @@ export default function CommentaryDock() {
   if (load.status === "error") {
     return (
       <>
+        {scopeRow}
         {header}
         <p className="text-xs text-muted">The commentary shelf could not be reached.</p>
       </>
     );
   }
+  const pooled = scopeIds ? load.works.filter((w) => scopeIds.has(w.id)) : load.works;
   const works = orderByPriority(
     sel
-      ? load.works
+      ? pooled
           .map((w) => ({ ...w, sections: sectionsForVerse(w.sections, sel.verse) }))
           .filter((w) => w.sections.length > 0)
-      : load.works,
+      : pooled,
     priority
   );
   if (works.length === 0) {
     return (
       <>
+        {scopeRow}
         {header}
         <p className="text-xs text-muted">
-          {sel
-            ? "No volume on the shelf treats this verse directly."
-            : "The commentary shelf holds no volume for this chapter yet."}
+          {scope
+            ? `No work in ${scope.name} treats this ${sel ? "verse" : "chapter"}.`
+            : sel
+              ? "No volume on the shelf treats this verse directly."
+              : "The commentary shelf holds no volume for this chapter yet."}
         </p>
       </>
     );
   }
   return (
     <div>
+      {scopeRow}
       {header}
       <div className="space-y-6">
         {works.map((w) => (

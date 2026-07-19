@@ -2,6 +2,17 @@
 
 import { useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
+import {
+  activeCollection,
+  collections,
+  deleteCollection,
+  getActiveCollectionId,
+  licenseClass,
+  memberIds,
+  saveCollection,
+  setActiveCollection,
+  type CollectionRules,
+} from "@/lib/collections";
 import { citeWork, listDocuments } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import {
@@ -31,7 +42,10 @@ import {
  * Facets follow what the registry genuinely carries (kind, status, license
  * class) plus the reader's own tags and ratings from the librarymeta
  * collection; language and era wait on structured metadata the registry
- * does not have yet. Entries with a reader open straight into the
+ * does not have yet. The facet filter composes into a named collection
+ * (src/lib/collections.ts): a saved rule set filters the pane live, and one
+ * workspace-active collection scopes the commentary wall in the dock.
+ * Entries with a reader open straight into the
  * workspace: translations as reader tabs, the commentary wall, the
  * cross-reference treasury, and the lexicon as pane tabs, plus the Atlas and
  * the Timeline. Topical works open the Topical Index tab. Commentaries also
@@ -53,13 +67,6 @@ const STATUS_LABELS: Record<RightsEntry["status"], string> = {
   planned: "Planned",
   "pending-license": "Pending license",
 };
-
-/** The license facet: the registry's license strings grouped into classes. */
-function licenseClass(license: string): string {
-  if (license.startsWith("Public domain")) return "Public domain";
-  if (license.startsWith("CC BY")) return "CC BY 4.0";
-  return "Other";
-}
 
 /* Registry id → translation id for the reader tab; mirrors TRANSLATIONS in
  * src/lib/translations.ts, which is fs-backed and server-only. */
@@ -89,17 +96,55 @@ type Facets = {
 
 const ALL_FACETS: Facets = { text: "", kind: "all", status: "all", license: "all", tag: "all", minRating: 0 };
 
+/** The pane's facet state as a collection's rules. The text filter is a
+ * browsing aid and never persists into a rule set. */
+function rulesFromFacets(f: Facets): CollectionRules {
+  return {
+    kinds: f.kind === "all" ? undefined : [f.kind as RightsEntry["kind"]],
+    statuses: f.status === "all" ? undefined : [f.status as RightsEntry["status"]],
+    licenseClasses: f.license === "all" ? undefined : [f.license],
+    tags: f.tag === "all" ? undefined : [f.tag],
+    minRating: f.minRating > 0 ? f.minRating : undefined,
+  };
+}
+
+/** A collection's rules as facet state, for editing. The facet row is
+ * single-choice, so a multi-value facet wears its first value here. */
+function facetsFromRules(rules: CollectionRules): Facets {
+  return {
+    ...ALL_FACETS,
+    kind: rules.kinds?.[0] ?? "all",
+    status: rules.statuses?.[0] ?? "all",
+    license: rules.licenseClasses?.[0] ?? "all",
+    tag: rules.tags?.[0] ?? "all",
+    minRating: rules.minRating ?? 0,
+  };
+}
+
 export default function LibraryPane() {
   const { state, activeRef, dispatch } = useWorkspace();
   const metaRows = useCollection(librarymeta);
+  const savedCollections = useCollection(collections);
+  useCollection(activeCollection);
   const [facets, setFacets] = useState<Facets>(ALL_FACETS);
+  /** The collection filtering the pane; null leaves the facets in charge. */
+  const [appliedId, setAppliedId] = useState<string | null>(null);
+  /** The compose draft: naming a new collection or renaming one in edit. */
+  const [draft, setDraft] = useState<{ id: string | null; name: string } | null>(null);
 
   const metaById = new Map(metaRows.map((m) => [m.resourceId, m]));
   const allTags = [...new Set(metaRows.flatMap((m) => m.tags))].sort();
   const order = commentaryOrder();
 
+  const applied = savedCollections.find((c) => c.id === appliedId) ?? null;
+  /* Membership evaluates live: tagging or rating a work moves it in and out
+   * of the applied collection without re-selecting anything. */
+  const appliedMembers = applied ? memberIds(applied.rules) : null;
+  const activeId = getActiveCollectionId();
+
   const q = facets.text.trim().toLowerCase();
   const rows = RIGHTS_REGISTRY.filter((r) => {
+    if (appliedMembers && !appliedMembers.has(r.id)) return false;
     if (facets.kind !== "all" && r.kind !== facets.kind) return false;
     if (facets.status !== "all" && r.status !== facets.status) return false;
     if (facets.license !== "all" && licenseClass(r.license) !== facets.license) return false;
@@ -159,6 +204,16 @@ export default function LibraryPane() {
 
   const set = (patch: Partial<Facets>) => setFacets((f) => ({ ...f, ...patch }));
 
+  /* Saving applies the collection at once: the pane filters by it and the
+   * facet row rests until the collection is cleared. */
+  const saveDraft = () => {
+    if (!draft) return;
+    const saved = saveCollection(draft.id, draft.name, rulesFromFacets(facets));
+    if (!saved) return;
+    setDraft(null);
+    setAppliedId(saved.id);
+  };
+
   return (
     <div className="space-y-4">
       <header className="border-b border-rule pb-2">
@@ -178,12 +233,14 @@ export default function LibraryPane() {
           aria-label="Filter the catalog"
           spellCheck={false}
           autoComplete="off"
-          className="w-44 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+          disabled={applied !== null && draft === null}
+          className="w-44 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none disabled:opacity-50"
         />
         <FacetSelect
           label="Kind"
           value={facets.kind}
           onChange={(v) => set({ kind: v })}
+          disabled={applied !== null && draft === null}
           options={[
             ["all", "Every kind"],
             ...Object.entries(KIND_LABELS).map(([v, l]) => [v, l] as [string, string]),
@@ -193,6 +250,7 @@ export default function LibraryPane() {
           label="Status"
           value={facets.status}
           onChange={(v) => set({ status: v })}
+          disabled={applied !== null && draft === null}
           options={[
             ["all", "Every status"],
             ...Object.entries(STATUS_LABELS).map(([v, l]) => [v, l] as [string, string]),
@@ -202,6 +260,7 @@ export default function LibraryPane() {
           label="License"
           value={facets.license}
           onChange={(v) => set({ license: v })}
+          disabled={applied !== null && draft === null}
           options={[
             ["all", "Every license"],
             ["Public domain", "Public domain"],
@@ -213,12 +272,14 @@ export default function LibraryPane() {
           label="Tag"
           value={facets.tag}
           onChange={(v) => set({ tag: v })}
+          disabled={applied !== null && draft === null}
           options={[["all", "Every tag"], ...allTags.map((t) => [t, t] as [string, string])]}
         />
         <FacetSelect
           label="Rating"
           value={String(facets.minRating)}
           onChange={(v) => set({ minRating: Number(v) })}
+          disabled={applied !== null && draft === null}
           options={[
             ["0", "Any rating"],
             ["3", "3+ stars"],
@@ -227,6 +288,119 @@ export default function LibraryPane() {
           ]}
         />
       </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <label className="flex items-center gap-1 text-[0.68rem] text-muted">
+          <span className="small-caps font-semibold">Collection</span>
+          <select
+            value={applied?.id ?? ""}
+            onChange={(e) => {
+              setAppliedId(e.target.value || null);
+              setDraft(null);
+            }}
+            aria-label="Apply a saved collection"
+            className="border border-rule bg-paper px-1 py-1 text-xs text-ink focus:border-sapphire focus:outline-none"
+          >
+            <option value="">No collection</option>
+            {savedCollections.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {applied && (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                setFacets(facetsFromRules(applied.rules));
+                setDraft({ id: applied.id, name: applied.name });
+                setAppliedId(null);
+              }}
+              title="Load this collection's rules into the facets to edit them"
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                deleteCollection(applied.id);
+                setAppliedId(null);
+              }}
+              title="Delete this collection; a wall it scoped answers the whole shelf again"
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Delete
+            </button>
+            {activeId === applied.id ? (
+              <button
+                type="button"
+                onClick={() => setActiveCollection(null)}
+                title="Let the commentary wall answer from the whole shelf again"
+                className="border border-sapphire bg-paper px-2 py-1 text-xs text-sapphire hover:border-ruby hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Scopes the commentary wall
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setActiveCollection(applied.id)}
+                title="The commentary wall and guides answer from this collection"
+                className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Scope the commentary wall
+              </button>
+            )}
+          </>
+        )}
+        {!applied && !draft && (
+          <button
+            type="button"
+            onClick={() => setDraft({ id: null, name: "" })}
+            title="Save the current facet filter as a named collection"
+            className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Save filters as a collection
+          </button>
+        )}
+        {draft && (
+          <>
+            <input
+              value={draft.name}
+              onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+              placeholder="Collection name"
+              aria-label="Collection name"
+              autoFocus={draft.id === null}
+              spellCheck={false}
+              autoComplete="off"
+              className="w-40 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={saveDraft}
+              disabled={!draft.name.trim()}
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {draft.id ? "Save changes" : "Save collection"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setDraft(null)}
+              className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Cancel
+            </button>
+          </>
+        )}
+      </div>
+      {applied && (
+        <p className="text-[0.68rem] text-muted">
+          Filtered by the {applied.name} collection, membership evaluated live; the facet row rests
+          until you clear the collection, and Edit loads its rules back into the facets.
+        </p>
+      )}
 
       {rows.length === 0 ? (
         <p className="text-xs text-muted">No catalog entry matches these filters.</p>
@@ -250,6 +424,9 @@ export default function LibraryPane() {
         Facets follow what the registry genuinely carries: kind, status, and
         license class, plus your tags and ratings. Language and era wait on
         structured metadata. Commentary priority orders the wall in the dock.
+        A saved collection filters this pane and can scope the commentary
+        wall; membership evaluates live, so a new tag or rating moves a work
+        the moment you set it.
       </p>
     </div>
   );
@@ -260,11 +437,13 @@ function FacetSelect({
   value,
   onChange,
   options,
+  disabled,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   options: [string, string][];
+  disabled?: boolean;
 }) {
   return (
     <label className="flex items-center gap-1 text-[0.68rem] text-muted">
@@ -272,7 +451,8 @@ function FacetSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="border border-rule bg-paper px-1 py-1 text-xs text-ink focus:border-sapphire focus:outline-none"
+        disabled={disabled}
+        className="border border-rule bg-paper px-1 py-1 text-xs text-ink focus:border-sapphire focus:outline-none disabled:opacity-50"
       >
         {options.map(([v, l]) => (
           <option key={v} value={v}>

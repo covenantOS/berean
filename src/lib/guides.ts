@@ -30,6 +30,10 @@ export interface CustomGuide extends Record_ {
   name: string;
   /** Section keys in the guide's order; every key belongs to GUIDE_SECTIONS. */
   sections: GuideSectionKey[];
+  /** The collection the Commentaries section answers from: a collection id,
+   * null for the whole shelf, absent to follow the workspace's active
+   * collection. */
+  commentaryCollection?: string | null;
 }
 
 const guides = collection<CustomGuide>("berean.guides.v1");
@@ -58,11 +62,16 @@ export function editorOrder(sections: GuideSectionKey[]): GuideSectionKey[] {
 export function saveGuide(
   id: string | null,
   name: string,
-  sections: GuideSectionKey[]
+  sections: GuideSectionKey[],
+  commentaryCollection?: string | null
 ): CustomGuide | null {
   const trimmed = name.trim().slice(0, 80);
   const clean = sanitizeSections(sections);
   if (!trimmed || clean.length === 0) return null;
-  if (id) return guides.update(id, { name: trimmed, sections: clean }) ?? null;
-  return guides.create({ name: trimmed, sections: clean });
+  if (id) return guides.update(id, { name: trimmed, sections: clean, commentaryCollection }) ?? null;
+  return guides.create({
+    name: trimmed,
+    sections: clean,
+    ...(commentaryCollection !== undefined ? { commentaryCollection } : {}),
+  });
 }
