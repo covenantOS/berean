@@ -129,8 +129,8 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 - [ ] [SW] Notes tool: rich text notes with images and a faceted sidebar (notebook, type, resource, Bible book, tag, anchor, date).
 - [ ] [SW] Notebooks: named containers that organize notes and serve as the sharing and filtering unit.
-- [ ] [SW] Anchors: attach a note by Bible reference (follows you across every version) or by selection in any book.
-- [ ] [SW] Note indicator icons: per-style markers in the text showing where notes exist, configurable per notebook.
+- [x] [SW] Anchors: attach a note by Bible reference (follows you across every version) or by selection in any book. (Bible-reference anchors ship: marginalia keys on book, chapter, and verse, so a note renders in every translation and the selection toolbar anchors its note to the selection's verse. Selection anchors inside arbitrary books await non-Bible readers.)
+- [x] [SW] Note indicator icons: per-style markers in the text showing where notes exist, configurable per notebook. (One discreet marker ships: the verse number turns amber and opens the note on click. Per-style, per-notebook configuration awaits notebooks.)
 - [ ] [DATA] Labels: structured name-value tags on notes that become searchable fields.
 - [ ] [SW] Highlighting engine: palette and style editor controlling font, colors, borders, effects, inserted text and images; highlights are notes and fully searchable.
 - [ ] [SW] Clippings documents: ordered excerpt collections from any resources with citation text preserved.

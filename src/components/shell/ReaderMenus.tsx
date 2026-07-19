@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
+import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { useWorkspace } from "./WorkspaceContext";
@@ -15,9 +16,10 @@ import type { WordSelection } from "./workspace-state";
  * VerseContextMenu and WordContextMenu answer a right-click in the reader:
  * dataset entities on the left (the verse's TIPNR people and places, or the
  * word's lemma, parsing, and Strong's ids), live actions on the right
- * (guides, word study, search, copy, highlight). SelectionMenu is the hover
- * toolbar a drag selection raises: copy, search, highlight, and export card.
- * Every row is backed by a shipped feature; nothing here is a placeholder.
+ * (guides, word study, search, copy, note, highlight). SelectionMenu is the
+ * hover toolbar a drag selection raises: copy, search, note, highlight, and
+ * export card. Every row is backed by a shipped feature; nothing here is a
+ * placeholder.
  *
  * All three are fixed-position overlays sharing one discipline: dismiss on
  * outside pointerdown, Escape, scroll, or resize, and never leave the
@@ -96,6 +98,63 @@ function Swatches({ onPick }: { onPick: (color: HighlightColor) => void }) {
   );
 }
 
+/**
+ * Inline note capture, the menus' answer to the context strip's editor: a
+ * small textarea that writes a marginalia record anchored to the verse. An
+ * existing note loads for editing; saving updates it in place.
+ */
+function NoteEditor({
+  book,
+  chapter,
+  verse,
+  existing,
+  onDone,
+}: {
+  book: string;
+  chapter: number;
+  verse: number;
+  existing?: MarginNote;
+  onDone: () => void;
+}) {
+  const [draft, setDraft] = useState(existing?.text ?? "");
+
+  const save = () => {
+    if (!draft.trim()) return;
+    saveNote({ id: existing?.id, book, chapter, verse, text: draft.trim() });
+    onDone();
+  };
+
+  return (
+    <div className="px-3 pt-1 pb-2">
+      <textarea
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        rows={3}
+        autoFocus
+        placeholder="A note in the margin…"
+        className="w-full border border-rule bg-paper p-2 text-xs leading-relaxed text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+      />
+      <div className="mt-1.5 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={save}
+          disabled={!draft.trim()}
+          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Save note
+        </button>
+        <button
+          type="button"
+          onClick={onDone}
+          className="px-2 py-1 text-[0.72rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface Mention {
   id: string;
   name: string;
@@ -106,7 +165,7 @@ interface Mention {
 
 /**
  * Right-click on a verse: the verse's tagged people and places on the left,
- * the chapter's guides plus copy and highlight on the right.
+ * the chapter's guides plus copy, note, and highlight on the right.
  */
 export function VerseContextMenu({
   x,
@@ -135,8 +194,16 @@ export function VerseContextMenu({
   const [mentions, setMentions] = useState<Mention[] | null>(null);
   /** True once "Add to passage list" opens its chooser inside the menu. */
   const [pickingList, setPickingList] = useState(false);
+  /** True once "Note" swaps the menu for inline capture. */
+  const [writingNote, setWritingNote] = useState(false);
   const passageLists = useCollection(listDocuments, (d) => d.kind === "passage-list");
-  const { ref, style } = useFloatingMenu(x, y, onClose, { deps: [mentions, pickingList] });
+  const verseNotes = useCollection(
+    marginNotes,
+    (n) => n.book === book && n.chapter === chapter && n.verse === verse
+  );
+  const { ref, style } = useFloatingMenu(x, y, onClose, {
+    deps: [mentions, pickingList, writingNote],
+  });
   const reference = `${bookName} ${chapter}:${verse}`;
 
   useEffect(() => {
@@ -182,6 +249,27 @@ export function VerseContextMenu({
     }
     onClose();
   };
+
+  if (writingNote) {
+    return (
+      <div
+        ref={ref}
+        role="menu"
+        aria-label={`${reference} note`}
+        style={style}
+        className={`${FRAME} w-72 py-1`}
+      >
+        <p className={HEAD}>{reference}</p>
+        <NoteEditor
+          book={book}
+          chapter={chapter}
+          verse={verse}
+          existing={verseNotes[0]}
+          onDone={onClose}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -245,6 +333,9 @@ export function VerseContextMenu({
         )}
         <button type="button" className={ROW} onClick={copy}>
           Copy verse
+        </button>
+        <button type="button" className={ROW} onClick={() => setWritingNote(true)}>
+          Note{verseNotes.length > 0 ? ` (${verseNotes.length})` : ""}
         </button>
         {pickingList ? (
           <div className="mt-1 border-t border-rule pt-1">
@@ -385,9 +476,10 @@ export function WordContextMenu({
 
 /**
  * The hover toolbar a drag selection raises, placed above the selection.
- * Copy, concordance search, the four tints, and the verse card; the anchor
- * verse supplies the reference. Note and translate stay out: nothing backs
- * them yet.
+ * Copy, concordance search, note, the four tints, and the verse card; the
+ * anchor verse supplies the reference, and the note anchors there too:
+ * marginalia keys on the verse, not the character range. Translate stays
+ * out: nothing backs it yet.
  */
 export function SelectionMenu({
   x,
@@ -413,7 +505,9 @@ export function SelectionMenu({
   onClose: () => void;
 }) {
   const { dispatch } = useWorkspace();
-  const { ref, style } = useFloatingMenu(x, y, onClose, { above: true });
+  /** True once "Note" swaps the toolbar for inline capture. */
+  const [writingNote, setWritingNote] = useState(false);
+  const { ref, style } = useFloatingMenu(x, y, onClose, { above: true, deps: [writingNote] });
   const reference = `${bookName} ${chapter}:${verse}`;
 
   const copy = () => {
@@ -441,6 +535,24 @@ export function SelectionMenu({
   const TOOL =
     "px-1.5 py-0.5 text-[0.72rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
+  /* The editor drops the toolbar's mousedown guard: the textarea takes
+   * focus, and the native selection may collapse; the anchor verse was
+   * captured when the toolbar rose. */
+  if (writingNote) {
+    return (
+      <div
+        ref={ref}
+        role="menu"
+        aria-label="Selection note"
+        style={style}
+        className={`${FRAME} w-72 py-1`}
+      >
+        <p className={HEAD}>{reference}</p>
+        <NoteEditor book={book} chapter={chapter} verse={verse} onDone={onClose} />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
@@ -453,6 +565,9 @@ export function SelectionMenu({
     >
       <button type="button" className={TOOL} onClick={copy}>
         Copy
+      </button>
+      <button type="button" className={TOOL} onClick={() => setWritingNote(true)}>
+        Note
       </button>
       <button
         type="button"

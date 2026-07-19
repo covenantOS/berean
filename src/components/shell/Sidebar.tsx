@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CANON } from "@/lib/canon";
+import { CANON, bookIndex, getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
+import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, startModuleDrag } from "./dnd";
@@ -330,15 +331,28 @@ function LibrarySections() {
 
 /* ---------- Documents: the user's own writing and saved lists ---------- */
 
+/** Canon order, then chapter and verse, the way a bound Bible runs. */
+const byCanon = (a: MarginNote, b: MarginNote) =>
+  bookIndex(a.book) - bookIndex(b.book) || a.chapter - b.chapter || a.verse - b.verse;
+
 function DocumentsList() {
   const { dispatch } = useWorkspace();
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
-  if (docs.length === 0 && lists.length === 0) {
+  const notes = useCollection(marginNotes).slice().sort(byCanon);
+  if (docs.length === 0 && lists.length === 0 && notes.length === 0) {
     return (
-      <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them." />
+      <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them, and the marginalia you write on verses collect below." />
     );
   }
+
+  /* A note opens its anchor passage and selects the verse, so the context
+   * strip rises with the note ready for reading and editing. */
+  const openNote = (n: MarginNote) => {
+    dispatch({ type: "openRef", book: n.book, chapter: n.chapter });
+    dispatch({ type: "selectVerse", book: n.book, chapter: n.chapter, verse: n.verse });
+  };
+
   return (
     <div className="py-1">
       {docs.length > 0 && (
@@ -389,6 +403,40 @@ function DocumentsList() {
                 </button>
               </li>
             ))}
+          </ul>
+        </>
+      )}
+      {notes.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+            Notes
+          </div>
+          <ul>
+            {notes.map((n) => {
+              const reference = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
+              return (
+                <li key={n.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                  <button
+                    type="button"
+                    onClick={() => openNote(n)}
+                    title={`Open ${reference}: ${n.text}`}
+                    className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    <span className="text-sapphire">{reference}</span>{" "}
+                    <span className="text-muted">{n.text}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => deleteNote(n.id)}
+                    title="Delete this note"
+                    aria-label={`Delete the note on ${reference}`}
+                    className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    ×
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </>
       )}
