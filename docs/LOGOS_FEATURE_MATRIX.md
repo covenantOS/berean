@@ -165,26 +165,26 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 ## 7. Sermon Builder and Manager
 
 - [ ] [SW] Sermon document: block-based manuscript editor (headings, normal, illustration, quote, question blocks); Pro and up, Silver feature set and up under Logos 10.
-- [ ] [SW] Passage blocks: type a reference and hit Alt+Enter to insert the text from your Top Bible with an auto-built slide; per-block display options (block paragraphs, one verse per slide, fully formatted).
+- [x] [SW] Passage blocks: type a reference and hit Alt+Enter to insert the text from your Top Bible with an auto-built slide; per-block display options (block paragraphs, one verse per slide, fully formatted). (Honest subset: the manuscript editor's insert bar takes a typed or pasted reference like "jn 3:16-18", resolves it through the shared canon name table, fetches the KJV text in one round trip from /api/passages, and inserts a Markdown blockquote with the citation attached. The Alt+Enter chord, the auto-built slide, and per-block display options are unbuilt.)
 - [ ] [SW] Automatic slides: every heading, quote, and passage block produces an editable slide with style and background controls.
 - [ ] [SW] Auto handout and discussion questions: companion documents generated from the same manuscript.
-- [ ] [SW] Sermon outline sidebar: live outline tree of the document for navigation.
+- [x] [SW] Sermon outline sidebar: live outline tree of the document for navigation. (The editor's outline panel (outlineOf in src/lib/documents.ts) rebuilds from the manuscript's Markdown headings on every render, so it tracks edits for free; clicking a heading lands the caret on that line and scrolls the editor to it. It works for every manuscript, sermon or not.)
 - [ ] [SW] Export and publish: DOCX, PDF, slide export, and one-way slide publish to Proclaim.
 - [ ] [DATA] Quotations block: quotations with automatic citation, backed by the Popular Quotes dataset and quote detection across the library.
 - [ ] [SW] Notebook tab: drag notes from any notebook straight into the sermon.
 - [ ] [SW] Sermon Assistant pane: the four AI generators docked beside the manuscript (Pro and up; see AI group).
-- [ ] [SW] Sermon Manager: list and calendar views of all sermons, filterable by date, passage, series, tag, and venue; series planning and archives.
-- [ ] [SW] Sermon metadata: passage, topic, series, date, and venue fields that drive the 2025 Sermon and Bible Study Markers inside your Bibles.
+- [x] [SW] Sermon Manager: list and calendar views of all sermons, filterable by date, passage, series, tag, and venue; series planning and archives. (Honest subset: the Writing Desk list filters by kind and series and sorts by appointed date, title, or last touched, and each sermon row shows its passage, series, date, and venue. The calendar view, tag and venue filters, and series planning are unbuilt. The Pulpit archive keeps its own pipeline list over StudyProject records.)
+- [x] [SW] Sermon metadata: passage, topic, series, date, and venue fields that drive the 2025 Sermon and Bible Study Markers inside your Bibles. (Sermon-kind manuscripts carry optional passage, topic, series, date, and venue fields, editable in the editor header and persisted on the document record; older manuscripts carry none of it and load unchanged. A parseable passage deep-links into the workspace reader. The 2025 Sermon and Bible Study Markers inside Bibles are unbuilt.)
 - [ ] [SW] Sermon Import: bulk DOCX import with automatic metadata and passage detection.
 - [ ] [SW][LICENSED] Logos Sermons platform: publish sermons to a church profile with audio or video, paid automatic transcription and closed captions, and a public archive (Pro and Max include access).
-- [ ] [SW] Preach handoff: one click sends the sermon into Preaching Mode.
+- [x] [SW] Preach handoff: one click sends the sermon into Preaching Mode. (The editor header's Preach button opens /desk/[id]/preach with the live record; it works from any manuscript.)
 
 ## 8. Preaching Mode
 
-- [ ] [SW] Browser-based presentation view launched from any sermon document; runs on desktop, tablets, and phones.
+- [x] [SW] Browser-based presentation view launched from any sermon document; runs on desktop, tablets, and phones. (/desk/[id]/preach renders the manuscript read-only from the live record through a small dependency-free Markdown renderer: headings, blockquotes, lists, paragraphs, bold, italic, footnote marks, with the sermon's passage, series, date, and venue under the title. Anywhere the browser runs, it runs.)
 - [ ] [SW] Adjustable timer with one- and two-minute flash warnings and an overtime pulse.
-- [ ] [SW] Paging or scrolling navigation with keyboard, touch, and clicker support.
-- [ ] [SW] Live display controls: font family, five sizes, line spacing, margins, and text column mode, persisted per device.
+- [x] [SW] Paging or scrolling navigation with keyboard, touch, and clicker support. (Keyboard paging ships: arrows, space, PageUp/PageDown scroll a page at a time, Home and End jump; touch is native scroll. Clicker support is whatever the clicker sends, usually PageUp/PageDown; no dedicated clicker testing was done.)
+- [x] [SW] Live display controls: font family, five sizes, line spacing, margins, and text column mode, persisted per device. (Honest subset: five text sizes stepped by the A− and A+ controls or the + and − keys, persisted per device under berean.preach.size.v1. Font family, line spacing, margins, and column mode are unbuilt.)
 - [ ] [SW] On-screen slide indicator showing which slide is currently displayed.
 - [ ] [SW] Proclaim remote control: advance the congregation's slides from Preaching Mode; internet needed only to start.
 

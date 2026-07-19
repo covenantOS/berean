@@ -4,7 +4,16 @@ import Link from "next/link";
 import { use, useEffect, useRef, useState } from "react";
 import { CANON, getBook } from "@/lib/canon";
 import { useRecord } from "@/lib/hooks";
-import { documents, wordCount } from "@/lib/documents";
+import {
+  DOCUMENT_KINDS,
+  DocumentKind,
+  documents,
+  formatPassageRef,
+  outlineOf,
+  parsePassageRef,
+  passageHref,
+  wordCount,
+} from "@/lib/documents";
 
 interface Critique {
   quoteChecks: { ref: string; quote: string; verified: boolean }[];
@@ -26,6 +35,9 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
   const [insFrom, setInsFrom] = useState("");
   const [insTo, setInsTo] = useState("");
   const [inserting, setInserting] = useState(false);
+  const [refText, setRefText] = useState("");
+  const [refError, setRefError] = useState("");
+  const [outlineOpen, setOutlineOpen] = useState(true);
 
   const [critique, setCritique] = useState<Critique | null>(null);
   const [critiqueState, setCritiqueState] = useState<"idle" | "working" | "error">("idle");
@@ -42,6 +54,12 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
     setBody(value);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => documents.update(id, { body: value }), 500);
+  }
+
+  function insertAtCursor(snippet: string) {
+    const el = textareaRef.current;
+    const pos = el ? el.selectionStart : body.length;
+    onBodyChange(body.slice(0, pos) + snippet + body.slice(pos));
   }
 
   async function insertScripture() {
@@ -62,14 +80,55 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
         insFrom ? `:${insFrom}${insTo && insTo !== insFrom ? `-${insTo}` : ""}` : ""
       }`;
       const quote = data.verses.map((v) => v.text).join(" ");
-      const snippet = `\n> "${quote}" (${refLabel}, KJV)\n`;
-      const el = textareaRef.current;
-      const pos = el ? el.selectionStart : body.length;
-      const next = body.slice(0, pos) + snippet + body.slice(pos);
-      onBodyChange(next);
+      insertAtCursor(`\n> "${quote}" (${refLabel}, KJV)\n`);
     } finally {
       setInserting(false);
     }
+  }
+
+  /* Passage block from a typed reference: the bulk route answers the whole
+   * range in one round trip, and the reference arrives as the citation. */
+  async function insertPassage() {
+    const ref = parsePassageRef(refText);
+    if (!ref) {
+      setRefError("That reference does not parse. Try a form like John 3:16-18.");
+      return;
+    }
+    setRefError("");
+    setInserting(true);
+    try {
+      const token = `${ref.book}.${ref.chapter}.${ref.from ?? 1}-${ref.to ?? 200}`;
+      const res = await fetch(`/api/passages?refs=${encodeURIComponent(token)}`);
+      const data = (await res.json()) as {
+        passages?: { verses: { verse: number; text: string }[] }[];
+      };
+      const verses = res.ok ? (data.passages?.[0]?.verses ?? []) : [];
+      if (verses.length === 0) {
+        setRefError("No verses answered for that reference.");
+        return;
+      }
+      const quote = verses.map((v) => v.text).join(" ");
+      insertAtCursor(`\n> "${quote}" (${formatPassageRef(ref)}, KJV)\n`);
+      setRefText("");
+    } finally {
+      setInserting(false);
+    }
+  }
+
+  /* A heading click lands the caret on the heading line and scrolls the
+   * editor so the line sits near the top. */
+  function scrollToOffset(offset: number) {
+    const el = textareaRef.current;
+    if (!el) return;
+    const line = body.slice(0, offset).split("\n").length - 1;
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 24;
+    el.focus({ preventScroll: true });
+    el.setSelectionRange(offset, offset);
+    el.scrollTop = Math.max(0, (line - 2) * lineHeight);
+  }
+
+  function saveMeta(field: "passage" | "topic" | "series" | "date" | "venue", value: string) {
+    documents.update(id, { [field]: value.trim() || undefined });
   }
 
   async function requestCritique() {
@@ -116,9 +175,11 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
   }
 
   const failedChecks = critique?.quoteChecks.filter((c) => !c.verified) ?? [];
+  const outline = outlineOf(body);
+  const sermonRef = doc.passage ? parsePassageRef(doc.passage) : undefined;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <nav className="mb-6 text-sm text-muted no-print">
         <Link href="/desk" className="text-sapphire no-underline hover:underline">
           The Writing Desk
@@ -127,13 +188,33 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
       </nav>
 
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3 no-print">
-        <input
-          value={doc.title}
-          onChange={(e) => documents.update(id, { title: e.target.value })}
-          aria-label="Manuscript title"
-          className="min-w-0 flex-1 rounded-[4px] border border-transparent bg-transparent font-editorial text-3xl font-bold focus:border-rule focus:bg-surface focus:outline-none"
-        />
+        <div className="flex min-w-0 flex-1 flex-wrap items-end gap-3">
+          <input
+            value={doc.title}
+            onChange={(e) => documents.update(id, { title: e.target.value })}
+            aria-label="Manuscript title"
+            className="min-w-0 flex-1 rounded-[4px] border border-transparent bg-transparent font-editorial text-3xl font-bold focus:border-rule focus:bg-surface focus:outline-none"
+          />
+          <select
+            value={doc.kind}
+            onChange={(e) => documents.update(id, { kind: e.target.value as DocumentKind })}
+            aria-label="Kind"
+            className="rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+          >
+            {DOCUMENT_KINDS.map((k) => (
+              <option key={k.key} value={k.key}>
+                {k.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/desk/${id}/preach`}
+            className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium no-underline hover:bg-paper"
+          >
+            Preach
+          </Link>
           <button
             onClick={requestCritique}
             disabled={critiqueState === "working"}
@@ -155,6 +236,56 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
           </button>
         </div>
       </div>
+
+      {doc.kind === "sermon" && (
+        <div className="mb-4 grid gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print sm:grid-cols-2 lg:grid-cols-5">
+          <div>
+            <input
+              value={doc.passage ?? ""}
+              onChange={(e) => saveMeta("passage", e.target.value)}
+              placeholder="Passage (John 3:16-18)"
+              aria-label="Appointed passage"
+              className="w-full rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+            />
+            {sermonRef && (
+              <Link
+                href={passageHref(sermonRef)}
+                className="mt-1 inline-block text-xs text-sapphire no-underline hover:underline"
+              >
+                Open {formatPassageRef(sermonRef)} in the workspace
+              </Link>
+            )}
+          </div>
+          <input
+            value={doc.topic ?? ""}
+            onChange={(e) => saveMeta("topic", e.target.value)}
+            placeholder="Topic (optional)"
+            aria-label="Topic"
+            className="rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+          />
+          <input
+            value={doc.series ?? ""}
+            onChange={(e) => saveMeta("series", e.target.value)}
+            placeholder="Series (optional)"
+            aria-label="Series"
+            className="rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+          />
+          <input
+            type="date"
+            value={doc.date ?? ""}
+            onChange={(e) => saveMeta("date", e.target.value)}
+            aria-label="Appointed date"
+            className="rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+          />
+          <input
+            value={doc.venue ?? ""}
+            onChange={(e) => saveMeta("venue", e.target.value)}
+            placeholder="Venue (optional)"
+            aria-label="Venue"
+            className="rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+          />
+        </div>
+      )}
 
       <div className="mb-4 flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print">
         <span className="small-caps text-xs text-muted">Insert Scripture (verified):</span>
@@ -206,9 +337,61 @@ export default function ManuscriptPage({ params }: { params: Promise<{ id: strin
         >
           Insert at cursor
         </button>
+        <span className="small-caps text-xs text-muted">or type a reference:</span>
+        <input
+          value={refText}
+          onChange={(e) => setRefText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              insertPassage();
+            }
+          }}
+          placeholder="jn 3:16-18"
+          aria-label="Passage reference"
+          className="w-36 rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+        />
+        <button
+          onClick={insertPassage}
+          disabled={inserting}
+          className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
+        >
+          Insert passage
+        </button>
+        {refError && <span className="text-xs text-ruby">{refError}</span>}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,13rem)_minmax(0,2fr)_minmax(0,1fr)]">
+        <aside className="no-print">
+          <button
+            onClick={() => setOutlineOpen(!outlineOpen)}
+            aria-expanded={outlineOpen}
+            className="small-caps mb-2 text-sm text-muted hover:text-ink"
+          >
+            Outline {outlineOpen ? "▾" : "▸"}
+          </button>
+          {outlineOpen &&
+            (outline.length === 0 ? (
+              <p className="text-xs text-muted">
+                Headings in the manuscript appear here as you write them.
+              </p>
+            ) : (
+              <ul className="space-y-1">
+                {outline.map((h, i) => (
+                  <li key={i}>
+                    <button
+                      onClick={() => scrollToOffset(h.offset)}
+                      style={{ paddingLeft: `${(h.depth - 1) * 0.75}rem` }}
+                      className="block w-full text-left text-sm leading-snug text-ink hover:text-sapphire"
+                    >
+                      {h.text}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ))}
+        </aside>
+
         <section>
           <textarea
             ref={textareaRef}
