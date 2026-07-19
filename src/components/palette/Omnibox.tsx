@@ -34,6 +34,8 @@
  *                              or Torrey's entry.
  *   "berean:open-factbook"     { id, name }         Factbook for a TIPNR
  *                              entity.
+ *   "berean:open-textcompare"  { book?, chapter? }  Text Comparison; absent
+ *                              ref means the passage in focus.
  *   "berean:search"            { q }             Plain text submitted.
  *   "berean:apply-preset"      { preset }        A built-in layout preset id
  *                              (LAYOUT_PRESETS in shell/workspace-state.ts).
@@ -402,6 +404,16 @@ export default function Omnibox() {
         sub: "Word by word, important words, lemmas, variants",
         run: () => {
           emit("berean:open-exegetical", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
+      items.push({
+        key: "ref-textcompare",
+        group: "References",
+        label: `Compare texts: ${parsed.label}`,
+        sub: "Every translation against a base, word by word",
+        run: () => {
+          emit("berean:open-textcompare", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
       });

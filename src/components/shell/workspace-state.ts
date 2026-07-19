@@ -140,6 +140,16 @@ export interface LibraryTab {
   type: "library";
 }
 
+/** Text Comparison: one chapter's translations diffed against a base text. */
+export interface TextCompareTab {
+  id: string;
+  type: "textcompare";
+  book: string;
+  chapter: number;
+  /** Base translation id; the shelf default at open, switchable in the pane. */
+  base: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -153,7 +163,8 @@ export type Tab =
   | TopicGuideTab
   | ListDocTab
   | FactbookTab
-  | LibraryTab;
+  | LibraryTab
+  | TextCompareTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -296,6 +307,21 @@ export function factbookTab(entityId: string, title: string): FactbookTab {
 
 export function libraryTab(): LibraryTab {
   return { id: newId("tab"), type: "library" };
+}
+
+/**
+ * The comparison's default base. The shelf's own default lives in
+ * src/lib/translations.ts, which reads the disk and cannot be imported here;
+ * the reader already speaks of the KJV by name the same way.
+ */
+export const COMPARE_BASE_DEFAULT = "kjv";
+
+export function textCompareTab(
+  book = "genesis",
+  chapter = 1,
+  base = COMPARE_BASE_DEFAULT
+): TextCompareTab {
+  return { id: newId("tab"), type: "textcompare", book, chapter, base };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -519,6 +545,9 @@ export type WorkspaceAction =
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
+  | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
+  | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
+  | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -779,6 +808,26 @@ export function workspaceReducer(
         };
       }
       const tab = libraryTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTextCompare": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the comparison pins its passage at open time.
+      const tab = textCompareTab(book.slug, chapter);
       return {
         ...state,
         activePaneId: paneId,
@@ -1148,6 +1197,51 @@ export function workspaceReducer(
       };
     }
 
+    case "setCompareBase": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "textcompare") return state;
+      const base = action.base.trim().toLowerCase();
+      if (!/^[a-z0-9-]{2,12}$/.test(base) || base === tab.base) return state;
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "textcompare" ? { ...t, base } : t
+          ),
+        })),
+      };
+    }
+
+    case "setReaderTranslation": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "reader") return state;
+      let translation: string | undefined;
+      if (action.translation !== undefined) {
+        const m = action.translation.trim().toLowerCase();
+        if (!/^[a-z0-9-]{2,12}$/.test(m)) return state;
+        translation = m;
+      }
+      if (translation === tab.translation) return state;
+      // In place, one pane only: a swap never dispatches navigation, so
+      // link-set partners keep their passage and their own text.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) => {
+            if (t.id !== action.tabId || t.type !== "reader") return t;
+            const next = { ...t };
+            if (translation) next.translation = translation;
+            else delete next.translation;
+            return next;
+          }),
+        })),
+      };
+    }
+
     case "setLinkSet": {
       const leaf = findLeaf(state.root, action.paneId);
       if (!leaf || leaf.linkSet === action.linkSet) return state;
@@ -1256,6 +1350,20 @@ function sanitizeNode(node: unknown): PaneNode | null {
       }
       if (t.type === "library" && typeof t.id === "string") {
         tabs.push({ id: t.id, type: "library" });
+        continue;
+      }
+      if (t.type === "textcompare" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        const base =
+          typeof t.base === "string" && /^[a-z0-9-]{2,12}$/i.test(t.base)
+            ? t.base.toLowerCase()
+            : COMPARE_BASE_DEFAULT;
+        tabs.push({ id: t.id, type: "textcompare", book: book.slug, chapter, base });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;

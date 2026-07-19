@@ -153,6 +153,23 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   border-radius: 2px;
 }
 /*
+ * Text comparison marks: words a translation adds wear a sapphire wash and
+ * underline; words the base carries that the translation lacks are struck in
+ * ruby. Stained glass, never traffic lights.
+ */
+.diff-added {
+  background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
+  border-radius: 2px;
+}
+.diff-omitted {
+  color: var(--ink-muted);
+  background: color-mix(in srgb, var(--stained-ruby) 8%, transparent);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--stained-ruby) 65%, transparent);
+  border-radius: 2px;
+}
+/*
  * Visual filter sets: a stained-glass underline, a second channel beside the
  * personal highlight's tint so the two never collide and a verse can carry
  * both. Box shadow, not border: the verse's line box stays put.

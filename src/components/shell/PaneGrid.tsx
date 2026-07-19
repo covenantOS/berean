@@ -38,6 +38,7 @@ import TopicGuide from "./TopicGuide";
 import ListDocPane from "./ListDocPane";
 import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
+import TextCompare from "./TextCompare";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -129,6 +130,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "listdoc") return `List: ${tab.title}`;
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "library") return "Library";
+  if (tab.type === "textcompare") {
+    return `Compare: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  }
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -517,6 +521,16 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "library" ? (
             <div className="h-full overflow-y-auto p-4">
               <LibraryPane />
+            </div>
+          ) : activeTab.type === "textcompare" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <TextCompare
+                paneId={leaf.id}
+                tabId={activeTab.id}
+                book={activeTab.book}
+                chapter={activeTab.chapter}
+                base={activeTab.base}
+              />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

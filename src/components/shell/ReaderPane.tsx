@@ -11,7 +11,7 @@ import {
   type ReactNode,
   type UIEvent as ReactUIEvent,
 } from "react";
-import { adjacentChapter } from "@/lib/canon";
+import { adjacentChapter, getBook } from "@/lib/canon";
 import {
   deleteNote,
   listNotes,
@@ -109,6 +109,28 @@ type ReaderMenu =
   | { kind: "word"; x: number; y: number; word: WordSelection }
   | { kind: "selection"; x: number; y: number; verse: number; text: string };
 
+/** One translation on the shelf, as /api/translations reports it. */
+interface ShelfTranslation {
+  id: string;
+  abbrev: string;
+  name: string;
+  otOnly: boolean;
+}
+
+let shelfPromise: Promise<ShelfTranslation[]> | null = null;
+
+/** The furnished translations, fetched once and shared by every reader pane. */
+function translationShelf(): Promise<ShelfTranslation[]> {
+  shelfPromise ??= fetch("/api/translations")
+    .then((res) => (res.ok ? res.json() : { translations: [] }))
+    .then((data: { translations: ShelfTranslation[] }) => data.translations)
+    .catch(() => {
+      shelfPromise = null;
+      return [];
+    });
+  return shelfPromise;
+}
+
 /**
  * The reader panel. Fetches the chapter from /api/pane/chapter so the
  * workspace never reloads the page. Tapping a verse selects it (the dock
@@ -136,6 +158,11 @@ export default function ReaderPane({
   const [insightsOn, setInsightsOn] = useState(false);
   const [view, setView] = useState<"text" | "original">("text");
   const [glossOn, setGlossOn] = useState(true);
+  /* Reading view: text-only hides the verse numbers, verseLines sets prose
+   * one verse per line. Per pane while the tab lives, like the toggles above. */
+  const [textOnly, setTextOnly] = useState(false);
+  const [verseLines, setVerseLines] = useState(false);
+  const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
   const filterSets = useCollection(visualFilters);
@@ -150,7 +177,8 @@ export default function ReaderPane({
    * echo guard: after applying a programmatic scroll, this pane stays quiet
    * for 300ms so the set does not chase its own tail.
    */
-  const linkSet = findLeaf(state.root, paneId)?.linkSet ?? null;
+  const paneLeaf = findLeaf(state.root, paneId);
+  const linkSet = paneLeaf?.linkSet ?? null;
   const scrollRef = useRef<HTMLDivElement>(null);
   const ignoreUntil = useRef(0);
   const scrollTimer = useRef<number | null>(null);
@@ -173,6 +201,17 @@ export default function ReaderPane({
       });
     return () => controller.abort();
   }, [book, chapter, translation]);
+
+  // The translation shelf for the swap control, once for the workspace.
+  useEffect(() => {
+    let live = true;
+    translationShelf().then((t) => {
+      if (live) setShelf(t);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   // Marginalia and highlights for this chapter, live over the stores.
   useEffect(() => {
@@ -289,6 +328,21 @@ export default function ReaderPane({
   const ready = load.status === "ready" ? load.data : null;
   const wantApparatus = wordsOn || view === "original";
 
+  /* The swap control's options: the shelf for this book's testament, with
+   * the pane's current text always present even when an older session left
+   * an OT-only text open on a NT book. */
+  const shelfOptions = useMemo(() => {
+    const testament = getBook(book)?.testament ?? "OT";
+    const forBook = shelf.filter((t) => testament === "OT" || !t.otOnly);
+    if (ready && !forBook.some((t) => t.id === ready.translationId)) {
+      return [
+        { id: ready.translationId, abbrev: ready.translation, name: "", otOnly: false },
+        ...forBook,
+      ];
+    }
+    return forBook;
+  }, [shelf, ready, book]);
+
   // Lazy apparatus: tagged KJV words and the original text arrive together.
   useEffect(() => {
     if (!ready || !wantApparatus || apparatus.status !== "idle") return;
@@ -313,6 +367,20 @@ export default function ReaderPane({
   const go = (dir: -1 | 1) => {
     const next = adjacentChapter(book, chapter, dir);
     if (next) dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
+  };
+
+  /* The parallel swap: retarget this pane's reader tab to the same passage
+   * in another translation. It never dispatches navigation, so link-set
+   * partners keep their passage and their own text. */
+  const swapTranslation = (id: string) => {
+    const tabId = paneLeaf?.activeTabId;
+    if (!tabId) return;
+    dispatch({
+      type: "setReaderTranslation",
+      paneId,
+      tabId,
+      translation: id === "kjv" ? undefined : id,
+    });
   };
 
   const sel = state.selection;
@@ -464,7 +532,7 @@ export default function ReaderPane({
       onClick={() => tapVerse(v.verse)}
       onContextMenu={openVerseMenu(v.verse)}
     >
-      <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
+      {!textOnly && <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />}
       {v.text}{" "}
     </span>
   );
@@ -477,7 +545,7 @@ export default function ReaderPane({
       onClick={() => tapVerse(v.verse)}
       onContextMenu={openVerseMenu(v.verse)}
     >
-      <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
+      {!textOnly && <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />}
       {v.words.map((w, i) => (
         <span key={i}>
           {w.s && w.s.length > 0 ? (
@@ -552,7 +620,7 @@ export default function ReaderPane({
             onClick={() => tapVerse(v.verse)}
             onContextMenu={openVerseMenu(v.verse)}
           >
-            <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />
+            {!textOnly && <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />}
             {v.label && (
               <span className="font-[family-name:var(--font-interface)] text-xs text-muted">
                 {v.label}{" "}
@@ -585,7 +653,7 @@ export default function ReaderPane({
               onClick={() => tapVerse(v.verse)}
               onContextMenu={openVerseMenu(v.verse)}
             >
-              <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />
+              {!textOnly && <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />}
               {v.alt && (
                 <span className="alt-note" dir="ltr">
                   {lang === "hebrew" ? `Heb. ${v.alt}` : `KJV ${v.alt}`}
@@ -632,7 +700,8 @@ export default function ReaderPane({
     ) {
       body = renderFlow(apparatus.tagged, true);
     } else {
-      body = data.poetry ? renderPoetry(data.verses) : renderFlow(data.verses, false);
+      body =
+        data.poetry || verseLines ? renderPoetry(data.verses) : renderFlow(data.verses, false);
     }
   }
 
@@ -668,10 +737,26 @@ export default function ReaderPane({
         </div>
         <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
           {ready ? `${ready.bookName} ${ready.chapter}` : "\u00A0"}
-          {ready && (
-            <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">
-              {ready.translation}
-            </span>
+          {ready && shelfOptions.length > 1 ? (
+            <select
+              aria-label="Translation"
+              title="Read this chapter in another translation"
+              value={ready.translationId}
+              onChange={(e) => swapTranslation(e.target.value)}
+              className="small-caps ml-2 cursor-pointer border border-transparent bg-transparent text-[0.6rem] font-normal text-muted hover:border-rule focus:border-sapphire focus:outline-none"
+            >
+              {shelfOptions.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.abbrev}
+                </option>
+              ))}
+            </select>
+          ) : (
+            ready && (
+              <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">
+                {ready.translation}
+              </span>
+            )
           )}
         </h2>
         <div className="flex flex-1 items-center justify-end gap-1">
@@ -683,6 +768,14 @@ export default function ReaderPane({
             className={toggleBtn(insightsOn)}
           >
             Insights
+          </button>
+          <button
+            type="button"
+            title="Compare every translation of this chapter, word by word"
+            onClick={() => dispatch({ type: "openTextCompare", book, chapter, paneId })}
+            className={toggleBtn(false)}
+          >
+            Compare
           </button>
           <button
             type="button"
@@ -711,6 +804,28 @@ export default function ReaderPane({
               className={toggleBtn(wordsOn)}
             >
               Words
+            </button>
+          )}
+          {ready && view === "text" && (
+            <button
+              type="button"
+              aria-pressed={textOnly}
+              title="Hide the verse numbers for reading"
+              onClick={() => setTextOnly(!textOnly)}
+              className={toggleBtn(textOnly)}
+            >
+              Text only
+            </button>
+          )}
+          {ready && view === "text" && !ready.poetry && (
+            <button
+              type="button"
+              aria-pressed={verseLines}
+              title="One verse per line"
+              onClick={() => setVerseLines(!verseLines)}
+              className={toggleBtn(verseLines)}
+            >
+              Lines
             </button>
           )}
           {ready && ready.hasOriginal && (

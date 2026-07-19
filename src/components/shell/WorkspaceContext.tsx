@@ -152,6 +152,18 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         title: typeof detail.name === "string" ? detail.name : detail.id.trim(),
       });
     };
+    const onOpenTextCompare = (e: Event) => {
+      const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
+      // Like the guides, an absent ref takes the pane in focus.
+      const book =
+        detail && typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        detail && typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({ type: "openTextCompare", book, chapter });
+    };
     const onToggleDock = () => dispatch({ type: "toggleDock" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
@@ -182,6 +194,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-exegetical", onOpenExegetical);
     window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
     window.addEventListener("berean:open-factbook", onOpenFactbook);
+    window.addEventListener("berean:open-textcompare", onOpenTextCompare);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
     window.addEventListener("berean:restore-layout", onRestoreLayout);
@@ -195,6 +208,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-exegetical", onOpenExegetical);
       window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);
       window.removeEventListener("berean:open-factbook", onOpenFactbook);
+      window.removeEventListener("berean:open-textcompare", onOpenTextCompare);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
       window.removeEventListener("berean:restore-layout", onRestoreLayout);
