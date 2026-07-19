@@ -145,7 +145,8 @@ export type DeepLinkTab =
   | { kind: "library" }
   | { kind: "bookexplorer" }
   | { kind: "harmony"; book?: string; chapter?: number; verse?: number }
-  | { kind: "wisdom"; book: "psalms" | "proverbs" };
+  | { kind: "wisdom"; book: "psalms" | "proverbs" }
+  | { kind: "media"; book?: string; chapter?: number; verse?: number };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -173,6 +174,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "almanac") return { kind: "almanac" };
     if (kind === "bookexplorer") return { kind: "bookexplorer" };
     if (kind === "harmony") return { kind: "harmony" };
+    if (kind === "media") return { kind: "media" };
     return null;
   }
   if (i === 0) return null;
@@ -259,6 +261,18 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       const book = payload.toLowerCase();
       if (book !== "psalms" && book !== "proverbs") return null;
       return { kind: "wisdom", book };
+    }
+    case "media": {
+      // The harmony's grammar: a bare chapter resolves but pins no verse, so
+      // the studio opens on the chapter's verses to choose from.
+      const ref = parseDeepLinkRef(payload);
+      if (!ref) return null;
+      return {
+        kind: "media",
+        book: ref.book,
+        chapter: ref.chapter,
+        ...(ref.verse !== undefined ? { verse: ref.verse } : {}),
+      };
     }
     default:
       return null;

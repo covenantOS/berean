@@ -74,6 +74,7 @@ import ToolsPane from "./ToolsPane";
 import BookExplorerPane from "./BookExplorerPane";
 import HarmonyPane from "./HarmonyPane";
 import WisdomExplorerPane from "./WisdomExplorerPane";
+import MediaPane from "./MediaPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -227,6 +228,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "wisdomexplorer") {
     return tab.book === "psalms" ? "Psalms Explorer" : "Proverbs Explorer";
   }
+  if (tab.type === "media") return "Media";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -783,6 +785,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "wisdomexplorer" ? (
             <div className="h-full overflow-y-auto p-4">
               <WisdomExplorerPane paneId={leaf.id} tabId={activeTab.id} book={activeTab.book} />
+            </div>
+          ) : activeTab.type === "media" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <MediaPane
+                book={activeTab.book}
+                chapter={activeTab.chapter}
+                verse={activeTab.verse}
+              />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

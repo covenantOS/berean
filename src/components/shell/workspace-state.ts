@@ -533,6 +533,21 @@ export interface WisdomExplorerTab {
   book: "psalms" | "proverbs";
 }
 
+/**
+ * The Media studio: verse cards composed, styled, and exported. A passage
+ * pin opens the studio on that reference, the way the context menu's "Verse
+ * card" sends one; without a pin the pane opens on the composer and the
+ * recent cards. One tab per pane, the harmony's pattern.
+ */
+export interface MediaTab {
+  id: string;
+  type: "media";
+  /** The passage the card composes from; absent opens the composer bare. */
+  book?: string;
+  chapter?: number;
+  verse?: number;
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -578,7 +593,8 @@ export type Tab =
   | ToolsTab
   | BookExplorerTab
   | HarmonyTab
-  | WisdomExplorerTab;
+  | WisdomExplorerTab
+  | MediaTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -876,6 +892,33 @@ export function harmonyTab(ref?: {
 
 export function wisdomExplorerTab(book: "psalms" | "proverbs" = "psalms"): WisdomExplorerTab {
   return { id: newId("tab"), type: "wisdomexplorer", book };
+}
+
+/**
+ * A media pin holds water at a book and a chapter inside it; the verse rides
+ * optional. The verse's real bound is the chapter's length, which the
+ * session layer cannot see (the gospelRef rule); a verse that names nothing
+ * leaves the studio's composer empty at that chapter.
+ */
+function mediaRef(
+  book: unknown,
+  chapter: unknown,
+  verse: unknown
+): { book: string; chapter: number; verse?: number } | null {
+  if (typeof book !== "string") return null;
+  const b = getBook(book);
+  if (!b) return null;
+  if (typeof chapter !== "number" || !Number.isInteger(chapter)) return null;
+  if (chapter < 1 || chapter > b.chapters) return null;
+  const v =
+    typeof verse === "number" && Number.isInteger(verse) && verse >= 1 && verse <= 200
+      ? verse
+      : undefined;
+  return { book: b.slug, chapter, ...(v !== undefined ? { verse: v } : {}) };
+}
+
+export function mediaTab(ref?: { book: string; chapter: number; verse?: number }): MediaTab {
+  return { id: newId("tab"), type: "media", ...(ref ?? {}) };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -1305,6 +1348,7 @@ export type WorkspaceAction =
     }
   | { type: "openWisdomExplorer"; book: "psalms" | "proverbs"; paneId?: string }
   | { type: "setWisdomBook"; paneId: string; tabId: string; book: "psalms" | "proverbs" }
+  | { type: "openMedia"; book?: string; chapter?: number; verse?: number; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -2362,6 +2406,48 @@ export function workspaceReducer(
               ? { ...t, book: action.book }
               : t
           ),
+        })),
+      };
+    }
+
+    case "openMedia": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The pin is optional; a book without a sound chapter reads as no pin.
+      const ref =
+        action.book !== undefined
+          ? mediaRef(action.book, action.chapter, action.verse)
+          : null;
+      // One media tab per pane, the harmony's pattern. Reopening with a
+      // passage retargets it; reopening bare focuses it as it stands.
+      const existing = leaf.tabs.find((t) => t.type === "media");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            activeTabId: existing.id,
+            tabs: ref
+              ? l.tabs.map((t) =>
+                  t.id === existing.id && t.type === "media"
+                    ? { id: t.id, type: "media" as const, ...ref }
+                    : t
+                )
+              : l.tabs,
+          })),
+        };
+      }
+      const tab = mediaTab(ref ?? undefined);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
         })),
       };
     }
@@ -3476,6 +3562,14 @@ function sanitizeNode(node: unknown): PaneNode | null {
         // A malformed book reads as the Psalter rather than failing the load.
         const book = t.book === "proverbs" ? "proverbs" : "psalms";
         tabs.push({ id: t.id, type: "wisdomexplorer", book });
+        continue;
+      }
+      if (t.type === "media" && typeof t.id === "string") {
+        // Like the harmony pin, the passage is optional and a bad one drops,
+        // leaving the bare composer.
+        const ref =
+          typeof t.book === "string" ? mediaRef(t.book, t.chapter, t.verse) : null;
+        tabs.push({ id: t.id, type: "media", ...(ref ?? {}) });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {

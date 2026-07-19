@@ -433,6 +433,41 @@ export default function PassageGuide({
           </ul>
         </GuideSection>
       ) : null,
+
+    /* Media is composed, not stocked: the card link always answers, and each
+     * place the chapter mentions hands off to the atlas. */
+    media: (
+      <GuideSection title="Media" hint="composed on this device">
+        <ul className="space-y-1.5">
+          <li>
+            <button
+              type="button"
+              title={`Compose a verse card from a verse in ${reference}`}
+              onClick={() => dispatch({ type: "openMedia", book: g.book, chapter: g.chapter })}
+              className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Verse card
+            </button>{" "}
+            <span className="text-xs text-muted">compose a share card from a verse in this chapter</span>
+          </li>
+          {g.places.map((m) => (
+            <li key={m.id}>
+              <button
+                type="button"
+                title={`Open ${m.name} in the atlas`}
+                onClick={() => dispatch({ type: "openAtlas", place: m.id, title: m.name })}
+                className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Map: {m.name}
+              </button>{" "}
+              <span className="text-xs text-muted">
+                {m.verses} {m.verses === 1 ? "verse" : "verses"} mention it
+              </span>
+            </li>
+          ))}
+        </ul>
+      </GuideSection>
+    ),
   };
 
   /* The full guide wears the registry's order; a custom guide wears its own.

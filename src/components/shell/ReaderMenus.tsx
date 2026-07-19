@@ -442,6 +442,17 @@ export function VerseContextMenu({
         <button type="button" className={ROW} onClick={copyLink}>
           Copy link
         </button>
+        <button
+          type="button"
+          title="Open this verse in the Media studio as a verse card"
+          className={ROW}
+          onClick={() => {
+            dispatch({ type: "openMedia", book, chapter, verse, paneId });
+            onClose();
+          }}
+        >
+          Verse card
+        </button>
         <button type="button" className={ROW} onClick={() => setWritingNote(true)}>
           Note{verseNotes.length > 0 ? ` (${verseNotes.length})` : ""}
         </button>

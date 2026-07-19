@@ -23,6 +23,7 @@ export const GUIDE_SECTIONS = [
   { key: "timeline", title: "Timeline" },
   { key: "notableWords", title: "Notable Words" },
   { key: "compareVersions", title: "Compare Versions" },
+  { key: "media", title: "Media" },
 ] as const;
 
 export type GuideSectionKey = (typeof GUIDE_SECTIONS)[number]["key"];

@@ -179,6 +179,15 @@ function Intake() {
         case "wisdom":
           dispatch({ type: "openWisdomExplorer", book: tab.book, paneId });
           break;
+        case "media":
+          dispatch({
+            type: "openMedia",
+            ...(tab.book !== undefined
+              ? { book: tab.book, chapter: tab.chapter, verse: tab.verse }
+              : {}),
+            paneId,
+          });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

@@ -22,6 +22,7 @@ import {
   guideTab,
   harmonyTab,
   libraryTab,
+  mediaTab,
   multiviewTab,
   readerTab,
   searchTab,
@@ -312,6 +313,17 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(workflowEditorTab(null))}>
             Compose a workflow
             <span className={HINT}>Workflow editor</span>
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            title="Compose a verse card from any reference, styled and exported as SVG"
+            className={ROW}
+            onClick={() => choose(mediaTab(ref ? { ...ref } : undefined))}
+          >
+            Media
+            <span className={HINT}>Verse card studio</span>
           </button>
         </li>
         <li>
