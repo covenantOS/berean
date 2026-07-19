@@ -20,6 +20,7 @@ import {
   type StudyDocument,
 } from "@/lib/documents";
 import { formatCitation } from "@/lib/citation";
+import { docxFor } from "@/lib/docx";
 import { isAnchored, notes, type MarginNote } from "@/lib/marginalia";
 import PrintButton from "./PrintButton";
 import { renderInline, renderMarkdown } from "./markdown";
@@ -232,6 +233,27 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
     URL.revokeObjectURL(a.href);
   }
 
+  /* The Word export: the same title-plus-body document, mapped through
+   * docxFor (src/lib/docx.ts) into a real .docx. */
+  function downloadDocx() {
+    if (!doc) return;
+    const blob = new Blob([docxFor(doc.title, body) as BlobPart], {
+      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${doc.title.replace(/[^\w-]+/g, "-").toLowerCase()}.docx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  /* The whole document to the clipboard, the same bytes the .md download
+   * writes. */
+  function copyAll() {
+    if (!doc) return;
+    void navigator.clipboard?.writeText(`# ${doc.title}\n\n${body}`);
+  }
+
   if (!doc) {
     return <p className="text-xs text-muted">This manuscript is no longer on this device.</p>;
   }
@@ -296,15 +318,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
           >
             Create handout
           </button>
-          <button
-            onClick={download}
-            className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
-          >
-            Export .md
-          </button>
-          <span className="inline-flex items-center rounded-[4px] border border-rule bg-surface px-4 py-2">
-            <PrintButton />
-          </span>
+          <ExportMenu onCopyAll={copyAll} onMarkdown={download} onDocx={downloadDocx} />
         </div>
       </div>
 
@@ -607,6 +621,106 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
 
       {preaching && (
         <PreachOverlay doc={doc} body={body} onExit={() => setPreaching(false)} />
+      )}
+    </div>
+  );
+}
+
+/* The one export affordance, the panel row of the header: every road out of
+ * the manuscript gathered behind a single button. Copy all writes the whole
+ * document to the clipboard; the downloads are the Markdown source (the
+ * same bytes as always) and a real Word document from docxFor (src/lib/
+ * docx.ts); Print is the shared print idiom, and its dialog's Save as PDF
+ * is the honest PDF export, and the menu says so plainly. The handout needs no
+ * surface of its own: it is a manuscript and opens in this same pane. */
+function ExportMenu({
+  onCopyAll,
+  onMarkdown,
+  onDocx,
+}: {
+  onCopyAll: () => void;
+  onMarkdown: () => void;
+  onDocx: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (ref.current && e.target instanceof Node && !ref.current.contains(e.target))
+        setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onPointer);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
+
+  const item =
+    "block w-full px-3 py-1.5 text-left text-sm text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
+      >
+        Export {open ? "▾" : "▸"}
+      </button>
+      {open && (
+        <div
+          role="menu"
+          aria-label="Export this manuscript"
+          className="absolute right-0 z-40 mt-1 w-60 rounded-[4px] border border-rule bg-surface py-1 shadow-lg"
+        >
+          <button
+            type="button"
+            className={item}
+            onClick={() => {
+              onCopyAll();
+              setOpen(false);
+            }}
+          >
+            Copy all
+          </button>
+          <button
+            type="button"
+            title="The Markdown source, as always"
+            className={item}
+            onClick={() => {
+              onMarkdown();
+              setOpen(false);
+            }}
+          >
+            Export .md (Markdown)
+          </button>
+          <button
+            type="button"
+            title="A real Word document; LibreOffice and Google Docs open it too"
+            className={item}
+            onClick={() => {
+              onDocx();
+              setOpen(false);
+            }}
+          >
+            Export .docx (Word)
+          </button>
+          <div className="my-1 border-t border-rule" />
+          <div className="px-3 py-1.5 text-sm" onClick={() => setOpen(false)}>
+            <PrintButton className="text-sm" />
+          </div>
+          <p className="px-3 pb-1 text-xs text-muted">
+            For a PDF, print and choose Save as PDF in the dialog.
+          </p>
+        </div>
       )}
     </div>
   );

@@ -29,9 +29,9 @@ import type { WordSelection } from "./workspace-state";
  * dataset entities on the left (the verse's TIPNR people and places, or the
  * word's lemma, parsing, and Strong's ids), live actions on the right
  * (guides, word study, search, copy, note, highlight). SelectionMenu is the
- * hover toolbar a drag selection raises: copy, search, note, highlight, and
- * export card. Every row is backed by a shipped feature; nothing here is a
- * placeholder.
+ * hover toolbar a drag selection raises: copy, search, note, highlight, the
+ * export card, and print of the selection alone. Every row is backed by a
+ * shipped feature; nothing here is a placeholder.
  *
  * All three are fixed-position overlays sharing one discipline: dismiss on
  * outside pointerdown, Escape, scroll, or resize, and never leave the
@@ -671,8 +671,9 @@ export function WordContextMenu({
 
 /**
  * The hover toolbar a drag selection raises, placed above the selection.
- * Copy, concordance search, note, clip, the style palette, and the verse
- * card; the anchor verse supplies the reference, and the note and the clip
+ * Copy, concordance search, note, clip, the style palette, the verse card,
+ * and print of the selection alone; the anchor verse supplies the
+ * reference, and the note and the clip
  * anchor there too: marginalia keys on the verse, not the character range.
  * Translate stays out: nothing backs it yet.
  */
@@ -727,6 +728,27 @@ export function SelectionMenu({
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+    onClose();
+  };
+
+  /* Prints the selection alone: the words rise into a print-only sheet that
+   * takes the print root for the one job (the same data-print-active idiom
+   * the report panes use), then leave the document. */
+  const printSelection = () => {
+    const sheet = document.createElement("div");
+    sheet.className = "print-only font-reader";
+    sheet.setAttribute("data-print-active", "");
+    const heading = document.createElement("p");
+    heading.className = "small-caps";
+    heading.textContent = reference;
+    const words = document.createElement("p");
+    words.textContent = text;
+    sheet.append(heading, words);
+    document.body.appendChild(sheet);
+    const done = () => sheet.remove();
+    window.addEventListener("afterprint", done, { once: true });
+    window.setTimeout(done, 60_000);
+    window.print();
     onClose();
   };
 
@@ -804,6 +826,9 @@ export function SelectionMenu({
       </button>
       <button type="button" className={TOOL} onClick={exportCard}>
         Export card
+      </button>
+      <button type="button" className={TOOL} onClick={printSelection}>
+        Print
       </button>
       <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-rule" />
       <StylePalette
