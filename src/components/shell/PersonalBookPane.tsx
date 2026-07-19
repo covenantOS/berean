@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { useRecord } from "@/lib/hooks";
 import { personalbooks } from "@/lib/personalbooks";
+import { bookSessions } from "@/lib/plans";
 import { scanRefs } from "@/lib/refscan";
 import { renderMarkdown } from "./markdown";
+import { useWorkspace } from "./WorkspaceContext";
 
 /**
  * A personal book open for reading: the imported text in the reading idiom,
@@ -14,8 +16,28 @@ import { renderMarkdown } from "./markdown";
  * so a replacement or a fix to the scanner changes the links and never the
  * words. Edit replaces the title, author, or body; delete removes the book
  * and the open tab degrades the way a deleted manuscript does.
+ *
+ * A tab carrying a reading-plan session shows that session's slice alone:
+ * the division re-derives from the live body at the recorded count
+ * (src/lib/plans.ts bookSessions), so a body replaced mid-plan redivides
+ * instead of failing, headings first when they answer to the count and word
+ * count when they do not. The session chrome steps between sessions and
+ * returns to the whole book.
  */
-export default function PersonalBookPane({ bookId }: { bookId: string }) {
+export default function PersonalBookPane({
+  paneId,
+  tabId,
+  bookId,
+  session,
+  of,
+}: {
+  paneId: string;
+  tabId: string;
+  bookId: string;
+  session?: number;
+  of?: number;
+}) {
+  const { dispatch } = useWorkspace();
   const book = useRecord(personalbooks, bookId);
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");
@@ -25,6 +47,13 @@ export default function PersonalBookPane({ bookId }: { bookId: string }) {
   /* The linked-reference count in the chrome answers the honest question:
    * how much of this book the reader can travel from. */
   const refCount = useMemo(() => (book ? scanRefs(book.body).length : 0), [book]);
+
+  /* The session's slice, re-derived from the live body at the plan's count. */
+  const reading = useMemo(() => {
+    if (!book || session === undefined || of === undefined) return null;
+    const sessions = bookSessions(book.body, of);
+    return sessions[session - 1] ?? null;
+  }, [book, session, of]);
 
   if (!book) {
     return <p className="text-xs text-muted">This book is no longer on this device.</p>;
@@ -93,6 +122,55 @@ export default function PersonalBookPane({ bookId }: { bookId: string }) {
           <p className="text-[0.68rem] text-muted">
             References link again over the new text the moment you save.
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (reading && session !== undefined && of !== undefined) {
+    const step = (n: number) =>
+      dispatch({ type: "setPersonalBookSession", paneId, tabId, session: n, of });
+    return (
+      <div className="mx-auto max-w-prose py-4">
+        <header className="mb-8 border-b border-rule pb-4">
+          <p className="small-caps text-xs font-semibold text-amber">
+            Session {session} of {of}
+          </p>
+          <h2 className="font-editorial mt-0.5 text-xl font-semibold">{book.title}</h2>
+          <p className="mt-0.5 text-[0.68rem] text-muted">
+            {reading.label} · {reading.words.toLocaleString()} words
+          </p>
+          <div className="no-print mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => step(session - 1)}
+              disabled={session <= 1}
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire disabled:opacity-50"
+            >
+              Previous session
+            </button>
+            <button
+              type="button"
+              onClick={() => step(session + 1)}
+              disabled={session >= of}
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire disabled:opacity-50"
+            >
+              Next session
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                dispatch({ type: "setPersonalBookSession", paneId, tabId })
+              }
+              title="Read the whole book"
+              className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Whole book
+            </button>
+          </div>
+        </header>
+        <div className="font-reader leading-relaxed">
+          {renderMarkdown(reading.body, { linkRefs: true })}
         </div>
       </div>
     );

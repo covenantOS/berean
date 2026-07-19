@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CANON, getBook } from "@/lib/canon";
 import { useCollection } from "@/lib/hooks";
 import {
   GENERATORS,
   adjustPlan,
+  beginBookPlan,
   beginCustomPlan,
   chaptersInRange,
   currentDay,
+  divideBook,
   generatorFor,
   isBehind,
   planProgress,
@@ -17,7 +19,9 @@ import {
   readingsForDay,
   toggleDay,
 } from "@/lib/plans";
+import { personalbooks } from "@/lib/personalbooks";
 import { todayISO } from "@/lib/almanac";
+import { useWorkspace } from "./WorkspaceContext";
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number, verse?: number) {
@@ -30,6 +34,7 @@ function openRef(book: string, chapter: number, verse?: number) {
  * is a private record, not a score; a missed day simply waits.
  */
 export default function PlansPane() {
+  const { dispatch } = useWorkspace();
   const rows = useCollection(plans);
 
   return (
@@ -74,7 +79,7 @@ export default function PlansPane() {
                     {behind && (
                       <button
                         onClick={() => adjustPlan(plan)}
-                        title="Redistribute the unread chapters over the days that remain, starting today"
+                        title="Redistribute the unread remainder over the days that remain, starting today"
                         className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium text-sapphire hover:bg-paper"
                       >
                         Catch up
@@ -110,7 +115,7 @@ export default function PlansPane() {
                   />
                 </div>
                 <p className="small-caps mt-1 text-xs text-muted">
-                  {progress.done} of {progress.total} chapters
+                  {progress.done} of {progress.total} {plan.book ? "sessions" : "chapters"}
                 </p>
                 <div className="mt-3 space-y-1 text-sm">
                   {readings.map((r, i) => (
@@ -120,13 +125,34 @@ export default function PlansPane() {
                       )}
                       {r.chapters.map((c, j) => (
                         <span key={`${c.book}-${c.chapter}`}>
-                          <button
-                            type="button"
-                            onClick={() => openRef(c.book, c.chapter)}
-                            className="text-sapphire hover:underline"
-                          >
-                            {getBook(c.book)?.name} {c.chapter}
-                          </button>
+                          {plan.book ? (
+                            /* A book plan's chapters wear the session
+                             * numbers; the session opens the book at its
+                             * slice. */
+                            <button
+                              type="button"
+                              onClick={() =>
+                                dispatch({
+                                  type: "openPersonalBook",
+                                  bookId: plan.book!.bookId,
+                                  title: plan.book!.title,
+                                  session: c.chapter,
+                                  of: plan.book!.sessions.length,
+                                })
+                              }
+                              className="text-sapphire hover:underline"
+                            >
+                              {plan.book.sessions[c.chapter - 1] ?? `Session ${c.chapter}`}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => openRef(c.book, c.chapter)}
+                              className="text-sapphire hover:underline"
+                            >
+                              {getBook(c.book)?.name} {c.chapter}
+                            </button>
+                          )}
                           {j < r.chapters.length - 1 ? ", " : ""}
                         </span>
                       ))}
@@ -174,12 +200,25 @@ export default function PlansPane() {
 /** Build a plan over any stretch of the canon at a chosen pace. */
 function CustomPlanForm() {
   const [name, setName] = useState("");
+  const [source, setSource] = useState<"range" | "book">("range");
   const [fromBook, setFromBook] = useState("genesis");
   const [fromCh, setFromCh] = useState(1);
   const [toBook, setToBook] = useState("genesis");
   const [toCh, setToCh] = useState(50);
   const [paceMode, setPaceMode] = useState<"perDay" | "days">("perDay");
   const [pace, setPace] = useState(3);
+
+  const books = useCollection(personalbooks);
+  const [bookId, setBookId] = useState("");
+  const selected = books.find((b) => b.id === bookId) ?? books[0];
+  const paceArg = paceMode === "days" ? { days: pace } : { perDay: pace };
+  /* The division preview answers the form's question before the plan begins:
+   * how many sittings this book makes at this pace. */
+  const division = useMemo(
+    () => (source === "book" && selected ? divideBook(selected.body, paceArg) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [source, selected?.id, selected?.body, paceMode, pace]
+  );
 
   const clampCh = (slug: string, v: number) =>
     Math.max(1, Math.min(getBook(slug)?.chapters ?? 1, Math.floor(v) || 1));
@@ -192,9 +231,20 @@ function CustomPlanForm() {
     paceMode === "days"
       ? Math.max(1, Math.min(pace, chapters.length))
       : Math.ceil(chapters.length / Math.max(1, pace));
+  const bookDays = division
+    ? paceMode === "days"
+      ? Math.max(1, Math.min(pace, division.sessions.length))
+      : Math.ceil(division.sessions.length / Math.max(1, pace))
+    : 0;
 
   const begin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (source === "book") {
+      if (!selected) return;
+      beginBookPlan(selected, paceArg);
+      setName("");
+      return;
+    }
     if (chapters.length === 0) return;
     const from = getBook(fromBook);
     const to = getBook(toBook);
@@ -229,85 +279,130 @@ function CustomPlanForm() {
           className={`${field} w-full`}
         />
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="small-caps text-xs text-muted">From</span>
+          <span className="small-caps text-xs text-muted">Source</span>
           <select
-            value={fromBook}
-            onChange={(e) => {
-              setFromBook(e.target.value);
-              setFromCh((c) => clampCh(e.target.value, c));
-            }}
-            aria-label="From book"
+            value={source}
+            onChange={(e) => setSource(e.target.value as "range" | "book")}
+            aria-label="Plan source"
             className={field}
           >
-            {CANON.map((b) => (
-              <option key={b.slug} value={b.slug}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={1}
-            max={getBook(fromBook)?.chapters}
-            value={fromCh}
-            onChange={(e) => setFromCh(clampCh(fromBook, Number(e.target.value)))}
-            aria-label="From chapter"
-            className={`${field} w-20`}
-          />
-          <span className="small-caps text-xs text-muted">through</span>
-          <select
-            value={toBook}
-            onChange={(e) => {
-              setToBook(e.target.value);
-              setToCh((c) => clampCh(e.target.value, c));
-            }}
-            aria-label="Through book"
-            className={field}
-          >
-            {CANON.map((b) => (
-              <option key={b.slug} value={b.slug}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            min={1}
-            max={getBook(toBook)?.chapters}
-            value={toCh}
-            onChange={(e) => setToCh(clampCh(toBook, Number(e.target.value)))}
-            aria-label="Through chapter"
-            className={`${field} w-20`}
-          />
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="small-caps text-xs text-muted">Pace</span>
-          <input
-            type="number"
-            min={1}
-            value={pace}
-            onChange={(e) => setPace(Math.max(1, Math.floor(Number(e.target.value)) || 1))}
-            aria-label="Pace"
-            className={`${field} w-20`}
-          />
-          <select
-            value={paceMode}
-            onChange={(e) => setPaceMode(e.target.value as "perDay" | "days")}
-            aria-label="Pace measure"
-            className={field}
-          >
-            <option value="perDay">chapters a day</option>
-            <option value="days">days, start to finish</option>
+            <option value="range">A passage range</option>
+            <option value="book">A book</option>
           </select>
         </div>
+        {source === "range" && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="small-caps text-xs text-muted">From</span>
+            <select
+              value={fromBook}
+              onChange={(e) => {
+                setFromBook(e.target.value);
+                setFromCh((c) => clampCh(e.target.value, c));
+              }}
+              aria-label="From book"
+              className={field}
+            >
+              {CANON.map((b) => (
+                <option key={b.slug} value={b.slug}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={getBook(fromBook)?.chapters}
+              value={fromCh}
+              onChange={(e) => setFromCh(clampCh(fromBook, Number(e.target.value)))}
+              aria-label="From chapter"
+              className={`${field} w-20`}
+            />
+            <span className="small-caps text-xs text-muted">through</span>
+            <select
+              value={toBook}
+              onChange={(e) => {
+                setToBook(e.target.value);
+                setToCh((c) => clampCh(e.target.value, c));
+              }}
+              aria-label="Through book"
+              className={field}
+            >
+              {CANON.map((b) => (
+                <option key={b.slug} value={b.slug}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={getBook(toBook)?.chapters}
+              value={toCh}
+              onChange={(e) => setToCh(clampCh(toBook, Number(e.target.value)))}
+              aria-label="Through chapter"
+              className={`${field} w-20`}
+            />
+          </div>
+        )}
+        {source === "book" &&
+          (books.length === 0 ? (
+            <p className="text-sm text-muted">
+              No personal books yet. Import a text in the Library and it divides into sessions
+              here; the shipped library works carry no pagination to pace against.
+            </p>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="small-caps text-xs text-muted">Book</span>
+              <select
+                value={selected?.id ?? ""}
+                onChange={(e) => setBookId(e.target.value)}
+                aria-label="Personal book"
+                className={field}
+              >
+                {books.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        {(source === "range" || books.length > 0) && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="small-caps text-xs text-muted">Pace</span>
+            <input
+              type="number"
+              min={1}
+              value={pace}
+              onChange={(e) => setPace(Math.max(1, Math.floor(Number(e.target.value)) || 1))}
+              aria-label="Pace"
+              className={`${field} w-20`}
+            />
+            <select
+              value={paceMode}
+              onChange={(e) => setPaceMode(e.target.value as "perDay" | "days")}
+              aria-label="Pace measure"
+              className={field}
+            >
+              <option value="perDay">
+                {source === "book" ? "sessions a day" : "chapters a day"}
+              </option>
+              <option value="days">days, start to finish</option>
+            </select>
+          </div>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-muted">
-            {chapters.length} chapter{chapters.length === 1 ? "" : "s"} over {days} day
-            {days === 1 ? "" : "s"}.
+            {source === "book"
+              ? division && division.sessions.length > 0
+                ? `${division.sessions.length} session${division.sessions.length === 1 ? "" : "s"} over ${bookDays} day${bookDays === 1 ? "" : "s"}.`
+                : "This book has no words to pace."
+              : `${chapters.length} chapter${chapters.length === 1 ? "" : "s"} over ${days} day${days === 1 ? "" : "s"}.`}
           </p>
           <button
             type="submit"
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            disabled={source === "book" && (!division || division.sessions.length === 0)}
+            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             Begin plan
           </button>

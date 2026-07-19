@@ -249,6 +249,10 @@ export interface PersonalBookTab {
   bookId: string;
   /** Display title, captured at open time for the tab strip. */
   title: string;
+  /** The reading-plan session the tab stands on (1-based); absent reads the whole book. */
+  session?: number;
+  /** The plan's session count, recorded beside the session it numbers. */
+  of?: number;
 }
 
 /**
@@ -394,6 +398,16 @@ export interface PrayersTab {
 export interface PlansTab {
   id: string;
   type: "plans";
+}
+
+/**
+ * The Notes browser: every note in one list with a faceted sidebar
+ * (notebook, Bible book, anchor, day, and the passage scope). A singleton
+ * with no payload; the pane opens on the notes themselves.
+ */
+export interface NotesTab {
+  id: string;
+  type: "notes";
 }
 
 /**
@@ -546,6 +560,7 @@ export type Tab =
   | JournalTab
   | PrayersTab
   | PlansTab
+  | NotesTab
   | AlmanacTab
   | TopicsTab
   | SettingsTab
@@ -767,8 +782,19 @@ export function manuscriptTab(docId: string, title: string): ManuscriptTab {
   return { id: newId("tab"), type: "manuscript", docId, title };
 }
 
-export function personalBookTab(bookId: string, title: string): PersonalBookTab {
-  return { id: newId("tab"), type: "personalbook", bookId, title };
+export function personalBookTab(
+  bookId: string,
+  title: string,
+  session?: number,
+  of?: number
+): PersonalBookTab {
+  return {
+    id: newId("tab"),
+    type: "personalbook",
+    bookId,
+    title,
+    ...(session !== undefined && of !== undefined ? { session, of } : {}),
+  };
 }
 
 export function pulpitTab(): PulpitTab {
@@ -981,6 +1007,10 @@ export function prayersTab(): PrayersTab {
 
 export function plansTab(): PlansTab {
   return { id: newId("tab"), type: "plans" };
+}
+
+export function notesTab(): NotesTab {
+  return { id: newId("tab"), type: "notes" };
 }
 
 /** The launcher, keyed to the pane's passage at open time when it has one. */
@@ -1232,7 +1262,14 @@ export type WorkspaceAction =
   | { type: "openDiagram"; diagramId: string; title: string; paneId?: string }
   | { type: "openDesk"; paneId?: string }
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
-  | { type: "openPersonalBook"; bookId: string; title: string; paneId?: string }
+  | { type: "openPersonalBook"; bookId: string; title: string; session?: number; of?: number; paneId?: string }
+  | {
+      type: "setPersonalBookSession";
+      paneId: string;
+      tabId: string;
+      session?: number;
+      of?: number;
+    }
   | { type: "openPulpit"; paneId?: string }
   | { type: "openProject"; projectId: string; title: string; paneId?: string }
   | { type: "openChapel"; paneId?: string }
@@ -1266,6 +1303,7 @@ export type WorkspaceAction =
   | { type: "openJournal"; paneId?: string }
   | { type: "openPrayers"; paneId?: string }
   | { type: "openPlans"; paneId?: string }
+  | { type: "openNotes"; paneId?: string }
   | { type: "openDashboard"; paneId?: string }
   | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
@@ -1862,18 +1900,38 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
+      // The session pin holds water only with its count beside it.
+      const session =
+        action.session !== undefined &&
+        Number.isInteger(action.session) &&
+        action.session >= 1 &&
+        action.of !== undefined &&
+        Number.isInteger(action.of) &&
+        action.of >= action.session
+          ? action.session
+          : undefined;
+      const of = session !== undefined ? action.of : undefined;
       // One tab per book per pane: reopening the same book activates the tab
-      // already there, the manuscript's pattern keyed by bookId. Edits land
-      // in the collection and the pane reads them live.
+      // already there, the manuscript's pattern keyed by bookId, and a
+      // session rides along so a plan's reading lands where it belongs.
+      // Edits land in the collection and the pane reads them live.
       const existing = leaf.tabs.find((t) => t.type === "personalbook" && t.bookId === bookId);
-      if (existing) {
+      if (existing && existing.type === "personalbook") {
+        const next: PersonalBookTab =
+          session !== undefined && of !== undefined
+            ? { ...existing, session, of }
+            : { id: existing.id, type: "personalbook", bookId, title };
         return {
           ...state,
           activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? next : t)),
+            activeTabId: existing.id,
+          })),
         };
       }
-      const tab = personalBookTab(bookId, title);
+      const tab = personalBookTab(bookId, title, session, of);
       return {
         ...state,
         activePaneId: paneId,
@@ -1881,6 +1939,34 @@ export function workspaceReducer(
           ...l,
           tabs: [...l.tabs, tab],
           activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "setPersonalBookSession": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "personalbook") return state;
+      // The session pin updates in place, the harmony's pericope pin pattern;
+      // clearing it returns the tab to the whole book.
+      const session =
+        action.session !== undefined &&
+        Number.isInteger(action.session) &&
+        action.session >= 1 &&
+        action.of !== undefined &&
+        Number.isInteger(action.of) &&
+        action.of >= action.session
+          ? action.session
+          : undefined;
+      const next: PersonalBookTab =
+        session !== undefined
+          ? { ...tab, session, of: action.of as number }
+          : { id: tab.id, type: "personalbook", bookId: tab.bookId, title: tab.title };
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) => (t.id === action.tabId ? next : t)),
         })),
       };
     }
@@ -2457,7 +2543,8 @@ export function workspaceReducer(
 
     case "openJournal":
     case "openPrayers":
-    case "openPlans": {
+    case "openPlans":
+    case "openNotes": {
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
@@ -2465,7 +2552,13 @@ export function workspaceReducer(
       // One of each discipline per pane: a second open activates the tab
       // already there, the way the Library browser does.
       const type =
-        action.type === "openJournal" ? "journal" : action.type === "openPrayers" ? "prayers" : "plans";
+        action.type === "openJournal"
+          ? "journal"
+          : action.type === "openPrayers"
+            ? "prayers"
+            : action.type === "openPlans"
+              ? "plans"
+              : "notes";
       const existing = leaf.tabs.find((t) => t.type === type);
       if (existing) {
         return {
@@ -2479,7 +2572,9 @@ export function workspaceReducer(
           ? journalTab()
           : action.type === "openPrayers"
             ? prayersTab()
-            : plansTab();
+            : action.type === "openPlans"
+              ? plansTab()
+              : notesTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -3181,7 +3276,24 @@ function sanitizeNode(node: unknown): PaneNode | null {
         // answers to no book loads anyway and the pane says the book is gone.
         if (typeof t.bookId !== "string" || !PERSONALBOOK_ID_PATTERN.test(t.bookId)) continue;
         const title = typeof t.title === "string" && t.title.trim() ? t.title : "Untitled book";
-        tabs.push({ id: t.id, type: "personalbook", bookId: t.bookId, title });
+        // Older sessions predate the session pin; an absent or malformed one
+        // reads as the whole book rather than failing the load.
+        const session =
+          typeof t.session === "number" &&
+          Number.isInteger(t.session) &&
+          t.session >= 1 &&
+          typeof t.of === "number" &&
+          Number.isInteger(t.of) &&
+          t.of >= t.session
+            ? t.session
+            : undefined;
+        tabs.push({
+          id: t.id,
+          type: "personalbook",
+          bookId: t.bookId,
+          title,
+          ...(session !== undefined ? { session, of: t.of as number } : {}),
+        });
         continue;
       }
       if (t.type === "pulpit" && typeof t.id === "string") {
@@ -3297,6 +3409,7 @@ function sanitizeNode(node: unknown): PaneNode | null {
         (t.type === "journal" ||
           t.type === "prayers" ||
           t.type === "plans" ||
+          t.type === "notes" ||
           t.type === "almanac" ||
           t.type === "topics" ||
           t.type === "settings" ||

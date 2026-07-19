@@ -116,6 +116,73 @@ export function deleteNotebook(name: string) {
   }
 }
 
+/* ---------- Facets (the Notes browser) ---------- */
+
+/** The anchor facet: a note anchored to a verse, or an entry living in the journal. */
+export type NoteAnchorFacet = "passage" | "journal";
+
+/**
+ * The Notes browser's filter, one value per facet or null for the whole
+ * shelf. The facets follow what a note genuinely carries: the notebook it
+ * files under, the Bible book its anchor sits in, the kind of anchor, the
+ * day it belongs to, and the passage scope the Documents rail already knows.
+ */
+export interface NoteFacets {
+  notebook: string | null;
+  book: string | null;
+  anchor: NoteAnchorFacet | null;
+  /** The day as YYYY-MM-DD (noteDay), or null for every day. */
+  date: string | null;
+  /** The passage scope; an anchored note outside it falls away, a journal entry always does. */
+  scope?: { book: string; chapter: number } | null;
+}
+
+/** The day a note facets under: its journal date, else the day it last changed. */
+export function noteDay(n: MarginNote): string {
+  return n.date ?? n.updatedAt.slice(0, 10);
+}
+
+/**
+ * AND across the facets. `except` spares one facet, the way a facet group's
+ * own counts answer against the rest of the filter rather than against
+ * themselves.
+ */
+export function noteMatches(n: MarginNote, f: NoteFacets, except?: keyof NoteFacets): boolean {
+  if (except !== "scope" && f.scope) {
+    if (!isAnchored(n) || n.book !== f.scope.book || n.chapter !== f.scope.chapter) return false;
+  }
+  if (except !== "notebook" && f.notebook !== null && (n.notebook ?? "") !== f.notebook) {
+    return false;
+  }
+  if (except !== "book" && f.book !== null && n.book !== f.book) return false;
+  if (except !== "anchor" && f.anchor !== null && (f.anchor === "passage") !== isAnchored(n)) {
+    return false;
+  }
+  if (except !== "date" && f.date !== null && noteDay(n) !== f.date) return false;
+  return true;
+}
+
+/**
+ * One facet group's counts: the notes matching the rest of the filter,
+ * bucketed by the value this facet reads from each. A null value skips the
+ * note (a journal entry carries no Bible book).
+ */
+export function countFacet(
+  all: MarginNote[],
+  f: NoteFacets,
+  facet: keyof NoteFacets,
+  value: (n: MarginNote) => string | null
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const n of all) {
+    if (!noteMatches(n, f, facet)) continue;
+    const v = value(n);
+    if (v === null) continue;
+    counts.set(v, (counts.get(v) ?? 0) + 1);
+  }
+  return counts;
+}
+
 /* ---------- Export ---------- */
 
 export function exportNotesJson(): string {

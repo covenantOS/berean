@@ -1214,6 +1214,18 @@ function DocumentsList() {
                 </div>
               )
             )}
+            {/* The manage row: every note, journal entries beside the
+             * anchored kind, in the faceted Notes browser. */}
+            <div className="px-3 py-[3px] hover:bg-paper">
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "openNotes" })}
+                title="Open every note in the Notes browser"
+                className="w-full truncate text-left text-[0.8rem] text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                All notes
+              </button>
+            </div>
             <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
               Entries anchored to a day instead of a verse gather in the{" "}
               <button

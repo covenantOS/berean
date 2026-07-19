@@ -64,6 +64,7 @@ import MemoryPane from "./MemoryPane";
 import JournalPane from "./JournalPane";
 import PrayersPane from "./PrayersPane";
 import PlansPane from "./PlansPane";
+import NotesPane from "./NotesPane";
 import TopicsPane from "./TopicsPane";
 import SettingsPane from "./SettingsPane";
 import LauncherPane from "./LauncherPane";
@@ -177,7 +178,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "diagram") return `Diagram: ${tab.title}`;
   if (tab.type === "desk") return "Writing";
   if (tab.type === "manuscript") return tab.title;
-  if (tab.type === "personalbook") return tab.title;
+  if (tab.type === "personalbook") {
+    return tab.session !== undefined ? `${tab.title} · Session ${tab.session}` : tab.title;
+  }
   if (tab.type === "pulpit") return "Pulpit";
   if (tab.type === "project") return tab.title;
   if (tab.type === "chapel") return "Chapel";
@@ -207,6 +210,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "journal") return "Journal";
   if (tab.type === "prayers") return "Prayers";
   if (tab.type === "plans") return "Plans";
+  if (tab.type === "notes") return "Notes";
   if (tab.type === "topics") return "Topics";
   if (tab.type === "settings") return "Settings";
   if (tab.type === "launcher") return "New tab";
@@ -650,7 +654,13 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             </div>
           ) : activeTab.type === "personalbook" ? (
             <div className="h-full overflow-y-auto p-4">
-              <PersonalBookPane bookId={activeTab.bookId} />
+              <PersonalBookPane
+                paneId={leaf.id}
+                tabId={activeTab.id}
+                bookId={activeTab.bookId}
+                session={activeTab.session}
+                of={activeTab.of}
+              />
             </div>
           ) : activeTab.type === "pulpit" ? (
             <div className="h-full overflow-y-auto p-4">
@@ -728,6 +738,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             <div className="h-full overflow-y-auto p-4">
               <PlansPane />
             </div>
+          ) : activeTab.type === "notes" ? (
+            /* The browser owns its layout: the facet sidebar and the list
+             * scroll on their own inside the pane. */
+            <NotesPane />
           ) : activeTab.type === "topics" ? (
             <div className="h-full overflow-y-auto p-4">
               <TopicsPane />
