@@ -236,9 +236,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 12. Reading Plans
 
-- [ ] [SW] Bible reading plan generator: any range and pace with automatic session division, catch-up, and adjustment.
+- [x] [SW] Bible reading plan generator: any range and pace with automatic session division, catch-up, and adjustment. (The plans page builds a plan from any canon range at a pace set in chapters per day or in days, dividing the chapters evenly across the sessions (src/lib/plans.ts); single-chapter books and cross-testament ranges divide whole, and days clamp to the chapter count so no session comes up empty. A plan that falls behind offers Catch up, which redistributes the unread remainder over the days remaining, holding the plan's original pace when the end date has passed. Named historic calendars still wait on verified source tables.)
 - [ ] [SW] Book reading plans: schedule any library book by sessions, pages, or milestones.
-- [ ] [SW] Plan tracking: mark done, progress bars, Dashboard cards, mobile reminders; syncs across devices.
+- [x] [SW] Plan tracking: mark done, progress bars, Dashboard cards, mobile reminders; syncs across devices. (Days mark done from the plans page, and each plan carries a progress bar counting chapters read against the whole. The day's reading deep-links into the reader from the plans page, the Almanac, and the Chapel, and opens straight into the workspace from the Almanac rail. Dashboard cards and mobile reminders do not ship, and records stay on this device until the sync layer lands.)
 - [ ] [SW] Group plans: share reading plans to Faithlife groups.
 - [ ] [DATA][LICENSED] Lectionary and daily readings content (Catholic Daily Readings and similar) as ready-made plans.
 

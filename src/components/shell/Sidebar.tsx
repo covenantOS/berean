@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
+import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
@@ -23,9 +25,9 @@ const MODE_TITLES: Record<RailMode, string> = {
 
 /**
  * The left sidebar: one tree or section list per rail mode. The Read tree,
- * the Search rail's pinned searches and history, and the Documents list
- * carry real data; the rest are quiet placeholders until their panels land
- * in a later phase.
+ * the Search rail's pinned searches and history, the Documents list, and the
+ * Almanac rail's daily readings carry real data; the rest are quiet
+ * placeholders until their panels land in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -56,9 +58,7 @@ export default function Sidebar() {
           <Placeholder text="Studies, projects, and the sermon pipeline will gather here. Until then, open a passage and split the pane." />
         )}
         {state.railMode === "search" && <SearchPanel />}
-        {state.railMode === "almanac" && (
-          <Placeholder text="The calendar, rule of life, and timeline will live here." />
-        )}
+        {state.railMode === "almanac" && <AlmanacPanel />}
         {state.railMode === "settings" && (
           <Placeholder text="Workspace and reading preferences will live here. Session state already persists on this device." />
         )}
@@ -150,6 +150,86 @@ function SearchPanel() {
           );
         })
       )}
+    </div>
+  );
+}
+
+/* ---------- Almanac: today's appointed readings ---------- */
+
+/**
+ * The Almanac rail keeps the day's portion before the reader: every active
+ * plan's reading for today, each chapter opening in the workspace with a
+ * click. The plans page remains the home for beginning, marking, and
+ * adjusting; the calendar and rule of life arrive with their panels.
+ */
+function AlmanacPanel() {
+  const { dispatch } = useWorkspace();
+  const rows = useCollection(plans);
+  const active = rows
+    .map((plan) => {
+      const gen = generatorFor(plan);
+      return gen ? { plan, gen, day: Math.min(currentDay(plan), gen.days) } : null;
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
+
+  if (active.length === 0) {
+    return (
+      <p className="px-3 py-4 text-xs leading-relaxed text-muted">
+        No reading plan is underway. Begin one on the{" "}
+        <Link href="/plans" className="text-sapphire no-underline hover:underline">
+          plans page
+        </Link>{" "}
+        and the day&apos;s portion waits here.
+      </p>
+    );
+  }
+
+  return (
+    <div className="py-1">
+      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+        Today&apos;s readings
+      </div>
+      {active.map(({ plan, gen, day }) => {
+        const done = plan.completedDays.includes(day);
+        return (
+          <div key={plan.id} className="px-3 py-1.5">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="truncate text-[0.8rem] font-semibold text-ink">{gen.name}</span>
+              <span className="shrink-0 text-[0.62rem] text-muted">
+                {day}/{gen.days}
+                {done ? " · read" : ""}
+              </span>
+            </div>
+            <p className="text-[0.8rem] leading-relaxed">
+              {readingsForDay(gen, day).map((r, i) => (
+                <span key={i}>
+                  {r.chapters.map((c, j) => (
+                    <span key={`${c.book}-${c.chapter}`}>
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: "openRef", book: c.book, chapter: c.chapter })}
+                        title={`Open ${getBook(c.book)?.name} ${c.chapter} in the workspace`}
+                        className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      >
+                        {getBook(c.book)?.name} {c.chapter}
+                      </button>
+                      {j < r.chapters.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+                  {i < readingsForDay(gen, day).length - 1 ? " · " : ""}
+                </span>
+              ))}
+            </p>
+          </div>
+        );
+      })}
+      <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
+        Marking, catch-up, and new plans live on the{" "}
+        <Link href="/plans" className="text-sapphire no-underline hover:underline">
+          plans page
+        </Link>
+        .
+      </p>
     </div>
   );
 }
