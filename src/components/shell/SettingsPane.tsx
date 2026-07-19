@@ -32,6 +32,7 @@ import {
 } from "@/lib/highlights";
 import { CONFESSIONS, deleteProfile, profiles, saveProfile } from "@/lib/settings";
 import { deleteGraph, exportGraph, importGraph } from "@/lib/store";
+import { STORAGE_KEY } from "./workspace-state";
 
 /**
  * The Settings pane: the retired /settings page in the workspace. The
@@ -66,6 +67,20 @@ export default function SettingsPane() {
     ) {
       deleteGraph();
       setMessage("Everything on this device has been deleted.");
+    }
+  }
+
+  /* The workspace session is one key apart from the knowledge graph, so a
+   * reset drops the open panes and tabs and nothing else; the reload boots
+   * into the default state. */
+  function resetWorkspace() {
+    if (
+      window.confirm(
+        "Reset this device's workspace to the default layout? Your notes, books, layouts, and collections stay; the open panes and tabs go."
+      )
+    ) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      window.location.reload();
     }
   }
 
@@ -190,6 +205,25 @@ export default function SettingsPane() {
           manuscripts, liturgies, plans, memory work, calendar, rule of life, and these settings.
           It is also the bridge between devices until cloud sync arrives (see the architecture
           notes in the repository); no account is required and no telemetry exists.
+        </p>
+      </section>
+      <section className="rounded-[4px] border border-rule bg-surface p-5">
+        <h3 className="small-caps mb-3 text-sm text-muted">Workspace</h3>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm">
+            Return this device&apos;s panes, tabs, and arrangement to the default workspace. Your
+            notes, books, saved layouts, and collections stay; only the open arrangement goes.
+          </p>
+          <button
+            onClick={resetWorkspace}
+            className="shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
+          >
+            Reset workspace
+          </button>
+        </div>
+        <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
+          Display settings are per device by construction: text scale, candlelight, and citation
+          style are each a device-local key, so every device keeps its own.
         </p>
       </section>
       <section className="rounded-[4px] border border-rule bg-surface p-5">

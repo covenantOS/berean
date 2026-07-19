@@ -3,6 +3,7 @@ import type { VerseHighlight } from "./highlights";
 import type { MarginNote } from "./marginalia";
 import type { PersonalBook } from "./personalbooks";
 import type { PrayerList, PrayerRequest } from "./prayers";
+import type { PrintBook } from "./printbooks";
 import { getRights } from "./rights";
 
 /**
@@ -14,7 +15,9 @@ import { getRights } from "./rights";
  * matcher runs synchronously), Writing Desk manuscripts, passage and word
  * lists, clippings (excerpt and citation both answer), bibliographies (the
  * cited work's registry title and holder answer), personal books (title,
- * author, and the imported body), and prayer requests.
+ * author, and the imported body), print books (the physical shelf's
+ * cataloguing: title, author, ISBN, shelf note, and notes), and prayer
+ * requests.
  * Matching is a plain case-folded substring, honest at the scale of one
  * device's localStorage; the precise grammar in query.ts answers
  * verse-shaped questions and does not compose with prose. Pure over the
@@ -39,6 +42,7 @@ export type DocHit =
   | { kind: "manuscript"; doc: StudyDocument; snippet: string }
   | { kind: "list"; doc: ListDocument; snippet: string }
   | { kind: "personalbook"; book: PersonalBook; snippet: string }
+  | { kind: "printbook"; book: PrintBook; snippet: string }
   | { kind: "prayer"; list: PrayerList; request: PrayerRequest; snippet: string };
 
 export interface DocResults {
@@ -47,6 +51,7 @@ export interface DocResults {
   manuscripts: Extract<DocHit, { kind: "manuscript" }>[];
   lists: Extract<DocHit, { kind: "list" }>[];
   personalBooks: Extract<DocHit, { kind: "personalbook" }>[];
+  printBooks: Extract<DocHit, { kind: "printbook" }>[];
   prayers: Extract<DocHit, { kind: "prayer" }>[];
 }
 
@@ -57,6 +62,7 @@ export function resultCount(r: DocResults): number {
     r.manuscripts.length +
     r.lists.length +
     r.personalBooks.length +
+    r.printBooks.length +
     r.prayers.length
   );
 }
@@ -92,6 +98,7 @@ export function searchDocs(
     documents: StudyDocument[];
     lists: ListDocument[];
     personalBooks: PersonalBook[];
+    printBooks: PrintBook[];
     prayers: PrayerList[];
   }
 ): DocResults {
@@ -102,6 +109,7 @@ export function searchDocs(
     manuscripts: [],
     lists: [],
     personalBooks: [],
+    printBooks: [],
     prayers: [],
   };
   if (needle.length < 2) return out;
@@ -149,6 +157,16 @@ export function searchDocs(
      * whole imported text indexes, the way a manuscript's does. */
     const snippet = firstMatch([book.title, book.author, book.body], needle);
     if (snippet !== null) out.personalBooks.push({ kind: "personalbook", book, snippet });
+  }
+
+  for (const book of collections.printBooks) {
+    /* A print book answers by its cataloguing alone; no body exists on the
+     * device to index, the copy being paper. */
+    const snippet = firstMatch(
+      [book.title, book.author, book.isbn, book.location, book.notes],
+      needle
+    );
+    if (snippet !== null) out.printBooks.push({ kind: "printbook", book, snippet });
   }
 
   for (const list of collections.prayers) {    for (const request of list.requests) {

@@ -14,6 +14,7 @@ import { useCollection } from "@/lib/hooks";
 import { isAnchored, notes as marginNotes, type AnchoredNote } from "@/lib/marginalia";
 import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
+import { printbooks } from "@/lib/printbooks";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -88,6 +89,7 @@ export default function AllSearchPane({ q }: { q: string }) {
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const books = useCollection(personalbooks);
+  const printShelf = useCollection(printbooks);
   const prayers = useCollection(prayerLists);
   const [scripture, setScripture] = useState<ScriptureState>({ status: "loading" });
   const [shelf, setShelf] = useState<BooksState>({ status: "loading" });
@@ -156,9 +158,10 @@ export default function AllSearchPane({ q }: { q: string }) {
         documents: docs,
         lists,
         personalBooks: books,
+        printBooks: printShelf,
         prayers,
       }),
-    [q, notes, highlightRows, docs, lists, books, prayers]
+    [q, notes, highlightRows, docs, lists, books, printShelf, prayers]
   );
 
   /* A verse row carries the pane to its passage and selects the verse, the
@@ -373,14 +376,15 @@ function BooksGroup({ q, state }: { q: string; state: BooksState }) {
 
 /* ---------- Documents: the user's own collections, first hits ---------- */
 
-/** One flattened row across the six collections, in the Docs pane's order. */
+/** One flattened row across the seven collections, in the Docs pane's order. */
 interface DocRow {
   key: string;
   kindLabel: string;
   heading: string;
   snippet: string;
-  /** The Docs pane's own deep link for the row's kind. */
-  open: () => void;
+  /** The Docs pane's own deep link for the row's kind; a print book has
+   * none, its copy being paper, and the row renders without a target. */
+  open?: () => void;
   title: string;
 }
 
@@ -471,6 +475,17 @@ function DocumentsGroup({
       title: `Open ${h.book.title}`,
     });
   }
+  for (const h of results.printBooks) {
+    /* No open: the copy is paper, so the row names the book and its shelf
+     * note and stays a row. */
+    rows.push({
+      key: h.book.id,
+      kindLabel: h.book.location ? `Print book · ${h.book.location}` : "Print book",
+      heading: h.book.title,
+      snippet: h.snippet,
+      title: h.book.location ? `On the shelf: ${h.book.location}` : "A print book on your shelf",
+    });
+  }
   for (const h of results.prayers) {
     rows.push({
       key: h.request.id,
@@ -493,14 +508,9 @@ function DocumentsGroup({
       ) : (
         <>
           <ul>
-            {shown.map((r) => (
-              <li key={r.key} className="border-b border-rule/60">
-                <button
-                  type="button"
-                  onClick={r.open}
-                  title={r.title}
-                  className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-                >
+            {shown.map((r) => {
+              const inner = (
+                <>
                   <span className="small-caps text-sm font-medium text-sapphire">
                     {r.heading}
                     <span className="ml-2 text-[0.62rem] font-normal text-muted">
@@ -510,9 +520,27 @@ function DocumentsGroup({
                   <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
                     {r.snippet}
                   </span>
-                </button>
-              </li>
-            ))}
+                </>
+              );
+              return (
+                <li key={r.key} className="border-b border-rule/60">
+                  {r.open ? (
+                    <button
+                      type="button"
+                      onClick={r.open}
+                      title={r.title}
+                      className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    >
+                      {inner}
+                    </button>
+                  ) : (
+                    <div className="py-3" title={r.title}>
+                      {inner}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           {total > shown.length && (
             <button

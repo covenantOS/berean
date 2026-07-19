@@ -105,6 +105,8 @@ export default function BooksSearchPane({ q }: { q: string }) {
         documents: [],
         lists: [],
         personalBooks: books,
+        // Print books carry no body on the device; nothing to full-text.
+        printBooks: [],
         prayers: [],
       }).personalBooks,
     [q, books]

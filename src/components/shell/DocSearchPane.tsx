@@ -18,6 +18,7 @@ import {
 } from "@/lib/marginalia";
 import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
+import { printbooks } from "@/lib/printbooks";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -28,8 +29,9 @@ import { useWorkspace } from "./WorkspaceContext";
  * so a note written while the pane stands open answers on its own. Each hit
  * opens its target: a note carries the workspace to its verse, a highlight
  * to its passage, a manuscript to its own tab, a list to its pane tab, a
- * personal book to its reader, a prayer to the prayers pane. The header
- * handoff runs the same query against the canon.
+ * personal book to its reader, a prayer to the prayers pane. A print book
+ * hit names the work and where the paper copy sits; there is no digital
+ * target to open. The header handoff runs the same query against the canon.
  */
 export default function DocSearchPane({ q }: { q: string }) {
   const { dispatch } = useWorkspace();
@@ -39,6 +41,7 @@ export default function DocSearchPane({ q }: { q: string }) {
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const books = useCollection(personalbooks);
+  const printShelf = useCollection(printbooks);
   const prayers = useCollection(prayerLists);
 
   /* A highlight answers by its verse's reference and its style's name. */
@@ -65,13 +68,20 @@ export default function DocSearchPane({ q }: { q: string }) {
         documents: docs,
         lists,
         personalBooks: books,
+        printBooks: printShelf,
         prayers,
       }),
-    [q, notes, highlightRows, docs, lists, books, prayers]
+    [q, notes, highlightRows, docs, lists, books, printShelf, prayers]
   );
   const total = resultCount(results);
   const empty =
-    notes.length + marks.length + docs.length + lists.length + books.length + prayers.length ===
+    notes.length +
+      marks.length +
+      docs.length +
+      lists.length +
+      books.length +
+      printShelf.length +
+      prayers.length ===
     0;
 
   /* A note opens its anchor passage and selects the verse, so the context
@@ -110,8 +120,8 @@ export default function DocSearchPane({ q }: { q: string }) {
         {empty ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
             Nothing of yours is gathered yet. Notes on verses, highlighted verses, manuscripts
-            from the Writing Desk, saved lists, personal books, and prayer requests all answer
-            here once they exist.
+            from the Writing Desk, saved lists, personal books, print books, and prayer requests
+            all answer here once they exist.
           </p>
         ) : total === 0 ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
@@ -121,7 +131,8 @@ export default function DocSearchPane({ q }: { q: string }) {
           <div className="mx-auto max-w-prose px-6 py-4">
             <p className="mb-3 text-xs text-muted">
               {total.toLocaleString()} {total === 1 ? "record answers" : "records answer"} across
-              your notes, highlights, manuscripts, lists, personal books, and prayers.
+              your notes, highlights, manuscripts, lists, personal books, print books, and
+              prayers.
             </p>
             {results.notes.length > 0 && (
               <section className="mb-5">
@@ -311,12 +322,35 @@ export default function DocSearchPane({ q }: { q: string }) {
                 </ul>
               </section>
             )}
+            {results.printBooks.length > 0 && (
+              <section className="mb-5">
+                <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
+                  Print books · {results.printBooks.length}
+                </p>
+                <ul>
+                  {results.printBooks.map((h) => (
+                    /* No digital target: the copy is paper, so the hit names
+                     * the book and where it sits instead of opening anything. */
+                    <li key={h.book.id} className="border-b border-rule/60 py-3">
+                      <span className="small-caps text-sm font-medium text-sapphire">
+                        {h.book.title}
+                        <span className="ml-2 text-[0.62rem] font-normal text-muted">
+                          {[h.book.author, h.book.location].filter(Boolean).join(" · ")}
+                        </span>
+                      </span>
+                      <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
+                        {h.snippet}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
             {results.prayers.length > 0 && (
               <section className="mb-5">
                 <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
                   Prayers · {results.prayers.length}
-                </p>
-                <ul>
+                </p>                <ul>
                   {results.prayers.map((h) => (
                     <li key={h.request.id} className="border-b border-rule/60">
                       <button

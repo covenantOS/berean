@@ -56,6 +56,17 @@ export interface HoverRefNotice {
   toVerse: number;
 }
 
+/**
+ * The word under the pointer anywhere in the workspace (a tagged KJV word,
+ * an original-language token, a guide's word card), as the base Strong's
+ * ids it carries, broadcast so every open pane emphasizes its own words
+ * sharing one. Transient by design: a null report clears.
+ */
+export interface HoverWordNotice {
+  /** Base Strong's ids of the hovered word (src/lib/strongs.ts form). */
+  strongs: string[];
+}
+
 interface WorkspaceContextValue {
   state: WorkspaceState;
   dispatch: Dispatch<WorkspaceAction>;
@@ -73,6 +84,10 @@ interface WorkspaceContextValue {
   reportHoverRef: (notice: HoverRefNotice | null) => void;
   /** Subscribes to hovered-reference reports; returns the unsubscribe. */
   subscribeHoverRef: (listener: (notice: HoverRefNotice | null) => void) => () => void;
+  /** Broadcasts the hovered word's base Strong's ids (or null on hover out). */
+  reportHoverWord: (notice: HoverWordNotice | null) => void;
+  /** Subscribes to hovered-word reports; returns the unsubscribe. */
+  subscribeHoverWord: (listener: (notice: HoverWordNotice | null) => void) => () => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -354,6 +369,27 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  /*
+   * The lemma hover bus, the hover-emphasis bus's twin at word granularity:
+   * tagged and original words report the base Strong's ids under the
+   * pointer, open readers and guides listen, and a null report clears. Same
+   * reason for living outside React state: a pointer crossing a verse must
+   * not re-render the shell.
+   */
+  const wordListeners = useRef(new Set<(notice: HoverWordNotice | null) => void>());
+  const reportHoverWord = useCallback((notice: HoverWordNotice | null) => {
+    for (const listener of wordListeners.current) listener(notice);
+  }, []);
+  const subscribeHoverWord = useCallback(
+    (listener: (notice: HoverWordNotice | null) => void) => {
+      wordListeners.current.add(listener);
+      return () => {
+        wordListeners.current.delete(listener);
+      };
+    },
+    []
+  );
+
   const value = useMemo(
     () => ({
       state,
@@ -365,6 +401,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       subscribeLinkedVerse,
       reportHoverRef,
       subscribeHoverRef,
+      reportHoverWord,
+      subscribeHoverWord,
     }),
     [
       state,
@@ -375,6 +413,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       subscribeLinkedVerse,
       reportHoverRef,
       subscribeHoverRef,
+      reportHoverWord,
+      subscribeHoverWord,
     ]
   );
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

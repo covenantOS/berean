@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -63,14 +63,37 @@ type LoadState =
  * at open time. Word by Word renders every tagged token with its parsing;
  * each word opens its word study, each Strong's id opens the lexicon, and
  * each verse chip opens the passage. Important Words, Lemma in Passage, and
- * the edition-flag Textual Variants ride the same payload. Sections with
+ * the edition-flag Textual Variants ride the same payload. Hovering a word
+ * card or a lemma reports its base Strong's id on the lemma hover bus, so
+ * every occurrence lights up in the open readers. Sections with
  * nothing to say stay out of the report.
  */
 export default function ExegeticalGuide({ book, chapter }: { book: string; chapter: number }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch, reportHoverWord } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy link action; clears itself. */
   const [linkCopied, setLinkCopied] = useState(false);
+
+  /* The guide only reports on the lemma hover bus, never listens.
+   * reportedWord remembers that the guide holds the bus so the pane closing
+   * mid-hover clears it instead of leaving the readers lit. The payload's
+   * ids arrive normalized server-side, so they report as they are. */
+  const reportedWord = useRef(false);
+  const hoverWord = (strongs: string | null) => () => {
+    if (!strongs) return;
+    reportedWord.current = true;
+    reportHoverWord({ strongs: [strongs] });
+  };
+  const unhoverWord = () => {
+    if (!reportedWord.current) return;
+    reportedWord.current = false;
+    reportHoverWord(null);
+  };
+  useEffect(() => {
+    return () => {
+      if (reportedWord.current) reportHoverWord(null);
+    };
+  }, [reportHoverWord]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -123,6 +146,8 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
     <div
       key={i}
       dir="ltr"
+      onMouseEnter={hoverWord(w.strongs)}
+      onMouseLeave={unhoverWord}
       className="flex w-[7.5rem] shrink-0 flex-col gap-0.5 rounded-[3px] border border-rule bg-paper p-1.5"
     >
       {w.strongs ? (
@@ -239,6 +264,8 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
                     type="button"
                     title={`Open the word study for ${l.strongs}`}
                     onClick={() => dispatch({ type: "openWordStudy", strongsId: l.strongs })}
+                    onMouseEnter={hoverWord(l.strongs)}
+                    onMouseLeave={unhoverWord}
                     className={`${langClass} text-sm hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
                   >
                     {l.lemma}

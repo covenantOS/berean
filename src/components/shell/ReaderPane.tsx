@@ -35,6 +35,7 @@ import {
   type VerseHighlight,
 } from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
+import { baseStrongsIds } from "@/lib/strongs";
 import { verseCardSvg } from "@/lib/verseCard";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
@@ -192,6 +193,9 @@ export function translationShelf(): Promise<ShelfTranslation[]> {
  * only both drop; the locator rail under the header tracks the reading
  * position with pericope ticks and prev/next stepping; and a reference chip
  * hovered anywhere in the workspace outlines its verses here (ref-hover).
+ * A tagged or original word hovered anywhere in the workspace lights every
+ * word here carrying the same base Strong's id (word-hover), across panes
+ * and across the English and original views.
  * The header's Listen reads the chapter aloud: the LibriVox recording
  * where the KJV has one, the system voice elsewhere, the spoken verse
  * marked in a read-aloud channel and followed gently down the pane.
@@ -209,8 +213,15 @@ export default function ReaderPane({
   translation?: string;
   fontScale?: number;
 }) {
-  const { state, dispatch, reportLinkedVerse, subscribeLinkedVerse, subscribeHoverRef } =
-    useWorkspace();
+  const {
+    state,
+    dispatch,
+    reportLinkedVerse,
+    subscribeLinkedVerse,
+    subscribeHoverRef,
+    reportHoverWord,
+    subscribeHoverWord,
+  } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [apparatus, setApparatus] = useState<Apparatus>({ status: "idle" });
   const [wordsOn, setWordsOn] = useState(false);
@@ -228,6 +239,10 @@ export default function ReaderPane({
   /* Hover emphasis: the reference chip under the pointer anywhere in the
    * workspace; verses it covers wear the ref-hover channel until it clears. */
   const [hoverVerses, setHoverVerses] = useState<{ from: number; to: number } | null>(null);
+  /* Lemma hover emphasis: the base Strong's ids of the tagged or original
+   * word under the pointer anywhere in the workspace; words here carrying
+   * one wear the word-hover channel until the report clears. */
+  const [hoverWords, setHoverWords] = useState<Set<string> | null>(null);
   /* Reading view: a component-level overlay of this pane's text over the
    * whole window. The workspace state never moves for it; Escape exits. */
   const [reading, setReading] = useState(false);
@@ -408,6 +423,49 @@ export default function ReaderPane({
       }
     });
   }, [subscribeHoverRef, book, chapter]);
+
+  /*
+   * Lemma hover emphasis (Emphasize Active Lemmas, Corresponding Words). A
+   * tagged or original word under the pointer anywhere in the workspace
+   * reports its base Strong's ids; every word here carrying one wears
+   * word-hover until the report clears. Reports cross views and panes: a
+   * Hebrew token lights its KJV renderings, and a lemma hovered in one
+   * reader lights its occurrences in every open one.
+   */
+  useEffect(() => {
+    return subscribeHoverWord((notice) => {
+      if (notice) {
+        setHoverWords(new Set(notice.strongs));
+      } else {
+        setHoverWords((cur) => (cur === null ? cur : null));
+      }
+    });
+  }, [subscribeHoverWord]);
+
+  /* This pane's own reports. reportedWord remembers that this pane holds the
+   * bus so a pane closing mid-hover clears it instead of leaving every other
+   * pane lit on a word nobody points at. */
+  const reportedWord = useRef(false);
+  const hoverWord = (ids: string[] | undefined) => () => {
+    const strongs = baseStrongsIds(ids);
+    if (strongs.length === 0) return;
+    reportedWord.current = true;
+    reportHoverWord({ strongs });
+  };
+  const unhoverWord = () => {
+    if (!reportedWord.current) return;
+    reportedWord.current = false;
+    reportHoverWord(null);
+  };
+  useEffect(() => {
+    return () => {
+      if (reportedWord.current) reportHoverWord(null);
+    };
+  }, [reportHoverWord]);
+
+  /** True when one of the word's base ids is the lemma under the pointer. */
+  const wordHoverOn = (ids: string[] | undefined) =>
+    hoverWords !== null && baseStrongsIds(ids).some((s) => hoverWords.has(s));
 
   // Reading view leaves on Escape, unless a floating menu owns the key.
   useEffect(() => {
@@ -1089,10 +1147,12 @@ export default function ReaderPane({
         <span key={i}>
           {w.s && w.s.length > 0 ? (
             <span
-              className={`tagged-word armed ${isActiveWord(v.verse, w.t) ? "word-active" : ""}`}
+              className={`tagged-word armed ${isActiveWord(v.verse, w.t) ? "word-active" : ""}${wordHoverOn(w.s) ? " word-hover" : ""}`}
               onClick={tapTaggedWord(v.verse, w)}
               onDoubleClick={keylink(w.s)}
               onContextMenu={openWordMenu(wordFromTagged(v.verse, w))}
+              onMouseEnter={hoverWord(w.s)}
+              onMouseLeave={unhoverWord}
             >
               {w.t}
             </span>
@@ -1107,12 +1167,14 @@ export default function ReaderPane({
   const renderOrigWord = (lang: "hebrew" | "greek", verse: number, w: OriginalWord, i: number) => (
     <span key={i} className="orig-word">
       <span
-        className={`${lang === "hebrew" ? "lang-hebrew" : "lang-greek"}${wordsOn ? " tagged-word armed" : ""}${isActiveWord(verse, w.t) ? " word-active" : ""}`}
+        className={`${lang === "hebrew" ? "lang-hebrew" : "lang-greek"}${wordsOn ? " tagged-word armed" : ""}${isActiveWord(verse, w.t) ? " word-active" : ""}${wordHoverOn(w.s) ? " word-hover" : ""}`}
         onClick={wordsOn ? tapOriginalWord(verse, w) : undefined}
         onDoubleClick={w.s && w.s.length > 0 ? keylink(w.s) : undefined}
         onContextMenu={
           w.s && w.s.length > 0 ? openWordMenu(wordFromOriginal(verse, w)) : undefined
         }
+        onMouseEnter={w.s && w.s.length > 0 ? hoverWord(w.s) : undefined}
+        onMouseLeave={w.s && w.s.length > 0 ? unhoverWord : undefined}
       >
         {w.t}
       </span>

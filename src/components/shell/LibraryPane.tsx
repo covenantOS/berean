@@ -26,6 +26,7 @@ import {
   type LibraryMeta,
 } from "@/lib/librarymeta";
 import { importBook, personalbooks } from "@/lib/personalbooks";
+import { printbooks, type PrintBook } from "@/lib/printbooks";
 import { RIGHTS_REGISTRY, type RightsEntry } from "@/lib/rights";
 import { useWorkspace } from "./WorkspaceContext";
 import {
@@ -423,6 +424,8 @@ export default function LibraryPane() {
 
       <PersonalBooksSection />
 
+      <PrintBooksSection />
+
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
         Facets follow what the registry genuinely carries: kind, status, and
         license class, plus your tags and ratings. Language and era wait on
@@ -599,8 +602,178 @@ function PersonalBooksSection() {
   );
 }
 
-function FacetSelect({  label,
-  value,
+/**
+ * The Print Books shelf: the physical library, registered so Docs Search
+ * can name a paper copy and where it sits. A record is cataloguing only
+ * (title, author, ISBN, a shelf note, notes); no body is stored, so a book
+ * opens nothing and page-number citation does not ship. One form serves
+ * add and edit, the way the personal books import does.
+ */
+function PrintBooksSection() {
+  const books = useCollection(printbooks);
+  /** The book open in the form: its id, or "new" for a fresh record. */
+  const [editing, setEditing] = useState<string | "new" | null>(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [location, setLocation] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const begin = (b?: PrintBook) => {
+    setEditing(b ? b.id : "new");
+    setTitle(b?.title ?? "");
+    setAuthor(b?.author ?? "");
+    setIsbn(b?.isbn ?? "");
+    setLocation(b?.location ?? "");
+    setNotes(b?.notes ?? "");
+  };
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = title.trim();
+    if (!trimmed || editing === null) return;
+    /* Cleared fields write undefined, which JSON drops: the form can empty
+     * what it once set. */
+    const fields = {
+      title: trimmed,
+      author: author.trim() || undefined,
+      isbn: isbn.trim() || undefined,
+      location: location.trim() || undefined,
+      notes: notes.trim() || undefined,
+    };
+    if (editing === "new") printbooks.create(fields);
+    else printbooks.update(editing, fields);
+    setEditing(null);
+  };
+
+  return (
+    <section className="border-t border-rule pt-3">
+      <div className="flex items-baseline gap-2">
+        <p className="small-caps text-xs font-semibold text-muted">
+          Print books · {books.length}
+        </p>
+        {editing === null && (
+          <button
+            type="button"
+            onClick={() => begin()}
+            className="ml-auto border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Register a book
+          </button>
+        )}
+      </div>
+
+      {editing !== null && (
+        <form onSubmit={submit} className="mt-2 space-y-2 border border-rule bg-surface p-3">
+          <div className="flex flex-wrap gap-2">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+              aria-label="Book title"
+              autoFocus
+              spellCheck={false}
+              autoComplete="off"
+              className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <input
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Author"
+              aria-label="Book author"
+              spellCheck={false}
+              autoComplete="off"
+              className="w-44 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <input
+              value={isbn}
+              onChange={(e) => setIsbn(e.target.value)}
+              placeholder="ISBN"
+              aria-label="ISBN"
+              spellCheck={false}
+              autoComplete="off"
+              className="w-36 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Where it sits (shelf, room, box)"
+              aria-label="Where the copy sits"
+              spellCheck={false}
+              autoComplete="off"
+              className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+            />
+          </div>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Notes on the edition or the copy…"
+            aria-label="Notes"
+            spellCheck={false}
+            rows={2}
+            className="w-full resize-y border border-rule bg-paper px-2 py-1.5 text-xs leading-relaxed text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+          />
+          <div className="flex items-center gap-2">
+            <button
+              type="submit"
+              disabled={!title.trim()}
+              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {editing === "new" ? "Register" : "Save changes"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(null)}
+              className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Cancel
+            </button>
+            <p className="text-[0.68rem] text-muted">
+              Cataloguing only: Docs Search names the book and where it sits. No body is stored,
+              so nothing opens and page numbers are not tracked.
+            </p>
+          </div>
+        </form>
+      )}
+
+      {books.length > 0 && (
+        <ul className="mt-2 space-y-1">
+          {books.map((b) => (
+            <li key={b.id} className="flex items-center gap-2 border border-rule bg-surface px-3 py-2">
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-ink">{b.title}</span>
+                <span className="block text-[0.68rem] text-muted">
+                  {[b.author, b.isbn ? `ISBN ${b.isbn}` : undefined, b.location]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => begin(b)}
+                title={`Edit ${b.title}`}
+                className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => printbooks.remove(b.id)}
+                title={`Delete ${b.title}`}
+                aria-label={`Delete ${b.title}`}
+                className="border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function FacetSelect({  label,  value,
   onChange,
   options,
   disabled,
