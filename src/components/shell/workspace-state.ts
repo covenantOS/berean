@@ -98,10 +98,35 @@ export interface WordStudyTab {
   strongsId: string;
 }
 
+/** The Exegetical Guide: one chapter's original-language report. */
+export interface ExegeticalTab {
+  id: string;
+  type: "exegetical";
+  book: string;
+  chapter: number;
+}
+
+/** The Topic Guide: one entry of a topical work, opened as a report. */
+export interface TopicGuideTab {
+  id: string;
+  type: "topicguide";
+  work: "naves" | "torreys";
+  topicId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
-export type Tab = ReaderTab | SearchTab | ToolTab | GuideTab | WordStudyTab;
+export type Tab =
+  | ReaderTab
+  | SearchTab
+  | ToolTab
+  | GuideTab
+  | WordStudyTab
+  | ExegeticalTab
+  | TopicGuideTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -217,6 +242,18 @@ export function guideTab(book = "genesis", chapter = 1): GuideTab {
 
 export function wordStudyTab(strongsId: string): WordStudyTab {
   return { id: newId("tab"), type: "wordstudy", strongsId };
+}
+
+export function exegeticalTab(book = "genesis", chapter = 1): ExegeticalTab {
+  return { id: newId("tab"), type: "exegetical", book, chapter };
+}
+
+export function topicGuideTab(
+  work: "naves" | "torreys",
+  topicId: string,
+  title: string
+): TopicGuideTab {
+  return { id: newId("tab"), type: "topicguide", work, topicId, title };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -349,6 +386,8 @@ export type WorkspaceAction =
   | { type: "openLexicon"; id: string }
   | { type: "openGuide"; book: string; chapter: number; paneId?: string }
   | { type: "openWordStudy"; strongsId: string; paneId?: string }
+  | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
+  | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -502,6 +541,46 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       if (!findLeaf(state.root, paneId)) return state;
       const tab = wordStudyTab(m[0]);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openExegetical": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like the Passage Guide, the report pins its passage at open time.
+      const tab = exegeticalTab(book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTopicGuide": {
+      if (action.work !== "naves" && action.work !== "torreys") return state;
+      const topicId = action.topicId.trim().toLowerCase();
+      if (!/^[a-z0-9-]+$/.test(topicId)) return state;
+      const title = action.title.trim() || topicId;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const tab = topicGuideTab(action.work, topicId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -955,6 +1034,24 @@ function sanitizeNode(node: unknown): PaneNode | null {
       if (t.type === "wordstudy" && typeof t.id === "string") {
         if (typeof t.strongsId !== "string" || !/^[hg]\d{1,5}$/i.test(t.strongsId)) continue;
         tabs.push({ id: t.id, type: "wordstudy", strongsId: t.strongsId.toUpperCase() });
+        continue;
+      }
+      if (t.type === "exegetical" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        tabs.push({ id: t.id, type: "exegetical", book: book.slug, chapter });
+        continue;
+      }
+      if (t.type === "topicguide" && typeof t.id === "string") {
+        if (t.work !== "naves" && t.work !== "torreys") continue;
+        if (typeof t.topicId !== "string" || !/^[a-z0-9-]+$/.test(t.topicId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : t.topicId;
+        tabs.push({ id: t.id, type: "topicguide", work: t.work, topicId: t.topicId, title });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;

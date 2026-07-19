@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -198,12 +197,16 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
           <ul className="space-y-1.5">
             {s.topics.map((t) => (
               <li key={`${t.work}:${t.id}`}>
-                <Link
-                  href={`/topics/${t.work}/${t.id}`}
+                <button
+                  type="button"
+                  title={`Open the topic guide for ${t.title}`}
+                  onClick={() =>
+                    dispatch({ type: "openTopicGuide", work: t.work, topicId: t.id, title: t.title })
+                  }
                   className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   {t.title}
-                </Link>{" "}
+                </button>{" "}
                 <span className="text-xs text-muted">
                   {t.work === "naves" ? "Nave's" : "Torrey's"} · {t.verses}{" "}
                   {t.verses === 1 ? "verse" : "verses"}

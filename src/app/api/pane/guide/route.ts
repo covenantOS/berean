@@ -5,7 +5,7 @@ import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterEntities, type EntityKind } from "@/lib/entities";
 import { getChapterTopics } from "@/lib/topics";
 import { formatEventYears, formatRef, listTimelineEvents } from "@/lib/timeline";
-import { getTaggedChapter } from "@/lib/tagged";
+import { getTaggedChapter, STOP_STRONGS } from "@/lib/tagged";
 import { getLexiconEntry } from "@/lib/lexicon";
 
 /**
@@ -15,38 +15,6 @@ import { getLexiconEntry } from "@/lib/lexicon";
  * an error. Rights gating stays inside the data libs (commentary, entities,
  * and timeline all check the registry before reading).
  */
-
-/**
- * Function words carry the highest Strong's frequencies in any chapter and
- * would crowd out the words worth studying. A small stoplist: the article,
- * common pronouns, the copula, high-frequency conjunctions, prepositions,
- * and speech verbs.
- */
-const STOP_STRONGS = new Set([
-  // Greek
-  "G3588", // the
-  "G2532", // and
-  "G1161", // but, and
-  "G846", // he, him, they
-  "G1473", // I
-  "G4771", // thou, you
-  "G1510", // to be
-  "G2258", // was
-  "G1722", // in
-  "G3756", // not
-  "G3754", // that
-  "G1063", // for
-  "G3778", // this
-  "G2036", // said
-  "G3004", // say
-  // Hebrew
-  "H853", // eth (object marker)
-  "H834", // which, that
-  "H3588", // ki (for, that)
-  "H413", // el (to)
-  "H5921", // al (upon)
-  "H4480", // min (from)
-]);
 
 /** The first excerpt of a work, trimmed at a word boundary. */
 function trimExcerpt(text: string, max = 360): string {

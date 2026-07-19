@@ -33,6 +33,8 @@ import SearchPane from "./SearchPane";
 import ToolTabBody from "./ToolTabBody";
 import PassageGuide from "./PassageGuide";
 import WordStudyGuide from "./WordStudyGuide";
+import ExegeticalGuide from "./ExegeticalGuide";
+import TopicGuide from "./TopicGuide";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -115,6 +117,12 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "crossrefs") return "Cross-refs";
   if (tab.type === "guide") return `Guide: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
   if (tab.type === "wordstudy") return `Word Study: ${tab.strongsId}`;
+  if (tab.type === "exegetical") {
+    return `Exegetical: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  }
+  if (tab.type === "topicguide") {
+    return `Topic: ${tab.title.replace(/\b\w/g, (c) => c.toUpperCase())}`;
+  }
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -483,6 +491,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "wordstudy" ? (
             <div className="h-full overflow-y-auto p-4">
               <WordStudyGuide strongsId={activeTab.strongsId} />
+            </div>
+          ) : activeTab.type === "exegetical" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ExegeticalGuide book={activeTab.book} chapter={activeTab.chapter} />
+            </div>
+          ) : activeTab.type === "topicguide" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <TopicGuide work={activeTab.work} topicId={activeTab.topicId} />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

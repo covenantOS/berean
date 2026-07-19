@@ -80,10 +80,10 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [LICENSED] Media, Atlas, and Music sections: maps, images, and hymn resources tied to the passage.
 - [ ] [LICENSED] Journals, Sermons, Illustrations, and Collections sections: hits from journal series, sermon archives, illustration resources, and user collections.
 - [ ] [DATA] Systematic Theologies, Biblical Theologies, and Confessional Documents sections: passages cited inside those tagged corpora.
-- [ ] [SW] Exegetical Guide: original language report with Word by Word, Grammar, Textual Variants, Apparatuses, Lemma in Passage, and Important Words sections.
+- [x] [SW] Exegetical Guide: original language report with Word by Word, Grammar, Textual Variants, Apparatuses, Lemma in Passage, and Important Words sections.
 - [ ] [DATA][LICENSED] Textual Variants and Apparatuses sections: manuscript evidence from the variants dataset and licensed apparatuses.
 - [x] [SW] Bible Word Study guide: the word-level report; section detail under Word Study.
-- [ ] [DATA] Topic Guide: controlled vocabulary topic entry with definition, key passages, dictionary hits, and related topics.
+- [x] [DATA] Topic Guide: controlled vocabulary topic entry with definition, key passages, dictionary hits, and related topics.
 - [ ] [DATA] Sermon Starter Guide: passage or theme in; themes, key passages, illustrations, outlines, sermons, and media out; depends on Preaching Themes and sermon tagging.
 - [ ] [DATA] Theology Guide (Logos 10): systematic theology topics browsed through the Lexham Survey of Theology ontology.
 - [ ] [DATA][LICENSED] Counseling Guide (Logos 9): counseling topics mapped to passages and counseling resources.

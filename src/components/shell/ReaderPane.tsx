@@ -564,6 +564,16 @@ export default function ReaderPane({
           >
             Guide
           </button>
+          {ready && ready.hasOriginal && (
+            <button
+              type="button"
+              title="Open the Exegetical Guide for this chapter"
+              onClick={() => dispatch({ type: "openExegetical", book, chapter, paneId })}
+              className={toggleBtn(false)}
+            >
+              Exegetical
+            </button>
+          )}
           {ready && ready.translationId === "kjv" && ready.hasTagged && (
             <button
               type="button"

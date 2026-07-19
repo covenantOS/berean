@@ -28,12 +28,16 @@
  *   "berean:open-guide"        { book?, chapter? }  Passage Guide; absent ref
  *                              means the passage in focus.
  *   "berean:open-wordstudy"    { id }            Word study for a Strong's id.
+ *   "berean:open-exegetical"   { book?, chapter? }  Exegetical Guide; absent
+ *                              ref means the passage in focus.
+ *   "berean:open-topicguide"   { work, id, title }  Topic Guide for a Nave's
+ *                              or Torrey's entry.
  *   "berean:search"            { q }             Plain text submitted.
  *   "berean:apply-preset"      { preset }        Workspace preset placeholder,
  *                              currently only { preset: "reading" }.
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
- * Entity and topic rows navigate with the router to the existing
- * /library/entity/[id] and /topics/[work]/[id] pages (old routes stay
+ * Topic rows open the Topic Guide as a pane tab; entity rows navigate with
+ * the router to the existing /library/entity/[id] pages (old routes stay
  * reachable until Phase 1 of the rebuild lands).
  *
  * Data
@@ -165,6 +169,7 @@ interface Command {
 const COMMANDS: Command[] = [
   { id: "preset-reading", label: "Open reading preset", meta: "Preset" },
   { id: "guide", label: "Passage guide for this passage", meta: "Guide" },
+  { id: "exegetical", label: "Exegetical guide for this passage", meta: "Guide" },
   { id: "toggle-dock", label: "Toggle right dock" },
   { id: "daily", label: "Go to daily verse" },
   { id: "settings", label: "Open settings" },
@@ -281,6 +286,8 @@ export default function Omnibox() {
       emit("berean:apply-preset", { preset: "reading" });
     } else if (id === "guide") {
       emit("berean:open-guide", {});
+    } else if (id === "exegetical") {
+      emit("berean:open-exegetical", {});
     } else if (id === "toggle-dock") {
       emit("berean:toggle-right-dock", {});
     } else if (id === "daily") {
@@ -351,6 +358,16 @@ export default function Omnibox() {
           closePalette();
         },
       });
+      items.push({
+        key: "ref-exegetical",
+        group: "References",
+        label: `Exegetical guide: ${parsed.label}`,
+        sub: "Word by word, important words, lemmas, variants",
+        run: () => {
+          emit("berean:open-exegetical", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
     } else if (parsed.kind === "strongs") {
       items.push({
         key: "strongs",
@@ -412,7 +429,7 @@ export default function Omnibox() {
           run: () => {
             const href = `/topics/${t.work}/${t.id}`;
             pushRecent({ kind: "topic", label: t.title, href });
-            router.push(href);
+            emit("berean:open-topicguide", { work: t.work, id: t.id, title: t.title });
             closePalette();
           },
         });

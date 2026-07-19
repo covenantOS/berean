@@ -114,6 +114,29 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
       dispatch({ type: "openWordStudy", strongsId: detail.id.trim() });
     };
+    const onOpenExegetical = (e: Event) => {
+      const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
+      // Like the Passage Guide, an absent ref takes the pane in focus.
+      const book =
+        detail && typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        detail && typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({ type: "openExegetical", book, chapter });
+    };
+    const onOpenTopicGuide = (e: Event) => {
+      const detail = (e as CustomEvent<{ work?: string; id?: string; title?: string }>).detail;
+      if (!detail || typeof detail.work !== "string" || typeof detail.id !== "string") return;
+      if (!detail.id.trim()) return;
+      dispatch({
+        type: "openTopicGuide",
+        work: detail.work,
+        topicId: detail.id.trim(),
+        title: typeof detail.title === "string" ? detail.title : detail.id.trim(),
+      });
+    };
     const onToggleDock = () => dispatch({ type: "toggleDock" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
@@ -131,6 +154,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-lexicon", onOpenLexicon);
     window.addEventListener("berean:open-guide", onOpenGuide);
     window.addEventListener("berean:open-wordstudy", onOpenWordStudy);
+    window.addEventListener("berean:open-exegetical", onOpenExegetical);
+    window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
     window.addEventListener("keydown", onKey);
@@ -140,6 +165,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-lexicon", onOpenLexicon);
       window.removeEventListener("berean:open-guide", onOpenGuide);
       window.removeEventListener("berean:open-wordstudy", onOpenWordStudy);
+      window.removeEventListener("berean:open-exegetical", onOpenExegetical);
+      window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
       window.removeEventListener("keydown", onKey);
