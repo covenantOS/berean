@@ -31,20 +31,22 @@ export interface LexiconEntry {
 
 type Dictionary = Record<string, LexiconEntry>;
 
-const dicts = new Map<string, Dictionary | null>();
+const dicts = new Map<string, Promise<Dictionary | null>>();
 
 async function loadDict(which: "hebrew" | "greek"): Promise<Dictionary | null> {
   const hit = dicts.get(which);
   if (hit !== undefined) return hit;
-  try {
-    const file = path.join(process.cwd(), "data", "lexicon", `strongs-${which}.json`);
-    const raw = JSON.parse(await fs.readFile(file, "utf8")) as Dictionary;
-    dicts.set(which, raw);
-    return raw;
-  } catch {
-    dicts.set(which, null);
-    return null;
-  }
+  // The in-flight promise is cached: concurrent lookups share the one read.
+  const job = (async (): Promise<Dictionary | null> => {
+    try {
+      const file = path.join(process.cwd(), "data", "lexicon", `strongs-${which}.json`);
+      return JSON.parse(await fs.readFile(file, "utf8")) as Dictionary;
+    } catch {
+      return null;
+    }
+  })();
+  dicts.set(which, job);
+  return job;
 }
 
 /**

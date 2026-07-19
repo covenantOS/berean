@@ -36,6 +36,8 @@
  *                              entity.
  *   "berean:open-textcompare"  { book?, chapter? }  Text Comparison; absent
  *                              ref means the passage in focus.
+ *   "berean:open-concordance"  { book? }         Concordance; absent book
+ *                              means the book in focus.
  *   "berean:search"            { q }             Plain text submitted.
  *   "berean:apply-preset"      { preset }        A built-in layout preset id
  *                              (LAYOUT_PRESETS in shell/workspace-state.ts).
@@ -190,6 +192,7 @@ const COMMANDS: Command[] = [
   })),
   { id: "guide", label: "Passage guide for this passage", meta: "Guide" },
   { id: "exegetical", label: "Exegetical guide for this passage", meta: "Guide" },
+  { id: "concordance", label: "Concordance for this book", meta: "Tool" },
   { id: "toggle-dock", label: "Toggle right dock" },
   { id: "daily", label: "Go to daily verse" },
   { id: "settings", label: "Open settings" },
@@ -310,6 +313,8 @@ export default function Omnibox() {
       emit("berean:open-guide", {});
     } else if (id === "exegetical") {
       emit("berean:open-exegetical", {});
+    } else if (id === "concordance") {
+      emit("berean:open-concordance", {});
     } else if (id === "toggle-dock") {
       emit("berean:toggle-right-dock", {});
     } else if (id === "daily") {
@@ -414,6 +419,16 @@ export default function Omnibox() {
         sub: "Every translation against a base, word by word",
         run: () => {
           emit("berean:open-textcompare", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
+      items.push({
+        key: "ref-concordance",
+        group: "References",
+        label: `Concordance: ${parsed.bookName}`,
+        sub: "Every word and lemma in the book, counted, with its verses",
+        run: () => {
+          emit("berean:open-concordance", { book: parsed.book });
           closePalette();
         },
       });

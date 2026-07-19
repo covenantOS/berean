@@ -159,6 +159,13 @@ export interface TextCompareTab {
   base: string;
 }
 
+/** The Concordance: one book's word and lemma inventories, pinned at open. */
+export interface ConcordanceTab {
+  id: string;
+  type: "concordance";
+  book: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -174,7 +181,8 @@ export type Tab =
   | ListDocTab
   | FactbookTab
   | LibraryTab
-  | TextCompareTab;
+  | TextCompareTab
+  | ConcordanceTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -383,6 +391,10 @@ export function textCompareTab(
   base = COMPARE_BASE_DEFAULT
 ): TextCompareTab {
   return { id: newId("tab"), type: "textcompare", book, chapter, base };
+}
+
+export function concordanceTab(book = "genesis"): ConcordanceTab {
+  return { id: newId("tab"), type: "concordance", book };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -612,6 +624,8 @@ export type WorkspaceAction =
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
+  | { type: "openConcordance"; book: string; paneId?: string }
+  | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
   | { type: "setReaderFontScale"; paneId: string; tabId: string; fontScale: number }
@@ -1031,6 +1045,25 @@ export function workspaceReducer(
       };
     }
 
+    case "openConcordance": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the concordance pins its book at open time.
+      const tab = concordanceTab(book.slug);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
     case "selectVerse": {
       const book = getBook(action.book);
       if (!book) return state;
@@ -1406,6 +1439,24 @@ export function workspaceReducer(
       };
     }
 
+    case "setConcordanceBook": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "concordance" || tab.book === book.slug) return state;
+      // In place, one pane only, like the comparison's base swap.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "concordance" ? { ...t, book: book.slug } : t
+          ),
+        })),
+      };
+    }
+
     case "setReaderTranslation": {
       const leaf = findLeaf(state.root, action.paneId);
       const tab = leaf?.tabs.find((t) => t.id === action.tabId);
@@ -1589,6 +1640,12 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? t.base.toLowerCase()
             : COMPARE_BASE_DEFAULT;
         tabs.push({ id: t.id, type: "textcompare", book: book.slug, chapter, base });
+        continue;
+      }
+      if (t.type === "concordance" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        tabs.push({ id: t.id, type: "concordance", book: book.slug });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;
