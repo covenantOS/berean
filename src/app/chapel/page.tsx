@@ -187,7 +187,7 @@ export default function ChapelPage() {
                 ) : (
                   <>
                     today&apos;s portion from a{" "}
-                    <Link href="/plans" className="text-sapphire no-underline hover:underline">
+                    <Link href="/workspace?tab=plans" className="text-sapphire no-underline hover:underline">
                       reading plan
                     </Link>{" "}
                     once one is begun.
@@ -206,7 +206,7 @@ export default function ChapelPage() {
               <li>
                 <span className="font-medium">Prayer.</span> Confession, thanksgiving, the needs of
                 the household and the church, carried name by name on your{" "}
-                <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+                <Link href="/workspace?tab=prayers" className="text-sapphire no-underline hover:underline">
                   prayer lists
                 </Link>
                 .

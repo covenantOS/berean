@@ -95,6 +95,15 @@ function Intake() {
         case "memory":
           dispatch({ type: "openMemory", passageId: tab.passageId, paneId });
           break;
+        case "journal":
+          dispatch({ type: "openJournal", paneId });
+          break;
+        case "prayers":
+          dispatch({ type: "openPrayers", paneId });
+          break;
+        case "plans":
+          dispatch({ type: "openPlans", paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

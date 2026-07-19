@@ -93,10 +93,11 @@ export default function DocSearchPane({ q }: { q: string }) {
                     if (!isAnchored(n)) {
                       return (
                         <li key={n.id} className="border-b border-rule/60">
-                          <Link
-                            href="/journal"
+                          <button
+                            type="button"
+                            onClick={() => dispatch({ type: "openJournal" })}
                             title="Open this entry in the journal"
-                            className="block w-full py-3 text-left no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                            className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                           >
                             <span className="small-caps text-sm font-medium text-sapphire">
                               Journal
@@ -109,7 +110,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                             <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
                               {h.snippet}
                             </span>
-                          </Link>
+                          </button>
                         </li>
                       );
                     }
@@ -202,10 +203,11 @@ export default function DocSearchPane({ q }: { q: string }) {
                 <ul>
                   {results.prayers.map((h) => (
                     <li key={h.request.id} className="border-b border-rule/60">
-                      <Link
-                        href="/prayers"
-                        title={`Open the ${h.list.title} list on the prayers page`}
-                        className="block w-full py-3 text-left no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: "openPrayers" })}
+                        title={`Open the ${h.list.title} list in the prayers pane`}
+                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.request.title}
@@ -217,7 +219,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                         <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
                           {h.snippet}
                         </span>
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>

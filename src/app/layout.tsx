@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Topics
               </Link>{" "}
               ·{" "}
-              <Link href="/plans" className="text-sapphire">
+              <Link href="/workspace?tab=plans" className="text-sapphire">
                 Plans
               </Link>{" "}
               ·{" "}
@@ -89,11 +89,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Memory
               </Link>{" "}
               ·{" "}
-              <Link href="/journal" className="text-sapphire">
+              <Link href="/workspace?tab=journal" className="text-sapphire">
                 Journal
               </Link>{" "}
               ·{" "}
-              <Link href="/prayers" className="text-sapphire">
+              <Link href="/workspace?tab=prayers" className="text-sapphire">
                 Prayers
               </Link>{" "}
               ·{" "}

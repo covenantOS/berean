@@ -142,7 +142,7 @@ export default function AlmanacPage() {
           {duePrayers.length > 0 && (
             <li>
               Prayer:{" "}
-              <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+              <Link href="/workspace?tab=prayers" className="text-sapphire no-underline hover:underline">
                 {duePrayers.length} request{duePrayers.length === 1 ? "" : "s"} appointed today
               </Link>
             </li>
@@ -162,7 +162,7 @@ export default function AlmanacPage() {
           {activePlans.length === 0 && dueMemory.length === 0 && duePrayers.length === 0 && (
             <li className="text-muted">
               Nothing appointed. Begin a{" "}
-              <Link href="/plans" className="text-sapphire no-underline hover:underline">
+              <Link href="/workspace?tab=plans" className="text-sapphire no-underline hover:underline">
                 reading plan
               </Link>{" "}
               or add{" "}
@@ -170,7 +170,7 @@ export default function AlmanacPage() {
                 memory work
               </Link>{" "}
               or a{" "}
-              <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+              <Link href="/workspace?tab=prayers" className="text-sapphire no-underline hover:underline">
                 prayer list
               </Link>
               , and the Almanac will keep the day&apos;s portion before you.

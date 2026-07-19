@@ -226,7 +226,7 @@ function ModeTag({ mode }: { mode?: SearchEntry["mode"] }) {
  * The Almanac rail keeps the day's portion before the reader: every active
  * plan's reading for today, each chapter opening in the workspace with a
  * click, and the prayer requests that stand due, marked prayed in place.
- * The plans page remains the home for beginning, marking, and adjusting;
+ * The plans pane remains the home for beginning, marking, and adjusting;
  * the calendar and rule of life arrive with their panels.
  */
 function AlmanacPanel() {
@@ -246,14 +246,22 @@ function AlmanacPanel() {
   if (active.length === 0 && due.length === 0 && dueMemory.length === 0) {
     return (
       <p className="px-3 py-4 text-xs leading-relaxed text-muted">
-        Nothing is appointed for today. Begin a plan on the{" "}
-        <Link href="/plans" className="text-sapphire no-underline hover:underline">
-          plans page
-        </Link>{" "}
-        or a list on the{" "}
-        <Link href="/prayers" className="text-sapphire no-underline hover:underline">
-          prayers page
-        </Link>{" "}
+        Nothing is appointed for today. Begin a plan in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openPlans" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          plans pane
+        </button>{" "}
+        or a list in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openPrayers" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          prayers pane
+        </button>{" "}
         and the day&apos;s portion waits here.
       </p>
     );
@@ -365,14 +373,22 @@ function AlmanacPanel() {
         </>
       )}
       <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
-        Marking, catch-up, and new plans live on the{" "}
-        <Link href="/plans" className="text-sapphire no-underline hover:underline">
-          plans page
-        </Link>
-        ; the lists and their answered history live on the{" "}
-        <Link href="/prayers" className="text-sapphire no-underline hover:underline">
-          prayers page
-        </Link>
+        Marking, catch-up, and new plans live in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openPlans" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          plans pane
+        </button>
+        ; the lists and their answered history live in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openPrayers" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          prayers pane
+        </button>
         ; memory work lives in the{" "}
         <button
           type="button"
@@ -1047,9 +1063,13 @@ function DocumentsList() {
             )}
             <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
               Entries anchored to a day instead of a verse gather in the{" "}
-              <Link href="/journal" className="text-sapphire no-underline hover:underline">
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "openJournal" })}
+                className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
                 journal
-              </Link>
+              </button>
               .
             </p>
           </div>

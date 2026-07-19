@@ -47,6 +47,9 @@ import ConcordancePane from "./ConcordancePane";
 import AtlasPane from "./AtlasPane";
 import TimelinePane from "./TimelinePane";
 import MemoryPane from "./MemoryPane";
+import JournalPane from "./JournalPane";
+import PrayersPane from "./PrayersPane";
+import PlansPane from "./PlansPane";
 import LauncherPane from "./LauncherPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
@@ -164,6 +167,9 @@ function tabLabel(tab: Tab): string {
       p.to !== p.from ? `–${p.to}` : ""
     }`;
   }
+  if (tab.type === "journal") return "Journal";
+  if (tab.type === "prayers") return "Prayers";
+  if (tab.type === "plans") return "Plans";
   if (tab.type === "launcher") return "New tab";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
@@ -599,6 +605,18 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "memory" ? (
             <div className="h-full overflow-y-auto p-4">
               <MemoryPane passageId={activeTab.passageId} />
+            </div>
+          ) : activeTab.type === "journal" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <JournalPane />
+            </div>
+          ) : activeTab.type === "prayers" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <PrayersPane />
+            </div>
+          ) : activeTab.type === "plans" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <PlansPane />
             </div>
           ) : activeTab.type === "launcher" ? (
             <div className="h-full overflow-y-auto p-4">

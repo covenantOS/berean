@@ -36,6 +36,10 @@ import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN, MEMORY_ID_PATTERN } from "./worksp
  *                       timeline:call-of-abraham the Timeline at an event
  *                       memory                   the Memory work tab
  *                       memory:<id>              the drill on a taken-up passage
+ *                     Three discipline singletons carry no payload:
+ *                       journal                  the Journal tab
+ *                       prayers                  the Prayer lists tab
+ *                       plans                    the Reading plans tab
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -94,6 +98,9 @@ export type DeepLinkTab =
   | { kind: "atlas"; place?: string }
   | { kind: "timeline"; event?: string }
   | { kind: "memory"; passageId?: string }
+  | { kind: "journal" }
+  | { kind: "prayers" }
+  | { kind: "plans" }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -109,6 +116,9 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "atlas") return { kind: "atlas" };
     if (kind === "timeline") return { kind: "timeline" };
     if (kind === "memory") return { kind: "memory" };
+    if (kind === "journal") return { kind: "journal" };
+    if (kind === "prayers") return { kind: "prayers" };
+    if (kind === "plans") return { kind: "plans" };
     return null;
   }
   if (i === 0) return null;

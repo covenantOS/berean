@@ -225,6 +225,34 @@ export interface MemoryTab {
 }
 
 /**
+ * The journal: date-anchored notes read as a diary. A singleton with no
+ * payload; the pane opens on the capture form and the days already written.
+ */
+export interface JournalTab {
+  id: string;
+  type: "journal";
+}
+
+/**
+ * Prayer lists: the requests carried before God, gathered into lists. A
+ * singleton with no payload; the pane opens on the due requests and the
+ * lists themselves.
+ */
+export interface PrayersTab {
+  id: string;
+  type: "prayers";
+}
+
+/**
+ * Reading plans: the canon paced evenly across days. A singleton with no
+ * payload; the pane opens on the active plans and the build-a-plan form.
+ */
+export interface PlansTab {
+  id: string;
+  type: "plans";
+}
+
+/**
  * The Timeline: the curated chronology in era bands. An event id opens the
  * chart with that event selected, the way the retired page's ?event= did.
  */
@@ -272,6 +300,9 @@ export type Tab =
   | AtlasTab
   | TimelineTab
   | MemoryTab
+  | JournalTab
+  | PrayersTab
+  | PlansTab
   | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -538,6 +569,18 @@ export function memoryTab(passageId?: string): MemoryTab {
   };
 }
 
+export function journalTab(): JournalTab {
+  return { id: newId("tab"), type: "journal" };
+}
+
+export function prayersTab(): PrayersTab {
+  return { id: newId("tab"), type: "prayers" };
+}
+
+export function plansTab(): PlansTab {
+  return { id: newId("tab"), type: "plans" };
+}
+
 /** The launcher, keyed to the pane's passage at open time when it has one. */
 export function launcherTab(ref?: { book: string; chapter: number }): LauncherTab {
   return { id: newId("tab"), type: "launcher", ...(ref ? { book: ref.book, chapter: ref.chapter } : {}) };
@@ -783,6 +826,9 @@ export type WorkspaceAction =
   | { type: "openAtlas"; place?: string; title?: string; paneId?: string }
   | { type: "openTimeline"; event?: string; title?: string; paneId?: string }
   | { type: "openMemory"; passageId?: string; paneId?: string }
+  | { type: "openJournal"; paneId?: string }
+  | { type: "openPrayers"; paneId?: string }
+  | { type: "openPlans"; paneId?: string }
   | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
@@ -1324,6 +1370,42 @@ export function workspaceReducer(
       if (!findLeaf(state.root, paneId)) return state;
       // Like a guide, the drill pins its passage at open time.
       const tab = memoryTab(passageId || undefined);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openJournal":
+    case "openPrayers":
+    case "openPlans": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One of each discipline per pane: a second open activates the tab
+      // already there, the way the Library browser does.
+      const type =
+        action.type === "openJournal" ? "journal" : action.type === "openPrayers" ? "prayers" : "plans";
+      const existing = leaf.tabs.find((t) => t.type === type);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab =
+        action.type === "openJournal"
+          ? journalTab()
+          : action.type === "openPrayers"
+            ? prayersTab()
+            : plansTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -2004,6 +2086,14 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? t.passageId
             : undefined;
         tabs.push({ id: t.id, type: "memory", ...(passageId ? { passageId } : {}) });
+        continue;
+      }
+      if (
+        (t.type === "journal" || t.type === "prayers" || t.type === "plans") &&
+        typeof t.id === "string"
+      ) {
+        // Singletons carry nothing to validate.
+        tabs.push({ id: t.id, type: t.type });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {
