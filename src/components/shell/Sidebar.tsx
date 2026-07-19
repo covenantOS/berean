@@ -25,6 +25,7 @@ import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-h
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import { WorkflowsSection } from "./WorkflowPane";
+import { CanvasesSection } from "./CanvasPane";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
@@ -79,6 +80,7 @@ export default function Sidebar() {
         {state.railMode === "documents" && (
           <>
             <WorkflowsSection />
+            <CanvasesSection />
             <DocumentsList />
           </>
         )}

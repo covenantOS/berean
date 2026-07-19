@@ -229,9 +229,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 11. Canvas and Whiteboard
 
-- [ ] [SW] Canvas tool: infinite whiteboard for visual study; insert passages, text, shapes, connectors, and images.
-- [ ] [SW] Canvas documents: multiple saved canvases synced like other documents.
-- [ ] [SW] Canvas export and share as images for teaching.
+- [x] [SW] Canvas tool: infinite whiteboard for visual study; insert passages, text, shapes, connectors, and images. (Shipped as the canvas pane (src/components/shell/CanvasPane.tsx on src/lib/canvas.ts): a pan-and-zoom surface of hand-rolled cards with text edited in place, passage cards fetched through /api/passages at insert with the text snapshot and citation preserved, rectangles and ellipses in the stained-glass palette, and connectors that join two items by id and follow them as they drag; images as inserted media stay out.)
+- [x] [SW] Canvas documents: multiple saved canvases synced like other documents. (The canvases collection (berean.canvases.v1, GRAPH_KEYS-registered) persists device-local like every other collection, with create, rename, and delete in the Documents rail, a per-id canvasdoc tab that dedupes and degrades when its record is gone, and a New canvas row in the launcher; cross-device sync is Phase 2 with the rest of the graph.)
+- [x] [SW] Canvas export and share as images for teaching. (Export downloads the canvas as a standalone SVG sheet, cards laid out at their positions with connectors beneath and prose wrapped in the reader serif, the verse card's download precedent; PNG rasterization and a share handoff stay out.)
 - [ ] [SW] Draw On Screen (mobile): freehand pen and highlighter markup over any resource screen; save to photos or attach to a note.
 
 ## 12. Reading Plans

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
+import { createCanvas } from "@/lib/canvas";
 import { guides } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
 import { recordSearch, useSearchSaves } from "@/lib/search-history";
@@ -9,6 +10,7 @@ import { layoutState, layouts } from "./layouts";
 import { useWorkspace } from "./WorkspaceContext";
 import {
   allSearchTab,
+  canvasDocTab,
   concordanceTab,
   customGuideTab,
   docSearchTab,
@@ -249,6 +251,20 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(guideEditorTab(null))}>
             Compose a guide
             <span className={HINT}>Guide editor</span>
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            title="A whiteboard for visual study; saved canvases live in the Documents rail"
+            className={ROW}
+            onClick={() => {
+              const c = createCanvas("Untitled canvas");
+              choose(canvasDocTab(c.id, c.name));
+            }}
+          >
+            New canvas
+            <span className={HINT}>Visual study</span>
           </button>
         </li>
         <li>

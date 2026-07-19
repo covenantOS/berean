@@ -191,6 +191,15 @@ export interface ListDocTab {
   title: string;
 }
 
+/** A canvas (src/lib/canvas.ts) open on its whiteboard, pinned to its id. */
+export interface CanvasDocTab {
+  id: string;
+  type: "canvasdoc";
+  canvasId: string;
+  /** The canvas's name, captured at open time for the tab strip. */
+  title: string;
+}
+
 /**
  * The Writing Desk: the manuscript list with its filters and sorts. A
  * singleton with no payload; the pane opens on the desk itself.
@@ -421,6 +430,7 @@ export type Tab =
   | ExegeticalTab
   | TopicGuideTab
   | ListDocTab
+  | CanvasDocTab
   | DeskTab
   | ManuscriptTab
   | PulpitTab
@@ -634,6 +644,10 @@ export function listDocTab(docId: string, title: string): ListDocTab {
   return { id: newId("tab"), type: "listdoc", docId, title };
 }
 
+export function canvasDocTab(canvasId: string, title: string): CanvasDocTab {
+  return { id: newId("tab"), type: "canvasdoc", canvasId, title };
+}
+
 export function deskTab(): DeskTab {
   return { id: newId("tab"), type: "desk" };
 }
@@ -686,6 +700,9 @@ export const MEMORY_ID_PATTERN =
 
 /** Manuscript ids are the store's UUIDs, the same shape memory passage ids take. */
 export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Canvas ids are the store's UUIDs, the same shape memory passage ids take. */
+export const CANVAS_ID_PATTERN = MEMORY_ID_PATTERN;
 
 /** Project ids are the store's UUIDs, the same shape memory passage ids take. */
 export const PROJECT_ID_PATTERN = MEMORY_ID_PATTERN;
@@ -1016,6 +1033,7 @@ export type WorkspaceAction =
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
+  | { type: "openCanvasDoc"; canvasId: string; title: string; paneId?: string }
   | { type: "openDesk"; paneId?: string }
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
   | { type: "openPulpit"; paneId?: string }
@@ -1484,6 +1502,37 @@ export function workspaceReducer(
       };
     }
 
+    case "openCanvasDoc": {
+      const canvasId = action.canvasId.trim();
+      if (!CANVAS_ID_PATTERN.test(canvasId)) return state;
+      const title = action.title.trim() || "Untitled canvas";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per canvas per pane: reopening the same canvas activates the
+      // tab already there, the manuscript's pattern keyed by canvasId. Edits
+      // land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "canvasdoc" && t.canvasId === canvasId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = canvasDocTab(canvasId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
     case "openDesk": {
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
@@ -1491,8 +1540,7 @@ export function workspaceReducer(
       if (!leaf) return state;
       // One desk per pane: a second open activates the tab already there,
       // the way the Library browser does.
-      const existing = leaf.tabs.find((t) => t.type === "desk");
-      if (existing) {
+      const existing = leaf.tabs.find((t) => t.type === "desk");      if (existing) {
         return {
           ...state,
           activePaneId: paneId,
@@ -2564,6 +2612,15 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled list";
         tabs.push({ id: t.id, type: "listdoc", docId: t.docId, title });
+        continue;
+      }
+      if (t.type === "canvasdoc" && typeof t.id === "string") {
+        // Like a manuscript, a malformed id drops the tab and an unanswered
+        // one loads anyway; the pane says the canvas is gone.
+        if (typeof t.canvasId !== "string" || !CANVAS_ID_PATTERN.test(t.canvasId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Untitled canvas";
+        tabs.push({ id: t.id, type: "canvasdoc", canvasId: t.canvasId, title });
         continue;
       }
       if (t.type === "desk" && typeof t.id === "string") {
