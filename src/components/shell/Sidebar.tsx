@@ -611,6 +611,14 @@ function CanonTree() {
         >
           The canon at a glance
         </button>
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openHarmony" })}
+          title="Open the parallel gospel reader: each pericope with its parallel accounts in columns"
+          className="mt-1 w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          The Gospels in parallel
+        </button>
       </div>
       {(["OT", "NT"] as const).map((testament) => (
         <div key={testament} className="mb-1">

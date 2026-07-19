@@ -65,6 +65,12 @@ import {
  *                       almanac                  the preaching calendar tab
  *                     The canon explorer carries no payload either:
  *                       bookexplorer             the Bible Books Explorer tab
+ *                     The parallel gospel reader takes an optional payload:
+ *                       harmony                  the pericope index
+ *                       harmony:mk.1.9           the reader at a pericope start
+ *                     The wisdom explorers name their book:
+ *                       wisdom:psalms            the Psalms Explorer tab
+ *                       wisdom:proverbs          the Proverbs Explorer tab
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -137,7 +143,9 @@ export type DeepLinkTab =
   | { kind: "topics" }
   | { kind: "settings" }
   | { kind: "library" }
-  | { kind: "bookexplorer" };
+  | { kind: "bookexplorer" }
+  | { kind: "harmony"; book?: string; chapter?: number; verse?: number }
+  | { kind: "wisdom"; book: "psalms" | "proverbs" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -164,6 +172,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "chapel") return { kind: "chapel" };
     if (kind === "almanac") return { kind: "almanac" };
     if (kind === "bookexplorer") return { kind: "bookexplorer" };
+    if (kind === "harmony") return { kind: "harmony" };
     return null;
   }
   if (i === 0) return null;
@@ -238,6 +247,18 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       const book = resolveBookName(payload.replace(/^(\d)\s*/, "$1 "));
       if (!book) return null;
       return { kind: "concordance", book: book.slug };
+    }
+    case "harmony": {
+      // The pin rides the shared reference grammar; a bare chapter resolves
+      // but pins nothing, so the pane opens on the index instead.
+      const ref = parseDeepLinkRef(payload);
+      if (!ref || ref.verse === undefined) return { kind: "harmony" };
+      return { kind: "harmony", book: ref.book, chapter: ref.chapter, verse: ref.verse };
+    }
+    case "wisdom": {
+      const book = payload.toLowerCase();
+      if (book !== "psalms" && book !== "proverbs") return null;
+      return { kind: "wisdom", book };
     }
     default:
       return null;

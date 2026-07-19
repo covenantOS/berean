@@ -69,6 +69,8 @@ import LauncherPane from "./LauncherPane";
 import DashboardPane from "./DashboardPane";
 import ToolsPane from "./ToolsPane";
 import BookExplorerPane from "./BookExplorerPane";
+import HarmonyPane from "./HarmonyPane";
+import WisdomExplorerPane from "./WisdomExplorerPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -209,6 +211,14 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "dashboard") return "Today";
   if (tab.type === "tools") return "Tools";
   if (tab.type === "bookexplorer") return "The Canon";
+  if (tab.type === "harmony") {
+    return tab.book !== undefined
+      ? `Harmony: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}:${tab.verse}`
+      : "Gospel Harmony";
+  }
+  if (tab.type === "wisdomexplorer") {
+    return tab.book === "psalms" ? "Psalms Explorer" : "Proverbs Explorer";
+  }
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -735,6 +745,20 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "bookexplorer" ? (
             <div className="h-full overflow-y-auto p-4">
               <BookExplorerPane />
+            </div>
+          ) : activeTab.type === "harmony" ? (
+            /* Like the multiview, the pane owns its scrolling: the columns
+             * share a single scroll container. */
+            <HarmonyPane
+              paneId={leaf.id}
+              tabId={activeTab.id}
+              book={activeTab.book}
+              chapter={activeTab.chapter}
+              verse={activeTab.verse}
+            />
+          ) : activeTab.type === "wisdomexplorer" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <WisdomExplorerPane paneId={leaf.id} tabId={activeTab.id} book={activeTab.book} />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

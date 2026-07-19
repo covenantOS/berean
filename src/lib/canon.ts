@@ -85,6 +85,9 @@ export const CANON: Book[] = [
 
 const bySlug = new Map(CANON.map((b) => [b.slug, b]));
 
+/** The four gospels in canon order; the harmony reader keys on these. */
+export const GOSPEL_SLUGS = ["matthew", "mark", "luke", "john"] as const;
+
 export function getBook(slug: string): Book | undefined {
   return bySlug.get(slug);
 }

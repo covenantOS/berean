@@ -20,12 +20,14 @@ import {
   findLeaf,
   guideEditorTab,
   guideTab,
+  harmonyTab,
   libraryTab,
   multiviewTab,
   readerTab,
   searchTab,
   textCompareTab,
   toolsTab,
+  wisdomExplorerTab,
   type LauncherTab,
   type LeafNode,
   type NavEntry,
@@ -269,6 +271,28 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(bookExplorerTab())}>
             The Canon
             <span className={HINT}>Books by author, genre, size, date</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(harmonyTab())}>
+            Gospel Harmony
+            <span className={HINT}>Parallel accounts side by side</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(wisdomExplorerTab("psalms"))}>
+            Psalms
+            <span className={HINT}>Genre map of the Psalter</span>
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            className={ROW}
+            onClick={() => choose(wisdomExplorerTab("proverbs"))}
+          >
+            Proverbs
+            <span className={HINT}>The seven collections</span>
           </button>
         </li>
         <li>

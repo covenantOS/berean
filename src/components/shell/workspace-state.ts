@@ -1,6 +1,6 @@
 "use client";
 
-import { getBook } from "@/lib/canon";
+import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
 
 /**
  * Workspace pane state — the Phase 0 shell's one state tree.
@@ -475,6 +475,32 @@ export interface BookExplorerTab {
   type: "bookexplorer";
 }
 
+/**
+ * The Parallel Gospel Reader: one gospel pericope read against its parallel
+ * accounts, each gospel its own column and an honest blank where the gospel
+ * lacks the account. The pin is the pericope's start; without one the pane
+ * opens on the pericope index, the browser's front door.
+ */
+export interface HarmonyTab {
+  id: string;
+  type: "harmony";
+  book?: string;
+  chapter?: number;
+  verse?: number;
+}
+
+/**
+ * The Psalms and Proverbs explorers: the Psalter as a genre-colored map,
+ * sortable four ways, and Proverbs as its seven named collections. One tab
+ * kind serves both books; the book pins at open and the pane swaps it in
+ * place.
+ */
+export interface WisdomExplorerTab {
+  id: string;
+  type: "wisdomexplorer";
+  book: "psalms" | "proverbs";
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -515,7 +541,9 @@ export type Tab =
   | LauncherTab
   | DashboardTab
   | ToolsTab
-  | BookExplorerTab;
+  | BookExplorerTab
+  | HarmonyTab
+  | WisdomExplorerTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -762,6 +790,38 @@ export function toolsTab(): ToolsTab {
 
 export function bookExplorerTab(): BookExplorerTab {
   return { id: newId("tab"), type: "bookexplorer" };
+}
+
+/** A harmony pin holds water at a gospel, a chapter inside it, and a verse. */
+function gospelRef(
+  book: unknown,
+  chapter: unknown,
+  verse: unknown
+): { book: string; chapter: number; verse: number } | null {
+  if (typeof book !== "string" || !(GOSPEL_SLUGS as readonly string[]).includes(book)) {
+    return null;
+  }
+  const b = getBook(book)!;
+  if (typeof chapter !== "number" || !Number.isInteger(chapter)) return null;
+  if (chapter < 1 || chapter > b.chapters) return null;
+  // The verse's real bound is the chapter's length, which the session layer
+  // cannot see; the route answers a start that names no pericope instead.
+  if (typeof verse !== "number" || !Number.isInteger(verse) || verse < 1 || verse > 200) {
+    return null;
+  }
+  return { book, chapter, verse };
+}
+
+export function harmonyTab(ref?: {
+  book: string;
+  chapter: number;
+  verse: number;
+}): HarmonyTab {
+  return { id: newId("tab"), type: "harmony", ...(ref ?? {}) };
+}
+
+export function wisdomExplorerTab(book: "psalms" | "proverbs" = "psalms"): WisdomExplorerTab {
+  return { id: newId("tab"), type: "wisdomexplorer", book };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -1166,6 +1226,17 @@ export type WorkspaceAction =
   | { type: "openSettings"; paneId?: string }
   | { type: "openTools"; paneId?: string }
   | { type: "openBookExplorer"; paneId?: string }
+  | { type: "openHarmony"; book?: string; chapter?: number; verse?: number; paneId?: string }
+  | {
+      type: "setHarmonyRef";
+      paneId: string;
+      tabId: string;
+      book?: string;
+      chapter?: number;
+      verse?: number;
+    }
+  | { type: "openWisdomExplorer"; book: "psalms" | "proverbs"; paneId?: string }
+  | { type: "setWisdomBook"; paneId: string; tabId: string; book: "psalms" | "proverbs" }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1208,7 +1279,7 @@ function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode 
     // Retarget the tab in focus, the way a Logos panel follows navigation.
     return {
       ...leaf,
-      tabs: leaf.tabs.map((t) => (t.id === active.id ? { ...t, book, chapter } : t)),
+      tabs: leaf.tabs.map((t) => (t.id === active.id ? { ...active, book, chapter } : t)),
     };
   }
   // A search or empty pane keeps its tab; the passage opens beside it.
@@ -2023,6 +2094,118 @@ export function workspaceReducer(
           ...l,
           tabs: [...l.tabs, tab],
           activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openHarmony": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The pin is optional; a partial one reads as no pin at all.
+      const ref =
+        action.book !== undefined
+          ? gospelRef(action.book, action.chapter, action.verse)
+          : null;
+      // One harmony tab per pane, the explorer's pattern. Reopening with a
+      // pericope retargets it; reopening bare focuses it as it stands.
+      const existing = leaf.tabs.find((t) => t.type === "harmony");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            activeTabId: existing.id,
+            tabs: ref
+              ? l.tabs.map((t) =>
+                  t.id === existing.id && t.type === "harmony"
+                    ? { id: t.id, type: "harmony" as const, ...ref }
+                    : t
+                )
+              : l.tabs,
+          })),
+        };
+      }
+      const tab = harmonyTab(ref ?? undefined);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "setHarmonyRef": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "harmony") return state;
+      // Clearing the pin (back to the index) and pinning a pericope both
+      // happen in place, one pane only, like the multiview's chapter turn.
+      const ref =
+        action.book !== undefined
+          ? gospelRef(action.book, action.chapter, action.verse)
+          : undefined;
+      if (action.book !== undefined && !ref) return state;
+      const next: HarmonyTab = ref
+        ? { id: tab.id, type: "harmony", ...ref }
+        : { id: tab.id, type: "harmony" };
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) => (t.id === action.tabId ? next : t)),
+        })),
+      };
+    }
+
+    case "openWisdomExplorer": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One explorer tab per book per pane, the explorer's pattern.
+      const existing = leaf.tabs.find(
+        (t) => t.type === "wisdomexplorer" && t.book === action.book
+      );
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = wisdomExplorerTab(action.book);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "setWisdomBook": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "wisdomexplorer") return state;
+      if (tab.book === action.book) return state;
+      // In place, one pane only, like the concordance's book swap.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "wisdomexplorer"
+              ? { ...t, book: action.book }
+              : t
+          ),
         })),
       };
     }
@@ -3082,6 +3265,19 @@ function sanitizeNode(node: unknown): PaneNode | null {
       ) {
         // Singletons carry nothing to validate.
         tabs.push({ id: t.id, type: t.type });
+        continue;
+      }
+      if (t.type === "harmony" && typeof t.id === "string") {
+        // Like the atlas focus, the pericope pin is optional and a bad one
+        // drops, leaving the index.
+        const ref = gospelRef(t.book, t.chapter, t.verse);
+        tabs.push({ id: t.id, type: "harmony", ...(ref ?? {}) });
+        continue;
+      }
+      if (t.type === "wisdomexplorer" && typeof t.id === "string") {
+        // A malformed book reads as the Psalter rather than failing the load.
+        const book = t.book === "proverbs" ? "proverbs" : "psalms";
+        tabs.push({ id: t.id, type: "wisdomexplorer", book });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {

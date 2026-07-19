@@ -167,6 +167,18 @@ function Intake() {
         case "bookexplorer":
           dispatch({ type: "openBookExplorer", paneId });
           break;
+        case "harmony":
+          dispatch({
+            type: "openHarmony",
+            ...(tab.book !== undefined
+              ? { book: tab.book, chapter: tab.chapter, verse: tab.verse }
+              : {}),
+            paneId,
+          });
+          break;
+        case "wisdom":
+          dispatch({ type: "openWisdomExplorer", book: tab.book, paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

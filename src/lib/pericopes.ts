@@ -47,3 +47,17 @@ export async function getPericopes(slug: string, chapter: number): Promise<Peric
   if (!raw) return [];
   return raw.chapters.find((c) => c.chapter === chapter)?.sections ?? [];
 }
+
+/** A pericope with its chapter carried along, for whole-book walks. */
+export interface FlatPericope extends Pericope {
+  chapter: number;
+}
+
+/** Every pericope in the book, chapter order then verse order. */
+export async function getAllPericopes(slug: string): Promise<FlatPericope[]> {
+  const book = getBook(slug);
+  if (!book) return [];
+  const raw = await loadBook(book.file);
+  if (!raw) return [];
+  return raw.chapters.flatMap((c) => c.sections.map((s) => ({ chapter: c.chapter, ...s })));
+}
