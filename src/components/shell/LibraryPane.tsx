@@ -16,7 +16,15 @@ import {
 } from "@/lib/librarymeta";
 import { RIGHTS_REGISTRY, type RightsEntry } from "@/lib/rights";
 import { useWorkspace } from "./WorkspaceContext";
-import { commentaryTab, crossrefsTab, lexiconTab, readerTab, type Tab } from "./workspace-state";
+import {
+  atlasTab,
+  commentaryTab,
+  crossrefsTab,
+  lexiconTab,
+  readerTab,
+  timelineTab,
+  type Tab,
+} from "./workspace-state";
 
 /**
  * The library browser pane: the whole rights registry as a faceted catalog.
@@ -25,9 +33,9 @@ import { commentaryTab, crossrefsTab, lexiconTab, readerTab, type Tab } from "./
  * collection; language and era wait on structured metadata the registry
  * does not have yet. Entries with a reader open straight into the
  * workspace: translations as reader tabs, the commentary wall, the
- * cross-reference treasury, and the lexicon as pane tabs, topical works,
- * the Atlas, and the Timeline at their routes. Commentaries also carry the
- * priority steppers the wall answers.
+ * cross-reference treasury, and the lexicon as pane tabs, plus the Atlas and
+ * the Timeline. Topical works open at their shared route. Commentaries also
+ * carry the priority steppers the wall answers.
  */
 
 const KIND_LABELS: Record<RightsEntry["kind"], string> = {
@@ -70,10 +78,6 @@ const OT_ONLY = new Set(["brenton", "lxx"]);
 const TOPIC_ROUTES: Record<string, string> = {
   "naves-topical": "/topics",
   "torreys-topical": "/topics",
-};
-const TOOL_ROUTES: Record<string, string> = {
-  naturalearth: "/library/atlas",
-  "ussher-chronology": "/almanac/timeline",
 };
 
 type Facets = {
@@ -120,7 +124,9 @@ export default function LibraryPane() {
       r.id === "tbesh" ||
       r.id === "tbesg" ||
       r.id === "strongs" ||
-      r.id === "tsk-crossrefs");
+      r.id === "tsk-crossrefs" ||
+      r.id === "naturalearth" ||
+      r.id === "ussher-chronology");
 
   /* The open action an entry earns, when a reader exists for it. */
   const openTabFor = (r: RightsEntry): Tab | null => {
@@ -137,6 +143,8 @@ export default function LibraryPane() {
     if (COMMENTARY_WALL.some((w) => w.rightsId === r.id)) return commentaryTab();
     if (r.id === "tbesh" || r.id === "tbesg" || r.id === "strongs") return lexiconTab(null);
     if (r.id === "tsk-crossrefs") return crossrefsTab();
+    if (r.id === "naturalearth") return atlasTab();
+    if (r.id === "ussher-chronology") return timelineTab();
     return null;
   };
 
@@ -227,7 +235,7 @@ export default function LibraryPane() {
               meta={metaById.get(r.id)}
               priorityWork={COMMENTARY_WALL.find((w) => w.rightsId === r.id)?.workId ?? null}
               priorityIndex={order}
-              route={TOPIC_ROUTES[r.id] ?? TOOL_ROUTES[r.id] ?? null}
+              route={TOPIC_ROUTES[r.id] ?? null}
               canOpen={opensAsTab(r)}
               onOpen={() => open(r)}
             />

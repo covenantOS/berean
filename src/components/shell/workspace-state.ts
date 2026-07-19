@@ -199,6 +199,33 @@ export interface ConcordanceTab {
 }
 
 /**
+ * The Atlas: every geolocated place on its land base. A place id opens the
+ * map focused on it, the way the retired page's ?place= did; the name rides
+ * along for the tab strip.
+ */
+export interface AtlasTab {
+  id: string;
+  type: "atlas";
+  /** TIPNR place id to focus; absent opens the whole map. */
+  place?: string;
+  /** The place's name, captured at open time for the tab strip. */
+  title?: string;
+}
+
+/**
+ * The Timeline: the curated chronology in era bands. An event id opens the
+ * chart with that event selected, the way the retired page's ?event= did.
+ */
+export interface TimelineTab {
+  id: string;
+  type: "timeline";
+  /** Timeline event id to focus; absent opens the whole chart. */
+  event?: string;
+  /** The event's label, captured at open time for the tab strip. */
+  title?: string;
+}
+
+/**
  * The new-tab launcher: everything the workspace opens, with suggestions
  * keyed to the pane's passage at open time. A pane with no reader tab opens
  * a launcher without a passage and the reference-aware rows stay out.
@@ -230,6 +257,8 @@ export type Tab =
   | LibraryTab
   | TextCompareTab
   | ConcordanceTab
+  | AtlasTab
+  | TimelineTab
   | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -418,6 +447,9 @@ export function listDocTab(docId: string, title: string): ListDocTab {
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
 export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
 
+/** Timeline event ids are lowercase kebab tokens such as "call-of-abraham". */
+export const EVENT_ID_PATTERN = /^[a-z0-9-]+$/;
+
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
 }
@@ -461,6 +493,24 @@ export function textCompareTab(
 
 export function concordanceTab(book = "genesis"): ConcordanceTab {
   return { id: newId("tab"), type: "concordance", book };
+}
+
+export function atlasTab(place?: string, title?: string): AtlasTab {
+  return {
+    id: newId("tab"),
+    type: "atlas",
+    ...(place ? { place } : {}),
+    ...(title ? { title } : {}),
+  };
+}
+
+export function timelineTab(event?: string, title?: string): TimelineTab {
+  return {
+    id: newId("tab"),
+    type: "timeline",
+    ...(event ? { event } : {}),
+    ...(title ? { title } : {}),
+  };
 }
 
 /** The launcher, keyed to the pane's passage at open time when it has one. */
@@ -705,6 +755,8 @@ export type WorkspaceAction =
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
   | { type: "openConcordance"; book: string; paneId?: string }
+  | { type: "openAtlas"; place?: string; title?: string; paneId?: string }
+  | { type: "openTimeline"; event?: string; title?: string; paneId?: string }
   | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
@@ -1187,6 +1239,46 @@ export function workspaceReducer(
       if (!findLeaf(state.root, paneId)) return state;
       // Like a guide, the concordance pins its book at open time.
       const tab = concordanceTab(book.slug);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openAtlas": {
+      const place = action.place?.trim();
+      if (place && !ENTITY_ID_PATTERN.test(place)) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the map pins its focus at open time.
+      const title = action.title?.trim() || undefined;
+      const tab = atlasTab(place || undefined, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTimeline": {
+      const event = action.event?.trim().toLowerCase();
+      if (event && !EVENT_ID_PATTERN.test(event)) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the chart pins its focus at open time.
+      const title = action.title?.trim() || undefined;
+      const tab = timelineTab(event || undefined, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -1830,6 +1922,34 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const book = getBook(t.book);
         if (!book) continue;
         tabs.push({ id: t.id, type: "concordance", book: book.slug });
+        continue;
+      }
+      if (t.type === "atlas" && typeof t.id === "string") {
+        // The focus is optional; a malformed one drops and the map still loads.
+        const place =
+          typeof t.place === "string" && ENTITY_ID_PATTERN.test(t.place) ? t.place : undefined;
+        const title =
+          place && typeof t.title === "string" && t.title.trim() ? t.title : undefined;
+        tabs.push({
+          id: t.id,
+          type: "atlas",
+          ...(place ? { place } : {}),
+          ...(title ? { title } : {}),
+        });
+        continue;
+      }
+      if (t.type === "timeline" && typeof t.id === "string") {
+        // Like the atlas, the focus is optional and a bad one drops.
+        const event =
+          typeof t.event === "string" && EVENT_ID_PATTERN.test(t.event) ? t.event : undefined;
+        const title =
+          event && typeof t.title === "string" && t.title.trim() ? t.title : undefined;
+        tabs.push({
+          id: t.id,
+          type: "timeline",
+          ...(event ? { event } : {}),
+          ...(title ? { title } : {}),
+        });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {

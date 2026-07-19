@@ -210,9 +210,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 10. Atlas, Timeline, Media
 
-- [ ] [DATA] Atlas tool (online): professional cartography with layered sites, event routes, and journeys searchable by place.
+- [x] [DATA] Atlas tool (online): professional cartography with layered sites, event routes, and journeys searchable by place. (A local atlas ships as a workspace tab, with /library/atlas redirecting in: the 1,002 geolocated TIPNR places plotted on the Natural Earth land base, searchable by name, focused from the Factbook and by deep link, each point opening its Factbook entry. Layered sites, event routes, and journeys do not ship.)
 - [ ] [LICENSED] Maps resources: biblical places maps and image libraries embedded in books.
-- [ ] [DATA] Timeline tool: filterable scroll of biblical and church history events by era, empire, type, and subject; every event opens Factbook.
+- [x] [DATA] Timeline tool: filterable scroll of biblical and church history events by era, empire, type, and subject; every event opens Factbook. (A workspace tab ships the curated chronology, creation to AD 95 in ten era bands, with /almanac/timeline redirecting in: events filter by text search, select into a detail card whose passages open the reader, and entity-linked events open the Factbook, with deep-link focus by event id. Church history beyond AD 95, empire/type/subject facets, and a Factbook entry for every event do not ship.)
 - [ ] [SW] Media tool: search and browse every media collection by tag and type, customize slides, and export.
 - [ ] [SW] Visual Copy: turn any selection or verse into a styled slide or share image.
 - [ ] [SW] User media uploads into your media library (Premium and up).

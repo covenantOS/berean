@@ -86,6 +86,12 @@ function Intake() {
         case "library":
           dispatch({ type: "openLibrary", paneId });
           break;
+        case "atlas":
+          dispatch({ type: "openAtlas", place: tab.place, paneId });
+          break;
+        case "timeline":
+          dispatch({ type: "openTimeline", event: tab.event, paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

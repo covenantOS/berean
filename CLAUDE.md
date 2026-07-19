@@ -58,9 +58,11 @@ people-and-places index and filter in the Library,
 an entity group in `/search`, and verse-level mentions in the reader margin.
 The topical index shipped: Nave's and Torrey's at `/topics` with full verse
 texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR
-geography on a Natural Earth base at `/library/atlas`, rendered as SVG with
+geography on a Natural Earth base in the workspace's atlas tab
+(`/library/atlas` redirects in), rendered as SVG with
 no dependencies. The Timeline shipped: a curated biblical chronology with
-era bands at `/almanac/timeline`, linked to the reader and the Factbook. A
+era bands in the workspace's timeline tab (`/almanac/timeline` redirects
+in), linked to the reader and the Factbook. A
 quiet daily verse opens from the omnibox (`daily`). The semantic concordance shipped:
 Scribe-assisted search by meaning, every reference verified against the
 canon. Audio shipped: chapter-synced public-domain LibriVox KJV recordings

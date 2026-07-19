@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -152,7 +151,12 @@ export default function Factbook({ entityId }: { entityId: string }) {
       {r.locator && r.geo && (
         <GuideSection title="Location" hint={`${r.geo.lat.toFixed(5)}, ${r.geo.lng.toFixed(5)}${r.area ? ` · ${r.area}` : ""}`}>
           <div className="w-full max-w-xs">
-            <Link href={`/library/atlas?place=${r.id}`} title={`${r.name} in the Atlas`}>
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "openAtlas", place: r.id, title: r.name })}
+              title={`${r.name} in the Atlas`}
+              className="block w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
               <svg
                 viewBox={r.locator.viewBox}
                 role="img"
@@ -185,14 +189,15 @@ export default function Factbook({ entityId }: { entityId: string }) {
                   {r.name}
                 </text>
               </svg>
-            </Link>
+            </button>
             <p className="mt-1 text-[0.68rem] text-muted">
-              <Link
-                href={`/library/atlas?place=${r.id}`}
-                className="text-sapphire no-underline hover:underline"
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "openAtlas", place: r.id, title: r.name })}
+                className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Open in the Atlas
-              </Link>{" "}
+              </button>{" "}
               · modern coastline (Natural Earth, public domain)
             </p>
           </div>
@@ -235,12 +240,14 @@ export default function Factbook({ entityId }: { entityId: string }) {
           <ul className="space-y-1">
             {r.timeline.map((e) => (
               <li key={e.id} className="text-xs">
-                <Link
-                  href={`/almanac/timeline?event=${e.id}`}
-                  className="text-sapphire no-underline hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                <button
+                  type="button"
+                  title={`Open ${e.label} on the Timeline`}
+                  onClick={() => dispatch({ type: "openTimeline", event: e.id, title: e.label })}
+                  className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   {e.label}
-                </Link>{" "}
+                </button>{" "}
                 <span className="text-[0.68rem] text-muted">{e.years}</span>
               </li>
             ))}

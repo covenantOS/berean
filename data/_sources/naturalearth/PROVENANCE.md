@@ -8,6 +8,7 @@
   Natural Earth raster + vector map data found on this website are in the
   public domain. You may use the maps in any manner, including modifying the
   content and design, electronic dissemination, and offset printing.").
-- Use in Berean: the quiet land base under the Atlas (`/library/atlas`) and
-  the locator maps on place entity pages. Projected and rendered to SVG at
+- Use in Berean: the quiet land base under the workspace's atlas tab
+  (`/library/atlas` redirects in) and the locator maps in the Factbook's
+  Location section. Projected and rendered to SVG at
   request time by `src/lib/atlas.ts`; no tile server, no mapping library.

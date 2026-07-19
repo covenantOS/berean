@@ -409,7 +409,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "export", "offline"],
     notes:
-      "The land base under the Atlas at /library/atlas and the locator maps on place entity pages. Vendored as GeoJSON under data/_sources/naturalearth (see PROVENANCE.md), projected and rendered to SVG by src/lib/atlas.ts at request time; no tile server and no mapping library is used.",
+      "The land base under the workspace's atlas tab (/library/atlas redirects in) and the locator maps in the Factbook's Location section. Vendored as GeoJSON under data/_sources/naturalearth (see PROVENANCE.md), projected and rendered to SVG by src/lib/atlas.ts at request time; no tile server and no mapping library is used.",
     status: "shipped",
   },
   {
@@ -422,7 +422,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "The dated backbone of the Timeline at /almanac/timeline: a hand-curated event list (creation to AD 95) following Ussher's public-domain chronology for the OT and standard conservative NT dates, cross-linked to TIPNR entities and canonical passages. Every entry is flagged as approximate where Ussher himself or modern scholarship diverges; ancient dates before the divided kingdom are conventional, not certain, and the data file's header says so plainly. The curation itself is Berean's own work from public-domain sources.",
+      "The dated backbone of the workspace's timeline tab (/almanac/timeline redirects in): a hand-curated event list (creation to AD 95) following Ussher's public-domain chronology for the OT and standard conservative NT dates, cross-linked to TIPNR entities and canonical passages. Every entry is flagged as approximate where Ussher himself or modern scholarship diverges; ancient dates before the divided kingdom are conventional, not certain, and the data file's header says so plainly. The curation itself is Berean's own work from public-domain sources.",
     status: "shipped",
   },
   {

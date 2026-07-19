@@ -5,7 +5,7 @@ import { getRights } from "./rights";
 
 /**
  * The Timeline: a curated biblical chronology, rendered as quiet SVG era
- * bands at /almanac/timeline. The event list is hand-curated at
+ * bands in the workspace's timeline tab. The event list is hand-curated at
  * data/timeline/events.json following Ussher's public-domain chronology for
  * the OT (rights id "ussher-chronology") with honest approximate flags; every
  * event cross-links canonical passages and, where one exists, a TIPNR
