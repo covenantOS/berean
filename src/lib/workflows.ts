@@ -7,11 +7,15 @@ import { collection, type Record_ } from "./store";
 /**
  * Workflows: step-by-step guided studies, the Logos mechanic rebuilt
  * honestly over the tools the workspace already has. A workflow DEFINITION
- * is static code data below: an id, a name, a subject kind, and an ordered
- * list of steps. A step is a prompt of pastoral guidance, an optional tool
- * handoff (one of the shell's existing open* events, aimed at the run's
- * subject), and an optional note invitation. A definition never persists;
- * the code is the library.
+ * is an id, a name, a subject kind, and an ordered list of steps. A step is
+ * a prompt of pastoral guidance, an optional tool handoff (one of the
+ * shell's existing open* events, aimed at the run's subject), and an
+ * optional note invitation. The prebuilt definitions are static code data
+ * below; definitions the reader composes in the Workflow Editor persist in
+ * berean.customworkflows.v1 in the same shape, a collection of their own
+ * beside the guides' rather than inside the runs', so a runs listing never
+ * filters two record kinds. workflowFor resolves both, and the runner never
+ * learns which library a definition came from.
  *
  * A workflow RUN is the persisted record: the workflow started on one
  * subject, the step it stands on, and the steps already completed. Runs
@@ -255,9 +259,92 @@ export const WORKFLOWS: WorkflowDefinition[] = [
   },
 ];
 
-/** The definition an id names; undefined for an id the library does not know. */
+/** The definition an id names: the prebuilt library first, then the custom
+ *  compositions on the device; undefined for an id neither knows. */
 export function workflowFor(id: string): WorkflowDefinition | undefined {
-  return WORKFLOWS.find((w) => w.id === id);
+  const built = WORKFLOWS.find((w) => w.id === id);
+  if (built) return built;
+  const custom = customWorkflows.get(id);
+  if (!custom) return undefined;
+  return {
+    id: custom.id,
+    name: custom.name,
+    description: custom.description,
+    subject: custom.subject,
+    steps: custom.steps,
+  };
+}
+
+/* ---------- Custom workflows ---------- */
+
+/**
+ * A reader-composed workflow, the same shape the prebuilt library runs.
+ * The record id is the workflow id, so a run names it the way it names a
+ * built-in and resume works unchanged. The sync envelope rides along from
+ * day one as everywhere.
+ */
+export interface CustomWorkflow extends Record_ {
+  name: string;
+  description: string;
+  subject: WorkflowSubjectKind;
+  steps: WorkflowStep[];
+}
+
+const customWorkflows = collection<CustomWorkflow>("berean.customworkflows.v1");
+export { customWorkflows };
+
+const SUBJECT_KINDS: WorkflowSubjectKind[] = ["passage", "word", "topic"];
+
+const ACTION_KINDS: WorkflowActionKind[] = [
+  "reader",
+  "guide",
+  "exegetical",
+  "textcompare",
+  "wordstudy",
+  "lexicon",
+  "search",
+];
+
+/** The steps a stored or imported record carries, down to the honest shape:
+ *  an untitled step drops, an unknown action or a non-boolean capture goes. */
+export function sanitizeSteps(raw: unknown): WorkflowStep[] {
+  if (!Array.isArray(raw)) return [];
+  const actions = new Set<string>(ACTION_KINDS);
+  const out: WorkflowStep[] = [];
+  for (const s of raw) {
+    if (!s || typeof s !== "object") continue;
+    const record = s as Record<string, unknown>;
+    const title = typeof record.title === "string" ? record.title.trim().slice(0, 80) : "";
+    if (!title) continue;
+    const prompt = typeof record.prompt === "string" ? record.prompt.trim().slice(0, 2000) : "";
+    const step: WorkflowStep = { title, prompt };
+    if (typeof record.action === "string" && actions.has(record.action)) {
+      step.action = record.action as WorkflowActionKind;
+    }
+    if (record.capture === true) step.capture = true;
+    out.push(step);
+  }
+  return out;
+}
+
+/**
+ * Saves a composition; null when it fails honest validation: a name, at
+ * least one step that survives sanitize, and a prompt on every step that
+ * invites a note. Editing writes the same record, so runs already open on
+ * the workflow follow the new composition.
+ */
+export function saveWorkflow(
+  id: string | null,
+  fields: { name: string; description: string; subject: WorkflowSubjectKind; steps: WorkflowStep[] }
+): CustomWorkflow | null {
+  const name = fields.name.trim().slice(0, 80);
+  const description = fields.description.trim().slice(0, 200);
+  const subject = SUBJECT_KINDS.includes(fields.subject) ? fields.subject : "passage";
+  const steps = sanitizeSteps(fields.steps);
+  if (!name || steps.length === 0) return null;
+  if (steps.some((s) => s.capture && !s.prompt)) return null;
+  if (id) return customWorkflows.update(id, { name, description, subject, steps }) ?? null;
+  return customWorkflows.create({ name, description, subject, steps });
 }
 
 /* ---------- Runs ---------- */

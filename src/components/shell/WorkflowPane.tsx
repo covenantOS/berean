@@ -15,7 +15,9 @@ import {
   validateSubject,
   WORKFLOWS,
   workflowFor,
+  customWorkflows,
   type WorkflowActionKind,
+  type WorkflowDefinition,
   type WorkflowRun,
 } from "@/lib/workflows";
 import { useWorkspace } from "./WorkspaceContext";
@@ -210,18 +212,114 @@ export default function WorkflowPane({ runId }: { runId: string }) {
 const SUBJECT_HINTS = { passage: "A passage, e.g. John 3:16-18", word: "A Strong's number, e.g. G26", topic: "A topic, e.g. grace" } as const;
 
 /**
- * The workflows list for the Documents rail: the prebuilt library with a
- * subject field per workflow, and the runs already started with their
- * progress. Starting validates the subject against the workflow's kind and
- * opens the run as a tab; a run on the same workflow and subject resumes
- * the one already open (src/lib/workflows.ts).
+ * One workflow's start row: the name, the subject field validating against
+ * the workflow's kind, and the quiet error when the subject is not what the
+ * workflow studies. Starting opens the run as a tab; a run on the same
+ * workflow and subject resumes the one already open (src/lib/workflows.ts).
+ * A custom workflow carries the extra affordances its row is handed.
+ */
+function StartRow({
+  def,
+  custom,
+  onEdit,
+  onDelete,
+}: {
+  def: WorkflowDefinition;
+  custom?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+}) {
+  const { dispatch } = useWorkspace();
+  const [subject, setSubject] = useState("");
+  const [rejected, setRejected] = useState(false);
+
+  const start = () => {
+    const raw = subject.trim();
+    if (!validateSubject(def.subject, raw)) {
+      setRejected(true);
+      return;
+    }
+    const run = startRun(def.id, raw);
+    if (!run) return;
+    setRejected(false);
+    setSubject("");
+    dispatch({ type: "openWorkflow", runId: run.id, title: `${def.name}: ${run.subject}` });
+  };
+
+  return (
+    <li className="px-3 py-1">
+      <p className="text-[0.8rem] text-ink" title={def.description}>
+        {def.name}
+        {custom && <span className="small-caps ml-1.5 text-[0.62rem] text-amber">Custom</span>}
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label={`Edit ${def.name}`}
+            className="ml-1.5 text-[0.68rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            Edit
+          </button>
+        )}
+        {onDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            title="Delete this workflow; runs on it say the library no longer knows it"
+            aria-label={`Delete ${def.name}`}
+            className="ml-1 px-0.5 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ×
+          </button>
+        )}
+      </p>
+      <form
+        className="mt-0.5 flex items-center gap-1"
+        onSubmit={(e) => {
+          e.preventDefault();
+          start();
+        }}
+      >
+        <input
+          value={subject}
+          aria-label={`Subject for ${def.name}`}
+          placeholder={SUBJECT_HINTS[def.subject]}
+          onChange={(e) => setSubject(e.target.value)}
+          className="min-w-0 flex-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+        <button
+          type="submit"
+          className="shrink-0 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Start
+        </button>
+      </form>
+      {rejected && (
+        <p className="mt-0.5 text-[0.68rem] text-ruby">
+          {def.subject === "passage"
+            ? "Name a passage, such as John 3:16-18."
+            : def.subject === "word"
+              ? "Name a Strong's number, such as G26."
+              : "Name the topic the study is about."}
+        </p>
+      )}
+    </li>
+  );
+}
+
+/**
+ * The workflows list for the Documents rail: the prebuilt library with the
+ * reader's own compositions beside it, each with a subject field, and the
+ * runs already started with their progress. A custom workflow starts and
+ * resumes exactly like a built-in (workflowFor resolves both), carries Edit
+ * into the Workflow Editor tab and a delete, and wears a Custom mark so the
+ * two libraries never blur. The compose affordance opens the editor on its
+ * list.
  */
 export function WorkflowsSection() {
   const { dispatch } = useWorkspace();
   const inProgress = useCollection(runs);
-  const [subjects, setSubjects] = useState<Record<string, string>>({});
-  /** The workflow whose subject failed validation, for the quiet error. */
-  const [rejected, setRejected] = useState<string | null>(null);
+  const customs = useCollection(customWorkflows);
 
   const openRun = (run: WorkflowRun) => {
     const def = workflowFor(run.workflowId);
@@ -232,20 +330,6 @@ export function WorkflowsSection() {
     });
   };
 
-  const start = (workflowId: string) => {
-    const raw = (subjects[workflowId] ?? "").trim();
-    const def = workflowFor(workflowId);
-    if (!def || !validateSubject(def.subject, raw)) {
-      setRejected(workflowId);
-      return;
-    }
-    const run = startRun(workflowId, raw);
-    if (!run) return;
-    setRejected(null);
-    setSubjects((s) => ({ ...s, [workflowId]: "" }));
-    openRun(run);
-  };
-
   return (
     <div className="border-b border-rule py-1">
       <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -253,43 +337,25 @@ export function WorkflowsSection() {
       </div>
       <ul>
         {WORKFLOWS.map((w) => (
-          <li key={w.id} className="px-3 py-1">
-            <p className="text-[0.8rem] text-ink" title={w.description}>
-              {w.name}
-            </p>
-            <form
-              className="mt-0.5 flex items-center gap-1"
-              onSubmit={(e) => {
-                e.preventDefault();
-                start(w.id);
-              }}
-            >
-              <input
-                value={subjects[w.id] ?? ""}
-                aria-label={`Subject for ${w.name}`}
-                placeholder={SUBJECT_HINTS[w.subject]}
-                onChange={(e) => setSubjects((s) => ({ ...s, [w.id]: e.target.value }))}
-                className="min-w-0 flex-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:outline focus:outline-2 focus:outline-sapphire"
-              />
-              <button
-                type="submit"
-                className="shrink-0 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-              >
-                Start
-              </button>
-            </form>
-            {rejected === w.id && (
-              <p className="mt-0.5 text-[0.68rem] text-ruby">
-                {w.subject === "passage"
-                  ? "Name a passage, such as John 3:16-18."
-                  : w.subject === "word"
-                    ? "Name a Strong's number, such as G26."
-                    : "Name the topic the study is about."}
-              </p>
-            )}
-          </li>
+          <StartRow key={w.id} def={w} />
+        ))}
+        {customs.map((w) => (
+          <StartRow
+            key={w.id}
+            def={w}
+            custom
+            onEdit={() => dispatch({ type: "openWorkflowEditor", workflowId: w.id })}
+            onDelete={() => customWorkflows.remove(w.id)}
+          />
         ))}
       </ul>
+      <button
+        type="button"
+        onClick={() => dispatch({ type: "openWorkflowEditor" })}
+        className="mx-3 mt-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        Compose a workflow
+      </button>
       {inProgress.length > 0 && (
         <>
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -298,7 +364,26 @@ export function WorkflowsSection() {
           <ul>
             {inProgress.map((run) => {
               const def = workflowFor(run.workflowId);
-              if (!def) return null;
+              /* A run whose workflow left the library (a deleted custom
+               * composition) stays listed so it can be thrown away. */
+              if (!def)
+                return (
+                  <li key={run.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                    <span className="min-w-0 flex-1 truncate text-[0.8rem] text-muted">
+                      A workflow the library no longer knows{" "}
+                      <span className="text-muted">{run.subject}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => deleteRun(run.id)}
+                      title="Delete this run; its notes stay in the notebook"
+                      aria-label={`Delete the run on ${run.subject}`}
+                      className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    >
+                      ×
+                    </button>
+                  </li>
+                );
               return (
                 <li key={run.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
                   <button

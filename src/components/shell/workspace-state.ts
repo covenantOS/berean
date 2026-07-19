@@ -164,6 +164,16 @@ export interface WorkflowTab {
   title: string;
 }
 
+/**
+ * The Workflow Editor: compose, edit, and delete custom workflows. A
+ * workflowId opens that workflow in the editor; null opens the list.
+ */
+export interface WorkflowEditorTab {
+  id: string;
+  type: "workfloweditor";
+  workflowId: string | null;
+}
+
 /** The Exegetical Guide: one chapter's original-language report. */
 export interface ExegeticalTab {
   id: string;
@@ -512,6 +522,7 @@ export type Tab =
   | GuideEditorTab
   | WordStudyTab
   | WorkflowTab
+  | WorkflowEditorTab
   | ExegeticalTab
   | TopicGuideTab
   | ListDocTab
@@ -718,6 +729,10 @@ export function wordStudyTab(strongsId: string): WordStudyTab {
 
 export function workflowTab(runId: string, title: string): WorkflowTab {
   return { id: newId("tab"), type: "workflow", runId, title };
+}
+
+export function workflowEditorTab(workflowId: string | null = null): WorkflowEditorTab {
+  return { id: newId("tab"), type: "workfloweditor", workflowId };
 }
 
 export function exegeticalTab(book = "genesis", chapter = 1): ExegeticalTab {
@@ -1209,6 +1224,7 @@ export type WorkspaceAction =
   | { type: "openGuideEditor"; guideId?: string | null; paneId?: string }
   | { type: "openWordStudy"; strongsId: string; paneId?: string }
   | { type: "openWorkflow"; runId: string; title: string; paneId?: string }
+  | { type: "openWorkflowEditor"; workflowId?: string | null; paneId?: string }
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
@@ -1627,6 +1643,26 @@ export function workspaceReducer(
       // progress shows without reopening and a deleted run degrades in place.
       const title = action.title.trim() || "Workflow";
       const tab = workflowTab(runId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openWorkflowEditor": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const workflowId =
+        typeof action.workflowId === "string" && action.workflowId.trim()
+          ? action.workflowId.trim()
+          : null;
+      const tab = workflowEditorTab(workflowId);
       return {
         ...state,
         activePaneId: paneId,
@@ -3075,6 +3111,12 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Workflow";
         tabs.push({ id: t.id, type: "workflow", runId: t.runId, title });
+        continue;
+      }
+      if (t.type === "workfloweditor" && typeof t.id === "string") {
+        const workflowId =
+          typeof t.workflowId === "string" && t.workflowId.trim() ? t.workflowId : null;
+        tabs.push({ id: t.id, type: "workfloweditor", workflowId });
         continue;
       }
       if (t.type === "exegetical" && typeof t.id === "string" && typeof t.book === "string") {

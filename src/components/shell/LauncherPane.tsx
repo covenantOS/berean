@@ -28,6 +28,7 @@ import {
   textCompareTab,
   toolsTab,
   wisdomExplorerTab,
+  workflowEditorTab,
   type LauncherTab,
   type LeafNode,
   type NavEntry,
@@ -305,6 +306,12 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(guideEditorTab(null))}>
             Compose a guide
             <span className={HINT}>Guide editor</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(workflowEditorTab(null))}>
+            Compose a workflow
+            <span className={HINT}>Workflow editor</span>
           </button>
         </li>
         <li>

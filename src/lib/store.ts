@@ -137,6 +137,7 @@ export const GRAPH_KEYS = [
   "berean.collections.v1",
   "berean.active-collection.v1",
   "berean.workflows.v1",
+  "berean.customworkflows.v1",
   "berean.canvases.v1",
   "berean.diagrams.v1",
   "berean.personalbooks.v1",

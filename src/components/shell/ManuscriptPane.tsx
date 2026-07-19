@@ -475,12 +475,29 @@ const SIZE_KEY = "berean.preach.size.v1";
 /* Text size steps in rem, from lectern notes to across the room. */
 const SIZES = [1.1, 1.35, 1.6, 1.9, 2.25];
 
+const TIMER_KEY = "berean.preach.timer.v1";
+/* The target's bounds and step, in minutes; the default is the half hour. */
+const TIMER_DEFAULT = 30;
+const TIMER_STEP = 5;
+const TIMER_MIN = 5;
+const TIMER_MAX = 180;
+
+/** m:ss, the pulpit's own grammar; overtime counts the same way. */
+function fmtClock(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
+
 /**
  * Preaching Mode: the manuscript rendered read-only at pulpit distance, as
  * an overlay over the whole window the way the reader's reading view rises.
  * The editor stays mounted beneath, so nothing in the workspace state moves
  * and not a word can change here. Keyboard paging, five text sizes persisted
- * on the device, Escape or the exit control returns to the editor.
+ * on the device, Escape or the exit control returns to the editor. The
+ * header carries an honest timer: it starts when the overlay rises, counts
+ * from the clock rather than the interval so a throttled tab never lies, and
+ * pauses for the announcements. The target adjusts in five-minute steps and
+ * persists per device; the readout's wash shifts at two minutes out, again
+ * at one, and settles ruby past time, a color change and never a strobe.
  */
 function PreachOverlay({
   doc,
@@ -494,10 +511,47 @@ function PreachOverlay({
   const [size, setSize] = useState(2);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const [target, setTarget] = useState(TIMER_DEFAULT);
+  const [elapsed, setElapsed] = useState(0);
+  const [running, setRunning] = useState(true);
+  /** Milliseconds banked across pauses, and the start of the running stretch. */
+  const bankRef = useRef(0);
+  const sinceRef = useRef(Date.now());
+  const runRef = useRef(true);
+
   useEffect(() => {
     const saved = Number(localStorage.getItem(SIZE_KEY));
     if (Number.isInteger(saved) && saved >= 0 && saved < SIZES.length) setSize(saved);
+    const savedTarget = Number(localStorage.getItem(TIMER_KEY));
+    if (Number.isInteger(savedTarget) && savedTarget >= TIMER_MIN && savedTarget <= TIMER_MAX)
+      setTarget(savedTarget);
   }, []);
+
+  /* The readout ticks, but the count comes from the clock. */
+  useEffect(() => {
+    const tick = window.setInterval(() => {
+      const stretch = runRef.current ? Date.now() - sinceRef.current : 0;
+      setElapsed(Math.floor((bankRef.current + stretch) / 1000));
+    }, 1000);
+    return () => window.clearInterval(tick);
+  }, []);
+
+  function toggleTimer() {
+    if (runRef.current) {
+      bankRef.current += Date.now() - sinceRef.current;
+      runRef.current = false;
+    } else {
+      sinceRef.current = Date.now();
+      runRef.current = true;
+    }
+    setRunning(runRef.current);
+  }
+
+  function chooseTarget(next: number) {
+    const clamped = Math.max(TIMER_MIN, Math.min(TIMER_MAX, next));
+    setTarget(clamped);
+    localStorage.setItem(TIMER_KEY, String(clamped));
+  }
 
   function chooseSize(next: number) {
     const clamped = Math.max(0, Math.min(SIZES.length - 1, next));
@@ -556,6 +610,17 @@ function PreachOverlay({
 
   const ref = doc.passage ? parsePassageRef(doc.passage) : undefined;
 
+  /* The wash at two minutes out, at one, and past time; never a strobe. */
+  const remaining = target * 60 - elapsed;
+  const wash =
+    remaining <= 0
+      ? "border-ruby/50 bg-ruby/10 text-ruby"
+      : remaining <= 60
+        ? "border-amber/60 bg-amber/20 text-amber"
+        : remaining <= 120
+          ? "border-amber/40 bg-amber/10 text-amber"
+          : "border-rule bg-surface text-muted";
+
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-paper">
       <header className="flex items-center justify-between gap-3 border-b border-rule px-4 py-2 no-print">
@@ -569,6 +634,45 @@ function PreachOverlay({
           Arrows or space to page · + and − for text size · Esc to return
         </p>
         <div className="flex items-center gap-2">
+          <div
+            role="timer"
+            aria-label={
+              remaining <= 0
+                ? `${fmtClock(elapsed - target * 60)} past the ${target}-minute target`
+                : `${fmtClock(elapsed)} elapsed of a ${target}-minute target`
+            }
+            title="Elapsed against the target; the wash shifts at two minutes out, at one, and past time"
+            className={`rounded-[4px] border px-3 py-1.5 text-sm font-medium tabular-nums transition-colors ${wash}`}
+          >
+            {remaining <= 0 ? `+${fmtClock(elapsed - target * 60)}` : fmtClock(elapsed)}
+            <span className="ml-1.5 text-[0.72rem] font-normal opacity-70">
+              of {fmtClock(target * 60)}
+            </span>
+          </div>
+          <button
+            onClick={toggleTimer}
+            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
+          >
+            {running ? "Pause" : "Resume"}
+          </button>
+          <button
+            onClick={() => chooseTarget(target - TIMER_STEP)}
+            disabled={target <= TIMER_MIN}
+            aria-label="Shorter target"
+            title="Five minutes off the target, kept on this device"
+            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+          >
+            −
+          </button>
+          <button
+            onClick={() => chooseTarget(target + TIMER_STEP)}
+            disabled={target >= TIMER_MAX}
+            aria-label="Longer target"
+            title="Five minutes on the target, kept on this device"
+            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+          >
+            +
+          </button>
           <button
             onClick={() => chooseSize(size - 1)}
             disabled={size === 0}

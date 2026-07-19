@@ -38,6 +38,7 @@ import PassageGuide from "./PassageGuide";
 import CustomGuidePane from "./CustomGuidePane";
 import GuideEditorPane from "./GuideEditorPane";
 import WorkflowPane from "./WorkflowPane";
+import WorkflowEditorPane from "./WorkflowEditorPane";
 import WordStudyGuide from "./WordStudyGuide";
 import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
@@ -163,6 +164,7 @@ function tabLabel(tab: Tab): string {
   }
   if (tab.type === "guideeditor") return "Guide editor";
   if (tab.type === "workflow") return tab.title;
+  if (tab.type === "workfloweditor") return "Workflow editor";
   if (tab.type === "wordstudy") return `Word Study: ${tab.strongsId}`;
   if (tab.type === "exegetical") {
     return `Exegetical: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
@@ -609,6 +611,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "workflow" ? (
             <div className="h-full overflow-y-auto p-4">
               <WorkflowPane runId={activeTab.runId} />
+            </div>
+          ) : activeTab.type === "workfloweditor" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <WorkflowEditorPane workflowId={activeTab.workflowId} />
             </div>
           ) : activeTab.type === "wordstudy" ? (
             <div className="h-full overflow-y-auto p-4">
