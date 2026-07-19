@@ -43,6 +43,7 @@ import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
 import ListDocPane from "./ListDocPane";
 import CanvasPane from "./CanvasPane";
+import DiagramPane from "./DiagramPane";
 import DeskPane from "./DeskPane";
 import ManuscriptPane from "./ManuscriptPane";
 import PulpitPane from "./PulpitPane";
@@ -165,6 +166,7 @@ function tabLabel(tab: Tab): string {
   }
   if (tab.type === "listdoc") return `List: ${tab.title}`;
   if (tab.type === "canvasdoc") return `Canvas: ${tab.title}`;
+  if (tab.type === "diagram") return `Diagram: ${tab.title}`;
   if (tab.type === "desk") return "Writing";
   if (tab.type === "manuscript") return tab.title;
   if (tab.type === "pulpit") return "Pulpit";
@@ -608,6 +610,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             /* The canvas is a surface, not a scroll page: it fills the pane
              * and handles its own pan and zoom. */
             <CanvasPane canvasId={activeTab.canvasId} />
+          ) : activeTab.type === "diagram" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <DiagramPane diagramId={activeTab.diagramId} />
+            </div>
           ) : activeTab.type === "desk" ? (
             <div className="h-full overflow-y-auto p-4">
               <DeskPane />

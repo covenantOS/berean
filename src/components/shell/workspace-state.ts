@@ -200,6 +200,15 @@ export interface CanvasDocTab {
   title: string;
 }
 
+/** A sentence diagram (src/lib/diagram.ts) open on its layout, pinned to its id. */
+export interface DiagramTab {
+  id: string;
+  type: "diagram";
+  diagramId: string;
+  /** The diagram's name, captured at open time for the tab strip. */
+  title: string;
+}
+
 /**
  * The Writing Desk: the manuscript list with its filters and sorts. A
  * singleton with no payload; the pane opens on the desk itself.
@@ -431,6 +440,7 @@ export type Tab =
   | TopicGuideTab
   | ListDocTab
   | CanvasDocTab
+  | DiagramTab
   | DeskTab
   | ManuscriptTab
   | PulpitTab
@@ -648,6 +658,10 @@ export function canvasDocTab(canvasId: string, title: string): CanvasDocTab {
   return { id: newId("tab"), type: "canvasdoc", canvasId, title };
 }
 
+export function diagramTab(diagramId: string, title: string): DiagramTab {
+  return { id: newId("tab"), type: "diagram", diagramId, title };
+}
+
 export function deskTab(): DeskTab {
   return { id: newId("tab"), type: "desk" };
 }
@@ -703,6 +717,9 @@ export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
 
 /** Canvas ids are the store's UUIDs, the same shape memory passage ids take. */
 export const CANVAS_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Diagram ids are the store's UUIDs, the same shape memory passage ids take. */
+export const DIAGRAM_ID_PATTERN = MEMORY_ID_PATTERN;
 
 /** Project ids are the store's UUIDs, the same shape memory passage ids take. */
 export const PROJECT_ID_PATTERN = MEMORY_ID_PATTERN;
@@ -1034,6 +1051,7 @@ export type WorkspaceAction =
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "openCanvasDoc"; canvasId: string; title: string; paneId?: string }
+  | { type: "openDiagram"; diagramId: string; title: string; paneId?: string }
   | { type: "openDesk"; paneId?: string }
   | { type: "openManuscript"; docId: string; title: string; paneId?: string }
   | { type: "openPulpit"; paneId?: string }
@@ -1522,6 +1540,37 @@ export function workspaceReducer(
         };
       }
       const tab = canvasDocTab(canvasId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openDiagram": {
+      const diagramId = action.diagramId.trim();
+      if (!DIAGRAM_ID_PATTERN.test(diagramId)) return state;
+      const title = action.title.trim() || "Untitled diagram";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per diagram per pane: reopening the same diagram activates
+      // the tab already there, the canvas's pattern keyed by diagramId.
+      // Edits land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "diagram" && t.diagramId === diagramId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = diagramTab(diagramId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -2621,6 +2670,15 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled canvas";
         tabs.push({ id: t.id, type: "canvasdoc", canvasId: t.canvasId, title });
+        continue;
+      }
+      if (t.type === "diagram" && typeof t.id === "string") {
+        // The canvas's rule: a malformed id drops the tab and an unanswered
+        // one loads anyway; the pane says the diagram is gone.
+        if (typeof t.diagramId !== "string" || !DIAGRAM_ID_PATTERN.test(t.diagramId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Untitled diagram";
+        tabs.push({ id: t.id, type: "diagram", diagramId: t.diagramId, title });
         continue;
       }
       if (t.type === "desk" && typeof t.id === "string") {
