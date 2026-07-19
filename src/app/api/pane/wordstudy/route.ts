@@ -2,14 +2,15 @@ import { promises as fs } from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
-import { findOccurrences } from "@/lib/tagged";
+import { countRenderings, findOccurrences } from "@/lib/tagged";
 import { searchOriginal } from "@/lib/morphsearch";
 import { getTopic } from "@/lib/topics";
 
 /**
  * The Bible Word Study: one Strong's number's lexical report. The lexicon
  * entry, the canonical occurrence counts and book distribution from the
- * tagged KJV, a morphology breakdown of the original-language occurrences,
+ * tagged KJV, the distinct English renderings the tagged KJV gives the
+ * lemma, a morphology breakdown of the original-language occurrences,
  * and the topics that cite verses where the word appears.
  *
  * The morphology breakdown reuses searchOriginal with the Strong's id as the
@@ -24,6 +25,9 @@ import { getTopic } from "@/lib/topics";
 
 /** JSON list cap; the totals and the topic scan use the full set. */
 const LIST_CAP = 600;
+
+/** Ranked renderings sent to the pane; the distinct count stays complete. */
+const RENDERING_CAP = 30;
 
 const topicVerseCache = new Map<string, Record<string, string[]> | null>();
 
@@ -52,9 +56,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "No lexicon entry." }, { status: 404 });
   }
 
-  const [occ, morph] = await Promise.all([
+  const [occ, morph, renderings] = await Promise.all([
     findOccurrences(id, 20000),
     searchOriginal(id, {}, 50000).catch(() => null),
+    countRenderings(id),
   ]);
 
   // Occurrence counts and book distribution, canon order.
@@ -125,5 +130,10 @@ export async function GET(req: NextRequest) {
     },
     forms,
     topics,
+    translation: {
+      total: renderings.reduce((n, r) => n + r.count, 0),
+      distinct: renderings.length,
+      renderings: renderings.slice(0, RENDERING_CAP),
+    },
   });
 }

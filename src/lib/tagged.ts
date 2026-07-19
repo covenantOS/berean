@@ -118,6 +118,44 @@ export async function findOccurrences(
   return { occurrences, total, byBook };
 }
 
+export interface KjvRendering {
+  /** The English rendering, lowercased and stripped of punctuation. */
+  word: string;
+  count: number;
+}
+
+/**
+ * Every distinct English rendering of a Strong's number in the tagged KJV,
+ * ranked by count. Where findOccurrences counts verses, this counts tokens:
+ * a verse carrying the lemma twice contributes two. Token text is normalized
+ * (lowercased, punctuation stripped) so "Love," and "love" fold together.
+ */
+export async function countRenderings(strongs: string): Promise<KjvRendering[]> {
+  const { CANON } = await import("./canon");
+  const counts = new Map<string, number>();
+  for (const book of CANON) {
+    const raw = await loadTaggedBook(book);
+    if (!raw) continue;
+    for (const ch of raw.chapters) {
+      for (const v of ch.verses) {
+        for (const w of v.words) {
+          if (!w.s?.includes(strongs)) continue;
+          const word = w.t
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+          if (!word) continue;
+          counts.set(word, (counts.get(word) ?? 0) + 1);
+        }
+      }
+    }
+  }
+  return [...counts.entries()]
+    .map(([word, count]) => ({ word, count }))
+    .sort((a, b) => b.count - a.count || a.word.localeCompare(b.word));
+}
+
 /* ------------------------------------------------------------------ */
 /* Original-language apparatus: TAHOT (Hebrew OT) and TAGNT (Greek NT) */
 /* ------------------------------------------------------------------ */

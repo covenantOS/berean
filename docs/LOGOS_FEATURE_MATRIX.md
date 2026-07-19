@@ -260,7 +260,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 ## 15. Word Study
 
 - [x] [SW] Bible Word Study guide: one lemma or English word in, a full lexical report out, with English and original language modes.
-- [ ] [DATA] Translation section: ring graph of how a lemma is rendered across your reverse interlinears, with Charts handoff.
+- [x] [DATA] Translation section: ring graph of how a lemma is rendered across your reverse interlinears, with Charts handoff.
 - [ ] [DATA] Septuagint Translation section: Hebrew lemma to Greek equivalents in the LXX.
 - [ ] [DATA] Lemma, Root, and Senses sections: dictionary entries, root relationships, and the sense taxonomy with example occurrences.
 - [x] [DATA] Morphology section: form distribution of the lemma across the corpus.

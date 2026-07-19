@@ -36,6 +36,11 @@ interface WordStudyPayload {
   };
   forms: { parsing: string; count: number }[];
   topics: { work: string; id: string; title: string; verses: number }[];
+  translation: {
+    total: number;
+    distinct: number;
+    renderings: { word: string; count: number }[];
+  };
 }
 
 type LoadState =
@@ -48,15 +53,17 @@ const LIST_SHOWN = 24;
 
 /**
  * The Bible Word Study pane: one Strong's number's lexical report, pinned
- * at open time. The lexicon entry heads it; the occurrence counts and book
- * distribution come from the tagged KJV, the form breakdown from the
- * morphologically tagged originals, and the topics from the verse-to-topic
- * index. Every occurrence opens its passage in the reader.
+ * at open time. The lexicon entry heads it; the translation breakdown and
+ * the occurrence counts and book distribution come from the tagged KJV,
+ * the form breakdown from the morphologically tagged originals, and the
+ * topics from the verse-to-topic index. Every occurrence opens its passage
+ * in the reader; every rendering opens a search for that English word.
  */
 export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [chartKind, setChartKind] = useState<ChartKind>("bar");
+  const [translationKind, setTranslationKind] = useState<ChartKind>("donut");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -89,6 +96,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const e = s.entry;
   const langClass = s.id.startsWith("H") ? "lang-hebrew" : "lang-greek";
   const maxCount = Math.max(1, ...s.occurrences.byBook.map((b) => b.count));
+  const maxRendering = Math.max(1, ...s.translation.renderings.map((r) => r.count));
   const shown = s.occurrences.list.slice(0, LIST_SHOWN);
 
   /** The study's lemmas as a word list: the Tyndale variants when present, the bare entry otherwise. */
@@ -170,6 +178,47 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
           </ul>
         )}
       </GuideSection>
+
+      {s.translation.renderings.length > 0 && (
+        <GuideSection
+          title="Translation"
+          hint={`${s.translation.distinct.toLocaleString()} KJV ${
+            s.translation.distinct === 1 ? "rendering" : "renderings"
+          }`}
+        >
+          <div className="space-y-1">
+            {s.translation.renderings.map((r) => (
+              <p key={r.word} className="flex items-center gap-2 text-xs">
+                <button
+                  type="button"
+                  title={`Search for "${r.word}"`}
+                  onClick={() => dispatch({ type: "openSearch", q: r.word })}
+                  className="w-28 shrink-0 truncate text-left text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {r.word}
+                </button>
+                <span
+                  className="h-2 bg-sapphire/70"
+                  style={{ width: `${(r.count / maxRendering) * 100}%` }}
+                />
+                <span className="text-[0.68rem] text-muted">{r.count.toLocaleString()}</span>
+              </p>
+            ))}
+          </div>
+          {s.translation.distinct > s.translation.renderings.length && (
+            <p className="mt-2 text-[0.68rem] text-muted">
+              Top {s.translation.renderings.length} of {s.translation.distinct.toLocaleString()}{" "}
+              renderings.
+            </p>
+          )}
+          <SearchChart
+            series={s.translation.renderings.map((r) => ({ key: r.word, label: r.word, value: r.count }))}
+            kind={translationKind}
+            onKindChange={setTranslationKind}
+            onSelect={(key) => dispatch({ type: "openSearch", q: key })}
+          />
+        </GuideSection>
+      )}
 
       {s.occurrences.total > 0 && (
         <GuideSection
@@ -275,8 +324,8 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
-        Strong's dictionary (public domain). Occurrences from the tagged KJV;
-        forms from TAHOT and TAGNT.
+        Strong's dictionary (public domain). Occurrences and renderings from
+        the tagged KJV; forms from TAHOT and TAGNT.
       </p>
     </div>
   );
