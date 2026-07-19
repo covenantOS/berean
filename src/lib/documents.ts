@@ -121,16 +121,20 @@ export function outlineOf(body: string): OutlineHeading[] {
 /**
  * Passage and word lists, the handoff target for search results and guides.
  * A passage list is an ordered set of verse references; a word list is an
- * ordered set of lemmas keyed by Strong's id. Both carry an optional note
- * per item. They live in their own collection so existing manuscripts load
- * unchanged; the envelope fields ride along from day one as everywhere.
+ * ordered set of lemmas keyed by Strong's id. A clippings document is an
+ * ordered set of excerpt snapshots: the words themselves, captured from the
+ * reader or the commentary wall, with the citation generated at capture time
+ * and never typed by hand. All three carry an optional note per item. They
+ * live in their own collection so existing manuscripts load unchanged; the
+ * envelope fields ride along from day one as everywhere.
  */
 
-export type ListKind = "passage-list" | "word-list";
+export type ListKind = "passage-list" | "word-list" | "clippings";
 
 export const LIST_KINDS: { key: ListKind; label: string }[] = [
   { key: "passage-list", label: "Passage list" },
   { key: "word-list", label: "Word list" },
+  { key: "clippings", label: "Clippings" },
 ];
 
 export interface PassageItem {
@@ -149,7 +153,17 @@ export interface WordItem {
   note?: string;
 }
 
-export type ListItem = PassageItem | WordItem;
+export interface ClipItem {
+  /** The excerpt exactly as it was selected or shown. */
+  text: string;
+  /** The citation generated at capture: a verse reference, or the work and section. */
+  citation: string;
+  /** Canon coordinates when the excerpt is Scripture; commentary clips carry none. */
+  sourceRef?: { book: string; chapter: number; verse: number };
+  note?: string;
+}
+
+export type ListItem = PassageItem | WordItem | ClipItem;
 
 export interface ListDocument extends Record_ {
   title: string;
@@ -161,4 +175,22 @@ export const listDocuments = collection<ListDocument>("berean.listdocs.v1");
 
 export function listKindLabel(kind: ListKind): string {
   return LIST_KINDS.find((k) => k.key === kind)?.label ?? kind;
+}
+
+/**
+ * The capture every clip path shares: append the excerpt to an existing
+ * clippings document, or start a new one around it. The item arrives
+ * complete; its citation was generated where the excerpt was captured.
+ */
+export function clipExcerpt(
+  docId: string | null,
+  item: Omit<ClipItem, "note">,
+  newTitle: string
+): void {
+  if (docId) {
+    const doc = listDocuments.get(docId);
+    if (doc) listDocuments.update(docId, { items: [...doc.items, item] });
+    return;
+  }
+  listDocuments.create({ title: newTitle, kind: "clippings", items: [item] });
 }

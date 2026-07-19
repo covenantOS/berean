@@ -5,6 +5,7 @@ import { getBook } from "@/lib/canon";
 import { useCollection } from "@/lib/hooks";
 import { COMMENTARY_SHELF, librarymeta, orderByPriority } from "@/lib/librarymeta";
 import { sectionsForVerse } from "@/lib/sections";
+import ClippingsPicker from "./ClippingsPicker";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface CommentarySection {
@@ -126,7 +127,13 @@ export default function CommentaryDock() {
             <p className="small-caps mb-2 text-xs font-semibold text-muted">{w.label}</p>
             <div className="space-y-4">
               {w.sections.map((s, i) => (
-                <WallSection key={i} section={s} />
+                <WallSection
+                  key={i}
+                  section={s}
+                  workLabel={w.label}
+                  bookName={getBook(book)?.name ?? book}
+                  chapter={chapter}
+                />
               ))}
             </div>
           </section>
@@ -140,11 +147,28 @@ export default function CommentaryDock() {
   );
 }
 
-function WallSection({ section }: { section: CommentarySection }) {
+function WallSection({
+  section,
+  workLabel,
+  bookName,
+  chapter,
+}: {
+  section: CommentarySection;
+  workLabel: string;
+  bookName: string;
+  chapter: number;
+}) {
   const [open, setOpen] = useState(false);
+  /** True once "Clip" opens the clippings chooser beneath the section. */
+  const [clipping, setClipping] = useState(false);
   const long = section.text.length > EXCERPT;
   const shown =
     open || !long ? section.text : section.text.slice(0, EXCERPT).replace(/\s+\S*$/, "") + " …";
+  /* The clip's citation: the work and the section's verses, generated here;
+   * the excerpt is the whole section, never the truncation. */
+  const citation = section.verses
+    ? `${workLabel}, ${bookName} ${chapter}:${section.verses}`
+    : `${workLabel}, ${bookName} ${chapter}`;
   return (
     <div>
       {section.verses && (
@@ -155,14 +179,32 @@ function WallSection({ section }: { section: CommentarySection }) {
           {para}
         </p>
       ))}
-      {long && (
+      <span className="flex items-center gap-3">
+        {long && (
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {open ? "Put back" : "Read on"}
+          </button>
+        )}
         <button
           type="button"
-          onClick={() => setOpen(!open)}
+          title="Keep this section's text and citation in a clippings document"
+          onClick={() => setClipping(!clipping)}
           className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
-          {open ? "Put back" : "Read on"}
+          Clip
         </button>
+      </span>
+      {clipping && (
+        <ClippingsPicker
+          item={{ text: section.text, citation }}
+          newTitle={`Clippings from ${workLabel}`}
+          heading="Clip this section into"
+          onDone={() => setClipping(false)}
+        />
       )}
     </div>
   );

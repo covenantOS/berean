@@ -10,6 +10,7 @@ import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginali
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
+import ClippingsPicker from "./ClippingsPicker";
 import NotebookPicker from "./NotebookPicker";
 import { useWorkspace } from "./WorkspaceContext";
 import type { WordSelection } from "./workspace-state";
@@ -202,6 +203,8 @@ export function VerseContextMenu({
   const [mentions, setMentions] = useState<Mention[] | null>(null);
   /** True once "Add to passage list" opens its chooser inside the menu. */
   const [pickingList, setPickingList] = useState(false);
+  /** True once "Clip verse" opens its clippings chooser inside the menu. */
+  const [pickingClips, setPickingClips] = useState(false);
   /** True once "Bookmark" opens its folder chooser inside the menu. */
   const [pickingFolder, setPickingFolder] = useState(false);
   /** True once the chooser's "New folder" row swaps for its name input. */
@@ -219,7 +222,7 @@ export function VerseContextMenu({
     s.items.some((it) => it.book === book && it.chapter === chapter && it.verse === verse)
   );
   const { ref, style } = useFloatingMenu(x, y, onClose, {
-    deps: [mentions, pickingList, pickingFolder, namingFolder, writingNote, verseSets],
+    deps: [mentions, pickingList, pickingClips, pickingFolder, namingFolder, writingNote, verseSets],
   });
   const reference = `${bookName} ${chapter}:${verse}`;
 
@@ -446,6 +449,23 @@ export function VerseContextMenu({
             Add to passage list
           </button>
         )}
+        {pickingClips ? (
+          <ClippingsPicker
+            item={{ text, citation: reference, sourceRef: { book, chapter, verse } }}
+            newTitle={`Clippings from ${bookName}`}
+            heading="Clip verse into"
+            onDone={onClose}
+          />
+        ) : (
+          <button
+            type="button"
+            title="Keep this verse's text and citation in a clippings document"
+            className={ROW}
+            onClick={() => setPickingClips(true)}
+          >
+            Clip verse
+          </button>
+        )}
         <div className="mt-1 flex items-center gap-1.5 border-t border-rule px-3 pt-1.5">
           <Swatches
             onPick={(color) => {
@@ -580,10 +600,10 @@ export function WordContextMenu({
 
 /**
  * The hover toolbar a drag selection raises, placed above the selection.
- * Copy, concordance search, note, the four tints, and the verse card; the
- * anchor verse supplies the reference, and the note anchors there too:
- * marginalia keys on the verse, not the character range. Translate stays
- * out: nothing backs it yet.
+ * Copy, concordance search, note, clip, the four tints, and the verse card;
+ * the anchor verse supplies the reference, and the note and the clip anchor
+ * there too: marginalia keys on the verse, not the character range.
+ * Translate stays out: nothing backs it yet.
  */
 export function SelectionMenu({
   x,
@@ -611,7 +631,12 @@ export function SelectionMenu({
   const { dispatch } = useWorkspace();
   /** True once "Note" swaps the toolbar for inline capture. */
   const [writingNote, setWritingNote] = useState(false);
-  const { ref, style } = useFloatingMenu(x, y, onClose, { above: true, deps: [writingNote] });
+  /** True once "Clip" swaps the toolbar for the clippings chooser. */
+  const [pickingClips, setPickingClips] = useState(false);
+  const { ref, style } = useFloatingMenu(x, y, onClose, {
+    above: true,
+    deps: [writingNote, pickingClips],
+  });
   const reference = `${bookName} ${chapter}:${verse}`;
 
   const copy = () => {
@@ -657,6 +682,28 @@ export function SelectionMenu({
     );
   }
 
+  /* The chooser keeps the toolbar's mousedown guard off: picking a target
+   * ends the capture, and the selection has already been read into text. */
+  if (pickingClips) {
+    return (
+      <div
+        ref={ref}
+        role="menu"
+        aria-label="Clip the selection"
+        style={style}
+        className={`${FRAME} w-64 py-1`}
+      >
+        <p className={HEAD}>{reference}</p>
+        <ClippingsPicker
+          item={{ text, citation: reference, sourceRef: { book, chapter, verse } }}
+          newTitle={`Clippings from ${bookName}`}
+          heading="Clip the selection into"
+          onDone={onClose}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
@@ -672,6 +719,9 @@ export function SelectionMenu({
       </button>
       <button type="button" className={TOOL} onClick={() => setWritingNote(true)}>
         Note
+      </button>
+      <button type="button" className={TOOL} onClick={() => setPickingClips(true)}>
+        Clip
       </button>
       <button
         type="button"

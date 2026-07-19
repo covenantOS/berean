@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { getBook } from "@/lib/canon";
+import { formatCitation } from "@/lib/citation";
 import {
   listDocuments,
   listKindLabel,
+  type ClipItem,
   type ListItem,
   type PassageItem,
   type WordItem,
@@ -18,9 +20,11 @@ import { useWorkspace } from "./WorkspaceContext";
 /**
  * A list document in a pane: the saved set a search or guide handed off.
  * Passage rows open their reference in the reader; word rows open the word
- * study for their Strong's id. Items reorder by one step, carry an optional
- * note, and remove individually; every edit writes straight to the
- * collection, so the rail and any other open tab of the same list follow.
+ * study for their Strong's id; a clipping shows the excerpt itself with its
+ * citation, opening the source passage when the excerpt is Scripture. Items
+ * reorder by one step, carry an optional note, and remove individually;
+ * every edit writes straight to the collection, so the rail and any other
+ * open tab of the same list follow.
  */
 export default function ListDocPane({ docId }: { docId: string }) {
   const doc = useRecord(listDocuments, docId);
@@ -48,6 +52,23 @@ export default function ListDocPane({ docId }: { docId: string }) {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     });
+  };
+
+  /* The clippings analog: every excerpt with its citation, formatted through
+   * the shared citation module so the device's style holds, one clipboard
+   * write ready to paste into a manuscript. */
+  const copyAllExcerpts = () => {
+    const text = doc.items
+      .filter((it): it is ClipItem => "citation" in it)
+      .map((it) => formatCitation(it.text, it.citation))
+      .join("\n\n");
+    navigator.clipboard
+      ?.writeText(text)
+      .then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => {});
   };
 
   /* The Word Find: glosses and transliterations become grid words; a list
@@ -94,7 +115,7 @@ export default function ListDocPane({ docId }: { docId: string }) {
   };
 
   return (
-    <div className="mx-auto max-w-prose">
+    <div className="mx-auto max-w-prose" data-print-root>
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">{listKindLabel(doc.kind)}</p>
         <h2 className="mt-0.5 font-editorial text-xl font-semibold">{doc.title}</h2>
@@ -109,6 +130,19 @@ export default function ListDocPane({ docId }: { docId: string }) {
             >
               {copied ? "Copied" : "Copy all texts"}
             </button>
+          )}
+          {doc.kind === "clippings" && doc.items.length > 0 && (
+            <>
+              <button
+                type="button"
+                title="Copy every excerpt with its citation, ready to paste into a manuscript"
+                onClick={copyAllExcerpts}
+                className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {copied ? "Copied" : "Copy all excerpts"}
+              </button>
+              <PrintButton className="ml-3" />
+            </>
           )}
           {doc.kind === "word-list" && doc.items.length > 0 && (
             <button
@@ -129,7 +163,9 @@ export default function ListDocPane({ docId }: { docId: string }) {
       </header>
       {doc.items.length === 0 ? (
         <p className="py-6 text-xs text-muted">
-          The list is empty. A search pane or a verse's context menu adds to it.
+          {doc.kind === "clippings"
+            ? "The document is empty. The selection toolbar, a verse's context menu, or a commentary section clips into it."
+            : "The list is empty. A search pane or a verse's context menu adds to it."}
         </p>
       ) : (
         <ul className="divide-y divide-rule/60">
@@ -138,12 +174,14 @@ export default function ListDocPane({ docId }: { docId: string }) {
               <span className="min-w-0 flex-1">
                 {doc.kind === "passage-list" ? (
                   <PassageRow item={item as PassageItem} />
-                ) : (
+                ) : doc.kind === "word-list" ? (
                   <WordRow item={item as WordItem} />
+                ) : (
+                  <ClipRow item={item as ClipItem} />
                 )}
                 <NoteLine note={item.note} onSave={(note) => setNote(i, note)} />
               </span>
-              <span className="flex shrink-0 items-center text-[0.7rem] text-muted">
+              <span className="no-print flex shrink-0 items-center text-[0.7rem] text-muted">
                 <RowButton
                   label="Move up"
                   disabled={i === 0}
@@ -226,6 +264,32 @@ function WordRow({ item }: { item: WordItem }) {
   );
 }
 
+/** A clipping: the excerpt as captured, its citation beneath, linked back to
+ * the source passage when the excerpt is Scripture. */
+function ClipRow({ item }: { item: ClipItem }) {
+  const { dispatch } = useWorkspace();
+  const source = item.sourceRef;
+  return (
+    <span className="block">
+      <span className="block font-reader text-[0.86rem] leading-relaxed">{item.text}</span>
+      {source ? (
+        <button
+          type="button"
+          title={`Open ${item.citation}`}
+          onClick={() => dispatch({ type: "openRef", book: source.book, chapter: source.chapter })}
+          className="small-caps mt-0.5 text-[0.72rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          {item.citation}
+        </button>
+      ) : (
+        <span className="small-caps mt-0.5 block text-[0.72rem] font-medium text-sapphire">
+          {item.citation}
+        </span>
+      )}
+    </span>
+  );
+}
+
 /** The item's note: quiet when present, an input when asked for. */
 function NoteLine({ note, onSave }: { note?: string; onSave: (note: string) => void }) {
   const [editing, setEditing] = useState(false);
@@ -241,7 +305,7 @@ function NoteLine({ note, onSave }: { note?: string; onSave: (note: string) => v
             setDraft(note ?? "");
             setEditing(true);
           }}
-          className="text-[0.62rem] text-muted hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="no-print text-[0.62rem] text-muted hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           {note ? "Edit note" : "Add note"}
         </button>
