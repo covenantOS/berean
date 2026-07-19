@@ -1,6 +1,16 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { Book, getBook } from "./canon";
+import {
+  Node,
+  WithinVersesNode,
+  evalVerse,
+  hasPreciseSyntax,
+  parseQuery,
+  scopeMatch,
+  verseWords,
+  windowFlags,
+} from "./query";
 import { DEFAULT_TRANSLATION, getTranslation } from "./translations";
 
 export interface Verse {
@@ -117,6 +127,9 @@ export async function searchCanon(
   const { CANON } = await import("./canon");
   const needle = query.trim().toLowerCase();
   if (needle.length < 2) return { hits: [], total: 0 };
+  if (hasPreciseSyntax(query)) {
+    return searchPrecise(query, CANON, limit, translation);
+  }
   const hits: SearchHit[] = [];
   let total = 0;
   for (const book of CANON) {
@@ -132,5 +145,62 @@ export async function searchCanon(
       }
     }
   }
+  return { hits, total };
+}
+
+/**
+ * The precise path: parseQuery compiles the operators (src/lib/query.ts) and
+ * throws QueryError on malformed input, which the routes turn into a
+ * message. The scan collects the in-scope verses once, answers cross-verse
+ * windows from where each side held, then evaluates the tree per verse.
+ */
+async function searchPrecise(
+  query: string,
+  CANON: Book[],
+  limit: number,
+  translation: string
+): Promise<{ hits: SearchHit[]; total: number }> {
+  const plan = parseQuery(query.trim());
+  interface ScopedVerse {
+    book: Book;
+    chapter: number;
+    verse: number;
+    text: string;
+    words: string[];
+  }
+  const verses: ScopedVerse[] = [];
+  for (let bi = 0; bi < CANON.length; bi++) {
+    const book = CANON[bi];
+    if (plan.scopes.length > 0 && !plan.scopes.some((s) => bi >= s.fromBook && bi <= s.toBook)) {
+      continue;
+    }
+    const raw = await loadBook(book, translation);
+    for (const ch of raw.chapters) {
+      const chapter = Number(ch.chapter);
+      for (const v of ch.verses) {
+        const verse = Number(v.verse);
+        if (plan.scopes.length > 0 && !plan.scopes.some((s) => scopeMatch(s, bi, chapter, verse))) {
+          continue;
+        }
+        verses.push({ book, chapter, verse, text: v.text, words: verseWords(v.text) });
+      }
+    }
+  }
+  const withinFlags = new Map<WithinVersesNode, boolean[]>();
+  for (const w of plan.within) {
+    const left = verses.map((v) => evalVerse(w.left, v.words));
+    const right = verses.map((v) => evalVerse(w.right, v.words));
+    withinFlags.set(w, windowFlags(left, right, w.maxVerses));
+  }
+  const resolveWithin = (n: Node) => withinFlags.get(n as WithinVersesNode);
+  const hits: SearchHit[] = [];
+  let total = 0;
+  verses.forEach((v, i) => {
+    if (!evalVerse(plan.root, v.words, (n) => resolveWithin(n)?.[i] ?? false)) return;
+    total++;
+    if (hits.length < limit) {
+      hits.push({ book: v.book, chapter: v.chapter, verse: v.verse, text: v.text });
+    }
+  });
   return { hits, total };
 }

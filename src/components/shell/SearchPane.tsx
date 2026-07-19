@@ -21,6 +21,7 @@ interface Hit {
 type LoadState =
   | { status: "loading" }
   | { status: "error" }
+  | { status: "invalid"; message: string }
   | { status: "ready"; hits: Hit[]; total: number };
 
 /** The arrangements the pane offers over one fetched result set. */
@@ -31,6 +32,18 @@ const VIEWS: { key: View; label: string }[] = [
   { key: "grid", label: "Grid" },
   { key: "analysis", label: "Analysis" },
   { key: "chart", label: "Chart" },
+];
+
+/** The precise grammar's quick reference, listed by the header's ? toggle. */
+const SYNTAX_HINTS: { example: string; note: string }[] = [
+  { example: '"grace and truth"', note: "consecutive words" },
+  { example: "grace AND truth", note: "both words (a space alone also means AND)" },
+  { example: "faith OR love · NOT wrath", note: "either word · verses without the word" },
+  { example: "(law OR grace) AND truth", note: "parentheses group" },
+  { example: "bapt* · *bapt", note: "wildcards, two letters beside the *" },
+  { example: "grace NEAR truth", note: "within four words of each other" },
+  { example: "faith WITHIN 3 VERSES OF love", note: "at most three verses apart" },
+  { example: "in:romans · in:gen-exod · in:ps.23 · in:john.3.16-21", note: "scope the search" },
 ];
 
 interface BookBucket {
@@ -84,6 +97,8 @@ export default function SearchPane({ q }: { q: string }) {
   const [filterName, setFilterName] = useState("");
   const [filterColor, setFilterColor] = useState<HighlightColor>("sapphire");
   const [filterSaved, setFilterSaved] = useState(false);
+  /** The syntax quick reference under the header. */
+  const [showSyntax, setShowSyntax] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -91,8 +106,9 @@ export default function SearchPane({ q }: { q: string }) {
     fetch(`/api/pane/search?q=${encodeURIComponent(q)}`, { signal: controller.signal })
       .then(async (res) => {
         if (!res.ok) throw new Error(String(res.status));
-        const data = (await res.json()) as { hits: Hit[]; total: number };
-        setLoad({ status: "ready", hits: data.hits, total: data.total });
+        const data = (await res.json()) as { hits: Hit[]; total: number; error?: string };
+        if (data.error) setLoad({ status: "invalid", message: data.error });
+        else setLoad({ status: "ready", hits: data.hits, total: data.total });
       })
       .catch((err: unknown) => {
         if (err instanceof DOMException && err.name === "AbortError") return;
@@ -165,8 +181,35 @@ export default function SearchPane({ q }: { q: string }) {
             {filterSaved ? "Saved" : "Save as visual filter"}
           </button>
         )}
+        <button
+          type="button"
+          title="Search syntax"
+          aria-expanded={showSyntax}
+          onClick={() => setShowSyntax((v) => !v)}
+          className={`no-print ml-3 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            showSyntax ? "text-sapphire" : "text-muted hover:text-ink"
+          }`}
+        >
+          ?
+        </button>
         <PrintButton className="ml-3" />
       </header>
+      {showSyntax && (
+        <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+          <dl className="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-0.5 text-[0.72rem]">
+            {SYNTAX_HINTS.map((h) => (
+              <div key={h.example} className="contents">
+                <dt className="text-ink">{h.example}</dt>
+                <dd className="text-muted">{h.note}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-1.5 text-[0.68rem] text-muted">
+            Words match whole words; operators stay uppercase, so a lowercase and or or remains an
+            ordinary word.
+          </p>
+        </div>
+      )}
       {namingFilter && load.status === "ready" && (
         <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
           <label htmlFor="vf-name" className="text-[0.72rem] text-muted">
@@ -247,6 +290,11 @@ export default function SearchPane({ q }: { q: string }) {
         )}
         {load.status === "error" && (
           <p className="px-6 py-8 text-center text-xs text-muted">The search could not be run.</p>
+        )}
+        {load.status === "invalid" && (
+          <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
+            {load.message}
+          </p>
         )}
         {load.status === "ready" && load.total === 0 && (
           <p className="px-6 py-8 text-center text-xs text-muted">

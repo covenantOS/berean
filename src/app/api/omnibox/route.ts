@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchCanon } from "@/lib/bible";
+import { QueryError } from "@/lib/query";
 import { searchEntities } from "@/lib/entities";
 import { searchTopics } from "@/lib/topics";
 
@@ -15,7 +16,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ q, entities: [], topics: [], hits: [], total: 0 });
   }
   const [canon, entities, topics] = await Promise.all([
-    searchCanon(q, 5),
+    // A malformed precise query previews as no hits; the pane explains on submit.
+    searchCanon(q, 5).catch((e: unknown) => {
+      if (e instanceof QueryError) return { hits: [], total: 0 };
+      throw e;
+    }),
     searchEntities(q, 5),
     searchTopics(q, 5),
   ]);

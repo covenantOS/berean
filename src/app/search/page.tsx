@@ -9,6 +9,7 @@ import {
   searchOriginal,
 } from "@/lib/morphsearch";
 import { DEFAULT_TRANSLATION, getAvailableTranslations } from "@/lib/translations";
+import { QueryError } from "@/lib/query";
 import { searchEntities } from "@/lib/entities";
 import { searchTopics } from "@/lib/topics";
 import SemanticMode from "./semantic";
@@ -92,8 +93,16 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
   const available = await getAvailableTranslations();
   const translation =
     t && available.some((x) => x.id === t) ? t : DEFAULT_TRANSLATION;
-  const results =
-    query.length >= 2 ? await searchCanon(query, 200, translation) : null;
+  let results: Awaited<ReturnType<typeof searchCanon>> | null = null;
+  let queryError: string | null = null;
+  if (query.length >= 2) {
+    try {
+      results = await searchCanon(query, 200, translation);
+    } catch (e) {
+      if (e instanceof QueryError) queryError = e.message;
+      else throw e;
+    }
+  }
   const entities = query.length >= 2 ? await searchEntities(query) : [];
   const topics = query.length >= 2 ? await searchTopics(query) : [];
 
@@ -127,6 +136,12 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
           Search
         </button>
       </form>
+
+      {queryError && (
+        <p className="mb-8 rounded-[4px] border border-rule bg-surface px-4 py-3 text-sm">
+          {queryError}
+        </p>
+      )}
 
       {entities.length > 0 && (
         <section className="mb-8">
@@ -222,7 +237,16 @@ async function OriginalMode({
     if (params[key]) filters[key] = params[key];
   }
   const ran = query.length >= 2 || Object.keys(filters).length > 0;
-  const results = ran ? await searchOriginal(query, filters, 200) : null;
+  let results: Awaited<ReturnType<typeof searchOriginal>> | null = null;
+  let queryError: string | null = null;
+  if (ran) {
+    try {
+      results = await searchOriginal(query, filters, 200);
+    } catch (e) {
+      if (e instanceof QueryError) queryError = e.message;
+      else throw e;
+    }
+  }
 
   return (
     <>
@@ -265,6 +289,12 @@ async function OriginalMode({
           </div>
         </details>
       </form>
+
+      {queryError && (
+        <p className="mb-8 rounded-[4px] border border-rule bg-surface px-4 py-3 text-sm">
+          {queryError}
+        </p>
+      )}
 
       {results && (
         <>

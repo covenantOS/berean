@@ -1,10 +1,11 @@
-import { CANON, getBook, type Book } from "./canon";
+import { BOOK_NAME_PATTERN, resolveBookName, type Book } from "./canon";
 import { getChapter } from "./bible";
 
 /**
  * Server-side Scripture reference parsing and quotation verification.
  * Used by the Writing Desk's critique and by any surface that must confirm
- * quoted words actually stand in the cited verse.
+ * quoted words actually stand in the cited verse. Book names resolve through
+ * canon.ts, the single source shared with the query language's in: scoping.
  */
 
 export interface ParsedRef {
@@ -18,42 +19,7 @@ export interface ParsedRef {
   index: number;
 }
 
-/** Book-name variants → slug (display names plus common abbreviations). */
-const NAME_TO_SLUG = new Map<string, string>();
-for (const b of CANON) {
-  NAME_TO_SLUG.set(b.name.toLowerCase(), b.slug);
-}
-const ABBREVIATIONS: Record<string, string> = {
-  gen: "genesis", exod: "exodus", ex: "exodus", lev: "leviticus", num: "numbers",
-  deut: "deuteronomy", josh: "joshua", judg: "judges", "1 sam": "1-samuel", "2 sam": "2-samuel",
-  "1 kgs": "1-kings", "2 kgs": "2-kings", "1 chron": "1-chronicles", "2 chron": "2-chronicles",
-  "1 chr": "1-chronicles", "2 chr": "2-chronicles", neh: "nehemiah", esth: "esther",
-  ps: "psalms", psalm: "psalms", prov: "proverbs", eccl: "ecclesiastes",
-  song: "song-of-solomon", "song of songs": "song-of-solomon", isa: "isaiah", jer: "jeremiah",
-  lam: "lamentations", ezek: "ezekiel", dan: "daniel", hos: "hosea", obad: "obadiah",
-  mic: "micah", nah: "nahum", hab: "habakkuk", zeph: "zephaniah", hag: "haggai",
-  zech: "zechariah", mal: "malachi", matt: "matthew", mk: "mark", lk: "luke", jn: "john",
-  rom: "romans", "1 cor": "1-corinthians", "2 cor": "2-corinthians", gal: "galatians",
-  eph: "ephesians", phil: "philippians", col: "colossians",
-  "1 thess": "1-thessalonians", "2 thess": "2-thessalonians",
-  "1 tim": "1-timothy", "2 tim": "2-timothy", philem: "philemon", heb: "hebrews",
-  jas: "james", "1 pet": "1-peter", "2 pet": "2-peter", "1 jn": "1-john", "2 jn": "2-john",
-  "3 jn": "3-john", rev: "revelation",
-};
-for (const [abbr, slug] of Object.entries(ABBREVIATIONS)) NAME_TO_SLUG.set(abbr, slug);
-
-function resolveBookName(name: string): Book | undefined {
-  const slug = NAME_TO_SLUG.get(name.trim().toLowerCase().replace(/\.$/, ""));
-  return slug ? getBook(slug) : undefined;
-}
-
-/** Sorted longest-first so "1 Corinthians" wins over "Corinthians". */
-const NAME_PATTERN = [...NAME_TO_SLUG.keys()]
-  .sort((a, b) => b.length - a.length)
-  .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-  .join("|");
-
-const REF_RE = new RegExp(`\\b(${NAME_PATTERN})\\.?\\s+(\\d{1,3})(?::(\\d{1,3})(?:[-–](\\d{1,3}))?)?`, "gi");
+const REF_RE = new RegExp(`\\b(${BOOK_NAME_PATTERN})\\.?\\s+(\\d{1,3})(?::(\\d{1,3})(?:[-–](\\d{1,3}))?)?`, "gi");
 
 /** Find every Scripture reference in a body of text. */
 export function findRefs(text: string): ParsedRef[] {

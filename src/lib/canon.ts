@@ -89,6 +89,45 @@ export function getBook(slug: string): Book | undefined {
   return bySlug.get(slug);
 }
 
+/* Book-name resolution: display names plus common abbreviations. refs.ts
+ * builds its reference pattern from BOOK_NAME_PATTERN; resolveBookName
+ * serves reference parsing and the query language's in: scoping, and also
+ * accepts URL slugs. */
+const NAME_TO_SLUG = new Map<string, string>();
+for (const b of CANON) {
+  NAME_TO_SLUG.set(b.name.toLowerCase(), b.slug);
+}
+const ABBREVIATIONS: Record<string, string> = {
+  gen: "genesis", exod: "exodus", ex: "exodus", lev: "leviticus", num: "numbers",
+  deut: "deuteronomy", josh: "joshua", judg: "judges", "1 sam": "1-samuel", "2 sam": "2-samuel",
+  "1 kgs": "1-kings", "2 kgs": "2-kings", "1 chron": "1-chronicles", "2 chron": "2-chronicles",
+  "1 chr": "1-chronicles", "2 chr": "2-chronicles", neh: "nehemiah", esth: "esther",
+  ps: "psalms", psalm: "psalms", prov: "proverbs", eccl: "ecclesiastes",
+  song: "song-of-solomon", "song of songs": "song-of-solomon", isa: "isaiah", jer: "jeremiah",
+  lam: "lamentations", ezek: "ezekiel", dan: "daniel", hos: "hosea", obad: "obadiah",
+  mic: "micah", nah: "nahum", hab: "habakkuk", zeph: "zephaniah", hag: "haggai",
+  zech: "zechariah", mal: "malachi", matt: "matthew", mk: "mark", lk: "luke", jn: "john",
+  rom: "romans", "1 cor": "1-corinthians", "2 cor": "2-corinthians", gal: "galatians",
+  eph: "ephesians", phil: "philippians", col: "colossians",
+  "1 thess": "1-thessalonians", "2 thess": "2-thessalonians",
+  "1 tim": "1-timothy", "2 tim": "2-timothy", philem: "philemon", heb: "hebrews",
+  jas: "james", "1 pet": "1-peter", "2 pet": "2-peter", "1 jn": "1-john", "2 jn": "2-john",
+  "3 jn": "3-john", rev: "revelation",
+};
+for (const [abbr, slug] of Object.entries(ABBREVIATIONS)) NAME_TO_SLUG.set(abbr, slug);
+
+/** Sorted longest-first so "1 Corinthians" wins over "Corinthians". */
+export const BOOK_NAME_PATTERN = [...NAME_TO_SLUG.keys()]
+  .sort((a, b) => b.length - a.length)
+  .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+  .join("|");
+
+export function resolveBookName(name: string): Book | undefined {
+  const key = name.trim().toLowerCase().replace(/\.$/, "");
+  const slug = NAME_TO_SLUG.get(key) ?? (bySlug.has(key) ? key : undefined);
+  return slug ? bySlug.get(slug) : undefined;
+}
+
 export function bookIndex(slug: string): number {
   return CANON.findIndex((b) => b.slug === slug);
 }

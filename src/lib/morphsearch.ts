@@ -1,4 +1,5 @@
 import { Book, CANON } from "./canon";
+import { extractScopes, scopeMatch } from "./query";
 import {
   OriginalWord,
   decodeMorph,
@@ -11,8 +12,10 @@ import {
  * Morphology-aware original-language search over TAHOT (OT) and TAGNT (NT).
  * Accepts a lemma (Greek or Hebrew unicode), a transliteration, a Strong's
  * number (base or extended), or a surface substring, and narrows by parsing.
- * Books load through the module-scope cache in tagged.ts, so a warm server
- * answers a full-canon query in one pass over memory.
+ * An in: range in the query (src/lib/query.ts) scopes the search to those
+ * books and chapters. Books load through the module-scope cache in
+ * tagged.ts, so a warm server answers a full-canon query in one pass over
+ * memory.
  */
 
 export interface MorphFilters {
@@ -224,7 +227,8 @@ export async function searchOriginal(
   limit = 200
 ): Promise<OriginalSearchResult | null> {
   const f = cleanFilters(filters);
-  const matcher = query.trim() ? buildMatcher(query) : null;
+  const { rest, scopes } = extractScopes(query);
+  const matcher = rest.trim() ? buildMatcher(rest) : null;
   if (!matcher && !hasAnyFilter(f)) return null;
 
   const lang: "hebrew" | "greek" | "both" = matcher?.lang ?? "both";
@@ -240,7 +244,9 @@ export async function searchOriginal(
   let total = 0;
   let verses = 0;
 
-  for (const book of CANON) {
+  for (let bi = 0; bi < CANON.length; bi++) {
+    const book = CANON[bi];
+    if (scopes.length > 0 && !scopes.some((s) => bi >= s.fromBook && bi <= s.toBook)) continue;
     const bookLang: "hebrew" | "greek" = book.testament === "OT" ? "hebrew" : "greek";
     if (lang !== "both" && bookLang !== lang) continue;
     if (!matcher && bookLang === "greek" && !greekActive) continue;
@@ -248,7 +254,11 @@ export async function searchOriginal(
     const raw = await loadOriginalBook(book, book.testament === "OT" ? "tahot" : "tagnt");
     if (!raw) continue;
     for (const ch of raw.chapters) {
+      const chNum = Number(ch.chapter);
       for (const v of ch.verses) {
+        if (scopes.length > 0 && !scopes.some((s) => scopeMatch(s, bi, chNum, Number(v.verse)))) {
+          continue;
+        }
         const matches: MatchedWord[] = [];
         for (const w of v.words) {
           if (matcher && !matcher.test(w, bookLang)) continue;
