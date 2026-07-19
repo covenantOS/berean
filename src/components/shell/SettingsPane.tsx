@@ -174,6 +174,21 @@ export default function SettingsPane() {
           notes in the repository); no account is required and no telemetry exists.
         </p>
       </section>
+      <section className="rounded-[4px] border border-rule bg-surface p-5">
+        <h3 className="small-caps mb-3 text-sm text-muted">Welcome</h3>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm">
+            The first-run walkthrough: translation choice, a task layout, and the starter
+            documents. Your existing work is left alone.
+          </p>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("berean:welcome"))}
+            className="shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
+          >
+            Open the welcome again
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

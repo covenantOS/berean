@@ -8,6 +8,7 @@ import {
   useMemo,
   useReducer,
   useRef,
+  useState,
   type Dispatch,
   type ReactNode,
 } from "react";
@@ -18,6 +19,7 @@ import {
   loadWorkspace,
   paneRef,
   saveWorkspace,
+  STORAGE_KEY,
   workspaceReducer,
   type LinkSet,
   type PresetId,
@@ -25,6 +27,7 @@ import {
   type WorkspaceState,
 } from "./workspace-state";
 import { layoutState, layouts } from "./layouts";
+import { isOnboarded } from "@/lib/onboarding";
 import { recordSearch } from "@/lib/search-history";
 
 /**
@@ -58,6 +61,8 @@ interface WorkspaceContextValue {
   dispatch: Dispatch<WorkspaceAction>;
   /** False until the persisted workspace has been restored. */
   hydrated: boolean;
+  /** True on a device with no session and no onboarded mark; the welcome answers it. */
+  firstRun: boolean;
   /** The passage the pane in focus shows; the dock's tools answer it. */
   activeRef: { book: string; chapter: number } | null;
   /** Broadcasts a topmost-visible-verse report to the pane's link set. */
@@ -83,12 +88,20 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   // in an effect so hydration never mismatches.
   const [state, dispatch] = useReducer(workspaceReducer, DEFAULT_STATE);
   const [hydrated, setHydrated] = useReducer(() => true, false);
+  const [firstRun, setFirstRun] = useState(false);
   /** The passage in focus, readable inside the mount-once event listeners. */
   const activeRefRef = useRef<{ book: string; chapter: number } | null>(null);
 
   useEffect(() => {
     const saved = loadWorkspace();
-    if (saved) dispatch({ type: "hydrate", state: saved });
+    if (saved) {
+      dispatch({ type: "hydrate", state: saved });
+    } else if (window.localStorage.getItem(STORAGE_KEY) === null && !isOnboarded()) {
+      // Read before the first save writes the session key: a device with no
+      // session at all is new, while a stored session that failed to parse
+      // was a session and is not. The welcome overlay answers this once.
+      setFirstRun(true);
+    }
     setHydrated();
   }, []);
 
@@ -346,6 +359,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       state,
       dispatch,
       hydrated,
+      firstRun,
       activeRef,
       reportLinkedVerse,
       subscribeLinkedVerse,
@@ -355,6 +369,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     [
       state,
       hydrated,
+      firstRun,
       activeRef,
       reportLinkedVerse,
       subscribeLinkedVerse,

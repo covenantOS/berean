@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 import PaneGrid from "./PaneGrid";
 import RightDock from "./RightDock";
 import StatusBar from "./StatusBar";
+import WelcomeOverlay from "./WelcomeOverlay";
 
 /**
  * The workspace shell: rail, sidebar, pane grid, dock, status bar. No
@@ -17,7 +18,8 @@ import StatusBar from "./StatusBar";
  * omnibox mounts once here and listens for Ctrl/Cmd+K and
  * berean:omnibox-toggle itself; the shell answers its events. DeepLinkIntake
  * reads a deep-link URL (?ref=, ?tab=) once on load and dispatches it into
- * the restored session.
+ * the restored session. The welcome overlay mounts with the frame and answers
+ * a first run (src/lib/onboarding.ts) or the Settings pane's Welcome row.
  */
 export default function WorkspaceShell() {
   return (
@@ -58,6 +60,7 @@ function ShellFrame() {
         <RightDock />
       </div>
       <StatusBar />
+      <WelcomeOverlay />
     </div>
   );
 }
