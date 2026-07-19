@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { formatCitation } from "@/lib/citation";
 import { listDocuments } from "@/lib/documents";
 import { addFavorite, listFolders } from "@/lib/favorites";
 import { guides } from "@/lib/guides";
-import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
+import {
+  highlightStyles,
+  listStyles,
+  setHighlight,
+  styleSwatch,
+} from "@/lib/highlights";
 import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
 import { useCollection } from "@/lib/hooks";
@@ -87,19 +92,35 @@ function useFloatingMenu(x: number, y: number, onClose: () => void, opts: Floati
   return { ref, style: { left: pos.left, top: pos.top } };
 }
 
-/** The stained-glass tint row, the same swatches the context strip carries. */
-function Swatches({ onPick }: { onPick: (color: HighlightColor) => void }) {
+/**
+ * The style palette: the built-in tints plus the user's custom styles, the
+ * same swatches the context strip carries. A swatch previews its style's
+ * effect; a bold style shows its color as a bold letter.
+ */
+export function StylePalette({
+  activeId,
+  onPick,
+}: {
+  activeId?: string;
+  onPick: (styleId: string) => void;
+}) {
+  const customs = useCollection(highlightStyles);
   return (
     <span className="flex items-center gap-1.5">
-      {HIGHLIGHT_COLORS.map((c) => (
+      {listStyles(customs).map((s) => (
         <button
-          key={c}
+          key={s.id}
           type="button"
-          title={`Highlight ${c}`}
-          onClick={() => onPick(c)}
-          className="h-3.5 w-3.5 border border-rule focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-          style={{ background: `var(--stained-${c})` }}
-        />
+          title={`Highlight ${s.name}`}
+          aria-pressed={activeId === s.id}
+          onClick={() => onPick(s.id)}
+          className={`flex h-3.5 w-3.5 items-center justify-center border text-[0.62rem] font-bold leading-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            activeId === s.id ? "border-ink" : "border-rule"
+          }`}
+          style={styleSwatch(s) as CSSProperties}
+        >
+          {s.effect === "bold" ? "A" : ""}
+        </button>
       ))}
     </span>
   );
@@ -519,9 +540,9 @@ export function VerseContextMenu({
           </button>
         )}
         <div className="mt-1 flex items-center gap-1.5 border-t border-rule px-3 pt-1.5">
-          <Swatches
-            onPick={(color) => {
-              setHighlight(book, chapter, verse, color);
+          <StylePalette
+            onPick={(styleId) => {
+              setHighlight(book, chapter, verse, styleId);
               onClose();
             }}
           />
@@ -652,9 +673,9 @@ export function WordContextMenu({
 
 /**
  * The hover toolbar a drag selection raises, placed above the selection.
- * Copy, concordance search, note, clip, the four tints, and the verse card;
- * the anchor verse supplies the reference, and the note and the clip anchor
- * there too: marginalia keys on the verse, not the character range.
+ * Copy, concordance search, note, clip, the style palette, and the verse
+ * card; the anchor verse supplies the reference, and the note and the clip
+ * anchor there too: marginalia keys on the verse, not the character range.
  * Translate stays out: nothing backs it yet.
  */
 export function SelectionMenu({
@@ -789,9 +810,9 @@ export function SelectionMenu({
         Export card
       </button>
       <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-rule" />
-      <Swatches
-        onPick={(color) => {
-          setHighlight(book, chapter, verse, color);
+      <StylePalette
+        onPick={(styleId) => {
+          setHighlight(book, chapter, verse, styleId);
           onClose();
         }}
       />

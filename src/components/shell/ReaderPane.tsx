@@ -23,11 +23,15 @@ import {
 } from "@/lib/marginalia";
 import {
   clearHighlight,
-  HIGHLIGHT_COLORS,
   highlights as highlightCollection,
+  highlightStyles as highlightStyleCollection,
   listHighlights,
+  listStyles,
+  resolveStyle,
   setHighlight,
-  type HighlightColor,
+  styleClass,
+  styleColorVar,
+  type ResolvedStyle,
   type VerseHighlight,
 } from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
@@ -35,7 +39,7 @@ import { verseCardSvg } from "@/lib/verseCard";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
 import NotebookPicker from "./NotebookPicker";
-import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
+import { SelectionMenu, StylePalette, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
 import { findLeaf, READER_FONT_SCALE_DEFAULT, type WordSelection } from "./workspace-state";
 
@@ -214,6 +218,7 @@ export default function ReaderPane({
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
+  const customStyles = useCollection(highlightStyleCollection);
   const filterSets = useCollection(visualFilters);
   const [menu, setMenu] = useState<ReaderMenu | null>(null);
   /** Set by keylinking: the native double-click selection raises no toolbar. */
@@ -605,7 +610,17 @@ export default function ReaderPane({
     return m;
   }, [notes]);
 
-  const markByVerse = useMemo(() => new Map(marks.map((m) => [m.verse, m])), [marks]);
+  const markByVerse = useMemo(() => {
+    /* Each mark resolves to the style it wears; old records map their stored
+     * tint onto the built-in styles and render identically. */
+    const styles = listStyles(customStyles);
+    const m = new Map<number, ResolvedStyle>();
+    for (const h of marks) {
+      const def = resolveStyle(h, styles);
+      if (def) m.set(h.verse, def);
+    }
+    return m;
+  }, [marks, customStyles]);
 
   /* Pericope by start verse; the heading renderer and the locator read it. */
   const pericopeByVerse = useMemo(() => {
@@ -784,7 +799,7 @@ export default function ReaderPane({
     const filter = filterByVerse.get(v);
     return [
       "verse-target",
-      mark ? `hl-${mark.color}` : "",
+      mark ? styleClass(mark) : "",
       filter ? `vf-${filter.color}` : "",
       notesByVerse.has(v) ? "has-note" : "",
       selVerse === v ? "verse-selected" : "",
@@ -792,6 +807,13 @@ export default function ReaderPane({
     ]
       .filter(Boolean)
       .join(" ");
+  };
+
+  /* A custom style names its color inline; built-ins carry theirs in the
+   * legacy class, so old marks render identically. */
+  const verseMarkVar = (v: number) => {
+    const mark = markByVerse.get(v);
+    return mark ? (styleColorVar(mark) as CSSProperties | undefined) : undefined;
   };
 
   const verseText = (v: number) =>
@@ -812,7 +834,7 @@ export default function ReaderPane({
         text={verseText(selVerse)}
         mark={markByVerse.get(selVerse)}
         verseNotes={notesByVerse.get(selVerse) ?? []}
-        onMark={(c) => setHighlight(book, chapter, selVerse, c)}
+        onMark={(id) => setHighlight(book, chapter, selVerse, id)}
         onClearMark={() => clearHighlight(book, chapter, selVerse)}
       />
     ) : null;
@@ -822,6 +844,7 @@ export default function ReaderPane({
       key={v.verse}
       data-verse={v.verse}
       className={verseClass(v.verse)}
+      style={verseMarkVar(v.verse)}
       onClick={() => tapVerse(v.verse)}
       onContextMenu={openVerseMenu(v.verse)}
     >
@@ -835,6 +858,7 @@ export default function ReaderPane({
       key={v.verse}
       data-verse={v.verse}
       className={verseClass(v.verse)}
+      style={verseMarkVar(v.verse)}
       onClick={() => tapVerse(v.verse)}
       onContextMenu={openVerseMenu(v.verse)}
     >
@@ -919,6 +943,7 @@ export default function ReaderPane({
           {pericopeHeading(v.verse)}
           <div
             className={`verse-line ${verseClass(v.verse)}`}
+            style={verseMarkVar(v.verse)}
             data-verse={v.verse}
             onClick={() => tapVerse(v.verse)}
             onContextMenu={openVerseMenu(v.verse)}
@@ -952,6 +977,7 @@ export default function ReaderPane({
           <Fragment key={v.verse}>
             <span
               className={verseClass(v.verse)}
+              style={verseMarkVar(v.verse)}
               data-verse={v.verse}
               onClick={() => tapVerse(v.verse)}
               onContextMenu={openVerseMenu(v.verse)}
@@ -1520,9 +1546,9 @@ function ContextStrip({
   bookName: string;
   abbrev: string;
   text: string;
-  mark: VerseHighlight | undefined;
+  mark: ResolvedStyle | undefined;
   verseNotes: MarginNote[];
-  onMark: (color: HighlightColor) => void;
+  onMark: (styleId: string) => void;
   onClearMark: () => void;
 }) {
   const { dispatch } = useWorkspace();
@@ -1635,19 +1661,7 @@ function ContextStrip({
           </button>
           <span className="flex items-center gap-1.5">
             <span className="text-[0.72rem] text-muted">Highlight</span>
-            {HIGHLIGHT_COLORS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                title={`Highlight ${c}`}
-                aria-pressed={mark?.color === c}
-                onClick={() => onMark(c)}
-                className={`h-3.5 w-3.5 border focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                  mark?.color === c ? "border-ink" : "border-rule"
-                }`}
-                style={{ background: `var(--stained-${c})` }}
-              />
-            ))}
+            <StylePalette activeId={mark?.id} onPick={onMark} />
             {mark && (
               <button type="button" onClick={onClearMark} className={`${STRIP_BTN} text-muted`}>
                 Clear

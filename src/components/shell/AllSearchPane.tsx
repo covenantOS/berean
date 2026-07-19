@@ -3,7 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
-import { resultCount, searchDocs, type DocResults } from "@/lib/docsearch";
+import { resultCount, searchDocs, type DocResults, type HighlightRow } from "@/lib/docsearch";
+import {
+  highlights as highlightCollection,
+  highlightStyles,
+  listStyles,
+  resolveStyle,
+} from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
 import { isAnchored, notes as marginNotes, type AnchoredNote } from "@/lib/marginalia";
 import { prayerLists } from "@/lib/prayers";
@@ -43,6 +49,8 @@ type ScriptureState =
 export default function AllSearchPane({ q }: { q: string }) {
   const { dispatch } = useWorkspace();
   const notes = useCollection(marginNotes);
+  const marks = useCollection(highlightCollection);
+  const customStyles = useCollection(highlightStyles);
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const prayers = useCollection(prayerLists);
@@ -65,9 +73,25 @@ export default function AllSearchPane({ q }: { q: string }) {
     return () => controller.abort();
   }, [q]);
 
+  /* A highlight answers by its verse's reference and its style's name. */
+  const highlightRows = useMemo(() => {
+    const styles = listStyles(customStyles);
+    const rows: HighlightRow[] = [];
+    for (const h of marks) {
+      const style = resolveStyle(h, styles);
+      if (!style) continue;
+      rows.push({
+        highlight: h,
+        reference: `${getBook(h.book)?.name ?? h.book} ${h.chapter}:${h.verse}`,
+        style: style.name,
+      });
+    }
+    return rows;
+  }, [marks, customStyles]);
+
   const docResults = useMemo(
-    () => searchDocs(q, { notes, documents: docs, lists, prayers }),
-    [q, notes, docs, lists, prayers]
+    () => searchDocs(q, { notes, highlights: highlightRows, documents: docs, lists, prayers }),
+    [q, notes, highlightRows, docs, lists, prayers]
   );
 
   /* A verse row carries the pane to its passage and selects the verse, the
@@ -186,7 +210,7 @@ function ScriptureGroup({
 
 /* ---------- Documents: the user's own collections, first hits ---------- */
 
-/** One flattened row across the four collections, in the Docs pane's order. */
+/** One flattened row across the five collections, in the Docs pane's order. */
 interface DocRow {
   key: string;
   kindLabel: string;
@@ -232,6 +256,25 @@ function DocumentsGroup({
         title: `Open ${reference}`,
       });
     }
+  }
+  for (const h of results.highlights) {
+    const mark = h.row.highlight;
+    rows.push({
+      key: mark.id,
+      kindLabel: "Highlight",
+      heading: h.row.reference,
+      snippet: h.snippet,
+      open: () => {
+        dispatch({ type: "openRef", book: mark.book, chapter: mark.chapter });
+        dispatch({
+          type: "selectVerse",
+          book: mark.book,
+          chapter: mark.chapter,
+          verse: mark.verse,
+        });
+      },
+      title: `Open ${h.row.reference}`,
+    });
   }
   for (const h of results.manuscripts) {
     rows.push({

@@ -3,7 +3,13 @@
 import { useMemo } from "react";
 import { getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
-import { resultCount, searchDocs } from "@/lib/docsearch";
+import { resultCount, searchDocs, type HighlightRow } from "@/lib/docsearch";
+import {
+  highlights as highlightCollection,
+  highlightStyles,
+  listStyles,
+  resolveStyle,
+} from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
 import {
   isAnchored,
@@ -19,29 +25,55 @@ import { useWorkspace } from "./WorkspaceContext";
  * Where the Search pane fetches verses from the server, this one reads the
  * device-local collections live (src/lib/docsearch.ts does the matching),
  * so a note written while the pane stands open answers on its own. Each hit
- * opens its target: a note carries the workspace to its verse, a manuscript
- * to its own tab, a list to its pane tab, a prayer to the prayers pane. The
- * header handoff runs the same query against the canon.
+ * opens its target: a note carries the workspace to its verse, a highlight
+ * to its passage, a manuscript to its own tab, a list to its pane tab, a
+ * prayer to the prayers pane. The header handoff runs the same query
+ * against the canon.
  */
 export default function DocSearchPane({ q }: { q: string }) {
   const { dispatch } = useWorkspace();
   const notes = useCollection(marginNotes);
+  const marks = useCollection(highlightCollection);
+  const customStyles = useCollection(highlightStyles);
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const prayers = useCollection(prayerLists);
 
+  /* A highlight answers by its verse's reference and its style's name. */
+  const highlightRows = useMemo(() => {
+    const styles = listStyles(customStyles);
+    const rows: HighlightRow[] = [];
+    for (const h of marks) {
+      const style = resolveStyle(h, styles);
+      if (!style) continue;
+      rows.push({
+        highlight: h,
+        reference: `${getBook(h.book)?.name ?? h.book} ${h.chapter}:${h.verse}`,
+        style: style.name,
+      });
+    }
+    return rows;
+  }, [marks, customStyles]);
+
   const results = useMemo(
-    () => searchDocs(q, { notes, documents: docs, lists, prayers }),
-    [q, notes, docs, lists, prayers]
+    () => searchDocs(q, { notes, highlights: highlightRows, documents: docs, lists, prayers }),
+    [q, notes, highlightRows, docs, lists, prayers]
   );
   const total = resultCount(results);
-  const empty = notes.length + docs.length + lists.length + prayers.length === 0;
+  const empty =
+    notes.length + marks.length + docs.length + lists.length + prayers.length === 0;
 
   /* A note opens its anchor passage and selects the verse, so the context
    * strip rises with the note, the same ride the Documents rail gives. */
   const openNote = (n: AnchoredNote) => {
     dispatch({ type: "openRef", book: n.book, chapter: n.chapter });
     dispatch({ type: "selectVerse", book: n.book, chapter: n.chapter, verse: n.verse });
+  };
+
+  /* A highlighted verse takes the same ride a note's anchor does. */
+  const openHighlight = (h: HighlightRow["highlight"]) => {
+    dispatch({ type: "openRef", book: h.book, chapter: h.chapter });
+    dispatch({ type: "selectVerse", book: h.book, chapter: h.chapter, verse: h.verse });
   };
 
   return (
@@ -66,8 +98,9 @@ export default function DocSearchPane({ q }: { q: string }) {
       <div className="min-h-0 flex-1 overflow-y-auto">
         {empty ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
-            Nothing of yours is gathered yet. Notes on verses, manuscripts from the Writing
-            Desk, saved lists, and prayer requests all answer here once they exist.
+            Nothing of yours is gathered yet. Notes on verses, highlighted verses, manuscripts
+            from the Writing Desk, saved lists, and prayer requests all answer here once they
+            exist.
           </p>
         ) : total === 0 ? (
           <p className="mx-auto max-w-prose px-6 py-8 text-center text-xs text-muted">
@@ -77,7 +110,7 @@ export default function DocSearchPane({ q }: { q: string }) {
           <div className="mx-auto max-w-prose px-6 py-4">
             <p className="mb-3 text-xs text-muted">
               {total.toLocaleString()} {total === 1 ? "record answers" : "records answer"} across
-              your notes, manuscripts, lists, and prayers.
+              your notes, highlights, manuscripts, lists, and prayers.
             </p>
             {results.notes.length > 0 && (
               <section className="mb-5">
@@ -132,6 +165,35 @@ export default function DocSearchPane({ q }: { q: string }) {
                       </li>
                     );
                   })}
+                </ul>
+              </section>
+            )}
+            {results.highlights.length > 0 && (
+              <section className="mb-5">
+                <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
+                  Highlights · {results.highlights.length}
+                </p>
+                <ul>
+                  {results.highlights.map((h) => (
+                    <li key={h.row.highlight.id} className="border-b border-rule/60">
+                      <button
+                        type="button"
+                        onClick={() => openHighlight(h.row.highlight)}
+                        title={`Open ${h.row.reference}`}
+                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      >
+                        <span className="small-caps text-sm font-medium text-sapphire">
+                          {h.row.reference}
+                          <span className="ml-2 text-[0.62rem] font-normal text-muted">
+                            {h.row.style}
+                          </span>
+                        </span>
+                        <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed">
+                          {h.snippet}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </section>
             )}

@@ -1,39 +1,55 @@
 import type { ListDocument, StudyDocument } from "./documents";
+import type { VerseHighlight } from "./highlights";
 import type { MarginNote } from "./marginalia";
 import type { PrayerList, PrayerRequest } from "./prayers";
 import { getRights } from "./rights";
 
 /**
- * Docs Search — the user's own collections answered by a query. The
+ * Docs Search: the user's own collections answered by a query. The
  * concordance searches the canon; this searches what the user has written
  * and gathered: marginalia (journal entries ride the same note collection),
- * Writing Desk manuscripts, passage and word lists, clippings (excerpt and
- * citation both answer), bibliographies (the cited work's registry title
- * and holder answer), and prayer requests. Matching is a plain case-folded
- * substring, honest at the scale of one device's localStorage; the precise
- * grammar in query.ts answers verse-shaped questions and does not compose
- * with prose. Pure over the rows handed in, so the pane re-runs it against
- * live collections and a harness can run it without a browser.
+ * highlighted verses (the reference and the worn style's name answer; the
+ * verse's text stays out, since it lives behind the bible routes and this
+ * matcher runs synchronously), Writing Desk manuscripts, passage and word
+ * lists, clippings (excerpt and citation both answer), bibliographies (the
+ * cited work's registry title and holder answer), and prayer requests.
+ * Matching is a plain case-folded substring, honest at the scale of one
+ * device's localStorage; the precise grammar in query.ts answers
+ * verse-shaped questions and does not compose with prose. Pure over the
+ * rows handed in, so the pane re-runs it against live collections and a
+ * harness can run it without a browser.
  */
 
 /** Characters of context kept on each side of a match in a snippet. */
 const CONTEXT = 60;
 
+/** A highlighted verse shaped for search: the panes resolve the reference
+ * and the style's name, since both want book names from the canon table. */
+export interface HighlightRow {
+  highlight: VerseHighlight;
+  reference: string;
+  style: string;
+}
+
 export type DocHit =
   | { kind: "note"; note: MarginNote; snippet: string }
+  | { kind: "highlight"; row: HighlightRow; snippet: string }
   | { kind: "manuscript"; doc: StudyDocument; snippet: string }
   | { kind: "list"; doc: ListDocument; snippet: string }
   | { kind: "prayer"; list: PrayerList; request: PrayerRequest; snippet: string };
 
 export interface DocResults {
   notes: Extract<DocHit, { kind: "note" }>[];
+  highlights: Extract<DocHit, { kind: "highlight" }>[];
   manuscripts: Extract<DocHit, { kind: "manuscript" }>[];
   lists: Extract<DocHit, { kind: "list" }>[];
   prayers: Extract<DocHit, { kind: "prayer" }>[];
 }
 
 export function resultCount(r: DocResults): number {
-  return r.notes.length + r.manuscripts.length + r.lists.length + r.prayers.length;
+  return (
+    r.notes.length + r.highlights.length + r.manuscripts.length + r.lists.length + r.prayers.length
+  );
 }
 
 /**
@@ -63,18 +79,24 @@ export function searchDocs(
   q: string,
   collections: {
     notes: MarginNote[];
+    highlights: HighlightRow[];
     documents: StudyDocument[];
     lists: ListDocument[];
     prayers: PrayerList[];
   }
 ): DocResults {
   const needle = q.trim().toLowerCase();
-  const out: DocResults = { notes: [], manuscripts: [], lists: [], prayers: [] };
+  const out: DocResults = { notes: [], highlights: [], manuscripts: [], lists: [], prayers: [] };
   if (needle.length < 2) return out;
 
   for (const note of collections.notes) {
     const snippet = snippetOf(note.text, needle);
     if (snippet !== null) out.notes.push({ kind: "note", note, snippet });
+  }
+
+  for (const row of collections.highlights) {
+    const snippet = firstMatch([row.style, row.reference], needle);
+    if (snippet !== null) out.highlights.push({ kind: "highlight", row, snippet });
   }
 
   for (const doc of collections.documents) {
