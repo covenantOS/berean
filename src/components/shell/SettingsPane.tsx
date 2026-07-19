@@ -131,6 +131,8 @@ export default function SettingsPane() {
 
       <HighlightStylesSection />
 
+      <ShortcutsSection />
+
       <section className="rounded-[4px] border border-rule bg-surface p-5">
         <h3 className="small-caps mb-3 text-sm text-muted">Your study — export, restore, delete</h3>
         <div className="flex flex-wrap gap-2">
@@ -173,6 +175,50 @@ export default function SettingsPane() {
         </p>
       </section>
     </div>
+  );
+}
+
+/**
+ * The keyboard map: every chord the workspace actually answers, listed
+ * plainly. A customizable toolbar, draggable shortcut targets, and full
+ * remapping do not ship.
+ */
+function ShortcutsSection() {
+  const rows: { keys: string; does: string }[] = [
+    { keys: "Ctrl or ⌘ K", does: "Opens the omnibox: references, searches, and commands" },
+    {
+      keys: "Escape",
+      does: "Closes the omnibox, open menus, the find box, the reading view, and the pulpit view; lets a selected verse go",
+    },
+    { keys: "Left and Right arrows", does: "Previous and next chapter in the reader pane in focus" },
+    {
+      keys: "Enter, Shift+Enter",
+      does: "Next and previous match while the chapter's find box is open",
+    },
+    {
+      keys: "Arrows, Space, PageUp, PageDown",
+      does: "Scroll the pulpit view; Home and End jump to the ends; + and − size the text",
+    },
+  ];
+  return (
+    <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <h3 className="small-caps mb-3 text-sm text-muted">Keyboard: the chords the workspace answers</h3>
+      <ul className="grid gap-2">
+        {rows.map((row) => (
+          <li key={row.keys} className="flex items-baseline gap-3 text-sm">
+            <kbd className="shrink-0 rounded-[4px] border border-rule bg-paper px-1.5 py-0.5 text-xs">
+              {row.keys}
+            </kbd>
+            <span>{row.does}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
+        Fields, menus, and selections keep their own keys: no chord fires while you are typing,
+        and the arrow keys leave a text selection alone. A customizable toolbar and full remapping
+        do not ship.
+      </p>
+    </section>
   );
 }
 

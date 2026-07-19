@@ -482,6 +482,35 @@ export default function ReaderPane({
     if (next) dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
   };
 
+  /* Left and right arrows page the chapter when this pane is the one in
+   * focus and nothing is being typed or selected: fields, the find box,
+   * and the translation menu keep their own arrow keys, a text selection
+   * keeps its caret, and modifier chords belong to the browser. */
+  useEffect(() => {
+    if (state.activePaneId !== paneId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      const el = document.activeElement;
+      if (
+        el instanceof HTMLInputElement ||
+        el instanceof HTMLTextAreaElement ||
+        el instanceof HTMLSelectElement ||
+        (el instanceof HTMLElement && el.isContentEditable)
+      ) {
+        return;
+      }
+      const selection = window.getSelection();
+      if (selection && !selection.isCollapsed) return;
+      const next = adjacentChapter(book, chapter, e.key === "ArrowLeft" ? -1 : 1);
+      if (!next) return;
+      e.preventDefault();
+      dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [state.activePaneId, paneId, book, chapter, dispatch]);
+
   /* The heading over a pericope's first verse: quiet small-caps, with the
    * source's parallel passages beneath in a smaller line. Text only reads
    * without them, the way it hides the verse numbers. */

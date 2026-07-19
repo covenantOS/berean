@@ -412,6 +412,17 @@ export interface LauncherTab {
   chapter?: number;
 }
 
+/**
+ * The dashboard: a quiet landing of cards for the day's verse, readings,
+ * memory work, prayers, and studies in progress. A singleton with no
+ * payload; a card renders only when it has something to say, and nothing
+ * here is counted as an achievement.
+ */
+export interface DashboardTab {
+  id: string;
+  type: "dashboard";
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -461,6 +472,7 @@ export type Tab =
   | TopicsTab
   | SettingsTab
   | LauncherTab
+  | DashboardTab
   | ToolsTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -815,6 +827,10 @@ export function launcherTab(ref?: { book: string; chapter: number }): LauncherTa
   return { id: newId("tab"), type: "launcher", ...(ref ? { book: ref.book, chapter: ref.chapter } : {}) };
 }
 
+export function dashboardTab(): DashboardTab {
+  return { id: newId("tab"), type: "dashboard" };
+}
+
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
 export function toolTabForDock(dock: DockTab, lexiconId: string | null = null): ToolTab | null {
   if (dock === "commentary") return commentaryTab();
@@ -1072,6 +1088,7 @@ export type WorkspaceAction =
   | { type: "openJournal"; paneId?: string }
   | { type: "openPrayers"; paneId?: string }
   | { type: "openPlans"; paneId?: string }
+  | { type: "openDashboard"; paneId?: string }
   | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
@@ -2042,6 +2059,32 @@ export function workspaceReducer(
       };
     }
 
+    case "openDashboard": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One dashboard per pane, the settings singleton's pattern.
+      const existing = leaf.tabs.find((t) => t.type === "dashboard");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = dashboardTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
     case "selectVerse": {
       const book = getBook(action.book);
       if (!book) return state;
@@ -2798,6 +2841,7 @@ function sanitizeNode(node: unknown): PaneNode | null {
           t.type === "almanac" ||
           t.type === "topics" ||
           t.type === "settings" ||
+          t.type === "dashboard" ||
           t.type === "tools") &&
         typeof t.id === "string"
       ) {

@@ -107,6 +107,9 @@ function Intake() {
         case "plans":
           dispatch({ type: "openPlans", paneId });
           break;
+        case "dashboard":
+          dispatch({ type: "openDashboard", paneId });
+          break;
         case "desk":
           dispatch({ type: "openDesk", paneId });
           break;

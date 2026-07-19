@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
+import PrintButton from "./PrintButton";
 import {
   PrayerFrequency,
   PrayerList,
@@ -46,11 +47,14 @@ export default function PrayersPane() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8" data-print-root>
       <header className="border-b border-rule pb-2">
-        <p className="small-caps text-xs font-semibold text-amber">Prayer lists</p>
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="small-caps text-xs font-semibold text-amber">Prayer lists</p>
+          {lists.length > 0 && <PrintButton />}
+        </div>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">Carried before God</h2>
-        <p className="mt-0.5 text-[0.68rem] text-muted">
+        <p className="no-print mt-0.5 text-[0.68rem] text-muted">
           A request waits daily, weekly, or as it comes · the record says plainly what is due
           today, and what has been answered stays to be read again · nothing leaves this device
         </p>
@@ -58,7 +62,7 @@ export default function PrayersPane() {
 
       <form
         onSubmit={addList}
-        className="flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-4"
+        className="no-print flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-4"
       >
         <input
           value={listTitle}
@@ -92,7 +96,7 @@ export default function PrayersPane() {
                 </div>
                 <button
                   onClick={() => markPrayed(list.id, request.id)}
-                  className="shrink-0 rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
+                  className="no-print shrink-0 rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
                 >
                   Pray now
                 </button>
@@ -126,6 +130,7 @@ function ListCard({ list }: { list: PrayerList }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState(list.title);
+  const [showAnswered, setShowAnswered] = useState(false);
 
   const active = activeRequests(list);
   const answered = answeredRequests(list);
@@ -206,7 +211,7 @@ function ListCard({ list }: { list: PrayerList }) {
           </span>
           <button
             onClick={() => prayerLists.remove(list.id)}
-            className="text-xs text-ruby hover:underline"
+            className="no-print text-xs text-ruby hover:underline"
           >
             Delete list
           </button>
@@ -215,7 +220,7 @@ function ListCard({ list }: { list: PrayerList }) {
 
       <form
         onSubmit={submit}
-        className="mb-4 grid gap-2 rounded-[4px] border border-rule bg-surface p-4 sm:grid-cols-2"
+        className="no-print mb-4 grid gap-2 rounded-[4px] border border-rule bg-surface p-4 sm:grid-cols-2"
       >
         <input
           value={form.title}
@@ -295,11 +300,18 @@ function ListCard({ list }: { list: PrayerList }) {
       )}
 
       {answered.length > 0 && (
-        <details className="mt-3">
-          <summary className="cursor-pointer text-xs text-muted">
+        <div className="mt-3">
+          {/* The disclosure collapses on screen only; the answered history
+           * prints either way, since the print sheet carries the whole list. */}
+          <button
+            type="button"
+            aria-expanded={showAnswered}
+            onClick={() => setShowAnswered((v) => !v)}
+            className="no-print cursor-pointer text-xs text-muted"
+          >
             {answered.length} answered request{answered.length === 1 ? "" : "s"}
-          </summary>
-          <ul className="mt-2 space-y-2">
+          </button>
+          <ul className={`mt-2 space-y-2 ${showAnswered ? "" : "hidden"} print:block`}>
             {answered.map((r) => (
               <li
                 key={r.id}
@@ -312,7 +324,7 @@ function ListCard({ list }: { list: PrayerList }) {
                     <button
                       onClick={() => restoreRequest(list.id, r.id)}
                       title="Return this request to the active list"
-                      className="text-xs text-muted hover:text-ink hover:underline"
+                      className="no-print text-xs text-muted hover:text-ink hover:underline"
                     >
                       Carry again
                     </button>
@@ -322,7 +334,7 @@ function ListCard({ list }: { list: PrayerList }) {
               </li>
             ))}
           </ul>
-        </details>
+        </div>
       )}
     </section>
   );
@@ -372,7 +384,7 @@ function RequestRow({
             {due && " · due today"}
           </p>
         </div>
-        <div className="flex shrink-0 gap-2">
+        <div className="no-print flex shrink-0 gap-2">
           <button
             onClick={() => markPrayed(list.id, request.id)}
             className="rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-paper"
@@ -407,7 +419,7 @@ function RequestRow({
             e.preventDefault();
             markAnswered(list.id, request.id, note.trim() || undefined);
           }}
-          className="mt-2 flex gap-2"
+          className="no-print mt-2 flex gap-2"
         >
           <input
             autoFocus

@@ -13,6 +13,7 @@ import {
   canvasDocTab,
   concordanceTab,
   customGuideTab,
+  dashboardTab,
   docSearchTab,
   exegeticalTab,
   findLeaf,
@@ -235,6 +236,17 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
         </button>
       </form>
       <ul>
+        <li>
+          <button
+            type="button"
+            title="The day's verse, readings, memory work, prayers, and studies in progress"
+            className={ROW}
+            onClick={() => choose(dashboardTab())}
+          >
+            Today
+            <span className={HINT}>Dashboard</span>
+          </button>
+        </li>
         <li>
           <button type="button" className={ROW} onClick={() => choose(libraryTab())}>
             Browse the Library

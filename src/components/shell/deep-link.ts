@@ -50,6 +50,8 @@ import {
  *                       journal                  the Journal tab
  *                       prayers                  the Prayer lists tab
  *                       plans                    the Reading plans tab
+ *                     The dashboard carries no payload either:
+ *                       dashboard                the Today tab
  *                     The Writing Desk takes two forms:
  *                       desk                     the desk itself, a singleton
  *                       manuscript:<id>          a manuscript open for editing
@@ -122,6 +124,7 @@ export type DeepLinkTab =
   | { kind: "journal" }
   | { kind: "prayers" }
   | { kind: "plans" }
+  | { kind: "dashboard" }
   | { kind: "desk" }
   | { kind: "manuscript"; docId: string }
   | { kind: "pulpit" }
@@ -152,6 +155,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "journal") return { kind: "journal" };
     if (kind === "prayers") return { kind: "prayers" };
     if (kind === "plans") return { kind: "plans" };
+    if (kind === "dashboard") return { kind: "dashboard" };
     if (kind === "desk") return { kind: "desk" };
     if (kind === "pulpit") return { kind: "pulpit" };
     if (kind === "chapel") return { kind: "chapel" };
