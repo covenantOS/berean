@@ -293,8 +293,19 @@ const LIBRARY_SECTIONS: { title: string; items: { label: string; note?: string }
 ];
 
 function LibrarySections() {
+  const { dispatch } = useWorkspace();
   return (
     <div className="py-1">
+      <div className="px-3 pt-2 pb-1">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openLibrary" })}
+          title="Open the faceted catalog browser as a pane"
+          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Browse the catalog
+        </button>
+      </div>
       {LIBRARY_SECTIONS.map((section) => (
         <div key={section.title} className="mb-1">
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
@@ -322,9 +333,9 @@ function LibrarySections() {
         </div>
       ))}
       <p className="px-3 py-3 text-[0.7rem] leading-relaxed text-muted">
-        The lexicon entries drag into the workspace; the rest of the shelf
-        opens as panes in a later phase. Every work is registered in the
-        rights registry.
+        The catalog browser opens as a pane with facets, tags, ratings, and
+        commentary priority; the lexicon entries drag into the workspace.
+        Every work is registered in the rights registry.
       </p>
     </div>
   );

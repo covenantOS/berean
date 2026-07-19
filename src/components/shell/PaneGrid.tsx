@@ -37,6 +37,7 @@ import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
 import ListDocPane from "./ListDocPane";
 import Factbook from "./Factbook";
+import LibraryPane from "./LibraryPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -127,6 +128,7 @@ function tabLabel(tab: Tab): string {
   }
   if (tab.type === "listdoc") return `List: ${tab.title}`;
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
+  if (tab.type === "library") return "Library";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -511,6 +513,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "factbook" ? (
             <div className="h-full overflow-y-auto p-4">
               <Factbook entityId={activeTab.entityId} />
+            </div>
+          ) : activeTab.type === "library" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <LibraryPane />
             </div>
           ) : (
             <ToolTabBody paneId={leaf.id} tab={activeTab} />

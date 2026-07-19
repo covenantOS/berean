@@ -134,6 +134,12 @@ export interface FactbookTab {
   title: string;
 }
 
+/** The library browser: the faceted catalog, one tab with no payload. */
+export interface LibraryTab {
+  id: string;
+  type: "library";
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -146,7 +152,8 @@ export type Tab =
   | ExegeticalTab
   | TopicGuideTab
   | ListDocTab
-  | FactbookTab;
+  | FactbookTab
+  | LibraryTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -287,6 +294,10 @@ export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
 }
 
+export function libraryTab(): LibraryTab {
+  return { id: newId("tab"), type: "library" };
+}
+
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
 export function toolTabForDock(dock: DockTab, lexiconId: string | null = null): ToolTab | null {
   if (dock === "commentary") return commentaryTab();
@@ -421,6 +432,7 @@ export type WorkspaceAction =
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
+  | { type: "openLibrary"; paneId?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -655,6 +667,32 @@ export function workspaceReducer(
       if (!findLeaf(state.root, paneId)) return state;
       // Like a guide, the report pins its entity at open time.
       const tab = factbookTab(entityId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openLibrary": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One browser per pane: a second open activates the tab already there.
+      const existing = leaf.tabs.find((t) => t.type === "library");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = libraryTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -1140,6 +1178,10 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : t.entityId;
         tabs.push({ id: t.id, type: "factbook", entityId: t.entityId, title });
+        continue;
+      }
+      if (t.type === "library" && typeof t.id === "string") {
+        tabs.push({ id: t.id, type: "library" });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;

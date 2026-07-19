@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getBook } from "@/lib/canon";
+import { useCollection } from "@/lib/hooks";
+import { COMMENTARY_SHELF, librarymeta, orderByPriority } from "@/lib/librarymeta";
 import { sectionsForVerse } from "@/lib/sections";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -28,10 +30,16 @@ const EXCERPT = 320;
  * The dock's commentary wall: every shipped work on the shelf answers the
  * passage in focus, in wall order. A verse selection narrows the wall to
  * the sections that treat that verse, under a "following" header; Reset
- * lets the selection go and returns the wall to the whole chapter.
+ * lets the selection go and returns the wall to the whole chapter. The
+ * user's shelf priority (set in the Library pane, held in localStorage)
+ * reorders the wall here after the fetch: the route is server-side and
+ * cannot see device data, so it answers in the default order and the dock
+ * applies the preference.
  */
 export default function CommentaryDock() {
   const { state, activeRef, dispatch } = useWorkspace();
+  const metaRows = useCollection(librarymeta);
+  const priority = metaRows.find((r) => r.resourceId === COMMENTARY_SHELF)?.order;
   const sel = state.selection?.kind === "verse" ? state.selection : null;
   const book = sel?.book ?? activeRef?.book ?? null;
   const chapter = sel?.chapter ?? activeRef?.chapter ?? null;
@@ -89,11 +97,14 @@ export default function CommentaryDock() {
       </>
     );
   }
-  const works = sel
-    ? load.works
-        .map((w) => ({ ...w, sections: sectionsForVerse(w.sections, sel.verse) }))
-        .filter((w) => w.sections.length > 0)
-    : load.works;
+  const works = orderByPriority(
+    sel
+      ? load.works
+          .map((w) => ({ ...w, sections: sectionsForVerse(w.sections, sel.verse) }))
+          .filter((w) => w.sections.length > 0)
+      : load.works,
+    priority
+  );
   if (works.length === 0) {
     return (
       <>

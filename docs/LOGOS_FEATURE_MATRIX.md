@@ -190,14 +190,14 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 9. Library and Store
 
-- [ ] [SW] Library panel: faceted filtering by type, subject, author, series, language, era, rating, tag, and download state.
+- [x] [SW] Library panel: faceted filtering by type, subject, author, series, language, era, rating, tag, and download state. (The Library pane tab browses the whole rights registry with facets the catalog genuinely carries: kind, status, license class, the reader's tags, and a minimum rating, plus an inline text filter. Subject, author, series, language, era, and download state wait on structured metadata the registry does not carry; every resource is local, so there is no download state to filter.)
 - [ ] [SW] Cloud library: resources stream on demand with selective download for offline use.
-- [ ] [SW] Prioritization: ordered preference lists per resource type, including advanced per-datatype rules.
+- [x] [SW] Prioritization: ordered preference lists per resource type, including advanced per-datatype rules. (The commentary shelf orders by up/down steppers in the Library pane, persisted in berean.librarymeta.v1 and honored by the commentary wall in the dock and pane. The lexicon aggregates its sources into one entry, so there is nothing to order there; per-datatype rules are unbuilt.)
 - [ ] [SW] Collections: rule-based dynamic sets that scope searches, guides, and tools.
 - [ ] [SW] Custom series: merge or rename series so parallel switching works your way.
 - [ ] [SW] Hide books: remove titles from the local installation while licenses persist.
-- [ ] [SW] Tags and ratings: personal metadata on every resource, usable in collection rules.
-- [ ] [SW] Library export: dump the catalog to a spreadsheet.
+- [x] [SW] Tags and ratings: personal metadata on every resource, usable in collection rules. (Every registry entry takes personal tags and a 1–5 star rating in the Library pane, stored in berean.librarymeta.v1 with the sync envelope, and both are facets in the browser. Collection rules remain unbuilt, so tags do not scope searches or guides yet.)
+- [x] [SW] Library export: dump the catalog to a spreadsheet. (The Library page downloads the full rights registry as a CSV from /api/library/catalog, shipped in 18cf3d5.)
 - [ ] [SW] Print Library catalog (Logos 10): register physical books by ISBN so Smart Search can cite them by page number.
 - [ ] [LICENSED] Store with dynamic pricing: bundle prices subtract what you already own.
 - [ ] [LICENSED] 2025 denominational libraries: Anglican, Baptist, Charismatic, Lutheran, Messianic Jewish, Orthodox, Reformed, Seventh-day Adventist, Wesleyan, plus Verbum for Catholic users.

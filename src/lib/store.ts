@@ -117,6 +117,7 @@ export const GRAPH_KEYS = [
   "berean.marginalia.v1",
   "berean.highlights.v1",
   "berean.visualfilters.v1",
+  "berean.librarymeta.v1",
   "berean.projects.v1",
   "berean.documents.v1",
   "berean.listdocs.v1",
