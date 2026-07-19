@@ -14,14 +14,17 @@ import {
 import {
   DEFAULT_STATE,
   findLeaf,
+  LAYOUT_PRESETS,
   loadWorkspace,
   paneRef,
   saveWorkspace,
   workspaceReducer,
   type LinkSet,
+  type PresetId,
   type WorkspaceAction,
   type WorkspaceState,
 } from "./workspace-state";
+import { layoutState, layouts } from "./layouts";
 import { recordSearch } from "@/lib/search-history";
 
 /**
@@ -152,7 +155,17 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const onToggleDock = () => dispatch({ type: "toggleDock" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
-      if (preset === "reading" || preset === "study") dispatch({ type: "applyPreset", preset });
+      if (LAYOUT_PRESETS.some((p) => p.id === preset)) {
+        dispatch({ type: "applyPreset", preset: preset as PresetId });
+      }
+    };
+    const onRestoreLayout = (e: Event) => {
+      const id = (e as CustomEvent<{ id?: string }>).detail?.id;
+      if (!id) return;
+      const layout = layouts.get(id);
+      const restored = layout ? layoutState(layout) : null;
+      // Hydrate replaces the whole tree; the save effect persists it from there.
+      if (restored) dispatch({ type: "hydrate", state: restored });
     };
     // Escape lets the selection go, unless the user is typing in a field.
     const onKey = (e: KeyboardEvent) => {
@@ -171,6 +184,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-factbook", onOpenFactbook);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
+    window.addEventListener("berean:restore-layout", onRestoreLayout);
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("berean:open-ref", onOpenRef);
@@ -183,6 +197,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-factbook", onOpenFactbook);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
+      window.removeEventListener("berean:restore-layout", onRestoreLayout);
       window.removeEventListener("keydown", onKey);
     };
   }, []);

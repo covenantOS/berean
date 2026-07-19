@@ -144,8 +144,8 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 6. Layouts and Linking
 
-- [ ] [SW] Saved layouts: named workspace snapshots with update-on-save and cloud sync.
-- [ ] [DATA] Quickstart layouts: prebuilt workspace templates for common tasks.
+- [x] [SW] Saved layouts: named workspace snapshots with update-on-save and cloud sync. (Named snapshots ship in berean.layouts.v1 (src/components/shell/layouts.ts): the layouts menu at the rail foot names and saves the current workspace inline, restores it through the session load's sanitizer into the hydrate action (the normal save effect persists it from there), and renames, updates in place, and deletes each layout; the omnibox lists saved layouts as action rows. A tab pinned to content that has gone keeps its pane's own empty state instead of failing the restore. Cloud sync awaits the sync layer, as everywhere.)
+- [x] [DATA] Quickstart layouts: prebuilt workspace templates for common tasks. (Five built-in presets ship (LAYOUT_PRESETS in src/components/shell/workspace-state.ts): Reading, Study, Sermon prep, Word study, and Original languages, each built around the passage in focus from the rail foot, the layouts menu, and the omnibox. Only presets whose panes genuinely work ship; the Scribe writes nothing yet, so no preset opens it.)
 - [ ] [SW] Get Started wizard (2025, Premium and up): pick a task and Logos generates the layout.
 - [ ] [SW] Dashboard (Logos 10): cards for verse of the day, reading progress, plans, workflows, and promos.
 - [ ] [SW] Docking workspace: tabs, tiles, panels, floating windows, and multi-monitor support.

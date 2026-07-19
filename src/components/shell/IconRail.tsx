@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
+import LayoutMenu from "./LayoutMenu";
 import { useWorkspace } from "./WorkspaceContext";
 import type { RailMode } from "./workspace-state";
 import {
@@ -27,8 +28,8 @@ const RAIL_ITEMS: { mode: RailMode; label: string; icon: ComponentType }[] = [
 
 /**
  * The icon rail: one column of modes that drives the sidebar, with the
- * named layout presets at its foot. Clicking the active mode collapses the
- * sidebar, the way an activity bar behaves.
+ * layout presets and the layouts menu at its foot. Clicking the active
+ * mode collapses the sidebar, the way an activity bar behaves.
  */
 export default function IconRail() {
   const { state, dispatch } = useWorkspace();
@@ -85,6 +86,7 @@ export default function IconRail() {
           <PresetStudyIcon />
           <span>Study</span>
         </button>
+        <LayoutMenu />
       </div>
     </nav>
   );

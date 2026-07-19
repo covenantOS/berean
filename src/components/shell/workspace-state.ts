@@ -413,6 +413,92 @@ export function paneRef(leaf: LeafNode): { book: string; chapter: number } | nul
   return tab && tab.type === "reader" ? { book: tab.book, chapter: tab.chapter } : null;
 }
 
+/* ---------- layout presets (the seeded starter layouts) ---------- */
+
+export type PresetId = "reading" | "study" | "sermon-prep" | "word-study" | "original-languages";
+
+export interface LayoutPreset {
+  id: PresetId;
+  name: string;
+  /** One honest line for the rail button's title and the layouts menu. */
+  blurb: string;
+  /** Builds the panes around the passage in focus. */
+  build: (
+    book: string,
+    chapter: number
+  ) => Pick<WorkspaceState, "root" | "activePaneId"> &
+    Partial<Pick<WorkspaceState, "dockOpen" | "dockTab">>;
+}
+
+/** Two panes side by side at an even split. */
+function sideBySide(left: LeafNode, right: LeafNode): SplitNode {
+  return {
+    kind: "split",
+    id: newId("split"),
+    direction: "horizontal",
+    ratio: 0.5,
+    children: [left, right],
+  };
+}
+
+/**
+ * The built-in layouts. Every preset composes panes that genuinely work; a
+ * layout that would open an unbuilt surface (the Scribe writes nothing yet)
+ * does not ship. Named layouts the user saves live beside these in the
+ * layouts menu (./layouts.ts).
+ */
+export const LAYOUT_PRESETS: LayoutPreset[] = [
+  {
+    id: "reading",
+    name: "Reading",
+    blurb: "One unhurried pane, the dock closed",
+    build: (book, chapter) => {
+      const leaf = leafNode([readerTab(book, chapter)]);
+      return { root: leaf, activePaneId: leaf.id, dockOpen: false };
+    },
+  },
+  {
+    id: "study",
+    name: "Study",
+    blurb: "Text beside text, commentary at hand",
+    build: (book, chapter) => {
+      const left = leafNode([readerTab(book, chapter)]);
+      const right = leafNode([readerTab(book, chapter)]);
+      return { root: sideBySide(left, right), activePaneId: left.id, dockOpen: true, dockTab: "commentary" };
+    },
+  },
+  {
+    id: "sermon-prep",
+    name: "Sermon prep",
+    blurb: "The text beside its Passage Guide, commentary at hand",
+    build: (book, chapter) => {
+      const left = leafNode([readerTab(book, chapter)]);
+      const right = leafNode([guideTab(book, chapter)]);
+      return { root: sideBySide(left, right), activePaneId: left.id, dockOpen: true, dockTab: "commentary" };
+    },
+  },
+  {
+    id: "word-study",
+    name: "Word study",
+    blurb: "The text beside the lexicon, ready for a word",
+    build: (book, chapter) => {
+      const left = leafNode([readerTab(book, chapter)]);
+      const right = leafNode([lexiconTab(null)]);
+      return { root: sideBySide(left, right), activePaneId: left.id, dockOpen: true, dockTab: "lexicon" };
+    },
+  },
+  {
+    id: "original-languages",
+    name: "Original languages",
+    blurb: "The text beside its Exegetical Guide",
+    build: (book, chapter) => {
+      const left = leafNode([readerTab(book, chapter)]);
+      const right = leafNode([exegeticalTab(book, chapter)]);
+      return { root: sideBySide(left, right), activePaneId: left.id, dockOpen: true, dockTab: "lexicon" };
+    },
+  },
+];
+
 /* ---------- reducer ---------- */
 
 export type WorkspaceAction =
@@ -448,7 +534,7 @@ export type WorkspaceAction =
   | { type: "setDockTabOrder"; order: DockTab[] }
   | { type: "setLexiconTabEntry"; paneId: string; tabId: string; entryId: string | null }
   | { type: "setLinkSet"; paneId: string; linkSet: LinkSet | null }
-  | { type: "applyPreset"; preset: "reading" | "study" };
+  | { type: "applyPreset"; preset: PresetId };
 
 function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode {
   const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
@@ -1072,26 +1158,14 @@ export function workspaceReducer(
     }
 
     case "applyPreset": {
+      const preset = LAYOUT_PRESETS.find((p) => p.id === action.preset);
+      if (!preset) return state;
+      // A preset builds around the passage in focus, Genesis 1 at the outside.
       const current = paneRef(findLeaf(state.root, state.activePaneId) ?? firstLeaf(state.root)) ?? {
         book: "genesis",
         chapter: 1,
       };
-      if (action.preset === "reading") {
-        // One unhurried pane; the dock closes.
-        const leaf = leafNode([readerTab(current.book, current.chapter)]);
-        return { ...state, root: leaf, activePaneId: leaf.id, dockOpen: false, selection: null };
-      }
-      // "study": text beside text, tools at hand.
-      const left = leafNode([readerTab(current.book, current.chapter)]);
-      const right = leafNode([readerTab(current.book, current.chapter)]);
-      const split: SplitNode = {
-        kind: "split",
-        id: newId("split"),
-        direction: "horizontal",
-        ratio: 0.5,
-        children: [left, right],
-      };
-      return { ...state, root: split, activePaneId: left.id, dockOpen: true, dockTab: "commentary", selection: null };
+      return { ...state, ...preset.build(current.book, current.chapter), selection: null };
     }
 
     default:
@@ -1249,6 +1323,15 @@ export function loadWorkspace(): WorkspaceState | null {
   if (typeof parsed !== "object" || parsed === null) return null;
   const p = parsed as Partial<StoredWorkspace>;
   if (p.version !== 1) return null;
+  return sanitizeWorkspace(p);
+}
+
+/**
+ * Validates a stored snapshot the way the session load does; null when it is
+ * beyond repair. Saved layouts restore through this (./layouts.ts), so a
+ * layout written by an older build degrades the way an old session would.
+ */
+export function sanitizeWorkspace(p: Partial<StoredWorkspace>): WorkspaceState | null {
   const root = p.root ? sanitizeNode(p.root) : null;
   if (!root) return null;
   if (countLeaves(root) > MAX_PANES) return null;

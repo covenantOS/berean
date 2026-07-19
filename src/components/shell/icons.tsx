@@ -112,6 +112,16 @@ export function PresetStudyIcon() {
   );
 }
 
+/* The layouts menu: the built-in presets and the user's named layouts. */
+export function LayoutsIcon() {
+  return (
+    <Icon>
+      <rect x="3" y="3.5" width="12" height="11" />
+      <path d="M9 3.5v11M3 9h6" />
+    </Icon>
+  );
+}
+
 /* Pane chrome. */
 
 export function SplitHorizontalIcon() {

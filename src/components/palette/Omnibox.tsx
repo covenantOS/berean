@@ -35,8 +35,10 @@
  *   "berean:open-factbook"     { id, name }         Factbook for a TIPNR
  *                              entity.
  *   "berean:search"            { q }             Plain text submitted.
- *   "berean:apply-preset"      { preset }        Workspace preset placeholder,
- *                              currently only { preset: "reading" }.
+ *   "berean:apply-preset"      { preset }        A built-in layout preset id
+ *                              (LAYOUT_PRESETS in shell/workspace-state.ts).
+ *   "berean:restore-layout"    { id }            A saved layout's record id in
+ *                              berean.layouts.v1 (shell/layouts.ts).
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
  * Topic rows open the Topic Guide as a pane tab; entity rows open the
  * Factbook as a pane tab (the old /library/entity/[id] pages stay
@@ -54,6 +56,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { dailyRef } from "@/lib/daily-verse";
+import { useCollection } from "@/lib/hooks";
+import { layouts } from "@/components/shell/layouts";
+import { LAYOUT_PRESETS } from "@/components/shell/workspace-state";
 import { parseInput, type ParsedInput } from "./parse";
 
 /* --------------------------------- types --------------------------------- */
@@ -104,7 +109,14 @@ type Recent =
   | { kind: "entity"; label: string; detail: { id: string; name: string } }
   | { kind: "topic"; label: string; href: string };
 
-type GroupName = "References" | "Commands" | "People and places" | "Topics" | "Text hits" | "Recent";
+type GroupName =
+  | "References"
+  | "Commands"
+  | "Layouts"
+  | "People and places"
+  | "Topics"
+  | "Text hits"
+  | "Recent";
 
 interface Item {
   key: string;
@@ -169,7 +181,11 @@ interface Command {
 }
 
 const COMMANDS: Command[] = [
-  { id: "preset-reading", label: "Open reading preset", meta: "Preset" },
+  ...LAYOUT_PRESETS.map((p) => ({
+    id: `preset-${p.id}`,
+    label: `Open the ${p.name} layout`,
+    meta: "Preset",
+  })),
   { id: "guide", label: "Passage guide for this passage", meta: "Guide" },
   { id: "exegetical", label: "Exegetical guide for this passage", meta: "Guide" },
   { id: "toggle-dock", label: "Toggle right dock" },
@@ -189,6 +205,8 @@ export default function Omnibox() {
   /** -1 means nothing highlighted; Enter then submits the parsed input. */
   const [active, setActive] = useState(-1);
   const [recents, setRecents] = useState<Recent[]>([]);
+  /** The user's named layouts, listed as action rows beside the presets. */
+  const savedLayouts = useCollection(layouts);
 
   const closePalette = useCallback(() => setOpen(false), []);
   const togglePalette = useCallback(() => setOpen((o) => !o), []);
@@ -284,8 +302,8 @@ export default function Omnibox() {
   }
 
   function runCommand(id: string) {
-    if (id === "preset-reading") {
-      emit("berean:apply-preset", { preset: "reading" });
+    if (id.startsWith("preset-")) {
+      emit("berean:apply-preset", { preset: id.slice("preset-".length) });
     } else if (id === "guide") {
       emit("berean:open-guide", {});
     } else if (id === "exegetical") {
@@ -339,6 +357,18 @@ export default function Omnibox() {
         label: c.label,
         meta: c.meta ?? commandMeta(c.id),
         run: () => runCommand(c.id),
+      });
+    }
+    for (const l of savedLayouts) {
+      items.push({
+        key: `layout-${l.id}`,
+        group: "Layouts",
+        label: l.name,
+        meta: "Saved layout",
+        run: () => {
+          emit("berean:restore-layout", { id: l.id });
+          closePalette();
+        },
       });
     }
   } else {
@@ -405,6 +435,20 @@ export default function Omnibox() {
           label: c.label,
           meta: c.meta ?? commandMeta(c.id),
           run: () => runCommand(c.id),
+        });
+      }
+    }
+    for (const l of savedLayouts) {
+      if (l.name.toLowerCase().includes(needle)) {
+        items.push({
+          key: `layout-${l.id}`,
+          group: "Layouts",
+          label: l.name,
+          meta: "Saved layout",
+          run: () => {
+            emit("berean:restore-layout", { id: l.id });
+            closePalette();
+          },
         });
       }
     }
@@ -479,8 +523,8 @@ export default function Omnibox() {
     !items.some((i) => i.group === "Commands");
 
   const GROUP_ORDER: GroupName[] = q
-    ? ["References", "Commands", "People and places", "Topics", "Text hits"]
-    : ["Recent", "Commands"];
+    ? ["References", "Commands", "Layouts", "People and places", "Topics", "Text hits"]
+    : ["Recent", "Commands", "Layouts"];
   const groups = GROUP_ORDER.map((name) => ({
     name,
     rows: items.filter((i) => i.group === name),
