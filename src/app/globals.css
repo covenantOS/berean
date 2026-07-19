@@ -323,6 +323,32 @@ html[data-candle] .reader-surface[data-mode="warm"] {
     background: #fff !important;
     color: #000 !important;
   }
+
+  /*
+   * Report printing: a pane's Print action marks its [data-print-root] with
+   * [data-print-active]. Everything that is not the report, its ancestors,
+   * or its contents steps aside, and the ancestor chain drops its viewport
+   * heights and overflow so the report paginates.
+   */
+  body:has([data-print-active])
+    *:not([data-print-active]):not(:has([data-print-active])):not([data-print-active] *) {
+    display: none !important;
+  }
+  body:has([data-print-active]) *:has([data-print-active]) {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* Scroll containers inside the report must paginate, not clip. */
+  [data-print-active] * {
+    overflow: visible !important;
+  }
+  /* The report's own heading stays; the chrome rule above hid every header. */
+  [data-print-active] header {
+    display: block !important;
+  }
 }
 
 /*

@@ -7,6 +7,7 @@ import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { createVisualFilter } from "@/lib/visualfilters";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
+import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface Hit {
@@ -119,7 +120,7 @@ export default function SearchPane({ q }: { q: string }) {
   };
 
   return (
-    <div className="reader-surface flex h-full min-h-0 flex-col">
+    <div className="reader-surface flex h-full min-h-0 flex-col" data-print-root>
       <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
         <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
           “{q}”
@@ -129,7 +130,7 @@ export default function SearchPane({ q }: { q: string }) {
           type="button"
           title={pinned ? "Remove this search from the pinned list" : "Pin this search in the Search rail"}
           onClick={() => toggleFavorite(q)}
-          className="ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="no-print ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           {pinned ? "Pinned" : "Pin search"}
         </button>
@@ -146,7 +147,7 @@ export default function SearchPane({ q }: { q: string }) {
               });
               dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
             }}
-            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Save as passage list
           </button>
@@ -159,14 +160,15 @@ export default function SearchPane({ q }: { q: string }) {
               setFilterName(`“${q}” matches`);
               setNamingFilter(true);
             }}
-            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             {filterSaved ? "Saved" : "Save as visual filter"}
           </button>
         )}
+        <PrintButton className="ml-3" />
       </header>
       {namingFilter && load.status === "ready" && (
-        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
+        <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
           <label htmlFor="vf-name" className="text-[0.72rem] text-muted">
             Filter name
           </label>

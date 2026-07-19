@@ -284,10 +284,10 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Handout and sermon export to DOCX, PDF, and slide decks.
 - [ ] [SW] Notes, clippings, and prayer list printing.
 - [ ] [SW] Canvas and Visual Copy image export.
-- [ ] [SW] Library catalog export to spreadsheet.
-- [ ] [SW] Power Lookup copy: expand and copy every referenced text on the page in one action.
-- [ ] [SW] Copy location as link: ref.ly and logosres URLs for citing exact spots.
-- [ ] [SW] Printing for guides and search results.
+- [x] [SW] Library catalog export to spreadsheet. (The Library page downloads the full rights registry as a CSV from /api/library/catalog: every translation, commentary, lexicon, dataset, and planned work with its kind, status, rights holder, license, allowed uses, source, and notes, RFC 4180 escaped.)
+- [x] [SW] Power Lookup copy: expand and copy every referenced text on the page in one action. (The Passage Guide's Copy referenced texts and a passage list's Copy all texts expand every reference shown to its KJV text through the bulk /api/passages route, one clipboard write in the reader's citation form, overlapping verses written once.)
+- [x] [SW] Copy location as link: ref.ly and logosres URLs for citing exact spots. (Local app deep links ship instead: the verse context menu's Copy link writes the stable /read URL with the verse anchor, and the Passage and Exegetical guide headers copy their chapter's reader URL. ref.ly and logosres are Logos services and do not apply.)
+- [x] [SW] Printing for guides and search results. (The Passage, Word Study, Exegetical, and Topic guides and the concordance pane carry a Print action that marks the report as the print root; the print rules in globals.css hide the workspace chrome and paginate the report alone.)
 
 ## 17. Mobile
 

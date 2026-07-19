@@ -41,7 +41,16 @@ export default async function LibraryPage({
       <p className="mb-8 max-w-2xl text-sm text-muted">
         The deep room, built for exegesis that can bear the weight of a pulpit. Its apparatus grows
         only as verified datasets and licensed texts arrive — nothing on this shelf is implied that
-        Berean cannot actually open.
+        Berean cannot actually open. The whole catalog, rights and provenance included, downloads
+        as a spreadsheet:{" "}
+        <a
+          href="/api/library/catalog"
+          download="berean-library-catalog.csv"
+          className="text-sapphire no-underline hover:underline"
+        >
+          catalog CSV
+        </a>
+        .
       </p>
 
       <section className="mb-10">

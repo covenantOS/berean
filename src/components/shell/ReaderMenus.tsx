@@ -235,6 +235,14 @@ export function VerseContextMenu({
     onClose();
   };
 
+  /* The verse's stable reader URL, the app's analog of citing an exact spot. */
+  const copyLink = () => {
+    navigator.clipboard
+      ?.writeText(`${window.location.origin}/read/${book}/${chapter}#v${verse}`)
+      .catch(() => {});
+    onClose();
+  };
+
   /** Appends the verse to an existing list, or starts a new one around it. */
   const addToPassageList = (docId: string | null) => {
     if (docId) {
@@ -338,6 +346,9 @@ export function VerseContextMenu({
         )}
         <button type="button" className={ROW} onClick={copy}>
           Copy verse
+        </button>
+        <button type="button" className={ROW} onClick={copyLink}>
+          Copy link
         </button>
         <button type="button" className={ROW} onClick={() => setWritingNote(true)}>
           Note{verseNotes.length > 0 ? ` (${verseNotes.length})` : ""}

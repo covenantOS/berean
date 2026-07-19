@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { copyReferences } from "@/lib/powerLookup";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import PrintButton from "./PrintButton";
 
 interface GuideCommentary {
   id: string;
@@ -81,6 +83,8 @@ type LoadState =
 export default function PassageGuide({ book, chapter }: { book: string; chapter: number }) {
   const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
+  /** Quiet confirmation for the copy actions; clears itself. */
+  const [copied, setCopied] = useState<"texts" | "link" | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -108,6 +112,38 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
   const g = load.guide;
   const reference = `${g.bookName} ${g.chapter}`;
 
+  const confirm = (what: "texts" | "link") => {
+    setCopied(what);
+    window.setTimeout(() => setCopied(null), 1500);
+  };
+
+  /* Power Lookup copy: every cross-reference and dated timeline passage on
+   * the page, expanded to its KJV text in one clipboard write. */
+  const copyAllTexts = () => {
+    const refs = [
+      ...g.crossRefs.map((r) => ({ book: r.slug, chapter: r.chapter, from: r.verse, to: r.endVerse })),
+      ...g.timeline.flatMap((e) =>
+        e.refs
+          .filter((r) => r.verse !== null)
+          .map((r) => ({ book: r.slug, chapter: r.chapter, from: r.verse as number }))
+      ),
+    ];
+    void copyReferences(refs).then((ok) => {
+      if (ok) confirm("texts");
+    });
+  };
+
+  /* The chapter's stable reader URL, for citing the guide's subject. */
+  const copyLink = () => {
+    navigator.clipboard
+      ?.writeText(`${window.location.origin}/read/${g.book}/${g.chapter}`)
+      .then(() => confirm("link"))
+      .catch(() => {});
+  };
+
+  const ACTION =
+    "text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+
   const mentionRow = (m: GuideMention) => (
     <li key={m.id}>
       <button
@@ -126,10 +162,31 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-print-root>
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Passage Guide</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
+        <p className="no-print mt-1 flex items-center gap-3">
+          {g.crossRefs.length > 0 && (
+            <button
+              type="button"
+              title="Copy the KJV text of every reference on this page"
+              onClick={copyAllTexts}
+              className={ACTION}
+            >
+              {copied === "texts" ? "Copied" : "Copy referenced texts"}
+            </button>
+          )}
+          <button
+            type="button"
+            title={`Copy a link that reopens ${reference} in the reader`}
+            onClick={copyLink}
+            className={ACTION}
+          >
+            {copied === "link" ? "Copied" : "Copy link"}
+          </button>
+          <PrintButton />
+        </p>
       </header>
 
       {g.commentary.length > 0 && (

@@ -10,6 +10,7 @@ import {
   type WordItem,
 } from "@/lib/documents";
 import { useRecord } from "@/lib/hooks";
+import { copyReferences } from "@/lib/powerLookup";
 import { useWorkspace } from "./WorkspaceContext";
 
 /**
@@ -21,12 +22,27 @@ import { useWorkspace } from "./WorkspaceContext";
  */
 export default function ListDocPane({ docId }: { docId: string }) {
   const doc = useRecord(listDocuments, docId);
+  /** Quiet confirmation for the copy action; clears itself. */
+  const [copied, setCopied] = useState(false);
 
   if (!doc) {
     return <p className="text-xs text-muted">This list is no longer on this device.</p>;
   }
 
   const save = (items: ListItem[]) => listDocuments.update(docId, { items });
+
+  /* Power Lookup copy: every passage in the list, expanded to its KJV text
+   * in one clipboard write, ready to paste into a manuscript. */
+  const copyAllTexts = () => {
+    const refs = doc.items
+      .filter((it): it is PassageItem => "book" in it)
+      .map((it) => ({ book: it.book, chapter: it.chapter, from: it.verse }));
+    void copyReferences(refs).then((ok) => {
+      if (!ok) return;
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    });
+  };
 
   /** Moves the item at index one step; out-of-range targets change nothing. */
   const move = (index: number, dir: -1 | 1) => {
@@ -55,6 +71,16 @@ export default function ListDocPane({ docId }: { docId: string }) {
         <h2 className="mt-0.5 font-editorial text-xl font-semibold">{doc.title}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
           {doc.items.length} {doc.items.length === 1 ? "item" : "items"}
+          {doc.kind === "passage-list" && doc.items.length > 0 && (
+            <button
+              type="button"
+              title="Copy the KJV text of every passage in this list"
+              onClick={copyAllTexts}
+              className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {copied ? "Copied" : "Copy all texts"}
+            </button>
+          )}
         </p>
       </header>
       {doc.items.length === 0 ? (

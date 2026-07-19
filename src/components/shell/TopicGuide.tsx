@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import PrintButton from "./PrintButton";
 
 interface TopicGuideRef {
   label: string;
@@ -139,12 +140,15 @@ export default function TopicGuide({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-print-root>
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Topic Guide</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold capitalize">{r.title}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
           {r.workLabel} · {r.refs.toLocaleString()} {r.refs === 1 ? "reference" : "references"}
+        </p>
+        <p className="no-print mt-1">
+          <PrintButton />
         </p>
       </header>
 

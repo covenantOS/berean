@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { listDocuments, type WordItem } from "@/lib/documents";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import PrintButton from "./PrintButton";
 import SearchChart, { type ChartKind } from "./SearchChart";
 
 interface TyndaleVariant {
@@ -124,7 +125,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-print-root>
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Bible Word Study</p>
         <h2 className="mt-0.5 flex flex-wrap items-baseline gap-3">
@@ -135,7 +136,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
             type="button"
             title={`Open ${s.id} in the lexicon`}
             onClick={() => dispatch({ type: "openLexicon", id: s.id })}
-            className="ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="no-print ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Open in lexicon
           </button>
@@ -143,10 +144,11 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
             type="button"
             title="Save this study's lemmas as a word list document"
             onClick={saveWordList}
-            className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Save as word list
           </button>
+          <PrintButton className="ml-3" />
         </h2>
       </header>
 

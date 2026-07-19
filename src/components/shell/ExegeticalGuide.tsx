@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import PrintButton from "./PrintButton";
 
 interface ExegeticalWord {
   t: string;
@@ -68,6 +69,8 @@ type LoadState =
 export default function ExegeticalGuide({ book, chapter }: { book: string; chapter: number }) {
   const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
+  /** Quiet confirmation for the copy link action; clears itself. */
+  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -105,6 +108,17 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
   const langClass = r.lang === "hebrew" ? "lang-hebrew" : "lang-greek";
   const source = r.lang === "hebrew" ? "TAHOT" : "TAGNT";
 
+  /* The chapter's stable reader URL, for citing the report's subject. */
+  const copyLink = () => {
+    navigator.clipboard
+      ?.writeText(`${window.location.origin}/read/${book}/${chapter}`)
+      .then(() => {
+        setLinkCopied(true);
+        window.setTimeout(() => setLinkCopied(false), 1500);
+      })
+      .catch(() => {});
+  };
+
   const wordCell = (w: ExegeticalWord, i: number) => (
     <div
       key={i}
@@ -140,12 +154,23 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-print-root>
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Exegetical Guide</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
           {r.lang === "hebrew" ? "Hebrew" : "Greek"} text: {source}
+        </p>
+        <p className="no-print mt-1 flex items-center gap-3">
+          <button
+            type="button"
+            title={`Copy a link that reopens ${reference} in the reader`}
+            onClick={copyLink}
+            className="text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {linkCopied ? "Copied" : "Copy link"}
+          </button>
+          <PrintButton />
         </p>
       </header>
 
