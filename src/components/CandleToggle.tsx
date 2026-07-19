@@ -1,30 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { applyDisplayPrefs, setCandle, useDisplayPrefs } from "@/lib/display";
 
-const KEY = "berean.candle";
-
-/** Candlelight switch — renders the whole study by lamplight (plan §3). */
+/**
+ * Candlelight switch — renders the whole study by lamplight (plan §3). The
+ * workspace's Settings rail writes the same key through src/lib/display.ts,
+ * so the two surfaces never disagree; this mount also replays the display
+ * prefs onto the document root for whichever surface is showing.
+ */
 export default function CandleToggle() {
-  const [lit, setLit] = useState(false);
+  const { lit } = useDisplayPrefs();
 
   useEffect(() => {
-    const stored = localStorage.getItem(KEY) === "1";
-    setLit(stored);
-    document.documentElement.toggleAttribute("data-candle", stored);
+    applyDisplayPrefs();
   }, []);
-
-  const toggle = () => {
-    const next = !lit;
-    setLit(next);
-    document.documentElement.toggleAttribute("data-candle", next);
-    localStorage.setItem(KEY, next ? "1" : "0");
-  };
 
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={() => setCandle(!lit)}
       title={lit ? "Daylight" : "Candlelight"}
       aria-label={lit ? "Switch to daylight" : "Switch to candlelight"}
       className="rounded-[4px] px-2 py-1.5 text-sm text-muted hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"

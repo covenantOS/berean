@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
+import { CITATION_STYLE_KEY, citationStyle, type CitationStyle } from "@/lib/citation";
+import { setCandle, setTextScale, TEXT_SCALES, useDisplayPrefs } from "@/lib/display";
 import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
 import { favorites, removeFavorite, renameFolder, type Favorite } from "@/lib/favorites";
 import { useCollection } from "@/lib/hooks";
@@ -14,7 +16,7 @@ import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, startModuleDrag } from "./dnd";
-import { findLeaf, paneRef, type RailMode } from "./workspace-state";
+import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
 
 const MODE_TITLES: Record<RailMode, string> = {
   read: "Canon",
@@ -29,9 +31,9 @@ const MODE_TITLES: Record<RailMode, string> = {
 /**
  * The left sidebar: one tree or section list per rail mode. The Read tree
  * and its bookmarked passages, the Search rail's pinned searches and
- * history, the Documents list, and the Almanac rail's daily readings and
- * due prayers carry real data; the rest are quiet placeholders until their
- * panels land in a later phase.
+ * history, the Documents list, the Almanac rail's daily readings and due
+ * prayers, and the Settings rail's program settings carry real data; the
+ * rest are quiet placeholders until their panels land in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -68,9 +70,7 @@ export default function Sidebar() {
         )}
         {state.railMode === "search" && <SearchPanel />}
         {state.railMode === "almanac" && <AlmanacPanel />}
-        {state.railMode === "settings" && (
-          <Placeholder text="Workspace and reading preferences will live here. Session state already persists on this device." />
-        )}
+        {state.railMode === "settings" && <SettingsPanel />}
       </div>
     </aside>
   );
@@ -320,6 +320,145 @@ function AlmanacPanel() {
           memory page
         </Link>
         .
+      </p>
+    </div>
+  );
+}
+
+/* ---------- Settings: the program settings that apply workspace-wide ---------- */
+
+/** One translation on the shelf, as /api/translations reports it. */
+interface ShelfTranslation {
+  id: string;
+  abbrev: string;
+  name: string;
+  otOnly: boolean;
+}
+
+const SETTINGS_SELECT =
+  "w-full border border-rule bg-paper px-1.5 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire";
+
+/**
+ * The Settings rail: the controls that genuinely apply workspace-wide, each
+ * writing a device-local key the rest of the app reads. Candlelight is the
+ * same switch the site header carries (src/lib/display.ts), reachable here
+ * with the chrome hidden; the text multiplier rides under every pane's own
+ * A steppers; new reader tabs open in the default translation (readerTab in
+ * workspace-state.ts); copied verses and Power Lookup follow the citation
+ * style (src/lib/citation.ts). Export, import, and the Scribe's profile
+ * stay on the settings page.
+ */
+function SettingsPanel() {
+  const { lit, scale } = useDisplayPrefs();
+  const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
+  const [translation, setTranslation] = useState("kjv");
+  const [style, setStyle] = useState<CitationStyle>("text-first");
+
+  useEffect(() => {
+    setTranslation(window.localStorage.getItem(PREFERRED_TRANSLATION_KEY) ?? "kjv");
+    setStyle(citationStyle());
+    fetch("/api/translations")
+      .then((res) => (res.ok ? res.json() : { translations: [] }))
+      .then((data: { translations: ShelfTranslation[] }) =>
+        // OT-only texts cannot default: a new tab might open in the NT.
+        setShelf(data.translations.filter((t) => !t.otOnly))
+      )
+      .catch(() => {});
+  }, []);
+
+  const chooseTranslation = (id: string) => {
+    setTranslation(id);
+    if (id === "kjv") window.localStorage.removeItem(PREFERRED_TRANSLATION_KEY);
+    else window.localStorage.setItem(PREFERRED_TRANSLATION_KEY, id);
+  };
+
+  const chooseStyle = (v: CitationStyle) => {
+    setStyle(v);
+    window.localStorage.setItem(CITATION_STYLE_KEY, v);
+  };
+
+  return (
+    <div className="py-1">
+      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+        Display
+      </div>
+      <div className="flex items-center justify-between gap-2 px-3 py-[3px]">
+        <span className="text-[0.8rem] text-ink">Candlelight</span>
+        <button
+          type="button"
+          aria-pressed={lit}
+          title={lit ? "Switch to daylight" : "Switch to candlelight"}
+          onClick={() => setCandle(!lit)}
+          className="border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          {lit ? "☀ Daylight" : "🕯 Candlelight"}
+        </button>
+      </div>
+      <label className="block px-3 py-[3px] text-[0.8rem] text-ink">
+        <span className="mb-0.5 block">Text size</span>
+        <select
+          value={String(scale)}
+          onChange={(e) => setTextScale(Number(e.target.value))}
+          className={SETTINGS_SELECT}
+        >
+          {TEXT_SCALES.map((s) => (
+            <option key={s.value} value={String(s.value)}>
+              {s.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+        The size rides under every reader pane&apos;s own A steppers, here and on
+        the reading page.
+      </p>
+
+      <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+        Reading
+      </div>
+      <label className="block px-3 py-[3px] text-[0.8rem] text-ink">
+        <span className="mb-0.5 block">Default translation</span>
+        <select
+          value={translation}
+          onChange={(e) => chooseTranslation(e.target.value)}
+          className={SETTINGS_SELECT}
+        >
+          {shelf.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name} ({t.abbrev})
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+        New reader tabs open in this text; a pane&apos;s own swap still wins.
+      </p>
+
+      <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+        Copying
+      </div>
+      <label className="block px-3 py-[3px] text-[0.8rem] text-ink">
+        <span className="mb-0.5 block">Citation style</span>
+        <select
+          value={style}
+          onChange={(e) => chooseStyle(e.target.value as CitationStyle)}
+          className={SETTINGS_SELECT}
+        >
+          <option value="text-first">Text, then reference</option>
+          <option value="citation-first">Reference, then text</option>
+        </select>
+      </label>
+      <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+        Copied verses read “For God so loved… (John 3:16)” or “John 3:16: For
+        God so loved…”. Power Lookup follows the same choice.
+      </p>
+
+      <p className="mt-2 border-t border-rule px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
+        Export, import, deletion, and the Scribe&apos;s profile live on the{" "}
+        <Link href="/settings" className="text-sapphire no-underline hover:underline">
+          settings page
+        </Link>
+        . Every preference here persists on this device.
       </p>
     </div>
   );

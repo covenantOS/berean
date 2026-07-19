@@ -2,8 +2,11 @@
  * Power Lookup copy: expand a set of references into their KJV text through
  * the bulk passages route and put the formatted block on the clipboard,
  * ready to paste into a manuscript. Each verse lands on its own line in the
- * reader's established citation form: the text, then its reference.
+ * reader's citation form (src/lib/citation.ts), text-first unless the
+ * Settings rail has chosen otherwise.
  */
+
+import { formatCitation } from "./citation";
 
 export interface RefRange {
   /** Canonical book slug, e.g. "genesis". */
@@ -42,7 +45,7 @@ export async function copyReferences(refs: RefRange[]): Promise<boolean> {
         const key = `${p.bookName} ${p.chapter}:${v.verse}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        lines.push(`${v.text} (${key}, KJV)`);
+        lines.push(formatCitation(v.text, key, "KJV"));
       }
     }
     if (lines.length === 0) return false;

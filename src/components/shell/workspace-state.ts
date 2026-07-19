@@ -279,7 +279,14 @@ function newId(prefix: string): string {
 }
 
 export function readerTab(book = "genesis", chapter = 1): ReaderTab {
-  return { id: newId("tab"), type: "reader", book, chapter };
+  const translation = preferredTranslation();
+  return {
+    id: newId("tab"),
+    type: "reader",
+    book,
+    chapter,
+    ...(translation ? { translation } : {}),
+  };
 }
 
 export function searchTab(q: string): SearchTab {
@@ -339,6 +346,21 @@ export function libraryTab(): LibraryTab {
  * the reader already speaks of the KJV by name the same way.
  */
 export const COMPARE_BASE_DEFAULT = "kjv";
+
+/**
+ * The translation new reader tabs open in, the workspace's default text. A
+ * device-local scalar like the candle key, written by the Settings rail and
+ * read here at tab creation; a tab already open keeps its own text, and a
+ * pane's swap still wins. KJV stores as nothing, the way a tab carrying no
+ * translation already means the default text.
+ */
+export const PREFERRED_TRANSLATION_KEY = "berean.preferred-translation.v1";
+
+function preferredTranslation(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const v = window.localStorage.getItem(PREFERRED_TRANSLATION_KEY)?.trim();
+  return v && v !== "kjv" && /^[a-z]+$/.test(v) ? v : undefined;
+}
 
 /** The text size step a reader tab falls back to when it carries none. */
 export const READER_FONT_SCALE_DEFAULT = 2;

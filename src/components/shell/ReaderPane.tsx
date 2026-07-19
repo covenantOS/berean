@@ -13,6 +13,7 @@ import {
   type UIEvent as ReactUIEvent,
 } from "react";
 import { adjacentChapter, getBook } from "@/lib/canon";
+import { formatCitation } from "@/lib/citation";
 import {
   deleteNote,
   listNotes,
@@ -1316,7 +1317,7 @@ function ContextStrip({
 
   const copy = () => {
     navigator.clipboard
-      ?.writeText(`${text} (${reference})`)
+      ?.writeText(formatCitation(text, reference))
       .then(() => {
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1500);

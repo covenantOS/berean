@@ -131,7 +131,8 @@ export default function LibraryPane() {
       if (OT_ONLY.has(translation) && getBook(ref.book)?.testament === "NT") {
         ref = { book: "genesis", chapter: 1 };
       }
-      return { ...readerTab(ref.book, ref.chapter), ...(translation !== "kjv" ? { translation } : {}) };
+      // The entry's own text wins over the default translation preference.
+      return { ...readerTab(ref.book, ref.chapter), translation: translation === "kjv" ? undefined : translation };
     }
     if (COMMENTARY_WALL.some((w) => w.rightsId === r.id)) return commentaryTab();
     if (r.id === "tbesh" || r.id === "tbesg" || r.id === "strongs") return lexiconTab(null);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { formatCitation } from "@/lib/citation";
 import { listDocuments } from "@/lib/documents";
 import { addFavorite, listFolders } from "@/lib/favorites";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
@@ -237,7 +238,7 @@ export function VerseContextMenu({
 
   const copy = () => {
     navigator.clipboard
-      ?.writeText(`${text} (${reference})`)
+      ?.writeText(formatCitation(text, reference))
       .catch(() => {});
     onClose();
   };
@@ -611,7 +612,7 @@ export function SelectionMenu({
 
   const copy = () => {
     navigator.clipboard
-      ?.writeText(`${text} (${reference})`)
+      ?.writeText(formatCitation(text, reference))
       .catch(() => {});
     onClose();
   };

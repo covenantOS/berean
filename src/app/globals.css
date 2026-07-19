@@ -200,14 +200,16 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-violet) 75%, transparent);
 }
 
+/* --reader-base is the global multiplier from the Settings rail; a pane's
+ * own --reader-scale step rides on top of it. */
 .prose-verses {
-  font-size: calc(1.22rem * var(--reader-scale, 1));
+  font-size: calc(1.22rem * var(--reader-base, 1) * var(--reader-scale, 1));
   line-height: 1.85;
   text-align: justify;
   hyphens: auto;
 }
 .poetry-verses {
-  font-size: calc(1.22rem * var(--reader-scale, 1));
+  font-size: calc(1.22rem * var(--reader-base, 1) * var(--reader-scale, 1));
   line-height: 1.8;
 }
 .poetry-verses .verse-line {
@@ -237,7 +239,7 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 
 /* Original-text mode: each word carries its own quiet interlinear line. */
 .original-verses {
-  font-size: calc(1.15rem * var(--reader-scale, 1));
+  font-size: calc(1.15rem * var(--reader-base, 1) * var(--reader-scale, 1));
   line-height: 2.2;
 }
 .orig-word {
