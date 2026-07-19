@@ -166,6 +166,24 @@ export interface ListDocTab {
   title: string;
 }
 
+/**
+ * The Writing Desk: the manuscript list with its filters and sorts. A
+ * singleton with no payload; the pane opens on the desk itself.
+ */
+export interface DeskTab {
+  id: string;
+  type: "desk";
+}
+
+/** A manuscript open for editing, pinned to its document id. */
+export interface ManuscriptTab {
+  id: string;
+  type: "manuscript";
+  docId: string;
+  /** Display title, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** The Factbook: one TIPNR entity's report, pinned to its entity id. */
 export interface FactbookTab {
   id: string;
@@ -293,6 +311,8 @@ export type Tab =
   | ExegeticalTab
   | TopicGuideTab
   | ListDocTab
+  | DeskTab
+  | ManuscriptTab
   | FactbookTab
   | LibraryTab
   | TextCompareTab
@@ -488,6 +508,14 @@ export function listDocTab(docId: string, title: string): ListDocTab {
   return { id: newId("tab"), type: "listdoc", docId, title };
 }
 
+export function deskTab(): DeskTab {
+  return { id: newId("tab"), type: "desk" };
+}
+
+export function manuscriptTab(docId: string, title: string): ManuscriptTab {
+  return { id: newId("tab"), type: "manuscript", docId, title };
+}
+
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
 export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
 
@@ -497,6 +525,9 @@ export const EVENT_ID_PATTERN = /^[a-z0-9-]+$/;
 /** Memory passage ids are the store's UUIDs (crypto.randomUUID, src/lib/store.ts). */
 export const MEMORY_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Manuscript ids are the store's UUIDs, the same shape memory passage ids take. */
+export const DOCUMENT_ID_PATTERN = MEMORY_ID_PATTERN;
 
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
@@ -819,6 +850,8 @@ export type WorkspaceAction =
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
+  | { type: "openDesk"; paneId?: string }
+  | { type: "openManuscript"; docId: string; title: string; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1226,6 +1259,64 @@ export function workspaceReducer(
       // Like a guide, the list pins its document at open time; edits land in
       // the collection and the pane reads them live.
       const tab = listDocTab(docId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openDesk": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One desk per pane: a second open activates the tab already there,
+      // the way the Library browser does.
+      const existing = leaf.tabs.find((t) => t.type === "desk");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = deskTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openManuscript": {
+      const docId = action.docId.trim();
+      if (!DOCUMENT_ID_PATTERN.test(docId)) return state;
+      const title = action.title.trim() || "Untitled manuscript";
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per manuscript per pane: reopening the same document
+      // activates the tab already there, the desk's singleton pattern keyed
+      // by docId. Edits land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "manuscript" && t.docId === docId);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = manuscriptTab(docId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -2018,6 +2109,20 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled list";
         tabs.push({ id: t.id, type: "listdoc", docId: t.docId, title });
+        continue;
+      }
+      if (t.type === "desk" && typeof t.id === "string") {
+        // A singleton; it carries nothing to validate.
+        tabs.push({ id: t.id, type: "desk" });
+        continue;
+      }
+      if (t.type === "manuscript" && typeof t.id === "string") {
+        // A malformed id drops the tab; an id that answers to no document
+        // loads anyway and the pane says the manuscript is gone.
+        if (typeof t.docId !== "string" || !DOCUMENT_ID_PATTERN.test(t.docId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : "Untitled manuscript";
+        tabs.push({ id: t.id, type: "manuscript", docId: t.docId, title });
         continue;
       }
       if (t.type === "factbook" && typeof t.id === "string") {

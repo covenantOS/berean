@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { documents } from "@/lib/documents";
 import { useWorkspace } from "./WorkspaceContext";
 import { lexiconTab } from "./workspace-state";
 import { parseDeepLinkRef, parseDeepLinkTab } from "./deep-link";
@@ -104,6 +105,21 @@ function Intake() {
         case "plans":
           dispatch({ type: "openPlans", paneId });
           break;
+        case "desk":
+          dispatch({ type: "openDesk", paneId });
+          break;
+        case "manuscript": {
+          // The title resolves at open when the document answers; a missing
+          // one opens anyway and the pane renders the gone notice.
+          const doc = documents.get(tab.docId);
+          dispatch({
+            type: "openManuscript",
+            docId: tab.docId,
+            title: doc?.title ?? "Untitled manuscript",
+            paneId,
+          });
+          break;
+        }
       }
     }
     window.history.replaceState(null, "", "/workspace");

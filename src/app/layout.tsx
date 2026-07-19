@@ -31,7 +31,7 @@ const NAV = [
   { href: "/workspace", label: "Read" },
   { href: "/pulpit", label: "Pulpit" },
   { href: "/chapel", label: "Chapel" },
-  { href: "/desk", label: "Desk" },
+  { href: "/workspace?tab=desk", label: "Desk" },
   { href: "/workspace?tab=library", label: "Library" },
   { href: "/almanac", label: "Almanac" },
   { href: "/settings", label: "Settings" },

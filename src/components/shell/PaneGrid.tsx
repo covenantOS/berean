@@ -40,6 +40,8 @@ import WordStudyGuide from "./WordStudyGuide";
 import ExegeticalGuide from "./ExegeticalGuide";
 import TopicGuide from "./TopicGuide";
 import ListDocPane from "./ListDocPane";
+import DeskPane from "./DeskPane";
+import ManuscriptPane from "./ManuscriptPane";
 import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
 import TextCompare from "./TextCompare";
@@ -149,6 +151,8 @@ function tabLabel(tab: Tab): string {
     return `Topic: ${tab.title.replace(/\b\w/g, (c) => c.toUpperCase())}`;
   }
   if (tab.type === "listdoc") return `List: ${tab.title}`;
+  if (tab.type === "desk") return "Writing";
+  if (tab.type === "manuscript") return tab.title;
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "library") return "Library";
   if (tab.type === "textcompare") {
@@ -571,6 +575,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "listdoc" ? (
             <div className="h-full overflow-y-auto p-4">
               <ListDocPane docId={activeTab.docId} />
+            </div>
+          ) : activeTab.type === "desk" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <DeskPane />
+            </div>
+          ) : activeTab.type === "manuscript" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <ManuscriptPane docId={activeTab.docId} />
             </div>
           ) : activeTab.type === "factbook" ? (
             <div className="h-full overflow-y-auto p-4">

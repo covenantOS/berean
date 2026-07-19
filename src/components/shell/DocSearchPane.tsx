@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo } from "react";
 import { getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
@@ -21,8 +20,8 @@ import { useWorkspace } from "./WorkspaceContext";
  * device-local collections live (src/lib/docsearch.ts does the matching),
  * so a note written while the pane stands open answers on its own. Each hit
  * opens its target: a note carries the workspace to its verse, a manuscript
- * to the Writing Desk, a list to its pane tab, a prayer to the prayers
- * page. The header handoff runs the same query against the canon.
+ * to its own tab, a list to its pane tab, a prayer to the prayers pane. The
+ * header handoff runs the same query against the canon.
  */
 export default function DocSearchPane({ q }: { q: string }) {
   const { dispatch } = useWorkspace();
@@ -144,10 +143,17 @@ export default function DocSearchPane({ q }: { q: string }) {
                 <ul>
                   {results.manuscripts.map((h) => (
                     <li key={h.doc.id} className="border-b border-rule/60">
-                      <Link
-                        href={`/desk/${h.doc.id}`}
-                        title={`Open ${h.doc.title || "Untitled"} at the Writing Desk`}
-                        className="block w-full py-3 text-left no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch({
+                            type: "openManuscript",
+                            docId: h.doc.id,
+                            title: h.doc.title,
+                          })
+                        }
+                        title={`Open ${h.doc.title || "Untitled"} for editing`}
+                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.doc.title || "Untitled"}
@@ -158,7 +164,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                         <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
                           {h.snippet}
                         </span>
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>

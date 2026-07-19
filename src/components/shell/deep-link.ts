@@ -1,5 +1,10 @@
 import { BOOK_NAME_PATTERN, resolveBookName } from "@/lib/canon";
-import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN, MEMORY_ID_PATTERN } from "./workspace-state";
+import {
+  DOCUMENT_ID_PATTERN,
+  ENTITY_ID_PATTERN,
+  EVENT_ID_PATTERN,
+  MEMORY_ID_PATTERN,
+} from "./workspace-state";
 
 /**
  * URL deep links for /workspace (the intake itself lives in
@@ -40,6 +45,9 @@ import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN, MEMORY_ID_PATTERN } from "./worksp
  *                       journal                  the Journal tab
  *                       prayers                  the Prayer lists tab
  *                       plans                    the Reading plans tab
+ *                     The Writing Desk takes two forms:
+ *                       desk                     the desk itself, a singleton
+ *                       manuscript:<id>          a manuscript open for editing
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -101,6 +109,8 @@ export type DeepLinkTab =
   | { kind: "journal" }
   | { kind: "prayers" }
   | { kind: "plans" }
+  | { kind: "desk" }
+  | { kind: "manuscript"; docId: string }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -119,6 +129,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "journal") return { kind: "journal" };
     if (kind === "prayers") return { kind: "prayers" };
     if (kind === "plans") return { kind: "plans" };
+    if (kind === "desk") return { kind: "desk" };
     return null;
   }
   if (i === 0) return null;
@@ -150,6 +161,12 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     case "memory": {
       if (!MEMORY_ID_PATTERN.test(payload)) return null;
       return { kind: "memory", passageId: payload };
+    }
+    case "manuscript": {
+      // A well-formed id opens the tab even when no document answers to it;
+      // the pane says the manuscript is gone, the way a missing list does.
+      if (!DOCUMENT_ID_PATTERN.test(payload)) return null;
+      return { kind: "manuscript", docId: payload };
     }
     case "topicguide": {
       const j = payload.indexOf(":");

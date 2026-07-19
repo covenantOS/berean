@@ -40,10 +40,11 @@ const MODE_TITLES: Record<RailMode, string> = {
 
 /**
  * The left sidebar: one tree or section list per rail mode. The Read tree
- * and its bookmarked passages, the Search rail's pinned searches and
- * history, the Documents list, the Almanac rail's daily readings and due
- * prayers, and the Settings rail's program settings carry real data; the
- * rest are quiet placeholders until their panels land in a later phase.
+ * and its bookmarked passages, the Study rail's manuscripts, the Search
+ * rail's pinned searches and history, the Documents list, the Almanac
+ * rail's daily readings and due prayers, and the Settings rail's program
+ * settings carry real data; the rest are quiet placeholders until their
+ * panels land in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -75,9 +76,7 @@ export default function Sidebar() {
         )}
         {state.railMode === "library" && <LibrarySections />}
         {state.railMode === "documents" && <DocumentsList />}
-        {state.railMode === "study" && (
-          <Placeholder text="Studies, projects, and the sermon pipeline will gather here. Until then, open a passage and split the pane." />
-        )}
+        {state.railMode === "study" && <StudyPanel />}
         {state.railMode === "search" && <SearchPanel />}
         {state.railMode === "almanac" && <AlmanacPanel />}
         {state.railMode === "settings" && <SettingsPanel />}
@@ -797,6 +796,63 @@ const LIBRARY_SECTIONS: { title: string; items: { label: string; note?: string }
   },
 ];
 
+/* ---------- Study: the writing half of the room ---------- */
+
+/**
+ * The Study rail: the Writing Desk's manuscripts, each opening in its own
+ * tab, beside the desk itself as the manage surface. Studies, projects, and
+ * the sermon pipeline gather here when their panels land.
+ */
+function StudyPanel() {
+  const { dispatch } = useWorkspace();
+  const docs = useCollection(documents);
+  return (
+    <div className="py-1">
+      <div className="px-3 pt-2 pb-1">
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openDesk" })}
+          title="Open the Writing Desk as a pane"
+          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Open the Writing Desk
+        </button>
+      </div>
+      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+        Writing
+      </div>
+      {docs.length === 0 ? (
+        <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+          Nothing on the desk yet. A manuscript opened from the desk waits
+          here too.
+        </p>
+      ) : (
+        <ul>
+          {docs.map((doc) => (
+            <li key={doc.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+              <button
+                type="button"
+                onClick={() =>
+                  dispatch({ type: "openManuscript", docId: doc.id, title: doc.title })
+                }
+                title={`Open ${doc.title || "Untitled"} for editing`}
+                className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {doc.title || "Untitled"}
+              </button>
+              <span className="shrink-0 text-[0.62rem] text-muted">{doc.kind}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="px-3 py-3 text-[0.7rem] leading-relaxed text-muted">
+        Studies, projects, and the sermon pipeline will gather here. Until
+        then, open a passage and split the pane.
+      </p>
+    </div>
+  );
+}
+
 function LibrarySections() {
   const { dispatch } = useWorkspace();
   return (
@@ -944,11 +1000,17 @@ function DocumentsList() {
           </div>
           <ul>
             {docs.map((doc) => (
-              <li
-                key={doc.id}
-                className="flex items-baseline justify-between gap-2 px-3 py-[3px] text-[0.8rem] text-ink"
-              >
-                <span className="truncate">{doc.title || "Untitled"}</span>
+              <li key={doc.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                <button
+                  type="button"
+                  onClick={() =>
+                    dispatch({ type: "openManuscript", docId: doc.id, title: doc.title })
+                  }
+                  title={`Open ${doc.title || "Untitled"} for editing`}
+                  className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {doc.title || "Untitled"}
+                </button>
                 <span className="shrink-0 text-[0.62rem] text-muted">{doc.kind}</span>
               </li>
             ))}
