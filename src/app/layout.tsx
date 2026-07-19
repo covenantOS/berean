@@ -32,7 +32,7 @@ const NAV = [
   { href: "/pulpit", label: "Pulpit" },
   { href: "/chapel", label: "Chapel" },
   { href: "/desk", label: "Desk" },
-  { href: "/library", label: "Library" },
+  { href: "/workspace?tab=library", label: "Library" },
   { href: "/almanac", label: "Almanac" },
   { href: "/settings", label: "Settings" },
 ];
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col">
         <header className="border-b border-rule bg-surface">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-            <Link href="/" className="flex items-center gap-3 no-underline">
+            <Link href="/workspace" className="flex items-center gap-3 no-underline">
               <LeadedMark />
               <span className="flex flex-col leading-tight">
                 <span className="font-editorial text-lg font-bold tracking-wide text-ink">

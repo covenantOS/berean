@@ -531,7 +531,7 @@ export default function Omnibox() {
           sub: `${t.work === "naves" ? "Nave's" : "Torrey's"} · ${t.refs.toLocaleString()} ${
             t.refs === 1 ? "reference" : "references"}`,
           run: () => {
-            const href = `/topics/${t.work}/${t.id}`;
+            const href = `/workspace?tab=topicguide:${t.work}:${t.id}`;
             pushRecent({ kind: "topic", label: t.title, href });
             emit("berean:open-topicguide", { work: t.work, id: t.id, title: t.title });
             closePalette();

@@ -51,7 +51,7 @@ export default async function LexiconIndex({
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
       <nav className="mb-6 text-sm text-muted">
-        <Link href="/library" className="text-sapphire no-underline hover:underline">
+        <Link href="/workspace?tab=library" className="text-sapphire no-underline hover:underline">
           Library
         </Link>{" "}
         / Lexicon
@@ -96,7 +96,7 @@ export default async function LexiconIndex({
                   {results.map(({ id, entry }) => (
                     <li key={id} className="rounded-[4px] border border-rule bg-surface p-4">
                       <Link
-                        href={`/lexicon/${id}`}
+                        href={`/workspace?tab=lexicon:${id}`}
                         className="flex flex-wrap items-baseline gap-3 no-underline"
                       >
                         <span className="small-caps text-xs text-muted">{id}</span>

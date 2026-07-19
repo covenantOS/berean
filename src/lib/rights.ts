@@ -305,7 +305,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Topical index with nested sub-topics and ~100,000 scripture references, stored as data/topics/naves.json behind /topics. References are normalized to canonical slugs; entries whose references cannot be mapped are counted at build time. Raw module kept under data/_sources/naves (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
+      "Topical index with nested sub-topics and ~100,000 scripture references, stored as data/topics/naves.json behind /topics and the workspace's topic guides (/topics/[work]/[id] redirects there). References are normalized to canonical slugs; entries whose references cannot be mapped are counted at build time. Raw module kept under data/_sources/naves (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
     status: "shipped",
   },
   {
@@ -318,7 +318,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Topical textbook with sub-topics and scripture proofs, stored as data/topics/torreys.json behind /topics. References are normalized to canonical slugs; unmappable references are counted at build time. Raw module kept under data/_sources/torreys (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
+      "Topical textbook with sub-topics and scripture proofs, stored as data/topics/torreys.json behind /topics and the workspace's topic guides (/topics/[work]/[id] redirects there). References are normalized to canonical slugs; unmappable references are counted at build time. Raw module kept under data/_sources/torreys (see PROVENANCE.md); normalized by scripts/build-topics.mjs.",
     status: "shipped",
   },
   {
@@ -331,7 +331,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Shipped as the Strong's-tagged KJV (data/kjv-strongs) and the Hebrew and Greek dictionaries (data/lexicon/strongs-hebrew.json, strongs-greek.json) behind the reader word-tap and /lexicon. Each entry is aggregated with its TBESH/TBESG extended-Strong's variants by scripts/build-lexicons.mjs.",
+      "Shipped as the Strong's-tagged KJV (data/kjv-strongs) and the Hebrew and Greek dictionaries (data/lexicon/strongs-hebrew.json, strongs-greek.json) behind the reader word-tap and the workspace's lexicon tab (/lexicon/[id] redirects there). Each entry is aggregated with its TBESH/TBESG extended-Strong's variants by scripts/build-lexicons.mjs.",
     status: "shipped",
   },
   {
@@ -370,7 +370,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abridged-BDB-style brief Hebrew lexicon keyed to extended Strong's numbers, aggregated onto every Hebrew base entry in data/lexicon/strongs-hebrew.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution at /lexicon/[id]. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abridged-BDB-style brief Hebrew lexicon keyed to extended Strong's numbers, aggregated onto every Hebrew base entry in data/lexicon/strongs-hebrew.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution in the workspace's lexicon tab (/lexicon/[id] redirects there). Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
     status: "shipped",
   },
   {
@@ -383,7 +383,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abbott-Smith-based brief Greek lexicon keyed to extended Strong's numbers, aggregated onto every Greek base entry in data/lexicon/strongs-greek.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution at /lexicon/[id]. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). Abbott-Smith-based brief Greek lexicon keyed to extended Strong's numbers, aggregated onto every Greek base entry in data/lexicon/strongs-greek.json as a `tyndale` variant list (lemma, transliteration, part of speech, gloss, brief definition) and presented with attribution in the workspace's lexicon tab (/lexicon/[id] redirects there). Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-lexicons.mjs.",
     status: "shipped",
   },
   {

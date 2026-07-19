@@ -83,6 +83,9 @@ function Intake() {
             paneId,
           });
           break;
+        case "library":
+          dispatch({ type: "openLibrary", paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

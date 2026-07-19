@@ -177,7 +177,7 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
             {topics.map((t) => (
               <li key={`${t.work}-${t.id}`} className="text-sm">
                 <Link
-                  href={`/topics/${t.work}/${t.id}`}
+                  href={`/workspace?tab=topicguide:${t.work}:${t.id}`}
                   className="font-medium text-sapphire no-underline hover:underline capitalize"
                 >
                   {t.title}
@@ -386,7 +386,7 @@ function OriginalResult({ hit }: { hit: OriginalHit }) {
             {m.strongs ? (
               <>
                 {" · "}
-                <Link href={`/lexicon/${m.strongs}`} className="text-sapphire no-underline hover:underline">
+                <Link href={`/workspace?tab=lexicon:${m.strongs}`} className="text-sapphire no-underline hover:underline">
                   {m.strongs}
                 </Link>
               </>

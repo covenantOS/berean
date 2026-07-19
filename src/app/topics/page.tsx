@@ -59,7 +59,7 @@ export default async function TopicsPage({
             {w.shown.map((t) => (
               <li key={t.id} className="text-sm">
                 <Link
-                  href={`/topics/${w.id}/${t.id}`}
+                  href={`/workspace?tab=topicguide:${w.id}:${t.id}`}
                   className="text-sapphire no-underline hover:underline capitalize"
                 >
                   {t.title}

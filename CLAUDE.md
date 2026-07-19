@@ -30,7 +30,7 @@ Before changing product behavior, read:
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
-- Rooms: `/read` (+ `/plans`, `/memory`, `/search`), `/pulpit`, `/chapel`, `/desk`, `/library`, `/almanac`, `/study`, `/settings`, `/sources`
+- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, and `/topics/[work]/[id]` permanently redirect into it), `/read` (+ `/plans`, `/memory`, `/search`), `/pulpit`, `/chapel`, `/desk`, `/almanac`, `/study`, `/settings`, `/sources`
 - The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
 - `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory
@@ -45,7 +45,7 @@ calendar and rule of life; settings with governed Scribe memory and
 whole-graph export/import/delete. Original-language mode shipped: TAHOT
 (Hebrew OT) and TAGNT (Greek NT) under the reader with a configurable
 interlinear and a word study panel, lexicon aggregation (Strong's, TBESH,
-TBESG) at `/lexicon/[id]`, and morphology-aware lemma/parsing search as a
+TBESG) in the workspace's lexicon tab (`/lexicon/[id]` redirects in), and morphology-aware lemma/parsing search as a
 mode of `/search`. Brenton's English Septuagint and the Greek LXX (Brenton
 diglot text, both public domain via eBible.org) ship as OT-only parallel
 columns (data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
@@ -60,7 +60,7 @@ texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR
 geography on a Natural Earth base at `/library/atlas`, rendered as SVG with
 no dependencies. The Timeline shipped: a curated biblical chronology with
 era bands at `/almanac/timeline`, linked to the reader and the Factbook. A
-quiet daily verse sits on the home page. The semantic concordance shipped:
+quiet daily verse opens from the omnibox (`daily`). The semantic concordance shipped:
 Scribe-assisted search by meaning, every reference verified against the
 canon. Audio shipped: chapter-synced public-domain LibriVox KJV recordings
 in the reader, 383 chapters mapped in `data/audio/manifest.json`. Verse

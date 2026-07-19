@@ -38,7 +38,7 @@ export default async function AtlasPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <nav className="mb-6 text-sm text-muted">
-        <Link href="/library" className="text-sapphire no-underline hover:underline">
+        <Link href="/workspace?tab=library" className="text-sapphire no-underline hover:underline">
           The Library
         </Link>{" "}
         / The Atlas

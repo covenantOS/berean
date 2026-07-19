@@ -906,7 +906,7 @@ function MarginPanel(props: {
             {topicMentions.map((m) => (
               <li key={`${m.work}:${m.id}`}>
                 <Link
-                  href={`/topics/${m.work}/${m.id}`}
+                  href={`/workspace?tab=topicguide:${m.work}:${m.id}`}
                   title={m.work === "naves" ? "Nave's Topical Bible" : "Torrey's New Topical Textbook"}
                   className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
                 >
@@ -1136,7 +1136,7 @@ function WordPanel({
               {activeWord.strongs.map((id) => (
                 <Link
                   key={id}
-                  href={`/lexicon/${id}`}
+                  href={`/workspace?tab=lexicon:${id}`}
                   className="text-xs font-semibold text-sapphire"
                 >
                   {id}
@@ -1199,7 +1199,7 @@ function WordPanel({
             </p>
           )}
           <Link
-            href={`/lexicon/${e.id}`}
+            href={`/workspace?tab=lexicon:${e.id}`}
             className="mt-2 inline-block text-xs font-medium text-sapphire"
           >
             Every occurrence in the canon →

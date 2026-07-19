@@ -13,7 +13,7 @@ export default function LexiconLookup() {
       onSubmit={(e) => {
         e.preventDefault();
         const id = value.trim().toUpperCase().replace(/\s+/g, "");
-        if (/^[GH]\d+[A-Z]?$/.test(id)) router.push(`/lexicon/${id}`);
+        if (/^[GH]\d+[A-Z]?$/.test(id)) router.push(`/workspace?tab=lexicon:${id}`);
       }}
       className="flex gap-2"
     >

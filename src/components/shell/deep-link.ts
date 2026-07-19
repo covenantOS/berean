@@ -27,6 +27,8 @@ import { ENTITY_ID_PATTERN } from "./workspace-state";
  *                       concordance:romans       a book's concordance
  *                       factbook:H0175           a TIPNR entity's Factbook
  *                       topicguide:naves:prayer  a Nave's or Torrey's entry
+ *                     One kind carries no payload:
+ *                       library                  the Library browser tab
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -81,7 +83,8 @@ export type DeepLinkTab =
   | { kind: "compare"; book: string; chapter: number }
   | { kind: "concordance"; book: string }
   | { kind: "factbook"; entityId: string }
-  | { kind: "topicguide"; work: "naves" | "torreys"; topicId: string };
+  | { kind: "topicguide"; work: "naves" | "torreys"; topicId: string }
+  | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -89,7 +92,13 @@ const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
 /** Parses a ?tab= value; null for an unknown kind or a bad payload. */
 export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
   const i = raw.indexOf(":");
-  if (i <= 0) return null;
+  // Payload-less kinds: the whole value is the kind.
+  if (i < 0) {
+    const kind = raw.trim().toLowerCase();
+    if (kind === "library") return { kind: "library" };
+    return null;
+  }
+  if (i === 0) return null;
   const kind = raw.slice(0, i).trim().toLowerCase();
   const payload = raw.slice(i + 1).trim();
   if (!payload) return null;
