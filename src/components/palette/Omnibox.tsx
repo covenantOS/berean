@@ -48,6 +48,7 @@
  *   "berean:restore-layout"    { id }            A saved layout's record id in
  *                              berean.layouts.v1 (shell/layouts.ts).
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
+ *   "berean:open-settings"     {}                The Settings tab.
  * Topic rows open the Topic Guide as a pane tab; entity rows open the
  * Factbook as a pane tab (the old /library/entity/[id] URLs redirect into
  * it).
@@ -332,7 +333,7 @@ export default function Omnibox() {
       openRef({ book: d.slug, chapter: d.chapter, verse: d.verse }, d.label);
       return;
     } else if (id === "settings") {
-      router.push("/settings");
+      emit("berean:open-settings", {});
     }
     closePalette();
   }

@@ -34,7 +34,7 @@ const NAV = [
   { href: "/workspace?tab=desk", label: "Desk" },
   { href: "/workspace?tab=library", label: "Library" },
   { href: "/workspace?tab=almanac", label: "Almanac" },
-  { href: "/settings", label: "Settings" },
+  { href: "/workspace?tab=settings", label: "Settings" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Concordance
               </Link>{" "}
               ·{" "}
-              <Link href="/topics" className="text-sapphire">
+              <Link href="/workspace?tab=topics" className="text-sapphire">
                 Topics
               </Link>{" "}
               ·{" "}

@@ -218,6 +218,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "openConcordance", book });
     };
     const onToggleDock = () => dispatch({ type: "toggleDock" });
+    const onOpenSettings = () => dispatch({ type: "openSettings" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
       if (LAYOUT_PRESETS.some((p) => p.id === preset)) {
@@ -252,6 +253,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-textcompare", onOpenTextCompare);
     window.addEventListener("berean:open-concordance", onOpenConcordance);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
+    window.addEventListener("berean:open-settings", onOpenSettings);
     window.addEventListener("berean:apply-preset", onApplyPreset);
     window.addEventListener("berean:restore-layout", onRestoreLayout);
     window.addEventListener("keydown", onKey);
@@ -269,6 +271,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-textcompare", onOpenTextCompare);
       window.removeEventListener("berean:open-concordance", onOpenConcordance);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
+      window.removeEventListener("berean:open-settings", onOpenSettings);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
       window.removeEventListener("berean:restore-layout", onRestoreLayout);
       window.removeEventListener("keydown", onKey);

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
 import { useCollection } from "@/lib/hooks";
@@ -34,7 +33,7 @@ import {
  * does not have yet. Entries with a reader open straight into the
  * workspace: translations as reader tabs, the commentary wall, the
  * cross-reference treasury, and the lexicon as pane tabs, plus the Atlas and
- * the Timeline. Topical works open at their shared route. Commentaries also
+ * the Timeline. Topical works open the Topical Index tab. Commentaries also
  * carry the priority steppers the wall answers.
  */
 
@@ -74,11 +73,8 @@ const TRANSLATION_IDS: Record<string, string> = {
 };
 const OT_ONLY = new Set(["brenton", "lxx"]);
 
-/* Both topical works index together at /topics; there is no per-work page. */
-const TOPIC_ROUTES: Record<string, string> = {
-  "naves-topical": "/topics",
-  "torreys-topical": "/topics",
-};
+/* Both topical works index together in the workspace's topics tab. */
+const TOPIC_IDS = new Set(["naves-topical", "torreys-topical"]);
 
 type Facets = {
   text: string;
@@ -126,7 +122,8 @@ export default function LibraryPane() {
       r.id === "strongs" ||
       r.id === "tsk-crossrefs" ||
       r.id === "naturalearth" ||
-      r.id === "ussher-chronology");
+      r.id === "ussher-chronology" ||
+      TOPIC_IDS.has(r.id));
 
   /* The open action an entry earns, when a reader exists for it. */
   const openTabFor = (r: RightsEntry): Tab | null => {
@@ -149,6 +146,11 @@ export default function LibraryPane() {
   };
 
   const open = (r: RightsEntry) => {
+    // The topical works answer with the singleton index, not a fresh tab.
+    if (TOPIC_IDS.has(r.id)) {
+      dispatch({ type: "openTopics", paneId: state.activePaneId });
+      return;
+    }
     const tab = openTabFor(r);
     if (tab) dispatch({ type: "openTab", tab, target: { kind: "strip", paneId: state.activePaneId } });
   };
@@ -235,7 +237,6 @@ export default function LibraryPane() {
               meta={metaById.get(r.id)}
               priorityWork={COMMENTARY_WALL.find((w) => w.rightsId === r.id)?.workId ?? null}
               priorityIndex={order}
-              route={TOPIC_ROUTES[r.id] ?? null}
               canOpen={opensAsTab(r)}
               onOpen={() => open(r)}
             />
@@ -286,7 +287,6 @@ function CatalogEntry({
   meta,
   priorityWork,
   priorityIndex,
-  route,
   canOpen,
   onOpen,
 }: {
@@ -294,7 +294,6 @@ function CatalogEntry({
   meta: LibraryMeta | undefined;
   priorityWork: string | null;
   priorityIndex: string[];
-  route: string | null;
   canOpen: boolean;
   onOpen: () => void;
 }) {
@@ -344,14 +343,6 @@ function CatalogEntry({
           >
             Open
           </button>
-        )}
-        {route && (
-          <Link
-            href={route}
-            className="text-xs text-sapphire no-underline hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-          >
-            Open
-          </Link>
         )}
         {priorityWork && position >= 0 && (
           <span className="flex items-center gap-1 text-[0.68rem] text-muted">

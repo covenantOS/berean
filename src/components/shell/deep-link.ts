@@ -34,8 +34,11 @@ import {
  *                       concordance:romans       a book's concordance
  *                       factbook:H0175           a TIPNR entity's Factbook
  *                       topicguide:naves:prayer  a Nave's or Torrey's entry
- *                     One kind carries no payload:
+ *                     Four kinds carry no payload:
  *                       library                  the Library browser tab
+ *                       lexicon                  the lexicon tab, no entry pinned
+ *                       topics                   the Topical Index tab
+ *                       settings                 the Settings tab
  *                     Three kinds take an optional payload:
  *                       atlas                    the Atlas tab
  *                       atlas:H0175              the Atlas focused on a place
@@ -105,7 +108,7 @@ export function parseDeepLinkRef(raw: string): DeepLinkRef | null {
 }
 
 export type DeepLinkTab =
-  | { kind: "lexicon"; entryId: string }
+  | { kind: "lexicon"; entryId: string | null }
   | { kind: "wordstudy"; strongsId: string }
   | { kind: "guide"; book: string; chapter: number }
   | { kind: "exegetical"; book: string; chapter: number }
@@ -126,6 +129,8 @@ export type DeepLinkTab =
   | { kind: "chapel" }
   | { kind: "service"; serviceId: string }
   | { kind: "almanac" }
+  | { kind: "topics" }
+  | { kind: "settings" }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -138,6 +143,9 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
   if (i < 0) {
     const kind = raw.trim().toLowerCase();
     if (kind === "library") return { kind: "library" };
+    if (kind === "lexicon") return { kind: "lexicon", entryId: null };
+    if (kind === "topics") return { kind: "topics" };
+    if (kind === "settings") return { kind: "settings" };
     if (kind === "atlas") return { kind: "atlas" };
     if (kind === "timeline") return { kind: "timeline" };
     if (kind === "memory") return { kind: "memory" };

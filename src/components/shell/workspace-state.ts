@@ -325,6 +325,25 @@ export interface AlmanacTab {
 }
 
 /**
+ * The Topical Index: Nave's and Torrey's browsed together with an inline
+ * filter. A singleton with no payload; the pane opens on the index itself.
+ */
+export interface TopicsTab {
+  id: string;
+  type: "topics";
+}
+
+/**
+ * Settings: the Scribe's governed profile and the whole-graph export,
+ * import, and delete. A singleton with no payload; the pane opens on the
+ * controls themselves.
+ */
+export interface SettingsTab {
+  id: string;
+  type: "settings";
+}
+
+/**
  * The Timeline: the curated chronology in era bands. An event id opens the
  * chart with that event selected, the way the retired page's ?event= did.
  */
@@ -382,6 +401,8 @@ export type Tab =
   | PrayersTab
   | PlansTab
   | AlmanacTab
+  | TopicsTab
+  | SettingsTab
   | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -593,6 +614,14 @@ export function serviceTab(serviceId: string, title: string): ServiceTab {
 
 export function almanacTab(): AlmanacTab {
   return { id: newId("tab"), type: "almanac" };
+}
+
+export function topicsTab(): TopicsTab {
+  return { id: newId("tab"), type: "topics" };
+}
+
+export function settingsTab(): SettingsTab {
+  return { id: newId("tab"), type: "settings" };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -942,6 +971,8 @@ export type WorkspaceAction =
   | { type: "openChapel"; paneId?: string }
   | { type: "openService"; serviceId: string; title: string; paneId?: string }
   | { type: "openAlmanac"; paneId?: string }
+  | { type: "openTopics"; paneId?: string }
+  | { type: "openSettings"; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
@@ -1550,6 +1581,60 @@ export function workspaceReducer(
         };
       }
       const tab = almanacTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openTopics": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One index per pane: a second open activates the tab already there,
+      // the pulpit's singleton pattern.
+      const existing = leaf.tabs.find((t) => t.type === "topics");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = topicsTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openSettings": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One settings tab per pane: a second open activates the tab already
+      // there, the pulpit's singleton pattern.
+      const existing = leaf.tabs.find((t) => t.type === "settings");
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
+        };
+      }
+      const tab = settingsTab();
       return {
         ...state,
         activePaneId: paneId,
@@ -2455,7 +2540,12 @@ function sanitizeNode(node: unknown): PaneNode | null {
         continue;
       }
       if (
-        (t.type === "journal" || t.type === "prayers" || t.type === "plans" || t.type === "almanac") &&
+        (t.type === "journal" ||
+          t.type === "prayers" ||
+          t.type === "plans" ||
+          t.type === "almanac" ||
+          t.type === "topics" ||
+          t.type === "settings") &&
         typeof t.id === "string"
       ) {
         // Singletons carry nothing to validate.

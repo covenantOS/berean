@@ -30,7 +30,7 @@ Before changing product behavior, read:
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
-- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon/[id]`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, `/chapel`, `/almanac`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/search`), `/settings`, `/sources`
+- Rooms: `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/`, `/library`, `/lexicon`, `/lexicon/[id]`, `/topics`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, `/chapel`, `/almanac`, `/settings`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/search`), `/sources`
 - The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
 - `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory
@@ -56,7 +56,8 @@ shipped: TIPNR people and places under `data/entities`
 workspace's factbook tab (`/library/entity/[id]` redirects in), a
 people-and-places index and filter in the Library,
 an entity group in `/search`, and verse-level mentions in the reader margin.
-The topical index shipped: Nave's and Torrey's at `/topics` with full verse
+The topical index shipped: Nave's and Torrey's browsed together in the
+workspace's topics tab (`/topics` redirects in), with full verse
 texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR
 geography on a Natural Earth base in the workspace's atlas tab
 (`/library/atlas` redirects in), rendered as SVG with

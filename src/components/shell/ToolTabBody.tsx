@@ -83,7 +83,10 @@ function LexiconTabBody({
         {entryId && <span className="ml-auto text-xs font-semibold text-sapphire">{entryId}</span>}
       </form>
       <div className="min-h-0 flex-1 overflow-y-auto p-4">
-        <LexiconDock entryId={entryId} />
+        <LexiconDock
+          entryId={entryId}
+          onOpenEntry={(id) => dispatch({ type: "setLexiconTabEntry", paneId, tabId, entryId: id })}
+        />
       </div>
     </div>
   );

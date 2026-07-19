@@ -66,7 +66,7 @@ export function isTopicWork(s: string): s is TopicWork {
   return s === "naves" || s === "torreys";
 }
 
-/** Alphabetical index of a work's topics, for /topics and search. */
+/** Alphabetical index of a work's topics, for the topics tab and search. */
 export async function listTopics(
   work: TopicWork
 ): Promise<{ id: string; title: string; refs: number }[]> {

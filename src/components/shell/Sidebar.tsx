@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import { CITATION_STYLE_KEY, citationStyle, type CitationStyle } from "@/lib/citation";
 import { setCandle, setTextScale, TEXT_SCALES, useDisplayPrefs } from "@/lib/display";
@@ -440,6 +439,7 @@ const SETTINGS_SELECT =
  */
 function SettingsPanel() {
   const { lit, scale } = useDisplayPrefs();
+  const { dispatch } = useWorkspace();
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [translation, setTranslation] = useState("kjv");
   const [style, setStyle] = useState<CitationStyle>("text-first");
@@ -544,10 +544,14 @@ function SettingsPanel() {
       </p>
 
       <p className="mt-2 border-t border-rule px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
-        Export, import, deletion, and the Scribe&apos;s profile live on the{" "}
-        <Link href="/settings" className="text-sapphire no-underline hover:underline">
-          settings page
-        </Link>
+        Export, import, deletion, and the Scribe&apos;s profile live in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openSettings" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          settings tab
+        </button>
         . Every preference here persists on this device.
       </p>
     </div>

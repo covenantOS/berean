@@ -57,6 +57,8 @@ import MemoryPane from "./MemoryPane";
 import JournalPane from "./JournalPane";
 import PrayersPane from "./PrayersPane";
 import PlansPane from "./PlansPane";
+import TopicsPane from "./TopicsPane";
+import SettingsPane from "./SettingsPane";
 import LauncherPane from "./LauncherPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
@@ -184,6 +186,8 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "journal") return "Journal";
   if (tab.type === "prayers") return "Prayers";
   if (tab.type === "plans") return "Plans";
+  if (tab.type === "topics") return "Topics";
+  if (tab.type === "settings") return "Settings";
   if (tab.type === "launcher") return "New tab";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
@@ -659,6 +663,14 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "plans" ? (
             <div className="h-full overflow-y-auto p-4">
               <PlansPane />
+            </div>
+          ) : activeTab.type === "topics" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <TopicsPane />
+            </div>
+          ) : activeTab.type === "settings" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <SettingsPane />
             </div>
           ) : activeTab.type === "launcher" ? (
             <div className="h-full overflow-y-auto p-4">

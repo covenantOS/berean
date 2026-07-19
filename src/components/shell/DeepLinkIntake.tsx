@@ -155,6 +155,12 @@ function Intake() {
         case "almanac":
           dispatch({ type: "openAlmanac", paneId });
           break;
+        case "topics":
+          dispatch({ type: "openTopics", paneId });
+          break;
+        case "settings":
+          dispatch({ type: "openSettings", paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");
