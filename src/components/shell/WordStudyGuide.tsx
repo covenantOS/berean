@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import SearchChart, { type ChartKind } from "./SearchChart";
 
 interface TyndaleVariant {
   id: string;
@@ -54,6 +55,7 @@ const LIST_SHOWN = 24;
 export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const { dispatch } = useWorkspace();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
+  const [chartKind, setChartKind] = useState<ChartKind>("bar");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -174,6 +176,20 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
               First {shown.length} of {s.occurrences.total.toLocaleString()} occurrences listed.
             </p>
           )}
+        </GuideSection>
+      )}
+
+      {s.occurrences.total > 0 && (
+        <GuideSection title="Chart" hint="frequency graph by book">
+          <SearchChart
+            series={s.occurrences.byBook.map((b) => ({ key: b.slug, label: b.name, value: b.count }))}
+            kind={chartKind}
+            onKindChange={setChartKind}
+            onSelect={(key) => {
+              const first = s.occurrences.list.find((o) => o.slug === key);
+              if (first) dispatch({ type: "openRef", book: first.slug, chapter: first.chapter });
+            }}
+          />
         </GuideSection>
       )}
 

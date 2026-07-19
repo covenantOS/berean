@@ -62,7 +62,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Docs Search (Logos 10): search tab over your own notes, sermons, clippings, and documents.
 - [ ] [SW] Specialized search tabs: Factbook Search, Maps Search, Media Search, Bookstore Search.
 - [ ] [SW] Result views: Verses, Aligned, Grid, and Analysis arrangements for Bible and morph results.
-- [ ] [SW] Charts tool: bar, column, pie, donut, line, and area frequency graphs of results by book or chapter; also launched from word study translation rings.
+- [x] [SW] Charts tool: bar, column, pie, donut, line, and area frequency graphs of results by book or chapter; also launched from word study translation rings.
 - [ ] [SW] Result handoffs: save results as a Passage List, Word List, Visual Filter, or Favorite; re-run anything from History.
 - [ ] [SW] Milestones: indexed navigation points inside books so searches and guides land on the right article.
 

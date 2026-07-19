@@ -22,6 +22,7 @@ import {
   type WorkspaceAction,
   type WorkspaceState,
 } from "./workspace-state";
+import { recordSearch } from "@/lib/search-history";
 
 /**
  * A pane's report of its topmost visible verse, broadcast to the rest of its
@@ -90,6 +91,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const onSearch = (e: Event) => {
       const detail = (e as CustomEvent<{ q?: string }>).detail;
       if (!detail || typeof detail.q !== "string") return;
+      // Every search, from anywhere, enters the rail's re-runnable history.
+      recordSearch(detail.q);
       dispatch({ type: "openSearch", q: detail.q });
     };
     const onOpenLexicon = (e: Event) => {

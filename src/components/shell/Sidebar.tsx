@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CANON } from "@/lib/canon";
 import { documents } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
+import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, type RailMode } from "./workspace-state";
@@ -19,9 +20,10 @@ const MODE_TITLES: Record<RailMode, string> = {
 };
 
 /**
- * The left sidebar: one tree or section list per rail mode. Only the Read
- * tree and the Documents list carry real data in Phase 0; the rest are
- * quiet placeholders until their panels land in Phase 1.
+ * The left sidebar: one tree or section list per rail mode. The Read tree,
+ * the Search rail's pinned searches and history, and the Documents list
+ * carry real data; the rest are quiet placeholders until their panels land
+ * in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -51,9 +53,7 @@ export default function Sidebar() {
         {state.railMode === "study" && (
           <Placeholder text="Studies, projects, and the sermon pipeline will gather here. Until then, open a passage and split the pane." />
         )}
-        {state.railMode === "search" && (
-          <Placeholder text="Concordance search answers in the command palette (Ctrl+K) and opens as a pane. Lemma and semantic search land here in a later phase." />
-        )}
+        {state.railMode === "search" && <SearchPanel />}
         {state.railMode === "almanac" && (
           <Placeholder text="The calendar, rule of life, and timeline will live here." />
         )}
@@ -67,6 +67,89 @@ export default function Sidebar() {
 
 function Placeholder({ text }: { text: string }) {
   return <p className="px-3 py-4 text-xs leading-relaxed text-muted">{text}</p>;
+}
+
+/* ---------- Search: pinned searches and history ---------- */
+
+/**
+ * The Search rail: every query the workspace runs is remembered here
+ * (src/lib/search-history.ts), newest first, and any of them re-runs with a
+ * click. A pinned search never ages out; the pin toggles from a row's star
+ * or from the search pane's own header.
+ */
+function SearchPanel() {
+  const { dispatch } = useWorkspace();
+  const { history, favorites } = useSearchSaves();
+  const rerun = (q: string) => dispatch({ type: "openSearch", q });
+
+  return (
+    <div className="py-1">
+      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+        Pinned searches
+      </div>
+      {favorites.length === 0 ? (
+        <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+          Pin a search from its pane header and it waits here.
+        </p>
+      ) : (
+        favorites.map((f) => (
+          <div key={f.q} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+            <button
+              type="button"
+              onClick={() => rerun(f.q)}
+              title={`Search again for “${f.q}”`}
+              className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {f.q}
+            </button>
+            <button
+              type="button"
+              onClick={() => toggleFavorite(f.q)}
+              title="Unpin this search"
+              className="shrink-0 px-1 text-[0.7rem] text-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              ★
+            </button>
+          </div>
+        ))
+      )}
+      <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+        History
+      </div>
+      {history.length === 0 ? (
+        <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+          Concordance search answers in the command palette (Ctrl+K) and opens
+          as a pane; every query is remembered here.
+        </p>
+      ) : (
+        history.map((h) => {
+          const pinned = favorites.some((f) => f.q.toLowerCase() === h.q.toLowerCase());
+          return (
+            <div key={h.q} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+              <button
+                type="button"
+                onClick={() => rerun(h.q)}
+                title={`Search again for “${h.q}”`}
+                className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {h.q}
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleFavorite(h.q)}
+                title={pinned ? "Unpin this search" : "Pin this search"}
+                className={`shrink-0 px-1 text-[0.7rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  pinned ? "text-amber" : "text-muted hover:text-ink"
+                }`}
+              >
+                {pinned ? "★" : "☆"}
+              </button>
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
 }
 
 /* ---------- Read: the canon tree ---------- */
