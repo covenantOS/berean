@@ -95,9 +95,11 @@ function Placeholder({ text }: { text: string }) {
  * The Search rail: every query the workspace runs is remembered here
  * (src/lib/search-history.ts), newest first, and any of them re-runs with a
  * click. A pinned search never ages out; the pin toggles from a row's star
- * or from the search pane's own header. The documents box on top searches
- * the user's own collections instead of the canon; its queries stay out of
- * the concordance history, which re-runs everything as a Bible search.
+ * or from the search pane's own header. The box on top runs All Search:
+ * one query across the canon and the user's own collections, opened in the
+ * unified pane with the dedicated Bible and Docs paths a click away. Its
+ * queries stay out of the concordance history, which re-runs everything as
+ * a Bible search.
  */
 function SearchPanel() {
   const { dispatch } = useWorkspace();
@@ -106,14 +108,14 @@ function SearchPanel() {
    * as the Bible concordance, the way old history entries do. */
   const rerun = (q: string, mode?: SearchEntry["mode"]) =>
     dispatch({ type: "openSearch", q, mode });
-  /** The Docs Search box: prose over the user's own collections. */
-  const [docQuery, setDocQuery] = useState("");
+  /** The All Search box: one query across the canon and the collections. */
+  const [allQuery, setAllQuery] = useState("");
 
-  const runDocSearch = () => {
-    const q = docQuery.trim();
+  const runAllSearch = () => {
+    const q = allQuery.trim();
     if (q.length < 2) return;
-    dispatch({ type: "openDocSearch", q });
-    setDocQuery("");
+    dispatch({ type: "openAllSearch", q });
+    setAllQuery("");
   };
 
   return (
@@ -121,18 +123,18 @@ function SearchPanel() {
       <div className="px-3 pt-2 pb-1">
         <input
           type="search"
-          value={docQuery}
-          aria-label="Search your notes, manuscripts, lists, and prayers"
-          placeholder="Search your documents…"
-          onChange={(e) => setDocQuery(e.target.value)}
+          value={allQuery}
+          aria-label="Search the Bible and your notes, manuscripts, lists, and prayers"
+          placeholder="Search everything…"
+          onChange={(e) => setAllQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") runDocSearch();
+            if (e.key === "Enter") runAllSearch();
           }}
           className="w-full border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
         />
         <p className="pt-1 text-[0.68rem] leading-relaxed text-muted">
-          Your notes, manuscripts, lists, and prayers answer; Enter opens the
-          Docs Search pane.
+          The canon and your notes, manuscripts, lists, and prayers answer;
+          Enter opens All Search.
         </p>
       </div>
       <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">

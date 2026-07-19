@@ -8,6 +8,7 @@ import { recordSearch, useSearchSaves } from "@/lib/search-history";
 import { layoutState, layouts } from "./layouts";
 import { useWorkspace } from "./WorkspaceContext";
 import {
+  allSearchTab,
   concordanceTab,
   customGuideTab,
   docSearchTab,
@@ -85,6 +86,17 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
     return t;
   };
 
+  /* The launcher's box runs All Search by default: one query across the
+   * canon and the user's own collections. The Bible and Docs buttons beside
+   * it narrow to one group, the dedicated paths staying reachable. Every
+   * query enters the rail's re-runnable history, as before. */
+  const runAllSearch = () => {
+    const query = q.trim();
+    if (!query) return;
+    recordSearch(query);
+    choose(allSearchTab(query));
+  };
+
   const runSearch = () => {
     const query = q.trim();
     if (!query) return;
@@ -101,7 +113,7 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    runSearch();
+    runAllSearch();
   };
 
   /** Restores a named layout the way the layouts menu does. */
@@ -195,14 +207,23 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
         <input
           type="search"
           value={q}
-          aria-label="Search the Bible"
-          placeholder="Search the Bible…"
+          aria-label="Search the Bible and your documents"
+          placeholder="Search everything…"
           onChange={(e) => setQ(e.target.value)}
           className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
         />
         <button
           type="button"
-          title="Search your notes, manuscripts, lists, and prayers"
+          title="Search the canon alone"
+          onClick={runSearch}
+          disabled={q.trim().length < 2}
+          className="shrink-0 border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Bible
+        </button>
+        <button
+          type="button"
+          title="Search your notes, manuscripts, lists, and prayers alone"
           onClick={runDocSearch}
           disabled={q.trim().length < 2}
           className="shrink-0 border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"

@@ -1,13 +1,15 @@
 import type { ListDocument, StudyDocument } from "./documents";
 import type { MarginNote } from "./marginalia";
 import type { PrayerList, PrayerRequest } from "./prayers";
+import { getRights } from "./rights";
 
 /**
  * Docs Search — the user's own collections answered by a query. The
  * concordance searches the canon; this searches what the user has written
  * and gathered: marginalia (journal entries ride the same note collection),
  * Writing Desk manuscripts, passage and word lists, clippings (excerpt and
- * citation both answer), and prayer requests. Matching is a plain case-folded
+ * citation both answer), bibliographies (the cited work's registry title
+ * and holder answer), and prayer requests. Matching is a plain case-folded
  * substring, honest at the scale of one device's localStorage; the precise
  * grammar in query.ts answers verse-shaped questions and does not compose
  * with prose. Pure over the rows handed in, so the pane re-runs it against
@@ -90,6 +92,13 @@ export function searchDocs(
       }
       if ("citation" in item) {
         fields.push(item.text, item.citation);
+      }
+      if ("resourceId" in item) {
+        /* A bibliography item answers by the work itself: its title and
+         * the names the registry carries, so "Calvin" finds the cited
+         * Commentaries. */
+        const work = getRights(item.resourceId);
+        if (work) fields.push(work.title, work.rightsHolder, work.license);
       }
     }
     const snippet = firstMatch(fields, needle);

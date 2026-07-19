@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
+import { citeWork, listDocuments } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import {
   addTag,
@@ -34,7 +35,8 @@ import {
  * workspace: translations as reader tabs, the commentary wall, the
  * cross-reference treasury, and the lexicon as pane tabs, plus the Atlas and
  * the Timeline. Topical works open the Topical Index tab. Commentaries also
- * carry the priority steppers the wall answers.
+ * carry the priority steppers the wall answers, and every shipped work
+ * carries the Add to bibliography handoff into a bibliography document.
  */
 
 const KIND_LABELS: Record<RightsEntry["kind"], string> = {
@@ -344,6 +346,7 @@ function CatalogEntry({
             Open
           </button>
         )}
+        {r.status === "shipped" && <CiteButton resourceId={r.id} />}
         {priorityWork && position >= 0 && (
           <span className="flex items-center gap-1 text-[0.68rem] text-muted">
             <span className="small-caps font-semibold">Wall priority {position + 1}</span>
@@ -371,6 +374,67 @@ function CatalogEntry({
         )}
       </div>
     </li>
+  );
+}
+
+/**
+ * The bibliography handoff a shipped work earns, mirroring the clippings
+ * chooser: the device's bibliography documents, then the row that starts a
+ * new one around the work. Picking a target writes the citation and closes,
+ * a quiet "Added" standing in its place for a moment.
+ */
+function CiteButton({ resourceId }: { resourceId: string }) {
+  const docs = useCollection(listDocuments, (d) => d.kind === "bibliography");
+  const [picking, setPicking] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  const pick = (docId: string | null) => {
+    citeWork(docId, resourceId, "Bibliography");
+    setPicking(false);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1500);
+  };
+
+  if (added) {
+    return <span className="px-2 py-1 text-xs text-muted">Added to the bibliography</span>;
+  }
+
+  return (
+    <span className="relative">
+      <button
+        type="button"
+        aria-expanded={picking}
+        onClick={() => setPicking((v) => !v)}
+        className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        Add to bibliography
+      </button>
+      {picking && (
+        <span className="absolute left-0 top-full z-10 mt-1 block w-56 border border-rule bg-surface shadow-sm">
+          <span className="small-caps block px-3 pt-2 pb-1 text-[0.62rem] text-muted">
+            Cite this work in
+          </span>
+          {docs.map((doc) => (
+            <button
+              key={doc.id}
+              type="button"
+              onClick={() => pick(doc.id)}
+              className="flex w-full items-center gap-2 px-3 py-1 text-left text-[0.72rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              {doc.title || "Untitled bibliography"}
+              <span className="ml-auto pl-3 text-[0.62rem] text-muted">{doc.items.length}</span>
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => pick(null)}
+            className="flex w-full items-center gap-2 px-3 py-1 pb-2 text-left text-[0.72rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            New bibliography document
+          </button>
+        </span>
+      )}
+    </span>
   );
 }
 

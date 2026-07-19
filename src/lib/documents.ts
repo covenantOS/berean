@@ -124,17 +124,21 @@ export function outlineOf(body: string): OutlineHeading[] {
  * ordered set of lemmas keyed by Strong's id. A clippings document is an
  * ordered set of excerpt snapshots: the words themselves, captured from the
  * reader or the commentary wall, with the citation generated at capture time
- * and never typed by hand. All three carry an optional note per item. They
- * live in their own collection so existing manuscripts load unchanged; the
- * envelope fields ride along from day one as everywhere.
+ * and never typed by hand. A bibliography is an ordered set of catalog
+ * works, each pinned to its rights-registry id (src/lib/rights.ts), so the
+ * entry formats from the registry's own metadata (src/lib/bibliography.ts)
+ * and a renamed work follows. All four carry an optional note per item.
+ * They live in their own collection so existing manuscripts load unchanged;
+ * the envelope fields ride along from day one as everywhere.
  */
 
-export type ListKind = "passage-list" | "word-list" | "clippings";
+export type ListKind = "passage-list" | "word-list" | "clippings" | "bibliography";
 
 export const LIST_KINDS: { key: ListKind; label: string }[] = [
   { key: "passage-list", label: "Passage list" },
   { key: "word-list", label: "Word list" },
   { key: "clippings", label: "Clippings" },
+  { key: "bibliography", label: "Bibliography" },
 ];
 
 export interface PassageItem {
@@ -163,7 +167,13 @@ export interface ClipItem {
   note?: string;
 }
 
-export type ListItem = PassageItem | WordItem | ClipItem;
+export interface BibItem {
+  /** Rights-registry id of the cited work (src/lib/rights.ts). */
+  resourceId: string;
+  note?: string;
+}
+
+export type ListItem = PassageItem | WordItem | ClipItem | BibItem;
 
 export interface ListDocument extends Record_ {
   title: string;
@@ -193,4 +203,20 @@ export function clipExcerpt(
     return;
   }
   listDocuments.create({ title: newTitle, kind: "clippings", items: [item] });
+}
+
+/**
+ * The capture every bibliography path shares: append the work to an
+ * existing bibliography document, or start a new one around it. A work
+ * already on the document is not repeated.
+ */
+export function citeWork(docId: string | null, resourceId: string, newTitle: string): void {
+  if (docId) {
+    const doc = listDocuments.get(docId);
+    if (!doc) return;
+    if (doc.items.some((it) => "resourceId" in it && it.resourceId === resourceId)) return;
+    listDocuments.update(docId, { items: [...doc.items, { resourceId }] });
+    return;
+  }
+  listDocuments.create({ title: newTitle, kind: "bibliography", items: [{ resourceId }] });
 }

@@ -78,6 +78,16 @@ export interface DocSearchTab {
   q: string;
 }
 
+/**
+ * All Search: one query across the canon and the user's own documents, the
+ * two groups answered side by side with a handoff into each dedicated pane.
+ */
+export interface AllSearchTab {
+  id: string;
+  type: "allsearch";
+  q: string;
+}
+
 /** The commentary wall, lifted out of the dock into a pane. */
 export interface CommentaryTab {
   id: string;
@@ -376,6 +386,7 @@ export type Tab =
   | ReaderTab
   | SearchTab
   | DocSearchTab
+  | AllSearchTab
   | ToolTab
   | GuideTab
   | CustomGuideTab
@@ -537,6 +548,10 @@ export function searchTab(q: string, mode?: SearchMode): SearchTab {
 
 export function docSearchTab(q: string): DocSearchTab {
   return { id: newId("tab"), type: "docsearch", q };
+}
+
+export function allSearchTab(q: string): AllSearchTab {
+  return { id: newId("tab"), type: "allsearch", q };
 }
 
 export function commentaryTab(): CommentaryTab {
@@ -949,6 +964,7 @@ export type WorkspaceAction =
   | { type: "navigateForward"; paneId: string }
   | { type: "openSearch"; q: string; mode?: SearchMode; paneId?: string }
   | { type: "openDocSearch"; q: string; paneId?: string }
+  | { type: "openAllSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
   | { type: "openGuide"; book: string; chapter: number; paneId?: string }
   | {
@@ -1234,6 +1250,25 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       if (!findLeaf(state.root, paneId)) return state;
       const tab = docSearchTab(q);
+      return {
+        ...state,
+        activePaneId: paneId,
+        selection: null,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openAllSearch": {
+      const q = action.q.trim();
+      if (!q) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      const tab = allSearchTab(q);
       return {
         ...state,
         activePaneId: paneId,
@@ -2345,6 +2380,15 @@ function sanitizeNode(node: unknown): PaneNode | null {
         t.q.trim()
       ) {
         tabs.push({ id: t.id, type: "docsearch", q: t.q });
+        continue;
+      }
+      if (
+        t.type === "allsearch" &&
+        typeof t.id === "string" &&
+        typeof t.q === "string" &&
+        t.q.trim()
+      ) {
+        tabs.push({ id: t.id, type: "allsearch", q: t.q });
         continue;
       }
       if (t.type === "commentary" && typeof t.id === "string") {

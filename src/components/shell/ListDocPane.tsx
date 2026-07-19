@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { BIB_STYLES, formatBibEntry, formatBibliography, type BibStyle } from "@/lib/bibliography";
 import { getBook } from "@/lib/canon";
 import { formatCitation } from "@/lib/citation";
 import {
   listDocuments,
   listKindLabel,
+  type BibItem,
   type ClipItem,
   type ListItem,
   type PassageItem,
@@ -14,6 +16,7 @@ import {
 import { useRecord } from "@/lib/hooks";
 import { copyReferences } from "@/lib/powerLookup";
 import { buildWordFind, puzzleWords, type WordFind } from "@/lib/puzzle";
+import { getRights } from "@/lib/rights";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -21,10 +24,12 @@ import { useWorkspace } from "./WorkspaceContext";
  * A list document in a pane: the saved set a search or guide handed off.
  * Passage rows open their reference in the reader; word rows open the word
  * study for their Strong's id; a clipping shows the excerpt itself with its
- * citation, opening the source passage when the excerpt is Scripture. Items
- * reorder by one step, carry an optional note, and remove individually;
- * every edit writes straight to the collection, so the rail and any other
- * open tab of the same list follow.
+ * citation, opening the source passage when the excerpt is Scripture. A
+ * bibliography row is the cited work formatted in the pane's chosen style
+ * (src/lib/bibliography.ts), the whole document copyable in that style.
+ * Items reorder by one step, carry an optional note, and remove
+ * individually; every edit writes straight to the collection, so the rail
+ * and any other open tab of the same list follow.
  */
 export default function ListDocPane({ docId }: { docId: string }) {
   const doc = useRecord(listDocuments, docId);
@@ -34,6 +39,8 @@ export default function ListDocPane({ docId }: { docId: string }) {
   const [puzzle, setPuzzle] = useState<WordFind | null>(null);
   /** True when a puzzle build found too few qualifying words. */
   const [puzzleFailed, setPuzzleFailed] = useState(false);
+  /** The citation style a bibliography wears; APA until asked otherwise. */
+  const [bibStyle, setBibStyle] = useState<BibStyle>("apa");
 
   if (!doc) {
     return <p className="text-xs text-muted">This list is no longer on this device.</p>;
@@ -62,6 +69,22 @@ export default function ListDocPane({ docId }: { docId: string }) {
       .filter((it): it is ClipItem => "citation" in it)
       .map((it) => formatCitation(it.text, it.citation))
       .join("\n\n");
+    navigator.clipboard
+      ?.writeText(text)
+      .then(() => {
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => {});
+  };
+
+  /* The bibliography analog: every cited work formatted in the pane's
+   * style, one clipboard write ready to paste into a manuscript. */
+  const copyAllEntries = () => {
+    const text = formatBibliography(
+      doc.items.filter((it): it is BibItem => "resourceId" in it).map((it) => it.resourceId),
+      bibStyle
+    );
     navigator.clipboard
       ?.writeText(text)
       .then(() => {
@@ -154,6 +177,34 @@ export default function ListDocPane({ docId }: { docId: string }) {
               Puzzle
             </button>
           )}
+          {doc.kind === "bibliography" && doc.items.length > 0 && (
+            <>
+              <span className="no-print ml-3 inline-flex items-center gap-1.5" role="group" aria-label="Citation style">
+                {BIB_STYLES.map((s) => (
+                  <button
+                    key={s.key}
+                    type="button"
+                    aria-pressed={bibStyle === s.key}
+                    onClick={() => setBibStyle(s.key)}
+                    className={`text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                      bibStyle === s.key ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </span>
+              <button
+                type="button"
+                title={`Copy every entry in ${BIB_STYLES.find((s) => s.key === bibStyle)?.label} style, ready to paste into a manuscript`}
+                onClick={copyAllEntries}
+                className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {copied ? "Copied" : "Copy all entries"}
+              </button>
+              <PrintButton className="ml-3" />
+            </>
+          )}
           {puzzleFailed && (
             <span className="ml-3 text-xs text-muted">
               The list needs at least two glosses or transliterations of three letters or more.
@@ -165,7 +216,9 @@ export default function ListDocPane({ docId }: { docId: string }) {
         <p className="py-6 text-xs text-muted">
           {doc.kind === "clippings"
             ? "The document is empty. The selection toolbar, a verse's context menu, or a commentary section clips into it."
-            : "The list is empty. A search pane or a verse's context menu adds to it."}
+            : doc.kind === "bibliography"
+              ? "The bibliography is empty. A work's Add to bibliography action in the Library cites it here."
+              : "The list is empty. A search pane or a verse's context menu adds to it."}
         </p>
       ) : (
         <ul className="divide-y divide-rule/60">
@@ -176,6 +229,8 @@ export default function ListDocPane({ docId }: { docId: string }) {
                   <PassageRow item={item as PassageItem} />
                 ) : doc.kind === "word-list" ? (
                   <WordRow item={item as WordItem} />
+                ) : doc.kind === "bibliography" ? (
+                  <BibRow item={item as BibItem} style={bibStyle} />
                 ) : (
                   <ClipRow item={item as ClipItem} />
                 )}
@@ -286,6 +341,24 @@ function ClipRow({ item }: { item: ClipItem }) {
           {item.citation}
         </span>
       )}
+    </span>
+  );
+}
+
+/** A bibliography entry: the cited work formatted in the pane's style; a
+ * work dropped from the registry says so instead of citing blind. */
+function BibRow({ item, style }: { item: BibItem; style: BibStyle }) {
+  const work = getRights(item.resourceId);
+  if (!work) {
+    return (
+      <span className="text-[0.8rem] text-muted">
+        This work is no longer in the catalog.
+      </span>
+    );
+  }
+  return (
+    <span className="block font-reader text-[0.86rem] leading-relaxed">
+      {formatBibEntry(work, style)}
     </span>
   );
 }
