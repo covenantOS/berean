@@ -1,7 +1,23 @@
 "use client";
 
-import { useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useCollection } from "@/lib/hooks";
+import {
+  activeCopyStyle,
+  BUILTIN_COPY_STYLES,
+  copyStyles,
+  createCopyStyle,
+  deleteCopyStyle,
+  formatVerses,
+  formatVersesHtml,
+  listCopyStyles,
+  REFERENCE_POSITIONS,
+  setActiveCopyStyle,
+  type CopyStyle,
+  type CopyStyleRecord,
+  type CopyVerse,
+  type ReferencePosition,
+} from "@/lib/copystyles";
 import {
   BUILTIN_STYLES,
   createStyle,
@@ -130,6 +146,8 @@ export default function SettingsPane() {
       </section>
 
       <HighlightStylesSection />
+
+      <CopyStylesSection />
 
       <ShortcutsSection />
 
@@ -406,6 +424,262 @@ function HighlightStylesSection() {
       <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
         Every style here appears in the reader&apos;s highlight palette beside the built-in tints;
         editing one restyles every verse wearing it.
+      </p>
+    </section>
+  );
+}
+
+/* The sample the copy style preview formats: John 3:16-17 in the KJV, so
+ * the translation tag and verse numbers have something to show. */
+const COPY_SAMPLE: CopyVerse[] = [
+  {
+    number: 16,
+    text: "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+  },
+  {
+    number: 17,
+    text: "For God sent not his Son into the world to condemn the world; but that the world through him might be saved.",
+  },
+];
+const COPY_SAMPLE_REFERENCE = "John 3:16-17";
+const COPY_SAMPLE_TRANSLATION = "KJV";
+
+/** A one-line summary of a style's choices, for the list rows. */
+function copyStyleSummary(s: CopyStyle): string {
+  return [
+    s.referencePosition === "none" ? "no reference" : `reference ${s.referencePosition}`,
+    ...(s.translationTag ? ["translation tag"] : []),
+    ...(s.verseNumbers ? ["verse numbers"] : []),
+    ...(s.versePerLine ? ["verse per line"] : ["flowing"]),
+    ...(s.quotationMarks ? ["quoted"] : []),
+  ].join(", ");
+}
+
+/** The sample formatted two ways: the styled form Word and email paste, then the plain text. */
+function CopyStylePreview({ style }: { style: CopyStyle }) {
+  const html = formatVersesHtml(COPY_SAMPLE, COPY_SAMPLE_REFERENCE, COPY_SAMPLE_TRANSLATION, style);
+  const text = formatVerses(COPY_SAMPLE, COPY_SAMPLE_REFERENCE, COPY_SAMPLE_TRANSLATION, style);
+  return (
+    <div className="rounded-[4px] border border-rule bg-paper p-3">
+      <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />
+      <pre className="mt-2 whitespace-pre-wrap border-t border-rule pt-2 font-sans text-[0.7rem] text-muted">
+        {text}
+      </pre>
+    </div>
+  );
+}
+
+/**
+ * The copy style editor: the two built-ins (the retired binary citation
+ * choice, byte-identical) read-only, the customs listed with edit and
+ * delete, one form for creating and editing with a live sample preview, and
+ * the picker naming the one active style every copy path honors. Deleting
+ * the active style says plainly that copies fall back to the built-in
+ * choice.
+ */
+function CopyStylesSection() {
+  const customs = useCollection(copyStyles);
+  const styles = listCopyStyles(customs);
+  const [activeId, setActiveId] = useState("builtin-text-first");
+  /** The style open in the form: its id, or "new" for a fresh one. */
+  const [editing, setEditing] = useState<string | "new" | null>(null);
+  const [name, setName] = useState("");
+  const [referencePosition, setReferencePosition] = useState<ReferencePosition>("after");
+  const [translationTag, setTranslationTag] = useState(true);
+  const [verseNumbers, setVerseNumbers] = useState(false);
+  const [versePerLine, setVersePerLine] = useState(false);
+  const [quotationMarks, setQuotationMarks] = useState(false);
+
+  useEffect(() => {
+    setActiveId(activeCopyStyle(styles).id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customs]);
+
+  /** The style the form is drafting, previewed live below. */
+  const draft: CopyStyle = {
+    name,
+    referencePosition,
+    translationTag,
+    verseNumbers,
+    versePerLine,
+    quotationMarks,
+  };
+
+  const begin = (s?: CopyStyleRecord) => {
+    setEditing(s ? s.id : "new");
+    setName(s?.name ?? "");
+    setReferencePosition(s?.referencePosition ?? "after");
+    setTranslationTag(s?.translationTag ?? true);
+    setVerseNumbers(s?.verseNumbers ?? false);
+    setVersePerLine(s?.versePerLine ?? false);
+    setQuotationMarks(s?.quotationMarks ?? false);
+  };
+
+  const save = () => {
+    const trimmed = name.trim();
+    if (!trimmed || editing === null) return;
+    const fields = { ...draft, name: trimmed };
+    if (editing === "new") createCopyStyle(fields);
+    else copyStyles.update(editing, fields);
+    setEditing(null);
+  };
+
+  const remove = (s: CopyStyleRecord) => {
+    const message =
+      activeId === s.id
+        ? `Delete "${s.name}"? It is the active style; copies fall back to the built-in choice.`
+        : `Delete "${s.name}"?`;
+    if (window.confirm(message)) deleteCopyStyle(s.id);
+  };
+
+  const active = styles.find((s) => s.id === activeId) ?? styles[0];
+
+  return (
+    <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <h3 className="small-caps mb-3 text-sm text-muted">
+        Copy styles: how copied verses arrange themselves
+      </h3>
+      <label className="text-sm">
+        <span className="mb-1 block font-medium">Active style</span>
+        <select
+          value={activeId}
+          onChange={(e) => {
+            setActiveCopyStyle(e.target.value);
+            setActiveId(e.target.value);
+          }}
+          className="w-full rounded-[4px] border border-rule bg-paper px-3 py-2 text-sm"
+        >
+          {styles.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="mt-3">
+        <CopyStylePreview style={active} />
+      </div>
+      <ul className="mt-3 grid gap-2">
+        {BUILTIN_COPY_STYLES.map((s) => (
+          <li key={s.id} className="flex items-center gap-2 text-sm">
+            <span>{s.name}</span>
+            <span className="text-xs text-muted">built in</span>
+          </li>
+        ))}
+        {customs.map((s) => (
+          <li key={s.id} className="flex items-center gap-2 text-sm">
+            <button onClick={() => begin(s)} title={`Edit ${s.name}`} className="hover:text-sapphire">
+              {s.name}
+            </button>
+            <span className="text-xs text-muted">{copyStyleSummary(s)}</span>
+            <button
+              onClick={() => remove(s)}
+              title={`Delete ${s.name}`}
+              aria-label={`Delete ${s.name}`}
+              className="ml-auto px-1 leading-none text-muted hover:text-ruby"
+            >
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
+      {editing === null ? (
+        <button
+          onClick={() => begin()}
+          className="mt-3 rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium hover:bg-paper"
+        >
+          New style
+        </button>
+      ) : (
+        <div className="mt-3 grid gap-3 border-t border-rule pt-3">
+          <label className="text-sm">
+            <span className="mb-1 block font-medium">Name</span>
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") save();
+              }}
+              placeholder="What this copy is for…"
+              className="w-full rounded-[4px] border border-rule bg-paper px-3 py-2 text-sm"
+            />
+          </label>
+          <div className="text-sm">
+            <span className="mb-1 block font-medium">Reference</span>
+            <div className="flex flex-wrap gap-2">
+              {REFERENCE_POSITIONS.map((p) => (
+                <button
+                  key={p.key}
+                  aria-pressed={referencePosition === p.key}
+                  onClick={() => setReferencePosition(p.key)}
+                  className={`rounded-[4px] border px-2 py-1 text-xs ${
+                    referencePosition === p.key
+                      ? "border-sapphire text-sapphire"
+                      : "border-rule text-ink hover:border-sapphire"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-1.5 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={translationTag}
+                onChange={(e) => setTranslationTag(e.target.checked)}
+              />
+              Tag the translation when the copy knows it
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={verseNumbers}
+                onChange={(e) => setVerseNumbers(e.target.checked)}
+              />
+              Number the verses
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={versePerLine}
+                onChange={(e) => setVersePerLine(e.target.checked)}
+              />
+              One verse per line
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={quotationMarks}
+                onChange={(e) => setQuotationMarks(e.target.checked)}
+              />
+              Quote the text
+            </label>
+          </div>
+          <CopyStylePreview style={draft} />
+          <div className="flex gap-2">
+            <button
+              onClick={save}
+              disabled={!name.trim()}
+              className="rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40"
+            >
+              {editing === "new" ? "Create style" : "Save style"}
+            </button>
+            <button
+              onClick={() => setEditing(null)}
+              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
+        Every copy path honors the active style: the verse menus, the context strip, a list&apos;s
+        copy-all, and Power Lookup. Where the browser allows, a copy also carries the styled form
+        shown above, so Word and email paste the formatting; the plain text travels with it.
       </p>
     </section>
   );

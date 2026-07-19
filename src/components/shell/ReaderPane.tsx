@@ -13,7 +13,7 @@ import {
   type UIEvent as ReactUIEvent,
 } from "react";
 import { adjacentChapter, getBook } from "@/lib/canon";
-import { formatCitation } from "@/lib/citation";
+import { copyPassage } from "@/lib/copystyles";
 import {
   deleteNote,
   listNotes,
@@ -1892,13 +1892,11 @@ function ContextStrip({
   };
 
   const copy = () => {
-    navigator.clipboard
-      ?.writeText(formatCitation(text, reference))
-      .then(() => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      })
-      .catch(() => {});
+    void copyPassage([{ number: verse, text }], reference).then((ok) => {
+      if (!ok) return;
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    });
   };
 
   /** Print/export aid: the verse as a letterpress card, downloaded as SVG. */

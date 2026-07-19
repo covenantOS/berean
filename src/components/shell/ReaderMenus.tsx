@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
-import { formatCitation } from "@/lib/citation";
+import { copyPassage } from "@/lib/copystyles";
 import { listDocuments } from "@/lib/documents";
 import { addFavorite, listFolders } from "@/lib/favorites";
 import { guides } from "@/lib/guides";
@@ -270,9 +270,7 @@ export function VerseContextMenu({
   }, [book, chapter, verse]);
 
   const copy = () => {
-    navigator.clipboard
-      ?.writeText(formatCitation(text, reference))
-      .catch(() => {});
+    void copyPassage([{ number: verse, text }], reference);
     onClose();
   };
 
@@ -713,9 +711,7 @@ export function SelectionMenu({
   const reference = `${bookName} ${chapter}:${verse}`;
 
   const copy = () => {
-    navigator.clipboard
-      ?.writeText(formatCitation(text, reference))
-      .catch(() => {});
+    void copyPassage([{ number: verse, text }], reference);
     onClose();
   };
 

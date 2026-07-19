@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { BIB_STYLES, formatBibEntry, formatBibliography, type BibStyle } from "@/lib/bibliography";
 import { getBook } from "@/lib/canon";
-import { formatCitation } from "@/lib/citation";
+import { activeCopyStyle, copyStyled, formatVerses, formatVersesHtml } from "@/lib/copystyles";
 import {
   listDocuments,
   listKindLabel,
@@ -62,20 +62,22 @@ export default function ListDocPane({ docId }: { docId: string }) {
   };
 
   /* The clippings analog: every excerpt with its citation, formatted through
-   * the shared citation module so the device's style holds, one clipboard
+   * the shared copy style module so the device's style holds, one clipboard
    * write ready to paste into a manuscript. */
   const copyAllExcerpts = () => {
-    const text = doc.items
-      .filter((it): it is ClipItem => "citation" in it)
-      .map((it) => formatCitation(it.text, it.citation))
+    const style = activeCopyStyle();
+    const clips = doc.items.filter((it): it is ClipItem => "citation" in it);
+    const text = clips
+      .map((it) => formatVerses([{ text: it.text }], it.citation, undefined, style))
       .join("\n\n");
-    navigator.clipboard
-      ?.writeText(text)
-      .then(() => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      })
-      .catch(() => {});
+    const html = clips
+      .map((it) => formatVersesHtml([{ text: it.text }], it.citation, undefined, style))
+      .join("");
+    void copyStyled(text, html).then((ok) => {
+      if (!ok) return;
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    });
   };
 
   /* The bibliography analog: every cited work formatted in the pane's

@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
-import { CITATION_STYLE_KEY, citationStyle, type CitationStyle } from "@/lib/citation";
+import {
+  activeCopyStyle,
+  copyStyles,
+  listCopyStyles,
+  setActiveCopyStyle,
+} from "@/lib/copystyles";
 import { setCandle, setTextScale, TEXT_SCALES, useDisplayPrefs } from "@/lib/display";
 import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
 import { favorites, removeFavorite, renameFolder, type Favorite } from "@/lib/favorites";
@@ -445,8 +450,8 @@ const SETTINGS_SELECT =
  * same switch the site header carries (src/lib/display.ts), reachable here
  * with the chrome hidden; the text multiplier rides under every pane's own
  * A steppers; new reader tabs open in the default translation (readerTab in
- * workspace-state.ts); copied verses and Power Lookup follow the citation
- * style (src/lib/citation.ts). Export, import, and the Scribe's profile
+ * workspace-state.ts); copied verses and Power Lookup follow the active copy
+ * style (src/lib/copystyles.ts). Export, import, and the Scribe's profile
  * stay on the settings page.
  */
 function SettingsPanel() {
@@ -454,11 +459,13 @@ function SettingsPanel() {
   const { dispatch } = useWorkspace();
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [translation, setTranslation] = useState("kjv");
-  const [style, setStyle] = useState<CitationStyle>("text-first");
+  const customStyles = useCollection(copyStyles);
+  const styleOptions = listCopyStyles(customStyles);
+  const [styleId, setStyleId] = useState("builtin-text-first");
 
   useEffect(() => {
     setTranslation(window.localStorage.getItem(PREFERRED_TRANSLATION_KEY) ?? "kjv");
-    setStyle(citationStyle());
+    setStyleId(activeCopyStyle().id);
     fetch("/api/translations")
       .then((res) => (res.ok ? res.json() : { translations: [] }))
       .then((data: { translations: ShelfTranslation[] }) =>
@@ -474,9 +481,9 @@ function SettingsPanel() {
     else window.localStorage.setItem(PREFERRED_TRANSLATION_KEY, id);
   };
 
-  const chooseStyle = (v: CitationStyle) => {
-    setStyle(v);
-    window.localStorage.setItem(CITATION_STYLE_KEY, v);
+  const chooseStyle = (id: string) => {
+    setStyleId(id);
+    setActiveCopyStyle(id);
   };
 
   return (
@@ -540,19 +547,22 @@ function SettingsPanel() {
         Copying
       </div>
       <label className="block px-3 py-[3px] text-[0.8rem] text-ink">
-        <span className="mb-0.5 block">Citation style</span>
+        <span className="mb-0.5 block">Copy style</span>
         <select
-          value={style}
-          onChange={(e) => chooseStyle(e.target.value as CitationStyle)}
+          value={styleId}
+          onChange={(e) => chooseStyle(e.target.value)}
           className={SETTINGS_SELECT}
         >
-          <option value="text-first">Text, then reference</option>
-          <option value="citation-first">Reference, then text</option>
+          {styleOptions.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
         </select>
       </label>
       <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
-        Copied verses read “For God so loved… (John 3:16)” or “John 3:16: For
-        God so loved…”. Power Lookup follows the same choice.
+        Copied verses and Power Lookup follow this style. The settings tab
+        edits the styles themselves.
       </p>
 
       <p className="mt-2 border-t border-rule px-3 py-2 text-[0.7rem] leading-relaxed text-muted">

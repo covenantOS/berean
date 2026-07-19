@@ -1,12 +1,19 @@
 /**
  * Power Lookup copy: expand a set of references into their KJV text through
  * the bulk passages route and put the formatted block on the clipboard,
- * ready to paste into a manuscript. Each verse lands on its own line in the
- * reader's citation form (src/lib/citation.ts), text-first unless the
- * Settings rail has chosen otherwise.
+ * ready to paste into a manuscript. Each passage is one copy block in the
+ * active style (src/lib/copystyles.ts), its verses numbered, lined, and
+ * quoted as the style asks, with the styled HTML riding beside the plain
+ * text where the clipboard takes rich items.
  */
 
-import { formatCitation } from "./citation";
+import {
+  activeCopyStyle,
+  copyStyled,
+  formatVerses,
+  formatVersesHtml,
+  type CopyVerse,
+} from "./copystyles";
 
 export interface RefRange {
   /** Canonical book slug, e.g. "genesis". */
@@ -26,8 +33,9 @@ interface BulkPassage {
 /**
  * Fetches the refs' text and writes it to the clipboard. Overlapping ranges
  * share verses, and a manuscript wants each verse once, so repeated verses
- * keep only their first occurrence. Resolves false when nothing could be
- * expanded or the clipboard write failed.
+ * keep only their first occurrence; a passage left with no verses of its own
+ * drops out. Resolves false when nothing could be expanded or the clipboard
+ * write failed.
  */
 export async function copyReferences(refs: RefRange[]): Promise<boolean> {
   if (refs.length === 0) return false;
@@ -38,19 +46,29 @@ export async function copyReferences(refs: RefRange[]): Promise<boolean> {
     const res = await fetch(`/api/passages?refs=${encodeURIComponent(q)}`);
     if (!res.ok) return false;
     const data = (await res.json()) as { passages: BulkPassage[] };
+    const style = activeCopyStyle();
     const seen = new Set<string>();
-    const lines: string[] = [];
+    const blocks: { reference: string; verses: CopyVerse[] }[] = [];
     for (const p of data.passages) {
+      const verses: CopyVerse[] = [];
       for (const v of p.verses) {
         const key = `${p.bookName} ${p.chapter}:${v.verse}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        lines.push(formatCitation(v.text, key, "KJV"));
+        verses.push({ number: v.verse, text: v.text });
       }
+      if (verses.length === 0) continue;
+      const from = verses[0].number;
+      const to = verses[verses.length - 1].number;
+      blocks.push({
+        reference: `${p.bookName} ${p.chapter}:${from}${to !== from ? `-${to}` : ""}`,
+        verses,
+      });
     }
-    if (lines.length === 0) return false;
-    await navigator.clipboard.writeText(lines.join("\n"));
-    return true;
+    if (blocks.length === 0) return false;
+    const text = blocks.map((b) => formatVerses(b.verses, b.reference, "KJV", style)).join("\n");
+    const html = blocks.map((b) => formatVersesHtml(b.verses, b.reference, "KJV", style)).join("");
+    return await copyStyled(text, html);
   } catch {
     return false;
   }
