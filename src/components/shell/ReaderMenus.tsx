@@ -10,6 +10,7 @@ import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginali
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
+import NotebookPicker from "./NotebookPicker";
 import { useWorkspace } from "./WorkspaceContext";
 import type { WordSelection } from "./workspace-state";
 
@@ -105,7 +106,8 @@ function Swatches({ onPick }: { onPick: (color: HighlightColor) => void }) {
 /**
  * Inline note capture, the menus' answer to the context strip's editor: a
  * small textarea that writes a marginalia record anchored to the verse. An
- * existing note loads for editing; saving updates it in place.
+ * existing note loads for editing, notebook and all; saving updates it in
+ * place.
  */
 function NoteEditor({
   book,
@@ -121,10 +123,11 @@ function NoteEditor({
   onDone: () => void;
 }) {
   const [draft, setDraft] = useState(existing?.text ?? "");
+  const [notebook, setNotebook] = useState(existing?.notebook ?? "");
 
   const save = () => {
     if (!draft.trim()) return;
-    saveNote({ id: existing?.id, book, chapter, verse, text: draft.trim() });
+    saveNote({ id: existing?.id, book, chapter, verse, text: draft.trim(), notebook });
     onDone();
   };
 
@@ -147,6 +150,7 @@ function NoteEditor({
         >
           Save note
         </button>
+        <NotebookPicker value={notebook} onChange={setNotebook} />
         <button
           type="button"
           onClick={onDone}

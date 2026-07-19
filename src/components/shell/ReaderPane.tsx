@@ -34,6 +34,7 @@ import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
+import NotebookPicker from "./NotebookPicker";
 import { SelectionMenu, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
 import { useWorkspace } from "./WorkspaceContext";
 import { findLeaf, READER_FONT_SCALE_DEFAULT, type WordSelection } from "./workspace-state";
@@ -596,6 +597,7 @@ export default function ReaderPane({
   const notesByVerse = useMemo(() => {
     const m = new Map<number, MarginNote[]>();
     for (const n of notes) {
+      if (n.verse === undefined) continue;
       const arr = m.get(n.verse) ?? [];
       arr.push(n);
       m.set(n.verse, arr);
@@ -1526,6 +1528,7 @@ function ContextStrip({
   const { dispatch } = useWorkspace();
   const [noteOpen, setNoteOpen] = useState(false);
   const [draft, setDraft] = useState("");
+  const [notebook, setNotebook] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const reference = `${bookName} ${chapter}:${verse}`;
@@ -1535,6 +1538,7 @@ function ContextStrip({
   useEffect(() => {
     setNoteOpen(false);
     setDraft("");
+    setNotebook("");
     setEditingId(null);
     setCopied(false);
   }, [target]);
@@ -1546,6 +1550,7 @@ function ContextStrip({
     }
     const existing = verseNotes[0];
     setDraft(existing?.text ?? "");
+    setNotebook(existing?.notebook ?? "");
     setEditingId(existing?.id ?? null);
     setNoteOpen(true);
   };
@@ -1558,9 +1563,11 @@ function ContextStrip({
       chapter,
       verse,
       text: draft.trim(),
+      notebook,
     });
     setNoteOpen(false);
     setDraft("");
+    setNotebook("");
     setEditingId(null);
   };
 
@@ -1663,10 +1670,11 @@ function ContextStrip({
                 type="button"
                 onClick={submitNote}
                 disabled={!draft.trim()}
-                className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus:outline-sapphire"
               >
                 Save note
               </button>
+              <NotebookPicker value={notebook} onChange={setNotebook} />
               <button
                 type="button"
                 onClick={() => setNoteOpen(false)}

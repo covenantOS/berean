@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   MarginNote,
   deleteNote,
+  isAnchored,
   listNotes,
   saveNote,
 } from "@/lib/marginalia";
@@ -233,7 +234,10 @@ export default function ChapterReader({
     });
   }
 
-  const notedVerses = useMemo(() => new Set(notes.map((n) => n.verse)), [notes]);
+  const notedVerses = useMemo(
+    () => new Set(notes.filter(isAnchored).map((n) => n.verse)),
+    [notes]
+  );
   const refVerses = useMemo(
     () =>
       crossrefs
@@ -917,6 +921,7 @@ function MarginPanel(props: {
       {notes.length > 0 ? (
         <ul className="space-y-3 border-t border-rule pt-3">
           {notes
+            .filter(isAnchored)
             .slice()
             .sort((a, b) => a.verse - b.verse)
             .map((n) => (

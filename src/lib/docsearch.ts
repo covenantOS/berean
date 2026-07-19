@@ -5,8 +5,8 @@ import type { PrayerList, PrayerRequest } from "./prayers";
 /**
  * Docs Search — the user's own collections answered by a query. The
  * concordance searches the canon; this searches what the user has written
- * and gathered: marginalia, Writing Desk manuscripts, passage and word
- * lists, and prayer requests. Matching is a plain case-folded substring,
+ * and gathered: marginalia (journal entries ride the same note collection),
+ * Writing Desk manuscripts, passage and word lists, and prayer requests. Matching is a plain case-folded substring,
  * honest at the scale of one device's localStorage; the precise grammar in
  * query.ts answers verse-shaped questions and does not compose with prose.
  * Pure over the rows handed in, so the pane re-runs it against live

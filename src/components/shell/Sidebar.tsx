@@ -8,13 +8,23 @@ import { setCandle, setTextScale, TEXT_SCALES, useDisplayPrefs } from "@/lib/dis
 import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
 import { favorites, removeFavorite, renameFolder, type Favorite } from "@/lib/favorites";
 import { useCollection } from "@/lib/hooks";
-import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
+import {
+  deleteNote,
+  deleteNotebook,
+  exportNotesMarkdown,
+  isAnchored,
+  listNotebooks,
+  notes as marginNotes,
+  renameNotebook,
+  type AnchoredNote,
+} from "@/lib/marginalia";
 import { isDue, memoryPassages } from "@/lib/memory";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
+import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
 
@@ -809,13 +819,29 @@ function DocumentsList() {
   const docs = useCollection(documents);
   const lists = useCollection(listDocuments);
   const filterSets = useCollection(visualFilters);
-  const notes = useCollection(marginNotes).slice().sort(byCanon);
+  /* The rail lists anchored notes; date-only journal entries gather on the
+   * journal page instead. */
+  const notes = useCollection(marginNotes).filter(isAnchored).slice().sort(byCanon);
   /** The "This passage" filter: only notes inside the pane in focus show. */
   const [thisPassage, setThisPassage] = useState(false);
-  const shownNotes =
+  /** The per-notebook filter: only the named notebook's notes show. */
+  const [onlyNotebook, setOnlyNotebook] = useState<string | null>(null);
+  const passageNotes =
     thisPassage && activeRef
       ? notes.filter((n) => n.book === activeRef.book && n.chapter === activeRef.chapter)
       : notes;
+  const shownNotes = onlyNotebook
+    ? passageNotes.filter((n) => (n.notebook ?? "") === onlyNotebook)
+    : passageNotes;
+  /* Unfiled notes lead under the heading, the way unfiled bookmarks do;
+   * each notebook follows alphabetized. The filtered notebook's heading
+   * stays even at zero notes so the filter can always be cleared. */
+  const groups: { name: string; notes: AnchoredNote[] }[] = [
+    { name: "", notes: shownNotes.filter((n) => !n.notebook) },
+    ...listNotebooks()
+      .filter((name) => !onlyNotebook || name === onlyNotebook)
+      .map((name) => ({ name, notes: shownNotes.filter((n) => n.notebook === name) })),
+  ].filter((g) => g.notes.length > 0 || g.name === onlyNotebook);
   if (docs.length === 0 && lists.length === 0 && filterSets.length === 0 && notes.length === 0) {
     return (
       <Placeholder text="No documents yet. Manuscripts from the Writing Desk appear here, by reference, never by copy; passage and word lists saved from a search or guide gather alongside them, and the marginalia you write on verses collect below." />
@@ -824,9 +850,49 @@ function DocumentsList() {
 
   /* A note opens its anchor passage and selects the verse, so the context
    * strip rises with the note ready for reading and editing. */
-  const openNote = (n: MarginNote) => {
+  const openNote = (n: AnchoredNote) => {
     dispatch({ type: "openRef", book: n.book, chapter: n.chapter });
     dispatch({ type: "selectVerse", book: n.book, chapter: n.chapter, verse: n.verse });
+  };
+
+  /** The export helper (src/lib/marginalia.ts) as a visible download. */
+  const exportMarkdown = () => {
+    const md = exportNotesMarkdown((slug) => getBook(slug)?.name ?? slug);
+    const blob = new Blob([md], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "marginalia.md";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const noteRow = (n: AnchoredNote) => {
+    const reference = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
+    return (
+      <li key={n.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+        <button
+          type="button"
+          onClick={() => openNote(n)}
+          title={`Open ${reference}: ${n.text}`}
+          className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          <span className="text-sapphire">{reference}</span>{" "}
+          <span className="text-muted">{n.text}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => deleteNote(n.id)}
+          title="Delete this note"
+          aria-label={`Delete the note on ${reference}`}
+          className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          ×
+        </button>
+      </li>
+    );
   };
 
   return (
@@ -895,71 +961,211 @@ function DocumentsList() {
         </>
       )}
       {notes.length > 0 && (
-        <>
-          <div className="flex items-baseline justify-between gap-2 px-3 pt-3 pb-1">
+        <div data-print-root>
+          <div className="no-print flex items-baseline justify-between gap-2 px-3 pt-3 pb-1">
             <div className="small-caps text-[0.62rem] font-semibold text-muted">Notes</div>
-            <button
-              type="button"
-              aria-pressed={thisPassage}
-              title={
-                thisPassage
-                  ? "Show every note again"
-                  : "Show only the notes inside the passage in front of you"
-              }
-              onClick={() => setThisPassage((v) => !v)}
-              className={`text-[0.62rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                thisPassage ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
-              }`}
-            >
-              This passage
-            </button>
+            <span className="flex items-baseline gap-2.5">
+              <button
+                type="button"
+                aria-pressed={thisPassage}
+                title={
+                  thisPassage
+                    ? "Show every note again"
+                    : "Show only the notes inside the passage in front of you"
+                }
+                onClick={() => setThisPassage((v) => !v)}
+                className={`text-[0.62rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  thisPassage ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
+                }`}
+              >
+                This passage
+              </button>
+              <button
+                type="button"
+                title="Download every note as Markdown"
+                onClick={exportMarkdown}
+                className="text-[0.62rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Export
+              </button>
+              <PrintButton className="text-[0.62rem]" />
+            </span>
           </div>
-          {thisPassage && !activeRef && (
-            <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
-              Open a passage and the notes beside it gather here.
+          <div className="no-print">
+            {thisPassage && !activeRef && (
+              <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+                Open a passage and the notes beside it gather here.
+              </p>
+            )}
+            {thisPassage && activeRef && shownNotes.length === 0 && (
+              <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
+                No notes on {getBook(activeRef.book)?.name ?? activeRef.book} {activeRef.chapter}{" "}
+                yet.
+              </p>
+            )}
+            {groups.map((g) =>
+              g.name === "" ? (
+                <ul key="unfiled">{g.notes.map(noteRow)}</ul>
+              ) : (
+                <div key={g.name}>
+                  <NotebookHeading
+                    name={g.name}
+                    count={g.notes.length}
+                    active={onlyNotebook === g.name}
+                    onToggleFilter={() =>
+                      setOnlyNotebook((cur) => (cur === g.name ? null : g.name))
+                    }
+                    onChanged={() => setOnlyNotebook(null)}
+                  />
+                  <ul>{g.notes.map(noteRow)}</ul>
+                </div>
+              )
+            )}
+            <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
+              Entries anchored to a day instead of a verse gather in the{" "}
+              <Link href="/journal" className="text-sapphire no-underline hover:underline">
+                journal
+              </Link>
+              .
             </p>
-          )}
-          {thisPassage && activeRef && shownNotes.length === 0 && (
-            <p className="px-3 py-1 text-[0.7rem] leading-relaxed text-muted">
-              No notes on {getBook(activeRef.book)?.name ?? activeRef.book} {activeRef.chapter}{" "}
-              yet.
-            </p>
-          )}
-          <ul>
-            {shownNotes.map((n) => {
-              const reference = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
-              return (
-                <li key={n.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
-                  <button
-                    type="button"
-                    onClick={() => openNote(n)}
-                    title={`Open ${reference}: ${n.text}`}
-                    className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-                  >
-                    <span className="text-sapphire">{reference}</span>{" "}
-                    <span className="text-muted">{n.text}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => deleteNote(n.id)}
-                    title="Delete this note"
-                    aria-label={`Delete the note on ${reference}`}
-                    className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-                  >
-                    ×
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </>
+          </div>
+          {/* The print rendering: the same filter's notes, grouped by
+           *  notebook, with references and full text. */}
+          <div className="print-only px-3 py-2">
+            <h2 className="font-editorial text-lg font-bold text-ink">
+              Notes
+              {onlyNotebook ? ` · ${onlyNotebook}` : ""}
+            </h2>
+            {thisPassage && activeRef && (
+              <p className="text-xs text-muted">
+                {getBook(activeRef.book)?.name ?? activeRef.book} {activeRef.chapter}
+              </p>
+            )}
+            {groups.map((g) => (
+              <section key={g.name || "unfiled"} className="mt-3">
+                {g.name !== "" && (
+                  <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
+                    {g.name}
+                  </p>
+                )}
+                {g.notes.map((n) => (
+                  <div key={n.id} className="mt-2">
+                    <p className="small-caps text-sm font-medium text-ink">
+                      {getBook(n.book)?.name ?? n.book} {n.chapter}:{n.verse}
+                    </p>
+                    <p className="font-reader text-[0.9rem] leading-relaxed whitespace-pre-wrap text-ink">
+                      {n.text}
+                    </p>
+                    <p className="text-xs text-muted">
+                      {new Date(n.updatedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </section>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
 /**
- * One visual filter set in the rail: the swatch switches visibility (a
+ * A notebook heading in the notes list: the name filters the rail to that
+ * notebook (the notebook is the filtering unit), "Rename" renames it across
+ * every note filed in it, and × deletes the notebook alone; its notes stay,
+ * unfiled. onChanged clears a filter left pointing at the old name.
+ */
+function NotebookHeading({
+  name,
+  count,
+  active,
+  onToggleFilter,
+  onChanged,
+}: {
+  name: string;
+  count: number;
+  active: boolean;
+  onToggleFilter: () => void;
+  onChanged: () => void;
+}) {
+  const [renaming, setRenaming] = useState(false);
+  const [draft, setDraft] = useState(name);
+
+  const commit = () => {
+    const next = draft.trim();
+    if (next && next !== name) {
+      renameNotebook(name, next);
+      onChanged();
+    }
+    setRenaming(false);
+  };
+
+  if (renaming) {
+    return (
+      <div className="px-3 pt-2 pb-1">
+        <input
+          autoFocus
+          value={draft}
+          aria-label="Notebook name"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commit();
+            // Reset before closing so the blur commit finds nothing to write.
+            if (e.key === "Escape") {
+              setDraft(name);
+              setRenaming(false);
+            }
+          }}
+          className="w-full border border-rule bg-paper px-1 py-0.5 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full items-baseline gap-2 px-3 pt-3 pb-1">
+      <button
+        type="button"
+        aria-pressed={active}
+        title={active ? "Show every note again" : `Show only the ${name} notebook`}
+        onClick={onToggleFilter}
+        className={`small-caps min-w-0 truncate text-left text-[0.62rem] font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+          active ? "text-sapphire" : "text-muted hover:text-ink"
+        }`}
+      >
+        {name}
+      </button>
+      <span className="shrink-0 text-[0.62rem] text-muted">{count}</span>
+      <button
+        type="button"
+        title={`Rename the ${name} notebook`}
+        onClick={() => {
+          setDraft(name);
+          setRenaming(true);
+        }}
+        className="ml-auto shrink-0 text-[0.62rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        Rename
+      </button>
+      <button
+        type="button"
+        title={`Delete the ${name} notebook; its notes stay, unfiled`}
+        aria-label={`Delete the ${name} notebook`}
+        onClick={() => {
+          deleteNotebook(name);
+          onChanged();
+        }}
+        className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+/**
  * hidden set keeps its marks and renders nothing), the name renames inline,
  * the count is the set's verse count, and × deletes the set alone; personal
  * highlights never move.

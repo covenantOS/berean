@@ -6,7 +6,11 @@ import { getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { resultCount, searchDocs } from "@/lib/docsearch";
 import { useCollection } from "@/lib/hooks";
-import { notes as marginNotes, type MarginNote } from "@/lib/marginalia";
+import {
+  isAnchored,
+  notes as marginNotes,
+  type AnchoredNote,
+} from "@/lib/marginalia";
 import { prayerLists } from "@/lib/prayers";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
@@ -36,7 +40,7 @@ export default function DocSearchPane({ q }: { q: string }) {
 
   /* A note opens its anchor passage and selects the verse, so the context
    * strip rises with the note, the same ride the Documents rail gives. */
-  const openNote = (n: MarginNote) => {
+  const openNote = (n: AnchoredNote) => {
     dispatch({ type: "openRef", book: n.book, chapter: n.chapter });
     dispatch({ type: "selectVerse", book: n.book, chapter: n.chapter, verse: n.verse });
   };
@@ -83,12 +87,38 @@ export default function DocSearchPane({ q }: { q: string }) {
                 </p>
                 <ul>
                   {results.notes.map((h) => {
-                    const reference = `${getBook(h.note.book)?.name ?? h.note.book} ${h.note.chapter}:${h.note.verse}`;
+                    /* An unanchored hit is a journal entry; it opens the
+                     * journal, the anchored kind opens its passage. */
+                    const n = h.note;
+                    if (!isAnchored(n)) {
+                      return (
+                        <li key={n.id} className="border-b border-rule/60">
+                          <Link
+                            href="/journal"
+                            title="Open this entry in the journal"
+                            className="block w-full py-3 text-left no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                          >
+                            <span className="small-caps text-sm font-medium text-sapphire">
+                              Journal
+                              {n.date ? (
+                                <span className="ml-2 text-[0.62rem] font-normal text-muted">
+                                  {new Date(`${n.date}T00:00:00`).toLocaleDateString()}
+                                </span>
+                              ) : null}
+                            </span>
+                            <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
+                              {h.snippet}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    }
+                    const reference = `${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`;
                     return (
-                      <li key={h.note.id} className="border-b border-rule/60">
+                      <li key={n.id} className="border-b border-rule/60">
                         <button
                           type="button"
-                          onClick={() => openNote(h.note)}
+                          onClick={() => openNote(n)}
                           title={`Open ${reference}`}
                           className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                         >

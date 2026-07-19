@@ -383,9 +383,18 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   }
 }
 
+/* Print-only content: hidden on screen, rendered when the report prints. */
+.print-only {
+  display: none;
+}
+
 @media print {
   header, nav, .no-print {
     display: none !important;
+  }
+  /* Print-only content: rendered for the report, hidden on screen. */
+  .print-only {
+    display: block !important;
   }
   html, .reader-surface {
     background: #fff !important;
