@@ -89,6 +89,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Memory
               </Link>{" "}
               ·{" "}
+              <Link href="/prayers" className="text-sapphire">
+                Prayers
+              </Link>{" "}
+              ·{" "}
               <Link href="/study" className="text-sapphire">
                 Studies
               </Link>{" "}

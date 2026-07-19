@@ -124,6 +124,7 @@ export const GRAPH_KEYS = [
   "berean.liturgies.v1",
   "berean.liturgy-templates.v1",
   "berean.plans.v1",
+  "berean.prayers.v1",
   "berean.memory.v1",
   "berean.calendar.v1",
   "berean.rule.v1",

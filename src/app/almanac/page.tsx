@@ -8,12 +8,14 @@ import { RuleCadence, calendar, rule, todayISO, toggleKept } from "@/lib/almanac
 import { listProjects, projects as projectsCollection, StudyProject } from "@/lib/projects";
 import { plans, generatorFor, currentDay, readingsForDay } from "@/lib/plans";
 import { memoryPassages, isDue } from "@/lib/memory";
+import { prayerLists, dueRequests } from "@/lib/prayers";
 
 export default function AlmanacPage() {
   const entries = useCollection(calendar).sort((a, b) => a.date.localeCompare(b.date));
   const ruleItems = useCollection(rule);
   const activePlans = useCollection(plans);
   const memory = useCollection(memoryPassages);
+  const prayers = useCollection(prayerLists);
   const [sermons, setSermons] = useState<StudyProject[]>([]);
 
   const [entryTitle, setEntryTitle] = useState("");
@@ -30,6 +32,7 @@ export default function AlmanacPage() {
 
   const today = todayISO();
   const dueMemory = memory.filter((p) => isDue(p));
+  const duePrayers = dueRequests(prayers);
 
   // The preaching calendar: explicit entries plus appointed sermons, one timeline.
   const timeline = [
@@ -133,6 +136,14 @@ export default function AlmanacPage() {
               </Link>
             </li>
           )}
+          {duePrayers.length > 0 && (
+            <li>
+              Prayer:{" "}
+              <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+                {duePrayers.length} request{duePrayers.length === 1 ? "" : "s"} appointed today
+              </Link>
+            </li>
+          )}
           {upcoming.length > 0 && upcoming[0].date === today && (
             <li>
               Today:{" "}
@@ -145,7 +156,7 @@ export default function AlmanacPage() {
               )}
             </li>
           )}
-          {activePlans.length === 0 && dueMemory.length === 0 && (
+          {activePlans.length === 0 && dueMemory.length === 0 && duePrayers.length === 0 && (
             <li className="text-muted">
               Nothing appointed. Begin a{" "}
               <Link href="/plans" className="text-sapphire no-underline hover:underline">
@@ -154,6 +165,10 @@ export default function AlmanacPage() {
               or add{" "}
               <Link href="/memory" className="text-sapphire no-underline hover:underline">
                 memory work
+              </Link>{" "}
+              or a{" "}
+              <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+                prayer list
               </Link>
               , and the Almanac will keep the day&apos;s portion before you.
             </li>

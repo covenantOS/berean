@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
-import { documents, listDocuments, listKindLabel } from "@/lib/documents";
+import { documents, listDocuments, listKindLabel, parsePassageRef } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { deleteNote, notes as marginNotes, type MarginNote } from "@/lib/marginalia";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
+import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
 import { toggleFavorite, useSearchSaves } from "@/lib/search-history";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
@@ -26,8 +27,8 @@ const MODE_TITLES: Record<RailMode, string> = {
 /**
  * The left sidebar: one tree or section list per rail mode. The Read tree,
  * the Search rail's pinned searches and history, the Documents list, and the
- * Almanac rail's daily readings carry real data; the rest are quiet
- * placeholders until their panels land in a later phase.
+ * Almanac rail's daily readings and due prayers carry real data; the rest
+ * are quiet placeholders until their panels land in a later phase.
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
@@ -159,25 +160,32 @@ function SearchPanel() {
 /**
  * The Almanac rail keeps the day's portion before the reader: every active
  * plan's reading for today, each chapter opening in the workspace with a
- * click. The plans page remains the home for beginning, marking, and
- * adjusting; the calendar and rule of life arrive with their panels.
+ * click, and the prayer requests that stand due, marked prayed in place.
+ * The plans page remains the home for beginning, marking, and adjusting;
+ * the calendar and rule of life arrive with their panels.
  */
 function AlmanacPanel() {
   const { dispatch } = useWorkspace();
   const rows = useCollection(plans);
+  const prayers = useCollection(prayerLists);
   const active = rows
     .map((plan) => {
       const gen = generatorFor(plan);
       return gen ? { plan, gen, day: Math.min(currentDay(plan), gen.days) } : null;
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
+  const due = dueRequests(prayers);
 
-  if (active.length === 0) {
+  if (active.length === 0 && due.length === 0) {
     return (
       <p className="px-3 py-4 text-xs leading-relaxed text-muted">
-        No reading plan is underway. Begin one on the{" "}
+        Nothing is appointed for today. Begin a plan on the{" "}
         <Link href="/plans" className="text-sapphire no-underline hover:underline">
           plans page
+        </Link>{" "}
+        or a list on the{" "}
+        <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+          prayers page
         </Link>{" "}
         and the day&apos;s portion waits here.
       </p>
@@ -186,9 +194,11 @@ function AlmanacPanel() {
 
   return (
     <div className="py-1">
-      <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
-        Today&apos;s readings
-      </div>
+      {active.length > 0 && (
+        <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] font-semibold text-muted">
+          Today&apos;s readings
+        </div>
+      )}
       {active.map(({ plan, gen, day }) => {
         const done = plan.completedDays.includes(day);
         return (
@@ -223,10 +233,55 @@ function AlmanacPanel() {
           </div>
         );
       })}
+      {due.length > 0 && (
+        <>
+          <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+            Prayers appointed today
+          </div>
+          <ul>
+            {due.map(({ list, request }) => {
+              const parsed = request.passage ? parsePassageRef(request.passage) : undefined;
+              return (
+                <li key={request.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+                  <span className="min-w-0 flex-1 truncate text-[0.8rem] text-ink" title={request.title}>
+                    {request.title}
+                    {parsed && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          dispatch({ type: "openRef", book: parsed.book, chapter: parsed.chapter })
+                        }
+                        title={`Open ${parsed.bookName} ${parsed.chapter} in the workspace`}
+                        className="ml-1 text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      >
+                        {parsed.bookName} {parsed.chapter}
+                        {parsed.from ? `:${parsed.from}` : ""}
+                      </button>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-muted">{list.title}</span>
+                  <button
+                    type="button"
+                    onClick={() => markPrayed(list.id, request.id)}
+                    title={`Mark "${request.title}" prayed`}
+                    className="shrink-0 border border-emerald px-1.5 py-0.5 text-[0.62rem] text-emerald hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    Prayed
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
       <p className="px-3 py-2 text-[0.7rem] leading-relaxed text-muted">
         Marking, catch-up, and new plans live on the{" "}
         <Link href="/plans" className="text-sapphire no-underline hover:underline">
           plans page
+        </Link>
+        ; the lists and their answered history live on the{" "}
+        <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+          prayers page
         </Link>
         .
       </p>

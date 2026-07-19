@@ -92,7 +92,7 @@ export default async function Home() {
           href="/almanac"
           accent="border-t-sapphire"
           title="The Almanac"
-          body="The room that governs time: the preaching and teaching calendar, reading plans, memory reviews, and the rule of life — the day's appointed portion always laid out before you."
+          body="The room that governs time: the preaching and teaching calendar, reading plans, memory reviews, prayer lists, and the rule of life — the day's appointed portion always laid out before you."
         />
       </section>
 

@@ -244,9 +244,9 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 13. Prayer Lists
 
-- [ ] [SW] Prayer list documents: requests with tags, categories, and custom fields.
-- [ ] [SW] Prayer scheduling: per-request frequency settings with last-prayed tracking.
-- [ ] [SW] Answered prayer tracking: mark requests answered and keep the history.
+- [x] [SW] Prayer list documents: requests with tags, categories, and custom fields. (Requests carry a title, optional details, free-form tags and category, and an optional passage that deep-links into the reader; named lists live in their own collection with the sync envelope. Custom field schemas do not ship; tags and a free-form category carry the sorting load honestly.)
+- [x] [SW] Prayer scheduling: per-request frequency settings with last-prayed tracking. (Each request waits daily, weekly, or as it comes; a pray-now mark records the last-prayed timestamp, and a due-today view derives from frequency and that mark on the prayers page, in the Almanac, and in the workspace rail.)
+- [x] [SW] Answered prayer tracking: mark requests answered and keep the history. (Marking answered records the date and an optional note and rests the request in a per-list answered history, newest first, which can be read back and the request carried again.)
 - [ ] [SW] Sharing: prayer lists share to Faithlife groups like other documents.
 - [ ] [SW] Cross-device sync and mobile access.
 

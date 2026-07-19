@@ -205,7 +205,11 @@ export default function ChapelPage() {
               </li>
               <li>
                 <span className="font-medium">Prayer.</span> Confession, thanksgiving, the needs of
-                the household and the church.
+                the household and the church, carried name by name on your{" "}
+                <Link href="/prayers" className="text-sapphire no-underline hover:underline">
+                  prayer lists
+                </Link>
+                .
               </li>
             </ol>
             <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
