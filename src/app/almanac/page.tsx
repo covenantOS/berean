@@ -132,7 +132,7 @@ export default function AlmanacPage() {
             <li>
               Memory work:{" "}
               <Link
-                href={`/memory?drill=${dueMemory[0].id}`}
+                href={`/workspace?tab=memory:${dueMemory[0].id}`}
                 className="text-sapphire no-underline hover:underline"
               >
                 {dueMemory.length} passage{dueMemory.length === 1 ? "" : "s"} due for review
@@ -166,7 +166,7 @@ export default function AlmanacPage() {
                 reading plan
               </Link>{" "}
               or add{" "}
-              <Link href="/memory" className="text-sapphire no-underline hover:underline">
+              <Link href="/workspace?tab=memory" className="text-sapphire no-underline hover:underline">
                 memory work
               </Link>{" "}
               or a{" "}

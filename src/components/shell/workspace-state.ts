@@ -213,6 +213,18 @@ export interface AtlasTab {
 }
 
 /**
+ * Memory work: the spaced-review trainer. A passage id opens the drill on
+ * that passage, the way the retired page's ?drill= did; without one the
+ * pane opens on the due list and the take-up form.
+ */
+export interface MemoryTab {
+  id: string;
+  type: "memory";
+  /** Memory passage id to drill; absent opens the trainer's list. */
+  passageId?: string;
+}
+
+/**
  * The Timeline: the curated chronology in era bands. An event id opens the
  * chart with that event selected, the way the retired page's ?event= did.
  */
@@ -259,6 +271,7 @@ export type Tab =
   | ConcordanceTab
   | AtlasTab
   | TimelineTab
+  | MemoryTab
   | LauncherTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
@@ -450,6 +463,10 @@ export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
 /** Timeline event ids are lowercase kebab tokens such as "call-of-abraham". */
 export const EVENT_ID_PATTERN = /^[a-z0-9-]+$/;
 
+/** Memory passage ids are the store's UUIDs (crypto.randomUUID, src/lib/store.ts). */
+export const MEMORY_ID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
 }
@@ -510,6 +527,14 @@ export function timelineTab(event?: string, title?: string): TimelineTab {
     type: "timeline",
     ...(event ? { event } : {}),
     ...(title ? { title } : {}),
+  };
+}
+
+export function memoryTab(passageId?: string): MemoryTab {
+  return {
+    id: newId("tab"),
+    type: "memory",
+    ...(passageId ? { passageId } : {}),
   };
 }
 
@@ -757,6 +782,7 @@ export type WorkspaceAction =
   | { type: "openConcordance"; book: string; paneId?: string }
   | { type: "openAtlas"; place?: string; title?: string; paneId?: string }
   | { type: "openTimeline"; event?: string; title?: string; paneId?: string }
+  | { type: "openMemory"; passageId?: string; paneId?: string }
   | { type: "setConcordanceBook"; paneId: string; tabId: string; book: string }
   | { type: "setCompareBase"; paneId: string; tabId: string; base: string }
   | { type: "setReaderTranslation"; paneId: string; tabId: string; translation?: string }
@@ -1279,6 +1305,25 @@ export function workspaceReducer(
       // Like a guide, the chart pins its focus at open time.
       const title = action.title?.trim() || undefined;
       const tab = timelineTab(event || undefined, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openMemory": {
+      const passageId = action.passageId?.trim();
+      if (passageId && !MEMORY_ID_PATTERN.test(passageId)) return state;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the drill pins its passage at open time.
+      const tab = memoryTab(passageId || undefined);
       return {
         ...state,
         activePaneId: paneId,
@@ -1950,6 +1995,15 @@ function sanitizeNode(node: unknown): PaneNode | null {
           ...(event ? { event } : {}),
           ...(title ? { title } : {}),
         });
+        continue;
+      }
+      if (t.type === "memory" && typeof t.id === "string") {
+        // Like the atlas focus, the drill pin is optional and a bad one drops.
+        const passageId =
+          typeof t.passageId === "string" && MEMORY_ID_PATTERN.test(t.passageId)
+            ? t.passageId
+            : undefined;
+        tabs.push({ id: t.id, type: "memory", ...(passageId ? { passageId } : {}) });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {

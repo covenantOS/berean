@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { getBook } from "@/lib/canon";
+import { memoryPassages } from "@/lib/memory";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
 import {
@@ -45,6 +46,7 @@ import TextCompare from "./TextCompare";
 import ConcordancePane from "./ConcordancePane";
 import AtlasPane from "./AtlasPane";
 import TimelinePane from "./TimelinePane";
+import MemoryPane from "./MemoryPane";
 import LauncherPane from "./LauncherPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
@@ -154,6 +156,14 @@ function tabLabel(tab: Tab): string {
   }
   if (tab.type === "atlas") return tab.title ? `Atlas: ${tab.title}` : "Atlas";
   if (tab.type === "timeline") return tab.title ? `Timeline: ${tab.title}` : "Timeline";
+  if (tab.type === "memory") {
+    // The drill pin resolves live; a laid-aside record reads as the list.
+    const p = tab.passageId ? memoryPassages.get(tab.passageId) : undefined;
+    if (!p) return "Memory work";
+    return `Memory: ${getBook(p.book)?.name ?? p.book} ${p.chapter}:${p.from}${
+      p.to !== p.from ? `–${p.to}` : ""
+    }`;
+  }
   if (tab.type === "launcher") return "New tab";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
@@ -585,6 +595,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "timeline" ? (
             <div className="h-full overflow-y-auto p-4">
               <TimelinePane event={activeTab.event} />
+            </div>
+          ) : activeTab.type === "memory" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <MemoryPane passageId={activeTab.passageId} />
             </div>
           ) : activeTab.type === "launcher" ? (
             <div className="h-full overflow-y-auto p-4">

@@ -85,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Plans
               </Link>{" "}
               ·{" "}
-              <Link href="/memory" className="text-sapphire">
+              <Link href="/workspace?tab=memory" className="text-sapphire">
                 Memory
               </Link>{" "}
               ·{" "}

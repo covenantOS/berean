@@ -308,14 +308,15 @@ function AlmanacPanel() {
           <ul>
             {dueMemory.map((p) => (
               <li key={p.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
-                <Link
-                  href={`/memory?drill=${p.id}`}
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: "openMemory", passageId: p.id })}
                   title={`Drill ${getBook(p.book)?.name} ${p.chapter}:${p.from}`}
-                  className="min-w-0 flex-1 truncate text-[0.8rem] text-ink no-underline hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   {getBook(p.book)?.name} {p.chapter}:{p.from}
                   {p.to !== p.from ? `–${p.to}` : ""}
-                </Link>
+                </button>
                 <span className="shrink-0 text-[0.62rem] text-muted">drill</span>
               </li>
             ))}
@@ -372,10 +373,14 @@ function AlmanacPanel() {
         <Link href="/prayers" className="text-sapphire no-underline hover:underline">
           prayers page
         </Link>
-        ; memory work lives on the{" "}
-        <Link href="/memory" className="text-sapphire no-underline hover:underline">
-          memory page
-        </Link>
+        ; memory work lives in the{" "}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openMemory" })}
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          memory pane
+        </button>
         .
       </p>
     </div>

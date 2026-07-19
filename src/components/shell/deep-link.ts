@@ -1,5 +1,5 @@
 import { BOOK_NAME_PATTERN, resolveBookName } from "@/lib/canon";
-import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN } from "./workspace-state";
+import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN, MEMORY_ID_PATTERN } from "./workspace-state";
 
 /**
  * URL deep links for /workspace (the intake itself lives in
@@ -29,11 +29,13 @@ import { ENTITY_ID_PATTERN, EVENT_ID_PATTERN } from "./workspace-state";
  *                       topicguide:naves:prayer  a Nave's or Torrey's entry
  *                     One kind carries no payload:
  *                       library                  the Library browser tab
- *                     Two kinds take an optional payload:
+ *                     Three kinds take an optional payload:
  *                       atlas                    the Atlas tab
  *                       atlas:H0175              the Atlas focused on a place
  *                       timeline                 the Timeline tab
  *                       timeline:call-of-abraham the Timeline at an event
+ *                       memory                   the Memory work tab
+ *                       memory:<id>              the drill on a taken-up passage
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -91,6 +93,7 @@ export type DeepLinkTab =
   | { kind: "topicguide"; work: "naves" | "torreys"; topicId: string }
   | { kind: "atlas"; place?: string }
   | { kind: "timeline"; event?: string }
+  | { kind: "memory"; passageId?: string }
   | { kind: "library" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
@@ -105,6 +108,7 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     if (kind === "library") return { kind: "library" };
     if (kind === "atlas") return { kind: "atlas" };
     if (kind === "timeline") return { kind: "timeline" };
+    if (kind === "memory") return { kind: "memory" };
     return null;
   }
   if (i === 0) return null;
@@ -132,6 +136,10 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       const event = payload.toLowerCase();
       if (!EVENT_ID_PATTERN.test(event)) return null;
       return { kind: "timeline", event };
+    }
+    case "memory": {
+      if (!MEMORY_ID_PATTERN.test(payload)) return null;
+      return { kind: "memory", passageId: payload };
     }
     case "topicguide": {
       const j = payload.indexOf(":");

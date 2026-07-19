@@ -92,6 +92,9 @@ function Intake() {
         case "timeline":
           dispatch({ type: "openTimeline", event: tab.event, paneId });
           break;
+        case "memory":
+          dispatch({ type: "openMemory", passageId: tab.passageId, paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");
