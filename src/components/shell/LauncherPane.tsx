@@ -20,6 +20,7 @@ import {
   guideEditorTab,
   guideTab,
   libraryTab,
+  multiviewTab,
   readerTab,
   searchTab,
   textCompareTab,
@@ -190,6 +191,16 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
               >
                 Text Compare
                 <span className={HINT}>Translations</span>
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                className={ROW}
+                onClick={() => choose(multiviewTab(ref.book, ref.chapter))}
+              >
+                Multiview
+                <span className={HINT}>Translations side by side</span>
               </button>
             </li>
             <li>

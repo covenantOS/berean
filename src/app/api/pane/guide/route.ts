@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBook } from "@/lib/canon";
+import { getChapter, type Verse } from "@/lib/bible";
 import { getChapterCommentary } from "@/lib/commentary";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterEntities, type EntityKind } from "@/lib/entities";
@@ -7,6 +8,12 @@ import { getChapterTopics } from "@/lib/topics";
 import { formatEventYears, formatRef, listTimelineEvents } from "@/lib/timeline";
 import { getTaggedChapter, STOP_STRONGS } from "@/lib/tagged";
 import { getLexiconEntry } from "@/lib/lexicon";
+import {
+  DEFAULT_TRANSLATION,
+  getAvailableTranslations,
+  translationsForBook,
+} from "@/lib/translations";
+import { diffIsClean, diffWords, type DiffSegment } from "@/lib/textdiff";
 
 /**
  * The Passage Guide: one chapter's datasets composed into a single report,
@@ -29,6 +36,29 @@ function trimExcerpt(text: string, max = 360): string {
 function baseStrongs(id: string): string {
   const m = id.match(/^([GH]\d+?)[A-Z]?$/);
   return m ? m[1] : id;
+}
+
+/** Lettered verses under one number join into a single verse text (the compare route's rule). */
+function groupVerses(verses: Verse[]): { verse: number; text: string }[] {
+  const byNumber = new Map<number, string[]>();
+  for (const v of verses) {
+    const parts = byNumber.get(v.verse) ?? [];
+    parts.push(v.label ? `${v.label} ${v.text}` : v.text);
+    byNumber.set(v.verse, parts);
+  }
+  return [...byNumber.entries()].map(([verse, parts]) => ({
+    verse,
+    text: parts.join(" "),
+  }));
+}
+
+/** The tokens a verse's alignment marked as added or omitted. */
+function changedWordCount(segments: DiffSegment[]): number {
+  let n = 0;
+  for (const s of segments) {
+    if (s.mark !== "same") n += s.text.split(" ").length;
+  }
+  return n;
 }
 
 export async function GET(req: NextRequest) {
@@ -165,6 +195,52 @@ export async function GET(req: NextRequest) {
     })
   );
 
+  // (g) Compare Versions: the verses where the furnished texts diverge most
+  // from the base, word by word over the same LCS diff the Text Comparison
+  // runs. The aggregation stays server-side so the payload ships only the
+  // top rows; null when the base text or a second furnished text is missing,
+  // and null when every text agrees everywhere.
+  const available = translationsForBook(await getAvailableTranslations(), book.testament);
+  const baseText = available.find((t) => t.id === DEFAULT_TRANSLATION) ?? available[0];
+  let compareVersions: {
+    base: string;
+    rows: { verse: number; translations: string[]; words: number }[];
+  } | null = null;
+  if (baseText && available.length > 1) {
+    const baseChapter = await getChapter(book.slug, chapter, baseText.id);
+    if (baseChapter) {
+      const baseVerses = groupVerses(baseChapter);
+      const rows = new Map<number, { translations: string[]; words: number }>();
+      await Promise.all(
+        available
+          .filter((t) => t.id !== baseText.id)
+          .map(async (t) => {
+            const chapterText = await getChapter(book.slug, chapter, t.id);
+            // No such chapter under this text's numbering is not a verse diff.
+            if (!chapterText) return;
+            const grouped = new Map(groupVerses(chapterText).map((v) => [v.verse, v.text]));
+            for (const bv of baseVerses) {
+              const other = grouped.get(bv.verse);
+              const segments = other === undefined ? null : diffWords(bv.text, other);
+              if (segments !== null && diffIsClean(segments)) continue;
+              const row = rows.get(bv.verse) ?? { translations: [], words: 0 };
+              row.translations.push(t.abbrev);
+              row.words +=
+                segments === null
+                  ? bv.text.split(/\s+/).length
+                  : changedWordCount(segments);
+              rows.set(bv.verse, row);
+            }
+          })
+      );
+      const top = [...rows.entries()]
+        .map(([verse, r]) => ({ verse, ...r }))
+        .sort((a, b) => b.words - a.words || a.verse - b.verse)
+        .slice(0, 6);
+      if (top.length > 0) compareVersions = { base: baseText.abbrev, rows: top };
+    }
+  }
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -178,5 +254,6 @@ export async function GET(req: NextRequest) {
     topics: topicList,
     timeline,
     notableWords,
+    compareVersions,
   });
 }

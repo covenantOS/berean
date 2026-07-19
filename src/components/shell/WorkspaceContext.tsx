@@ -209,6 +209,18 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
           : (activeRefRef.current?.chapter ?? 1);
       dispatch({ type: "openTextCompare", book, chapter });
     };
+    const onOpenMultiview = (e: Event) => {
+      const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
+      // Like the guides, an absent ref takes the pane in focus.
+      const book =
+        detail && typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        detail && typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({ type: "openMultiview", book, chapter });
+    };
     const onOpenConcordance = (e: Event) => {
       const detail = (e as CustomEvent<{ book?: string }>).detail;
       // An absent book takes the pane in focus, like the guides.
@@ -252,6 +264,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
     window.addEventListener("berean:open-factbook", onOpenFactbook);
     window.addEventListener("berean:open-textcompare", onOpenTextCompare);
+    window.addEventListener("berean:open-multiview", onOpenMultiview);
     window.addEventListener("berean:open-concordance", onOpenConcordance);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:open-settings", onOpenSettings);
@@ -271,6 +284,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);
       window.removeEventListener("berean:open-factbook", onOpenFactbook);
       window.removeEventListener("berean:open-textcompare", onOpenTextCompare);
+      window.removeEventListener("berean:open-multiview", onOpenMultiview);
       window.removeEventListener("berean:open-concordance", onOpenConcordance);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:open-settings", onOpenSettings);

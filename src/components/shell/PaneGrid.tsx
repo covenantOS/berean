@@ -53,6 +53,7 @@ import ServicePane from "./ServicePane";
 import AlmanacPane from "./AlmanacPane";
 import Factbook from "./Factbook";
 import LibraryPane from "./LibraryPane";
+import MultiviewPane from "./MultiviewPane";
 import TextCompare from "./TextCompare";
 import ConcordancePane from "./ConcordancePane";
 import AtlasPane from "./AtlasPane";
@@ -177,6 +178,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "almanac") return "Almanac";
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "library") return "Library";
+  if (tab.type === "multiview") {
+    return `Multiview: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  }
   if (tab.type === "textcompare") {
     return `Compare: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
   }
@@ -652,6 +656,16 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             <div className="h-full overflow-y-auto p-4">
               <LibraryPane />
             </div>
+          ) : activeTab.type === "multiview" ? (
+            /* Like the canvas, the view owns its scrolling: the shared
+             * mode's single grid container must be the scroll element. */
+            <MultiviewPane
+              paneId={leaf.id}
+              tabId={activeTab.id}
+              book={activeTab.book}
+              chapter={activeTab.chapter}
+              texts={activeTab.texts}
+            />
           ) : activeTab.type === "textcompare" ? (
             <div className="h-full overflow-y-auto p-4">
               <TextCompare

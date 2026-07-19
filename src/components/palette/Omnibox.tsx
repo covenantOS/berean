@@ -40,6 +40,8 @@
  *                              entity.
  *   "berean:open-textcompare"  { book?, chapter? }  Text Comparison; absent
  *                              ref means the passage in focus.
+ *   "berean:open-multiview"    { book?, chapter? }  Multiview; absent ref
+ *                              means the passage in focus.
  *   "berean:open-concordance"  { book? }         Concordance; absent book
  *                              means the book in focus.
  *   "berean:search"            { q }             Plain text submitted.
@@ -451,6 +453,16 @@ export default function Omnibox() {
         sub: "Every translation against a base, word by word",
         run: () => {
           emit("berean:open-textcompare", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
+      items.push({
+        key: "ref-multiview",
+        group: "References",
+        label: `Multiview: ${parsed.label}`,
+        sub: "Translations side by side, verses aligned",
+        run: () => {
+          emit("berean:open-multiview", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
       });

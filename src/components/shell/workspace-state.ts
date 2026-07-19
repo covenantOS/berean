@@ -286,6 +286,21 @@ export interface LibraryTab {
   type: "library";
 }
 
+/**
+ * Multiview: one chapter read in several translations at once, verse-aligned
+ * columns inside a single pane with shared scrolling (the Logos multiview).
+ * The column set pins at open time (the preferred text beside the KJV) and
+ * the pane manages it in place.
+ */
+export interface MultiviewTab {
+  id: string;
+  type: "multiview";
+  book: string;
+  chapter: number;
+  /** The column translation ids, two to four, in display order. */
+  texts: string[];
+}
+
 /** Text Comparison: one chapter's translations diffed against a base text. */
 export interface TextCompareTab {
   id: string;
@@ -460,6 +475,7 @@ export type Tab =
   | ServiceTab
   | FactbookTab
   | LibraryTab
+  | MultiviewTab
   | TextCompareTab
   | ConcordanceTab
   | AtlasTab
@@ -780,6 +796,39 @@ export function textCompareTab(
   return { id: newId("tab"), type: "textcompare", book, chapter, base };
 }
 
+/** A multiview keeps between two and four columns. */
+export const MULTIVIEW_TEXTS_MIN = 2;
+export const MULTIVIEW_TEXTS_MAX = 4;
+
+/** The default column pair: the reader's preferred text beside the KJV. */
+function defaultMultiviewTexts(): string[] {
+  const preferred = preferredTranslation();
+  return preferred ? [preferred, COMPARE_BASE_DEFAULT] : [COMPARE_BASE_DEFAULT, "web"];
+}
+
+/** A column set holds water at two to four valid, distinct translation ids. */
+function sanitizeMultiviewTexts(raw: unknown): string[] | null {
+  if (!Array.isArray(raw)) return null;
+  const out: string[] = [];
+  for (const t of raw) {
+    if (typeof t !== "string") continue;
+    const id = t.trim().toLowerCase();
+    if (!/^[a-z0-9-]{2,12}$/.test(id) || out.includes(id)) continue;
+    out.push(id);
+  }
+  return out.length >= MULTIVIEW_TEXTS_MIN && out.length <= MULTIVIEW_TEXTS_MAX ? out : null;
+}
+
+export function multiviewTab(book = "genesis", chapter = 1, texts?: string[]): MultiviewTab {
+  return {
+    id: newId("tab"),
+    type: "multiview",
+    book,
+    chapter,
+    texts: texts ?? defaultMultiviewTexts(),
+  };
+}
+
 export function concordanceTab(book = "genesis"): ConcordanceTab {
   return { id: newId("tab"), type: "concordance", book };
 }
@@ -1081,6 +1130,9 @@ export type WorkspaceAction =
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
+  | { type: "openMultiview"; book: string; chapter: number; paneId?: string }
+  | { type: "setMultiviewRef"; paneId: string; tabId: string; book: string; chapter: number }
+  | { type: "setMultiviewTexts"; paneId: string; tabId: string; texts: string[] }
   | { type: "openConcordance"; book: string; paneId?: string }
   | { type: "openAtlas"; place?: string; title?: string; paneId?: string }
   | { type: "openTimeline"; event?: string; title?: string; paneId?: string }
@@ -1945,6 +1997,71 @@ export function workspaceReducer(
       };
     }
 
+    case "openMultiview": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the view pins its passage at open time; the pane moves
+      // chapter to chapter in place after that.
+      const tab = multiviewTab(book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "setMultiviewRef": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "multiview") return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      if (tab.book === book.slug && tab.chapter === chapter) return state;
+      // In place, one pane only, like the concordance's book swap: a chapter
+      // turn never dispatches navigation, so link sets stay out of it.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "multiview"
+              ? { ...t, book: book.slug, chapter }
+              : t
+          ),
+        })),
+      };
+    }
+
+    case "setMultiviewTexts": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "multiview") return state;
+      const texts = sanitizeMultiviewTexts(action.texts);
+      if (!texts) return state;
+      if (texts.length === tab.texts.length && texts.every((t, i) => t === tab.texts[i])) {
+        return state;
+      }
+      // In place, one pane only, like the comparison's base swap.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) =>
+            t.id === action.tabId && t.type === "multiview" ? { ...t, texts } : t
+          ),
+        })),
+      };
+    }
+
     case "openConcordance": {
       const book = getBook(action.book);
       if (!book) return state;
@@ -2789,6 +2906,19 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? t.base.toLowerCase()
             : COMPARE_BASE_DEFAULT;
         tabs.push({ id: t.id, type: "textcompare", book: book.slug, chapter, base });
+        continue;
+      }
+      if (t.type === "multiview" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        // A malformed column set reads as the default pair rather than
+        // failing the load, the way a reader's missing text step does.
+        const texts = sanitizeMultiviewTexts(t.texts) ?? defaultMultiviewTexts();
+        tabs.push({ id: t.id, type: "multiview", book: book.slug, chapter, texts });
         continue;
       }
       if (t.type === "concordance" && typeof t.id === "string" && typeof t.book === "string") {

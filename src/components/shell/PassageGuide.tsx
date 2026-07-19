@@ -63,6 +63,14 @@ interface GuideWord {
   gloss: string | null;
 }
 
+interface GuideCompareRow {
+  verse: number;
+  /** The abbreviations of the texts that differ from the base at this verse. */
+  translations: string[];
+  /** The word-level differences counted across those texts. */
+  words: number;
+}
+
 interface GuidePayload {
   book: string;
   bookName: string;
@@ -75,6 +83,8 @@ interface GuidePayload {
   topics: GuideTopic[];
   timeline: GuideTimelineEvent[];
   notableWords: GuideWord[];
+  /** Null when the base or a second text is missing, or every text agrees. */
+  compareVersions: { base: string; rows: GuideCompareRow[] } | null;
 }
 
 type LoadState =
@@ -388,6 +398,36 @@ export default function PassageGuide({
                 {w.xlit && <span className="text-xs italic text-muted">{w.xlit}</span>}
                 <span className="min-w-0 flex-1 truncate text-xs text-muted">{w.gloss}</span>
                 <span className="shrink-0 text-[0.68rem] text-muted">×{w.count}</span>
+              </li>
+            ))}
+          </ul>
+        </GuideSection>
+      ) : null,
+    compareVersions:
+      g.compareVersions && g.compareVersions.rows.length > 0 ? (
+        <GuideSection
+          title="Compare Versions"
+          hint={`word-level differences from the ${g.compareVersions.base}, widest first`}
+        >
+          <ul className="space-y-1.5">
+            {g.compareVersions.rows.map((r) => (
+              <li key={r.verse} className="flex items-baseline gap-2">
+                <button
+                  type="button"
+                  title={`Open verse ${r.verse} in the Text Comparison`}
+                  onClick={() =>
+                    dispatch({ type: "openTextCompare", book: g.book, chapter: g.chapter })
+                  }
+                  className="shrink-0 text-xs font-semibold text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  Verse {r.verse}
+                </button>
+                <span className="min-w-0 flex-1 truncate text-xs text-muted">
+                  {r.translations.join(", ")} {r.translations.length === 1 ? "differs" : "differ"}
+                </span>
+                <span className="shrink-0 text-[0.68rem] text-muted">
+                  {r.words} {r.words === 1 ? "word" : "words"}
+                </span>
               </li>
             ))}
           </ul>

@@ -157,7 +157,7 @@ type ReaderMenu =
   | { kind: "selection"; x: number; y: number; verse: number; text: string };
 
 /** One translation on the shelf, as /api/translations reports it. */
-interface ShelfTranslation {
+export interface ShelfTranslation {
   id: string;
   abbrev: string;
   name: string;
@@ -167,7 +167,7 @@ interface ShelfTranslation {
 let shelfPromise: Promise<ShelfTranslation[]> | null = null;
 
 /** The furnished translations, fetched once and shared by every reader pane. */
-function translationShelf(): Promise<ShelfTranslation[]> {
+export function translationShelf(): Promise<ShelfTranslation[]> {
   shelfPromise ??= fetch("/api/translations")
     .then((res) => (res.ok ? res.json() : { translations: [] }))
     .then((data: { translations: ShelfTranslation[] }) => data.translations)
