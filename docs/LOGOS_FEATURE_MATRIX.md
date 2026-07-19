@@ -95,13 +95,13 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 ## 4. Factbook and Datasets
 
-- [ ] [DATA] Factbook tool: 20,000+ entry pages aggregating datasets, media, and library hits, with lenses (biblical, theological, library) and one-click AI summaries for subscribers.
-- [ ] [DATA] Factbook entry types: biblical people, places, things, events, books of the Bible, topics, theological topics, church history themes, counseling themes, lemmas, manuscripts, ancient authors and works.
-- [ ] [DATA] Factbook sections: Key Article, Passages, Events, Reported Speech, Commentaries, Dictionaries, Media, Factbook Tags, Questions to Ask, Dig Deeper, See Also, Referred to As.
-- [ ] [DATA] Factbook Tags: dataset anchors embedded in books that jump from any mention to the entry; searchable and visible as a visual filter.
+- [x] [DATA] Factbook tool: 20,000+ entry pages aggregating datasets, media, and library hits, with lenses (biblical, theological, library) and one-click AI summaries for subscribers. (The Factbook ships as a pinned workspace tab over the 4,247 TIPNR entries, aggregating identity prose, family relationships, the atlas locator, the timeline join, and every verse reference; the entry count is TIPNR's, and lenses, media, library hits, and AI summaries do not ship.)
+- [x] [DATA] Factbook entry types: biblical people, places, things, events, books of the Bible, topics, theological topics, church history themes, counseling themes, lemmas, manuscripts, ancient authors and works. (Biblical people, places, and things ship; the remaining entry types do not.)
+- [x] [DATA] Factbook sections: Key Article, Passages, Events, Reported Speech, Commentaries, Dictionaries, Media, Factbook Tags, Questions to Ask, Dig Deeper, See Also, Referred to As. (Key Article as the dataset's own prose, Passages as Every Reference, Events as On the Timeline, See Also as the Family lists, and Referred to As as the alias line ship; the remaining sections have no shipped dataset behind them.)
+- [x] [DATA] Factbook Tags: dataset anchors embedded in books that jump from any mention to the entry; searchable and visible as a visual filter. (TIPNR anchors ride the reader apparatus and the verse context menu and open the Factbook entry; the omnibox searches them. A visual filter over the text does not ship.)
 - [ ] [DATA] Bible Browser: faceted browsing of the whole Bible by people, places, things, events, genres, and speakers (online).
-- [ ] [DATA] Biblical People, Places, and Things datasets: referent tagging across the canon, including family trees and relationship diagrams.
-- [ ] [DATA] Biblical Events database: dated, linked event records powering Factbook, Timeline, Atlas, and the Event Navigator.
+- [x] [DATA] Biblical People, Places, and Things datasets: referent tagging across the canon, including family trees and relationship diagrams. (TIPNR referent tagging across the canon and the family relationship lists ship, surfaced in the Factbook; tree and diagram visualizations do not.)
+- [x] [DATA] Biblical Events database: dated, linked event records powering Factbook, Timeline, Atlas, and the Event Navigator. (Dated event records linked to TIPNR entities power the Timeline and the Factbook's On the Timeline section; Atlas and Event Navigator joins do not ship.)
 - [ ] [DATA] Reported Speech, Speakers, and Addressees datasets: who speaks to whom, verse by verse, including Deuterocanon.
 - [ ] [DATA] Speaking to God dataset: every prayer address and its response.
 - [ ] [DATA] Miracles, Parables, and Prophecies datasets: tagged instances with agent, means, and fulfillment links.

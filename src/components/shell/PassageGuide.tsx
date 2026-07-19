@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -76,7 +75,7 @@ type LoadState =
  * The Passage Guide pane: the chapter's datasets composed into one report,
  * pinned at open time. Every section deep-links back into the workspace: a
  * commentary's verses and a cross-reference open the passage, a person or
- * place opens its entity page, a notable word opens the lexicon. Sections
+ * place opens its factbook, a notable word opens the lexicon. Sections
  * with nothing to say stay out of the report.
  */
 export default function PassageGuide({ book, chapter }: { book: string; chapter: number }) {
@@ -111,12 +110,14 @@ export default function PassageGuide({ book, chapter }: { book: string; chapter:
 
   const mentionRow = (m: GuideMention) => (
     <li key={m.id}>
-      <Link
-        href={`/library/entity/${m.id}`}
+      <button
+        type="button"
+        title={`Open the factbook for ${m.name}`}
+        onClick={() => dispatch({ type: "openFactbook", entityId: m.id, title: m.name })}
         className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         {m.name}
-      </Link>{" "}
+      </button>{" "}
       <span className="text-xs text-muted">
         {m.type.toLowerCase()}
         {m.brief ? ` · ${m.brief}` : ""} · {m.verses} {m.verses === 1 ? "verse" : "verses"}

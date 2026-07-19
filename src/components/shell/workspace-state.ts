@@ -125,6 +125,15 @@ export interface ListDocTab {
   title: string;
 }
 
+/** The Factbook: one TIPNR entity's report, pinned to its entity id. */
+export interface FactbookTab {
+  id: string;
+  type: "factbook";
+  entityId: string;
+  /** The entity's name, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** Tabs that mirror a dock module; they can travel back to the tray. */
 export type ToolTab = CommentaryTab | LexiconTab | CrossRefsTab;
 
@@ -136,7 +145,8 @@ export type Tab =
   | WordStudyTab
   | ExegeticalTab
   | TopicGuideTab
-  | ListDocTab;
+  | ListDocTab
+  | FactbookTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -268,6 +278,13 @@ export function topicGuideTab(
 
 export function listDocTab(docId: string, title: string): ListDocTab {
   return { id: newId("tab"), type: "listdoc", docId, title };
+}
+
+/** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
+export const ENTITY_ID_PATTERN = /^[A-Za-z0-9]{5,6}$/;
+
+export function factbookTab(entityId: string, title: string): FactbookTab {
+  return { id: newId("tab"), type: "factbook", entityId, title };
 }
 
 /** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
@@ -403,6 +420,7 @@ export type WorkspaceAction =
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
+  | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
   | { type: "selectVerse"; book: string; chapter: number; verse: number }
   | { type: "selectWord"; word: Omit<WordSelection, "kind"> }
   | { type: "clearSelection" }
@@ -617,6 +635,26 @@ export function workspaceReducer(
       // Like a guide, the list pins its document at open time; edits land in
       // the collection and the pane reads them live.
       const tab = listDocTab(docId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openFactbook": {
+      const entityId = action.entityId.trim();
+      if (!ENTITY_ID_PATTERN.test(entityId)) return state;
+      const title = action.title.trim() || entityId;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like a guide, the report pins its entity at open time.
+      const tab = factbookTab(entityId, title);
       return {
         ...state,
         activePaneId: paneId,
@@ -1095,6 +1133,13 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : "Untitled list";
         tabs.push({ id: t.id, type: "listdoc", docId: t.docId, title });
+        continue;
+      }
+      if (t.type === "factbook" && typeof t.id === "string") {
+        if (typeof t.entityId !== "string" || !ENTITY_ID_PATTERN.test(t.entityId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : t.entityId;
+        tabs.push({ id: t.id, type: "factbook", entityId: t.entityId, title });
         continue;
       }
       if (t.type !== "reader" || typeof t.id !== "string" || typeof t.book !== "string") continue;

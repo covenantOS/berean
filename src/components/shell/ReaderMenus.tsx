@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, setHighlight, type HighlightColor } from "@/lib/highlights";
@@ -202,17 +201,21 @@ export function VerseContextMenu({
           </p>
         ) : (
           mentions.map((m) => (
-            <Link
+            <button
               key={m.id}
-              href={`/library/entity/${m.id}`}
+              type="button"
               title={m.brief || m.type}
-              className="flex items-baseline gap-2 px-3 py-1 text-[0.72rem] text-sapphire no-underline hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              onClick={() => {
+                dispatch({ type: "openFactbook", entityId: m.id, title: m.name, paneId });
+                onClose();
+              }}
+              className="flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.72rem] text-sapphire hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               <span className="truncate">{m.name}</span>
               <span className="ml-auto pl-3 text-[0.62rem] text-muted">
                 {m.kind === "other" ? m.type : m.kind}
               </span>
-            </Link>
+            </button>
           ))
         )}
       </div>

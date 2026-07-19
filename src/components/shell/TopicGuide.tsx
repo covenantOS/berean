@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
@@ -61,9 +60,9 @@ function capitalize(title: string): string {
  * The Topic Guide pane: one entry of Nave's or Torrey's as a report, pinned
  * at open time. Key Passages walks the entry's section tree with verse
  * chips that open the reader; Related Topics opens the entry's
- * cross-references as new topic guides; People and Places links out to the
- * entity pages the title exactly matches. Sections with nothing to say
- * stay out of the report.
+ * cross-references as new topic guides; People and Places opens the
+ * factbook for the entities the title exactly matches. Sections with
+ * nothing to say stay out of the report.
  */
 export default function TopicGuide({
   work,
@@ -199,12 +198,14 @@ export default function TopicGuide({
           <ul className="space-y-1.5">
             {r.entities.map((e) => (
               <li key={e.id}>
-                <Link
-                  href={`/library/entity/${e.id}`}
+                <button
+                  type="button"
+                  title={`Open the factbook for ${e.name}`}
+                  onClick={() => dispatch({ type: "openFactbook", entityId: e.id, title: e.name })}
                   className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   {e.name}
-                </Link>{" "}
+                </button>{" "}
                 <span className="text-xs text-muted">
                   {e.type.toLowerCase()}
                   {e.brief ? ` · ${e.brief}` : ""}

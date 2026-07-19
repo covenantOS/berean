@@ -32,13 +32,15 @@
  *                              ref means the passage in focus.
  *   "berean:open-topicguide"   { work, id, title }  Topic Guide for a Nave's
  *                              or Torrey's entry.
+ *   "berean:open-factbook"     { id, name }         Factbook for a TIPNR
+ *                              entity.
  *   "berean:search"            { q }             Plain text submitted.
  *   "berean:apply-preset"      { preset }        Workspace preset placeholder,
  *                              currently only { preset: "reading" }.
  *   "berean:toggle-right-dock" {}                Ask the shell to flip the dock.
- * Topic rows open the Topic Guide as a pane tab; entity rows navigate with
- * the router to the existing /library/entity/[id] pages (old routes stay
- * reachable until Phase 1 of the rebuild lands).
+ * Topic rows open the Topic Guide as a pane tab; entity rows open the
+ * Factbook as a pane tab (the old /library/entity/[id] pages stay
+ * reachable for deep links).
  *
  * Data
  * ----
@@ -99,7 +101,7 @@ type Recent =
   | { kind: "ref"; label: string; detail: OpenRefDetail }
   | { kind: "lexicon"; label: string; detail: { id: string } }
   | { kind: "search"; label: string; detail: { q: string } }
-  | { kind: "entity"; label: string; href: string }
+  | { kind: "entity"; label: string; detail: { id: string; name: string } }
   | { kind: "topic"; label: string; href: string };
 
 type GroupName = "References" | "Commands" | "People and places" | "Topics" | "Text hits" | "Recent";
@@ -304,7 +306,12 @@ export default function Omnibox() {
     if (r.kind === "ref") emit("berean:open-ref", r.detail);
     else if (r.kind === "lexicon") emit("berean:open-lexicon", r.detail);
     else if (r.kind === "search") emit("berean:search", r.detail);
-    else router.push(r.href);
+    else if (r.kind === "entity") {
+      // Recents written before the Factbook tab carried an href, not a
+      // detail; those rows fall through to the router like a topic.
+      if ("detail" in r && r.detail) emit("berean:open-factbook", r.detail);
+      else if ("href" in r && typeof r.href === "string") router.push(r.href);
+    } else router.push(r.href);
     pushRecent(r);
     closePalette();
   }
@@ -412,9 +419,8 @@ export default function Omnibox() {
             e.brief ? ` · ${e.brief}` : ""
           } · ${e.refs.toLocaleString()} ${e.refs === 1 ? "reference" : "references"}`,
           run: () => {
-            const href = `/library/entity/${e.id}`;
-            pushRecent({ kind: "entity", label: e.name, href });
-            router.push(href);
+            pushRecent({ kind: "entity", label: e.name, detail: { id: e.id, name: e.name } });
+            emit("berean:open-factbook", { id: e.id, name: e.name });
             closePalette();
           },
         });

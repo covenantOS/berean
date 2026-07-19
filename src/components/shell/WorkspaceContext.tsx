@@ -140,6 +140,15 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         title: typeof detail.title === "string" ? detail.title : detail.id.trim(),
       });
     };
+    const onOpenFactbook = (e: Event) => {
+      const detail = (e as CustomEvent<{ id?: string; name?: string }>).detail;
+      if (!detail || typeof detail.id !== "string" || !detail.id.trim()) return;
+      dispatch({
+        type: "openFactbook",
+        entityId: detail.id.trim(),
+        title: typeof detail.name === "string" ? detail.name : detail.id.trim(),
+      });
+    };
     const onToggleDock = () => dispatch({ type: "toggleDock" });
     const onApplyPreset = (e: Event) => {
       const preset = (e as CustomEvent<{ preset?: string }>).detail?.preset;
@@ -159,6 +168,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-wordstudy", onOpenWordStudy);
     window.addEventListener("berean:open-exegetical", onOpenExegetical);
     window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
+    window.addEventListener("berean:open-factbook", onOpenFactbook);
     window.addEventListener("berean:toggle-right-dock", onToggleDock);
     window.addEventListener("berean:apply-preset", onApplyPreset);
     window.addEventListener("keydown", onKey);
@@ -170,6 +180,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-wordstudy", onOpenWordStudy);
       window.removeEventListener("berean:open-exegetical", onOpenExegetical);
       window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);
+      window.removeEventListener("berean:open-factbook", onOpenFactbook);
       window.removeEventListener("berean:toggle-right-dock", onToggleDock);
       window.removeEventListener("berean:apply-preset", onApplyPreset);
       window.removeEventListener("keydown", onKey);
