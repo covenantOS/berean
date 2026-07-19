@@ -58,7 +58,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [DATA] Speaker and Addressee extensions: {Speaker <Person Jesus>} and {Addressee <Person Peter>} over the reported speech dataset.
 - [ ] [DATA] Datatype and label search: <Person Peter>, {Label ...}, {Section ...}, {Milestone ...} reach every dataset.
 - [ ] [SW] Search Templates: fill-in forms for common morph, clause, and dataset queries.
-- [ ] [SW] Inline Search: find box scoped to the open book with match navigation.
+- [x] [SW] Inline Search: find box scoped to the open book with match navigation. (Shipped scoped to the open chapter rather than the whole book: a Find toggle on the reader pane opens a quiet find row that searches the fetched chapter text client-side, marks every hit in violet (.find-match in src/app/globals.css, a third channel beside the highlight tints and the filter underlines), and walks the hits with prev/next, a live count, and scroll-into-view. Enter and Shift+Enter step, Escape closes and clears. The Words and Original views render their own words, so the box keeps to the plain chapter text and closes when those views take over. Whole-book scope would fetch every chapter of the book through /api/pane/chapter; left future.)
 - [ ] [SW] Docs Search (Logos 10): search tab over your own notes, sermons, clippings, and documents.
 - [ ] [SW] Specialized search tabs: Factbook Search, Maps Search, Media Search, Bookstore Search.
 - [ ] [SW] Result views: Verses, Aligned, Grid, and Analysis arrangements for Bible and morph results.
@@ -150,7 +150,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 - [ ] [SW] Dashboard (Logos 10): cards for verse of the day, reading progress, plans, workflows, and promos.
 - [ ] [SW] Docking workspace: tabs, tiles, panels, floating windows, and multi-monitor support.
 - [ ] [SW] Link sets: lettered link groups (A through E plus Follow) that scroll panels together.
-- [ ] [SW] Navigation stack: per-panel back and forward plus global History with re-runnable searches.
+- [x] [SW] Navigation stack: per-panel back and forward plus global History with re-runnable searches. (Both halves ship. Per-pane back and forward: every retarget of a pane's reader tab (omnibox, sidebar, prev/next chapter, dropped chapters, guide and search handoffs) records a stop on that pane's trail in the workspace reducer (PaneHistory in src/components/shell/workspace-state.ts), bounded at 100 stops and persisted with the session under sanitizeHistory validation; header arrows walk the trail through navigateBack/navigateForward, which retarget without recording, and link-set partners follow a back the way they follow any navigation. Global History with re-runnable searches already ships: every search enters the search rail's history (src/lib/search-history.ts) and re-runs from there. A global passage trail across panes remains future.)
 - [ ] [SW] Command box: type references, commands, or tool names to open anything.
 - [ ] [SW] New Tab panel (2025): opening a tab offers everything or reference-aware suggestions keyed to the active passage.
 - [ ] [SW] Toolbar and shortcuts: customizable toolbar, draggable shortcut targets, full keyboard map.

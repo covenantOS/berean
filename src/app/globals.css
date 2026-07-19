@@ -186,6 +186,19 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 .vf-ruby {
   box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-ruby) 80%, transparent);
 }
+/*
+ * Inline find: matches wear a violet wash, a third channel beside the
+ * highlight tint and the filter underline; the current match deepens so the
+ * walk never loses its place.
+ */
+.find-match {
+  background: color-mix(in srgb, var(--stained-violet) 14%, transparent);
+  border-radius: 2px;
+}
+.find-match.find-current {
+  background: color-mix(in srgb, var(--stained-violet) 32%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-violet) 75%, transparent);
+}
 
 .prose-verses {
   font-size: 1.22rem;

@@ -91,6 +91,13 @@ type LoadState =
   | { status: "error" }
   | { status: "ready"; data: ChapterPayload };
 
+/** One inline-find hit: a character span of a verse's text. */
+interface FindMatch {
+  verse: number;
+  start: number;
+  end: number;
+}
+
 /** The word apparatus, fetched lazily the first time a word toggle opens. */
 type Apparatus =
   | { status: "idle" }
@@ -162,6 +169,13 @@ export default function ReaderPane({
    * one verse per line. Per pane while the tab lives, like the toggles above. */
   const [textOnly, setTextOnly] = useState(false);
   const [verseLines, setVerseLines] = useState(false);
+  /* Inline find: the open chapter's text searched client-side, the matches
+   * marked in place and walked with prev/next. The box closes on a retarget. */
+  const [find, setFind] = useState<{ open: boolean; q: string; index: number }>({
+    open: false,
+    q: "",
+    index: 0,
+  });
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [notes, setNotes] = useState<MarginNote[]>([]);
   const [marks, setMarks] = useState<VerseHighlight[]>([]);
@@ -234,7 +248,14 @@ export default function ReaderPane({
     ignoreUntil.current = Date.now() + 300;
     scrollRef.current?.scrollTo({ top: 0 });
     setMenu(null);
+    setFind({ open: false, q: "", index: 0 });
   }, [book, chapter]);
+
+  // Words and the original text render their own words; find keeps to the
+  // plain chapter text, so it closes when those views take over.
+  useEffect(() => {
+    if (find.open && (wordsOn || view !== "text")) setFind({ open: false, q: "", index: 0 });
+  }, [find.open, wordsOn, view]);
 
   /*
    * The selection toolbar. A non-collapsed text selection anchored inside a
@@ -415,6 +436,83 @@ export default function ReaderPane({
     return m;
   }, [filterSets, book, chapter]);
 
+  /* Inline find. Every case-insensitive hit of the query in the chapter's
+   * text, in document order; the count and the prev/next walk read this. */
+  const findMatches = useMemo<FindMatch[]>(() => {
+    const needle = find.q.trim().toLowerCase();
+    if (!find.open || !needle || !ready) return [];
+    const out: FindMatch[] = [];
+    for (const v of ready.verses) {
+      const hay = v.text.toLowerCase();
+      let at = hay.indexOf(needle);
+      while (at !== -1) {
+        out.push({ verse: v.verse, start: at, end: at + needle.length });
+        at = hay.indexOf(needle, at + needle.length);
+      }
+    }
+    return out;
+  }, [find.open, find.q, ready]);
+
+  /* Match spans per verse, each carrying its number in document order so
+   * the current match can wear its own class and be scrolled to. */
+  const findByVerse = useMemo(() => {
+    const m = new Map<number, { start: number; end: number; gi: number }[]>();
+    findMatches.forEach((match, gi) => {
+      const arr = m.get(match.verse) ?? [];
+      arr.push({ start: match.start, end: match.end, gi });
+      m.set(match.verse, arr);
+    });
+    return m;
+  }, [findMatches]);
+
+  const findIndex = findMatches.length > 0 ? Math.min(find.index, findMatches.length - 1) : 0;
+
+  // The current match scrolls into view inside the pane, never the page.
+  useEffect(() => {
+    if (!find.open || findMatches.length === 0) return;
+    const container = scrollRef.current;
+    const el = container?.querySelector(`[data-find="${findIndex}"]`);
+    if (!(container && el instanceof HTMLElement)) return;
+    const cRect = container.getBoundingClientRect();
+    const eRect = el.getBoundingClientRect();
+    container.scrollTop += eRect.top - cRect.top - cRect.height / 2;
+  }, [find.open, findIndex, findMatches]);
+
+  const stepFind = (dir: -1 | 1) => {
+    if (findMatches.length === 0) return;
+    setFind((f) => ({ ...f, index: (findIndex + dir + findMatches.length) % findMatches.length }));
+  };
+
+  const closeFind = () => setFind({ open: false, q: "", index: 0 });
+
+  /** The verse text with its find matches marked; untouched when find is off. */
+  const markFind = (verse: number, text: string): ReactNode => {
+    const spans = findByVerse.get(verse);
+    if (!spans || spans.length === 0) return text;
+    const out: ReactNode[] = [];
+    let pos = 0;
+    for (const s of spans) {
+      if (s.start > pos) out.push(text.slice(pos, s.start));
+      out.push(
+        <mark
+          key={s.gi}
+          data-find={s.gi}
+          className={s.gi === findIndex ? "find-match find-current" : "find-match"}
+        >
+          {text.slice(s.start, s.end)}
+        </mark>
+      );
+      pos = s.end;
+    }
+    if (pos < text.length) out.push(text.slice(pos));
+    return out;
+  };
+
+  // The pane's trail: back and forward in the header walk it.
+  const trail = paneLeaf?.history;
+  const canBack = (trail?.index ?? -1) > 0;
+  const canForward = trail !== undefined && trail.index < trail.entries.length - 1;
+
   /** A tap selects; a drag selection of text is left alone. */
   const tapVerse = (verse: number) => {
     const s = window.getSelection();
@@ -533,7 +631,7 @@ export default function ReaderPane({
       onContextMenu={openVerseMenu(v.verse)}
     >
       {!textOnly && <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />}
-      {v.text}{" "}
+      {markFind(v.verse, v.text)}{" "}
     </span>
   );
 
@@ -626,7 +724,7 @@ export default function ReaderPane({
                 {v.label}{" "}
               </span>
             )}
-            {v.text}
+            {markFind(v.verse, v.text)}
           </div>
           {selVerse === v.verse ? stripNode : null}
         </Fragment>
@@ -716,6 +814,26 @@ export default function ReaderPane({
         <div className="flex flex-1 items-center gap-0.5">
           <button
             type="button"
+            title="Back to the passage this pane showed"
+            aria-label="Back"
+            disabled={!canBack}
+            onClick={() => dispatch({ type: "navigateBack", paneId })}
+            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            title="Forward to the passage this pane came back from"
+            aria-label="Forward"
+            disabled={!canForward}
+            onClick={() => dispatch({ type: "navigateForward", paneId })}
+            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            →
+          </button>
+          <button
+            type="button"
             title="Previous chapter"
             aria-label="Previous chapter"
             disabled={!adjacentChapter(book, chapter, -1)}
@@ -760,6 +878,17 @@ export default function ReaderPane({
           )}
         </h2>
         <div className="flex flex-1 items-center justify-end gap-1">
+          {ready && view === "text" && !wordsOn && (
+            <button
+              type="button"
+              aria-pressed={find.open}
+              title="Find in this chapter"
+              onClick={() => setFind((f) => ({ open: !f.open, q: "", index: 0 }))}
+              className={toggleBtn(find.open)}
+            >
+              Find
+            </button>
+          )}
           <button
             type="button"
             aria-pressed={insightsOn}
@@ -862,6 +991,59 @@ export default function ReaderPane({
           )}
         </div>
       </header>
+      {find.open && (
+        <div className="flex h-8 shrink-0 items-center gap-1.5 border-b border-rule px-4">
+          <input
+            autoFocus
+            type="text"
+            value={find.q}
+            onChange={(e) => setFind({ open: true, q: e.target.value, index: 0 })}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") stepFind(e.shiftKey ? -1 : 1);
+              if (e.key === "Escape") closeFind();
+            }}
+            placeholder="Find in this chapter"
+            aria-label="Find in this chapter"
+            className="w-44 border border-rule bg-transparent px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
+          />
+          <span className="min-w-14 text-[0.65rem] text-muted">
+            {find.q.trim()
+              ? findMatches.length > 0
+                ? `${findIndex + 1} of ${findMatches.length}`
+                : "No matches"
+              : ""}
+          </span>
+          <button
+            type="button"
+            title="Previous match"
+            aria-label="Previous match"
+            disabled={findMatches.length === 0}
+            onClick={() => stepFind(-1)}
+            className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            title="Next match"
+            aria-label="Next match"
+            disabled={findMatches.length === 0}
+            onClick={() => stepFind(1)}
+            className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            title="Close find"
+            aria-label="Close find"
+            onClick={closeFind}
+            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 overflow-y-auto">
         {insightsOn && <InsightsRail paneId={paneId} book={book} chapter={chapter} />}
         {body}

@@ -178,6 +178,26 @@ export type DropTarget =
   /** On an edge zone: the pane splits and the module opens as the new leaf. */
   | { kind: "edge"; paneId: string; edge: DropEdge };
 
+/** One stop on a pane's navigation trail: the passage a reader tab showed. */
+export interface NavEntry {
+  book: string;
+  chapter: number;
+  /** Translation id when the tab was reading a non-default text. */
+  translation?: string;
+}
+
+/**
+ * A pane's back/forward trail. Entries sit in visit order with the index on
+ * the stop the pane is showing; navigating past a walked-back position drops
+ * the forward stops, the way a browser does. Bounded at HISTORY_LIMIT.
+ */
+export interface PaneHistory {
+  entries: NavEntry[];
+  index: number;
+}
+
+export const HISTORY_LIMIT = 100;
+
 export interface LeafNode {
   kind: "leaf";
   id: string;
@@ -185,6 +205,8 @@ export interface LeafNode {
   activeTabId: string | null;
   /** The pane's link set; persisted with the session. */
   linkSet: LinkSet | null;
+  /** The pane's navigation trail; persisted with the session. */
+  history: PaneHistory;
 }
 
 export interface SplitNode {
@@ -347,6 +369,7 @@ export function leafNode(tabs: Tab[] = []): LeafNode {
     tabs,
     activeTabId: tabs.length > 0 ? tabs[tabs.length - 1].id : null,
     linkSet: null,
+    history: { entries: [], index: -1 },
   };
 }
 
@@ -358,6 +381,7 @@ export const DEFAULT_STATE: WorkspaceState = {
     tabs: [{ id: "tab-default", type: "reader", book: "genesis", chapter: 1 }],
     activeTabId: "tab-default",
     linkSet: null,
+    history: { entries: [], index: -1 },
   },
   activePaneId: "pane-default",
   railMode: "read",
@@ -536,6 +560,8 @@ export type WorkspaceAction =
   | { type: "activatePane"; paneId: string }
   | { type: "activateTab"; paneId: string; tabId: string }
   | { type: "openRef"; book: string; chapter: number; paneId?: string }
+  | { type: "navigateBack"; paneId: string }
+  | { type: "navigateForward"; paneId: string }
   | { type: "openSearch"; q: string; paneId?: string }
   | { type: "openLexicon"; id: string }
   | { type: "openGuide"; book: string; chapter: number; paneId?: string }
@@ -579,30 +605,130 @@ function openRefInLeaf(leaf: LeafNode, book: string, chapter: number): LeafNode 
   return { ...leaf, tabs: [...leaf.tabs, tab], activeTabId: tab.id };
 }
 
+/** The stop a pane's active reader tab is showing; null for other tab kinds. */
+function currentEntry(leaf: LeafNode): NavEntry | null {
+  const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
+  if (!active || active.type !== "reader") return null;
+  return {
+    book: active.book,
+    chapter: active.chapter,
+    ...(active.translation ? { translation: active.translation } : {}),
+  };
+}
+
+function sameEntry(a: NavEntry, b: NavEntry): boolean {
+  return a.book === b.book && a.chapter === b.chapter && a.translation === b.translation;
+}
+
+/**
+ * Pushes a navigation onto the pane's trail: the stop being left goes on
+ * first when the trail has lost track of it (a tab switch, a translation
+ * swap), then the new stop, with any walked-past forward stops dropped.
+ * A navigation to the stop already showing records nothing.
+ */
+function recordNav(leaf: LeafNode, next: NavEntry): LeafNode {
+  const current = currentEntry(leaf);
+  if (!current || sameEntry(current, next)) return leaf;
+  const entries = leaf.history.entries.slice(0, leaf.history.index + 1);
+  const last = entries[entries.length - 1];
+  if (!last || !sameEntry(last, current)) entries.push(current);
+  entries.push(next);
+  const trimmed = entries.slice(-HISTORY_LIMIT);
+  return { ...leaf, history: { entries: trimmed, index: trimmed.length - 1 } };
+}
+
+/** A retarget that enters the trail; a fresh tab opened beside records nothing. */
+function recordRetarget(leaf: LeafNode, book: string, chapter: number): LeafNode {
+  const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
+  if (active && active.type === "reader") {
+    const next: NavEntry = {
+      book,
+      chapter,
+      ...(active.translation ? { translation: active.translation } : {}),
+    };
+    return openRefInLeaf(recordNav(leaf, next), book, chapter);
+  }
+  return openRefInLeaf(leaf, book, chapter);
+}
+
+/** Puts a trail stop back on the tab exactly, translation included. */
+function applyEntryInLeaf(leaf: LeafNode, entry: NavEntry): LeafNode {
+  const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
+  if (!active || active.type !== "reader") return leaf;
+  return {
+    ...leaf,
+    tabs: leaf.tabs.map((t) => {
+      if (t.id !== active.id || t.type !== "reader") return t;
+      const next: ReaderTab = { ...t, book: entry.book, chapter: entry.chapter };
+      if (entry.translation) next.translation = entry.translation;
+      else delete next.translation;
+      return next;
+    }),
+  };
+}
+
 /**
  * Retargets a pane to a reference. When the pane wears a link letter, every
  * other pane in the same set whose active tab is a reader tab follows; tool
  * tabs and search tabs are untouched. This is the link-set half of every
  * navigation, including prev/next chapter inside a ReaderPane (it dispatches
- * openRef) and a chapter dropped on a pane's body.
+ * openRef) and a chapter dropped on a pane's body. Every pane that moves
+ * records the stop on its own trail. Back and forward pass a targetEntry:
+ * the pane in focus applies the stop exactly and records nothing, while its
+ * link-set partners follow and record as with any other navigation.
  */
-function retargetLinked(root: PaneNode, paneId: string, book: string, chapter: number): PaneNode {
+function retargetLinked(
+  root: PaneNode,
+  paneId: string,
+  book: string,
+  chapter: number,
+  targetEntry?: NavEntry
+): PaneNode {
   const target = findLeaf(root, paneId);
   if (!target) return root;
-  const withTarget = updateLeaf(root, paneId, (l) => openRefInLeaf(l, book, chapter));
+  const withTarget = updateLeaf(root, paneId, (l) =>
+    targetEntry ? applyEntryInLeaf(l, targetEntry) : recordRetarget(l, book, chapter)
+  );
   if (!target.linkSet) return withTarget;
   const set = target.linkSet;
   const follow = (node: PaneNode): PaneNode => {
     if (node.kind === "leaf") {
       if (node.id === paneId || node.linkSet !== set) return node;
       const active = node.tabs.find((t) => t.id === node.activeTabId);
-      return active && active.type === "reader" ? openRefInLeaf(node, book, chapter) : node;
+      return active && active.type === "reader" ? recordRetarget(node, book, chapter) : node;
     }
     const a = follow(node.children[0]);
     const b = a === node.children[0] ? follow(node.children[1]) : node.children[1];
     return a === node.children[0] && b === node.children[1] ? node : { ...node, children: [a, b] };
   };
   return follow(withTarget);
+}
+
+/**
+ * Walks a pane's trail. The retarget goes through retargetLinked, so a
+ * linked pane's partners follow a back the way they follow any navigation.
+ * Out-of-trail walks and non-reader panes change nothing.
+ */
+function navigateHistory(state: WorkspaceState, paneId: string, dir: -1 | 1): WorkspaceState {
+  const leaf = findLeaf(state.root, paneId);
+  if (!leaf) return state;
+  const active = leaf.tabs.find((t) => t.id === leaf.activeTabId);
+  if (!active || active.type !== "reader") return state;
+  const nextIndex = leaf.history.index + dir;
+  const entry = leaf.history.entries[nextIndex];
+  if (!entry) return state;
+  const book = getBook(entry.book);
+  if (!book) return state;
+  const target = { book: book.slug, chapter: entry.chapter, ...(entry.translation ? { translation: entry.translation } : {}) };
+  const retargeted = retargetLinked(state.root, paneId, target.book, target.chapter, target);
+  return {
+    ...state,
+    selection: null,
+    root: updateLeaf(retargeted, paneId, (l) => ({
+      ...l,
+      history: { entries: l.history.entries, index: nextIndex },
+    })),
+  };
 }
 
 export function workspaceReducer(
@@ -651,6 +777,12 @@ export function workspaceReducer(
         root: retargetLinked(state.root, paneId, book.slug, chapter),
       };
     }
+
+    case "navigateBack":
+      return navigateHistory(state, action.paneId, -1);
+
+    case "navigateForward":
+      return navigateHistory(state, action.paneId, 1);
 
     case "openSearch": {
       const q = action.q.trim();
@@ -1388,7 +1520,7 @@ function sanitizeNode(node: unknown): PaneNode | null {
     const linkSet: LinkSet | null = LINK_SETS.includes(n.linkSet as LinkSet)
       ? (n.linkSet as LinkSet)
       : null;
-    return { kind: "leaf", id: n.id, tabs, activeTabId, linkSet };
+    return { kind: "leaf", id: n.id, tabs, activeTabId, linkSet, history: sanitizeHistory(n.history) };
   }
   if (
     n.kind === "split" &&
@@ -1404,6 +1536,40 @@ function sanitizeNode(node: unknown): PaneNode | null {
     return { kind: "split", id: n.id, direction: n.direction, ratio, children: [a, b] };
   }
   return null;
+}
+
+/**
+ * A pane's persisted trail. Older sessions predate pane history; an absent
+ * or malformed trail reads as empty rather than failing the load, and each
+ * stop is validated the way a reader tab is.
+ */
+function sanitizeHistory(raw: unknown): PaneHistory {
+  if (typeof raw !== "object" || raw === null) return { entries: [], index: -1 };
+  const h = raw as Record<string, unknown>;
+  if (!Array.isArray(h.entries)) return { entries: [], index: -1 };
+  const entries: NavEntry[] = [];
+  for (const e of h.entries) {
+    if (typeof e !== "object" || e === null) continue;
+    const r = e as Record<string, unknown>;
+    if (typeof r.book !== "string") continue;
+    const book = getBook(r.book);
+    if (!book) continue;
+    const chapter =
+      typeof r.chapter === "number" && Number.isInteger(r.chapter)
+        ? Math.min(Math.max(1, r.chapter), book.chapters)
+        : 1;
+    const translation =
+      typeof r.translation === "string" && /^[a-z0-9-]{2,12}$/i.test(r.translation)
+        ? r.translation.toLowerCase()
+        : undefined;
+    entries.push({ book: book.slug, chapter, ...(translation ? { translation } : {}) });
+  }
+  const trimmed = entries.slice(-HISTORY_LIMIT);
+  const index =
+    typeof h.index === "number" && Number.isInteger(h.index)
+      ? Math.min(Math.max(-1, h.index), trimmed.length - 1)
+      : trimmed.length - 1;
+  return { entries: trimmed, index };
 }
 
 /** The persisted tray order; the default when absent (older sessions) or malformed. */
