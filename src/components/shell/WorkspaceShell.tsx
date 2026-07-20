@@ -51,10 +51,10 @@ function ShellFrame() {
 
   return (
     <div className="workspace-shell flex h-dvh flex-col overflow-hidden bg-paper text-ink">
-      <div className="flex min-h-0 flex-1">
+      <div className="ws-main flex min-h-0 flex-1">
         <IconRail />
         {state.sidebarOpen && <Sidebar />}
-        <div className="min-w-0 flex-1">
+        <div className="ws-grid min-w-0 flex-1">
           <PaneGrid />
         </div>
         <RightDock />

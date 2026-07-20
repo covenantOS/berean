@@ -59,8 +59,11 @@ presets instead of clutter (the top Logos complaint is jam-packed menus).
   morph queries, actions, recents. Every palette action also reachable
   by visible UI (no hidden keyboard-only power).
 - Presets: Reading, Sermon prep, Word study, Original languages.
-- Mobile mapping (later): rail to bottom tab bar, sidebars to drawers,
-  tools to bottom sheets, reading-first.
+- Mobile mapping: rail to bottom tab bar, sidebars to drawers,
+  tools to bottom sheets, reading-first. (Baseline shipped 2026-07-20:
+  bottom bar, drawers, stacked panes behind a 767px breakpoint. Tools
+  remain a right drawer until bottom sheets land; the device pass is
+  pending.)
 - Onboarding: translation preference, land in an open passage, seeded
   starter documents, no feature tour.
 

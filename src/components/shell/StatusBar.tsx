@@ -41,7 +41,7 @@ export default function StatusBar() {
   }, []);
 
   return (
-    <footer className="flex h-7 shrink-0 items-center justify-between border-t border-rule bg-surface px-3 text-[0.7rem] text-muted">
+    <footer className="ws-status flex h-7 shrink-0 items-center justify-between border-t border-rule bg-surface px-3 text-[0.7rem] text-muted">
       <span className="small-caps font-semibold text-ink">
         {book && ref ? `${book.name} ${ref.chapter}` : "No passage"}
       </span>

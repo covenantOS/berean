@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import {
   activeCopyStyle,
@@ -34,6 +34,7 @@ import { CanvasesSection } from "./CanvasPane";
 import { DiagramsSection } from "./DiagramPane";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
+import { phoneViewport } from "./viewport";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
 
 const MODE_TITLES: Record<RailMode, string> = {
@@ -57,11 +58,38 @@ const MODE_TITLES: Record<RailMode, string> = {
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
 
+  /* Drawer discipline below the phone breakpoint: Escape closes, and a
+   * pick that changes the panes (a chapter, a search, a guide) lets the
+   * drawer yield so the answer stands in the open. Both ask the
+   * breakpoint; the desktop sidebar never moves. */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && phoneViewport()) dispatch({ type: "toggleSidebar" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dispatch]);
+
+  const rootRef = useRef(state.root);
+  useEffect(() => {
+    if (rootRef.current === state.root) return;
+    rootRef.current = state.root;
+    if (phoneViewport()) dispatch({ type: "toggleSidebar" });
+  }, [state.root, dispatch]);
+
   return (
-    <aside
-      aria-label={MODE_TITLES[state.railMode]}
-      className="flex w-[260px] shrink-0 flex-col border-r border-rule bg-surface"
-    >
+    <>
+      {/* The scrim shows only below the breakpoint (globals.css); a tap
+       *  on it closes the drawer. At desktop it never renders visibly. */}
+      <div
+        aria-hidden="true"
+        onClick={() => dispatch({ type: "toggleSidebar" })}
+        className="ws-scrim"
+      />
+      <aside
+        aria-label={MODE_TITLES[state.railMode]}
+        className="ws-sidebar flex w-[260px] shrink-0 flex-col border-r border-rule bg-surface"
+      >
       <header className="flex h-9 shrink-0 items-center justify-between border-b border-rule px-3">
         <span className="small-caps text-[0.7rem] font-semibold text-ink">
           {MODE_TITLES[state.railMode]}
@@ -96,7 +124,8 @@ export default function Sidebar() {
         {state.railMode === "almanac" && <AlmanacPanel />}
         {state.railMode === "settings" && <SettingsPanel />}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
 

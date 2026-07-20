@@ -85,7 +85,7 @@ import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 export default function PaneGrid() {
   const { state } = useWorkspace();
   return (
-    <div className="h-full min-h-0 w-full bg-paper p-1.5">
+    <div className="ws-grid-inner h-full min-h-0 w-full bg-paper p-1.5">
       <NodeView node={state.root} />
     </div>
   );
@@ -122,7 +122,7 @@ function SplitView({ split }: { split: SplitNode }) {
   };
 
   return (
-    <div ref={containerRef} className={`flex h-full min-h-0 w-full ${horizontal ? "" : "flex-col"}`}>
+    <div ref={containerRef} className={`ws-split flex h-full min-h-0 w-full ${horizontal ? "" : "flex-col"}`}>
       <div
         style={{ flexBasis: `${split.ratio * 100}%` }}
         className="min-h-0 min-w-0 shrink-0 grow-0"
@@ -134,7 +134,7 @@ function SplitView({ split }: { split: SplitNode }) {
         aria-orientation={horizontal ? "vertical" : "horizontal"}
         title="Drag to resize panes"
         onPointerDown={onPointerDown}
-        className={`shrink-0 touch-none bg-transparent transition-colors hover:bg-sapphire/40 ${
+        className={`ws-sep shrink-0 touch-none bg-transparent transition-colors hover:bg-sapphire/40 ${
           horizontal ? "w-1.5 cursor-col-resize" : "h-1.5 cursor-row-resize"
         }`}
       />
@@ -415,7 +415,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
       onPointerDown={() => {
         if (!isActive) dispatch({ type: "activatePane", paneId: leaf.id });
       }}
-      className={`flex h-full min-h-0 flex-col border bg-surface ${
+      className={`ws-pane flex h-full min-h-0 flex-col border bg-surface ${
         isActive ? "border-ink/25" : "border-rule"
       }`}
     >

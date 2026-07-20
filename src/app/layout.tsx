@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { EB_Garamond } from "next/font/google";
 import CandleToggle from "@/components/CandleToggle";
@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     "Berean — Scripture study and authored knowledge. A study prepared, by Church Posting.",
   // iOS home-screen icon; the Android/install set rides on the manifest.
   icons: { apple: "/icons/apple-touch-icon.png" },
+};
+
+export const viewport: Viewport = {
+  // Edge to edge, so the workspace's bottom bar can pad for the home
+  // indicator with env(safe-area-inset-bottom) on notched phones.
+  viewportFit: "cover",
 };
 
 function LeadedMark() {

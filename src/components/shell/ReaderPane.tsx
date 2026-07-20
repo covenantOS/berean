@@ -1430,7 +1430,7 @@ export default function ReaderPane({
 
   return (
     <div className="reader-surface flex h-full min-h-0 flex-col" style={scaleStyle}>
-      <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
+      <header className="ws-reader-header flex h-9 shrink-0 items-center border-b border-rule px-4">
         <div className="flex flex-1 items-center gap-0.5">
           <button
             type="button"
@@ -1497,7 +1497,7 @@ export default function ReaderPane({
             )
           )}
         </h2>
-        <div className="flex flex-1 items-center justify-end gap-1">
+        <div className="ws-reader-tools flex flex-1 items-center justify-end gap-1">
           <span className="flex items-center" role="group" aria-label="Text size">
             <button
               type="button"

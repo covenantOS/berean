@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, readPayload, startModuleDrag } from "./dnd";
+import { phoneViewport } from "./viewport";
 import type { DockTab } from "./workspace-state";
 import CommentaryDock from "./CommentaryDock";
 import CrossRefsDock from "./CrossRefsDock";
@@ -126,11 +127,32 @@ export default function RightDock() {
   const dragTrayTab = (e: ReactDragEvent, tab: DockTab, label: string) =>
     startModuleDrag(e, tab === "scribe" ? DND.dockReorder : DND.dockTool, { dock: tab }, label);
 
+  /* Drawer discipline below the phone breakpoint, matching the sidebar:
+   * Escape closes the open dock, and a pick that changes the panes (a
+   * cross-reference, a word study) lets the drawer yield so the answer
+   * stands in the open. Both ask the breakpoint; the desktop dock never
+   * moves. */
+  useEffect(() => {
+    if (!state.dockOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && phoneViewport()) dispatch({ type: "toggleDock" });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [state.dockOpen, dispatch]);
+
+  const rootRef = useRef(state.root);
+  useEffect(() => {
+    if (rootRef.current === state.root) return;
+    rootRef.current = state.root;
+    if (state.dockOpen && phoneViewport()) dispatch({ type: "toggleDock" });
+  }, [state.root, state.dockOpen, dispatch]);
+
   if (!state.dockOpen) {
     return (
       <div
         {...stripHandlers(true)}
-        className={`flex w-8 shrink-0 flex-col items-center gap-1 border-l border-rule bg-surface py-2 ${
+        className={`ws-dock-tray flex w-8 shrink-0 flex-col items-center gap-1 border-l border-rule bg-surface py-2 ${
           returnHint ? "bg-amber/5 outline-2 -outline-offset-2 outline-amber/60" : ""
         }`}
       >
@@ -163,10 +185,18 @@ export default function RightDock() {
   }
 
   return (
-    <aside
-      aria-label="Tools"
-      className="flex w-80 shrink-0 flex-col border-l border-rule bg-surface"
-    >
+    <>
+      {/* The scrim shows only below the breakpoint (globals.css); a tap
+       *  on it closes the drawer. At desktop it never renders visibly. */}
+      <div
+        aria-hidden="true"
+        onClick={() => dispatch({ type: "toggleDock" })}
+        className="ws-scrim"
+      />
+      <aside
+        aria-label="Tools"
+        className="ws-dock flex w-80 shrink-0 flex-col border-l border-rule bg-surface"
+      >
       <div className="flex h-9 shrink-0 items-stretch border-b border-rule">
         <div
           role="tablist"
@@ -233,6 +263,7 @@ export default function RightDock() {
           </>
         )}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

@@ -484,3 +484,143 @@ body:has(> main > .workspace-shell) > header,
 body:has(> main > .workspace-shell) > footer {
   display: none;
 }
+
+/*
+ * Workspace shell on a phone (Phase 4 baseline): 360 to 768px wide,
+ * reading-first. The rail becomes a bottom tab bar, the sidebar and the
+ * dock become drawers over a scrim, split panes stack in one scrolling
+ * column, and the status bar yields its line to the text. Every rule sits
+ * behind the breakpoint, so the desktop shell renders untouched.
+ */
+
+/* The scrim mounts with each drawer but shows only below the breakpoint. */
+.workspace-shell .ws-scrim {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Room under the content for the bottom bar and the home indicator. */
+  .workspace-shell .ws-main {
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The status bar yields: the pane header already names the passage. */
+  .workspace-shell .ws-status {
+    display: none;
+  }
+
+  /* Rail to bottom bar: the same modes, thumb-reachable, inset aware. */
+  .workspace-shell .ws-rail {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    width: auto;
+    flex-direction: row;
+    border-top: 1px solid var(--rule);
+    border-right: none;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .workspace-shell .ws-rail-modes {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .workspace-shell .ws-rail-modes > button {
+    flex: 1 0 auto;
+    min-width: 3.25rem;
+    border-left: none;
+    border-top: 2px solid transparent;
+  }
+  /* Presets and layouts are desktop mechanics; the phone keeps modes. */
+  .workspace-shell .ws-rail-foot {
+    display: none;
+  }
+
+  /* Sidebar and dock to drawers: overlays on a scrim, never columns. */
+  .workspace-shell .ws-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    background: color-mix(in srgb, var(--signal-ink) 40%, transparent);
+    animation: ws-scrim-in 0.18s ease-out;
+  }
+  .workspace-shell .ws-sidebar,
+  .workspace-shell .ws-dock {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 50;
+  }
+  .workspace-shell .ws-sidebar {
+    left: 0;
+    width: min(320px, 85vw);
+    animation: ws-drawer-left-in 0.18s ease-out;
+  }
+  .workspace-shell .ws-dock {
+    right: 0;
+    width: min(340px, 88vw);
+    animation: ws-drawer-right-in 0.18s ease-out;
+  }
+  /* The collapsed tool tray has no room on a phone; a word tap or a
+   * search row opens the dock drawer on its own. */
+  .workspace-shell .ws-dock-tray {
+    display: none;
+  }
+
+  /* Splits stack: the grid scrolls as one column, each pane a tall
+   * section, a lone pane filling the height. The dividers hide with the
+   * drag handles, since touch drag is the shell's known rough edge. */
+  .workspace-shell .ws-grid {
+    overflow-y: auto;
+  }
+  .workspace-shell .ws-grid-inner {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100%;
+  }
+  .workspace-shell .ws-split {
+    display: block;
+    height: auto;
+  }
+  .workspace-shell .ws-sep {
+    display: none;
+  }
+  .workspace-shell .ws-pane {
+    flex: 1 0 72dvh;
+    height: 72dvh;
+    margin-bottom: 0.375rem;
+  }
+
+  /* The reader's crowded header scrolls sideways instead of squeezing. */
+  .workspace-shell .ws-reader-header {
+    padding-inline: 0.5rem;
+  }
+  .workspace-shell .ws-reader-tools {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .workspace-shell .ws-reader-tools > * {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes ws-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ws-drawer-left-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes ws-drawer-right-in {
+  from {
+    transform: translateX(100%);
+  }
+}

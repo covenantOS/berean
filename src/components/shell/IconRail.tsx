@@ -37,9 +37,9 @@ export default function IconRail() {
   return (
     <nav
       aria-label="Workspace modes"
-      className="flex w-12 shrink-0 flex-col items-stretch border-r border-rule bg-surface"
+      className="ws-rail flex w-12 shrink-0 flex-col items-stretch border-r border-rule bg-surface"
     >
-      <div className="flex flex-1 flex-col">
+      <div className="ws-rail-modes flex flex-1 flex-col">
         {RAIL_ITEMS.map(({ mode, label, icon: ItemIcon }) => {
           const active = state.railMode === mode && state.sidebarOpen;
           return (
@@ -67,7 +67,7 @@ export default function IconRail() {
           );
         })}
       </div>
-      <div className="flex flex-col border-t border-rule">
+      <div className="ws-rail-foot flex flex-col border-t border-rule">
         <button
           type="button"
           title="Preset: Reading — one pane, dock closed"
