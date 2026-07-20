@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Sync v1 — the provider-agnostic half of ADR 0002.
  *
@@ -7,10 +5,13 @@
  * server reconciles, so everything here is built from pieces that need no
  * server to be correct: last-writer-wins merge at updatedAt granularity,
  * an idempotent upsert, and per-collection high-water marks. The protocol
- * envelopes below are the wire shapes the hosted service will speak;
- * SyncTransport is the seam, and MemoryTransport is the reference
- * implementation standing in for that service until identity lands. There
- * is no network, no route, and no provider SDK in this module.
+ * envelopes below are the wire shapes the hosted service speaks;
+ * SyncTransport is the seam, MemoryTransport is the reference
+ * implementation, and HttpTransport carries the envelopes to the API routes
+ * (src/app/api/sync) backed by the server store (src/lib/sync-server.ts).
+ * There is no provider SDK in this module. Like store.ts it carries no
+ * "use client" directive: the server half reuses lwwWinner and mergeRows,
+ * so the merge ruling lives in exactly one place.
  *
  * One subtlety, learned from walking the conflict cases: the pull cursor
  * is the server's commit sequence, not a client updatedAt. A record pushed
@@ -205,6 +206,74 @@ export class MemoryTransport implements SyncTransport {
       .sort((a, b) => (t.seqById.get(a.id) ?? 0) - (t.seqById.get(b.id) ?? 0));
     return { records, cursor: String(t.counter) };
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* HTTP transport: the envelopes over the API routes                   */
+/* ------------------------------------------------------------------ */
+
+/** Where the pre-auth namespace slug persists on this device. Device
+ *  bookkeeping, not user data; the auth wave replaces the slug with the
+ *  identity subject and retires this key. */
+export const SYNC_NAMESPACE_KEY = "berean.sync.namespace.v1";
+
+/** The namespace this device syncs under until identity lands: a UUID
+ *  minted once and held in localStorage, stable across sessions so every
+ *  device the user signs onto the same slug converges. */
+export function deviceNamespace(): string {
+  const existing = window.localStorage.getItem(SYNC_NAMESPACE_KEY);
+  if (existing) return existing;
+  const minted = crypto.randomUUID();
+  window.localStorage.setItem(SYNC_NAMESPACE_KEY, minted);
+  return minted;
+}
+
+/**
+ * The SyncTransport that speaks to the API routes. The namespace rides in
+ * the request body (the pre-auth shape, documented in
+ * src/lib/sync-server.ts); baseUrl defaults to same-origin. A failed
+ * response or a network error rejects, so a sync cycle that cannot reach
+ * the server changes nothing and retries whole next time: both sides merge
+ * idempotently, so repetition is safe.
+ */
+export class HttpTransport implements SyncTransport {
+  constructor(
+    private namespace: string,
+    private baseUrl: string = "",
+    private fetchFn: typeof fetch = fetch,
+  ) {}
+
+  private async call<T>(path: string, body: unknown): Promise<T> {
+    const res = await this.fetchFn(`${this.baseUrl}${path}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`sync ${path}: HTTP ${res.status}`);
+    return (await res.json()) as T;
+  }
+
+  push(req: PushRequest): Promise<PushResponse> {
+    return this.call("/api/sync/push", { namespace: this.namespace, ...req });
+  }
+
+  pull(req: PullRequest): Promise<PullResponse> {
+    return this.call("/api/sync/pull", { namespace: this.namespace, ...req });
+  }
+}
+
+/**
+ * The config gate for live sync: an HttpTransport for this device's
+ * namespace when NEXT_PUBLIC_BEREAN_SYNC is set, null otherwise. Nothing in
+ * the app calls this yet; the settings surface that wires the engine to a
+ * transport arrives with the auth wave, and deployments without the flag
+ * behave exactly as before.
+ */
+export function configuredTransport(): SyncTransport | null {
+  if (typeof window === "undefined") return null;
+  const flag = process.env.NEXT_PUBLIC_BEREAN_SYNC ?? "";
+  if (flag !== "1" && flag !== "true") return null;
+  return new HttpTransport(deviceNamespace(), process.env.NEXT_PUBLIC_BEREAN_SYNC_URL ?? "");
 }
 
 /* ------------------------------------------------------------------ */

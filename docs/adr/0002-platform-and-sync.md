@@ -102,3 +102,36 @@ still runs; nothing pretends to be intelligent.
   throwaway harness against it, 38 checks green. No network, no route, no
   provider SDK; the sync matrix rows stay unchecked until a server exists.
 
+*2026-07-20 — sync v1 server half landed: schema, drivers, routes, transport.*
+
+- `db/migrations/0001_sync.sql`: one table per GRAPH_KEYS collection keyed
+  ("userId", id), the whole envelope as jsonb (tombstones ride along),
+  "updatedAt" mirrored and indexed, and seq from one shared
+  `sync_commit_seq` sequence as the commit stamp the pull cursor names.
+  Indexed ("userId", seq), which is the whole pull pattern. `userId`
+  carries the pre-auth namespace slug today and the identity subject when
+  accounts land; the shape does not change at that point.
+- `src/lib/sync-server.ts`: SyncStore, the server-side seam, with two
+  drivers. MemorySyncStore ports MemoryTransport behind namespaces (dev,
+  tests, single-process self-hosting). PgSyncStore runs the same LWW ruling
+  in JS inside a transaction over Neon Postgres, stamping seq only on
+  writes that win, so the merge semantics live in one module
+  (src/lib/sync.ts) shared by both sides; store.ts and sync.ts dropped
+  their "use client" directives to make that sharing possible.
+- `src/app/api/sync/push` and `/api/sync/pull`: the protocol envelopes
+  plus a namespace slug (a device-generated UUID until identity lands).
+  Collections validate against GRAPH_KEYS, envelopes validate, batches cap
+  at 500. With no SYNC_DRIVER and no DATABASE_URL the routes answer 503:
+  an unconfigured deployment behaves exactly as before.
+- `HttpTransport` in src/lib/sync.ts carries the envelopes to the routes,
+  gated by NEXT_PUBLIC_BEREAN_SYNC so nothing user-facing changes. Verified
+  against a live server on the memory driver with a throwaway harness:
+  round trips, idempotent re-push, every LWW ruling (same-instant tombstone
+  beats edit, later edit resurrects, canonical tie), cursor monotonicity
+  and resume including the late old-stamped record, caps and rejections,
+  and two SyncEngine instances converging through HttpTransport. PgSyncStore
+  is verified by SQL review only; no live Postgres was available.
+- Remaining for the auth wave: swap the namespace slug for the identity
+  subject, provision Neon, and wire a settings surface to
+  `configuredTransport()`.
+

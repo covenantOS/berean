@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * The one knowledge graph — shared client-side substrate for every room.
  *
@@ -13,6 +11,9 @@
  * are tombstones (deletedAt) rather than dropped rows, so a delete can
  * travel to the user's other devices; read paths hide tombstones and the
  * sync layer (src/lib/sync.ts) is the only consumer of the raw rows.
+ * Deliberately free of a "use client" directive: every browser touch is
+ * guarded, so the sync server (src/lib/sync-server.ts) can share the
+ * envelope type and GRAPH_KEYS without a client boundary.
  */
 
 export type Visibility = "private" | "personal" | "church" | "public";

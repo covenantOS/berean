@@ -24,6 +24,13 @@ Railway.
 - **ANTHROPIC_API_KEY (optional).** Set it in the host's environment to
   enable the Scribe and semantic search. Without it the app runs fully and
   those surfaces say so honestly.
+- **Sync (optional, pre-auth).** The sync routes (`/api/sync/push`,
+  `/api/sync/pull`) answer 503 until a store is configured. Set
+  `SYNC_DRIVER=memory` for a single-process in-memory store (rows vanish on
+  restart), or set `DATABASE_URL` to a Postgres connection string after
+  applying `db/migrations/0001_sync.sql` for the real store. Auth is not
+  wired: clients pass a namespace slug, documented in
+  `src/lib/sync-server.ts`.
 - **First build is slow.** The repo carries about 600MB of processed JSON.
   The first clone and the first Docker build take several minutes; later
   deploys reuse the cached clone.

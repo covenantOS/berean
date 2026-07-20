@@ -27,6 +27,7 @@ Before changing product behavior, read:
 - `src/lib/canon.ts` — canonical book/chapter identifiers (slugs are the passage-reference scheme)
 - `src/lib/bible.ts` — text loading, whole-canon search, word study
 - `src/lib/store.ts` — the one knowledge-graph substrate (all collections, export/import/delete; sync envelope per ADR 0002)
+- `src/lib/sync.ts` / `src/lib/sync-server.ts` — sync v1 (ADR 0002): LWW merge and engine client-side, SyncStore drivers server-side; routes at `api/sync/push` and `api/sync/pull`, schema in `db/migrations/0001_sync.sql`
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
@@ -81,5 +82,7 @@ JFB, Clarke, and Barnes (NT) ship as per-book JSON under
 PROVENANCE.md, and a shipped rights entry; Gill, Poole, the Pulpit
 Commentary, Ellicott, and the Geneva notes are registered as planned pending
 clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter/catechism texts (need verified datasets;
-registered as planned in rights), ADR 0002 sync (export/import remains the
-bridge), and all Covenant OS integration (contracts first).
+registered as planned in rights), and all Covenant OS integration (contracts first). The ADR 0002 sync server half shipped:
+Postgres schema (db/migrations), SyncStore drivers and push/pull routes (src/lib/sync-server.ts, src/app/api/sync),
+and the HttpTransport behind a config flag; the auth wave (namespace to identity subject, Neon provisioning,
+settings wiring) remains, and export/import remains the bridge until then.
