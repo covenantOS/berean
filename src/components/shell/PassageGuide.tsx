@@ -634,6 +634,16 @@ export default function PassageGuide({
           >
             {copied === "link" ? "Copied" : "Copy link"}
           </button>
+          <button
+            type="button"
+            title={`Open the Sermon Starter for ${reference}`}
+            onClick={() =>
+              dispatch({ type: "openSermonStarter", book: g.book, chapter: g.chapter })
+            }
+            className={ACTION}
+          >
+            Sermon prep
+          </button>
           <PrintButton />
         </p>
       </header>

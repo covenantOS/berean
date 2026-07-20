@@ -68,6 +68,9 @@ function Intake() {
         case "exegetical":
           dispatch({ type: "openExegetical", book: tab.book, chapter: tab.chapter, paneId });
           break;
+        case "sermonstarter":
+          dispatch({ type: "openSermonStarter", book: tab.book, chapter: tab.chapter, paneId });
+          break;
         case "compare":
           dispatch({ type: "openTextCompare", book: tab.book, chapter: tab.chapter, paneId });
           break;

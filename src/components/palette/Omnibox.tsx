@@ -34,6 +34,8 @@
  *   "berean:open-wordstudy"    { id }            Word study for a Strong's id.
  *   "berean:open-exegetical"   { book?, chapter? }  Exegetical Guide; absent
  *                              ref means the passage in focus.
+ *   "berean:open-sermonstarter" { book?, chapter? }  Sermon Starter; absent
+ *                              ref means the passage in focus.
  *   "berean:open-topicguide"   { work, id, title }  Topic Guide for a Nave's
  *                              or Torrey's entry.
  *   "berean:open-factbook"     { id, name }         Factbook for a TIPNR
@@ -426,6 +428,16 @@ export default function Omnibox() {
         sub: "Word by word, important words, lemmas, variants",
         run: () => {
           emit("berean:open-exegetical", { book: parsed.book, chapter: parsed.chapter });
+          closePalette();
+        },
+      });
+      items.push({
+        key: "ref-sermonstarter",
+        group: "References",
+        label: `Sermon starter: ${parsed.label}`,
+        sub: "Themes, key passages, and the pulpit handoff",
+        run: () => {
+          emit("berean:open-sermonstarter", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
       });

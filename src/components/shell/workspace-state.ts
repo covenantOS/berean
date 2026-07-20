@@ -561,6 +561,18 @@ export interface MediaTab {
   verse?: number;
 }
 
+/**
+ * The Sermon Starter: one chapter's preaching report (themes, key passages,
+ * exegetical hooks, media, and the pulpit handoff), pinned at open time the
+ * way the Passage Guide pins its passage.
+ */
+export interface SermonStarterTab {
+  id: string;
+  type: "sermonstarter";
+  book: string;
+  chapter: number;
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -572,6 +584,7 @@ export type Tab =
   | CustomGuideTab
   | GuideEditorTab
   | WordStudyTab
+  | SermonStarterTab
   | WorkflowTab
   | WorkflowEditorTab
   | ExegeticalTab
@@ -933,6 +946,10 @@ function mediaRef(
 
 export function mediaTab(ref?: { book: string; chapter: number; verse?: number }): MediaTab {
   return { id: newId("tab"), type: "media", ...(ref ?? {}) };
+}
+
+export function sermonStarterTab(book = "genesis", chapter = 1): SermonStarterTab {
+  return { id: newId("tab"), type: "sermonstarter", book, chapter };
 }
 
 /** TIPNR ids are 5–6 character codes such as "H0175" or "H2148w". */
@@ -1332,6 +1349,7 @@ export type WorkspaceAction =
   | { type: "openWorkflow"; runId: string; title: string; paneId?: string }
   | { type: "openWorkflowEditor"; workflowId?: string | null; paneId?: string }
   | { type: "openExegetical"; book: string; chapter: number; paneId?: string }
+  | { type: "openSermonStarter"; book: string; chapter: number; paneId?: string }
   | { type: "openTopicGuide"; work: string; topicId: string; title: string; paneId?: string }
   | { type: "openListDoc"; docId: string; title: string; paneId?: string }
   | { type: "openCanvasDoc"; canvasId: string; title: string; paneId?: string }
@@ -1818,6 +1836,26 @@ export function workspaceReducer(
       if (!findLeaf(state.root, paneId)) return state;
       // Like the Passage Guide, the report pins its passage at open time.
       const tab = exegeticalTab(book.slug, chapter);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openSermonStarter": {
+      const book = getBook(action.book);
+      if (!book) return state;
+      const chapter = Math.min(Math.max(1, Math.trunc(action.chapter)), book.chapters);
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like the Passage Guide, the report pins its passage at open time.
+      const tab = sermonStarterTab(book.slug, chapter);
       return {
         ...state,
         activePaneId: paneId,
@@ -3390,6 +3428,16 @@ function sanitizeNode(node: unknown): PaneNode | null {
             ? Math.min(Math.max(1, t.chapter), book.chapters)
             : 1;
         tabs.push({ id: t.id, type: "exegetical", book: book.slug, chapter });
+        continue;
+      }
+      if (t.type === "sermonstarter" && typeof t.id === "string" && typeof t.book === "string") {
+        const book = getBook(t.book);
+        if (!book) continue;
+        const chapter =
+          typeof t.chapter === "number" && Number.isInteger(t.chapter)
+            ? Math.min(Math.max(1, t.chapter), book.chapters)
+            : 1;
+        tabs.push({ id: t.id, type: "sermonstarter", book: book.slug, chapter });
         continue;
       }
       if (t.type === "topicguide" && typeof t.id === "string") {

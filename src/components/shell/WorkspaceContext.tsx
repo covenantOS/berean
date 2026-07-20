@@ -205,6 +205,18 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
           : (activeRefRef.current?.chapter ?? 1);
       dispatch({ type: "openExegetical", book, chapter });
     };
+    const onOpenSermonStarter = (e: Event) => {
+      const detail = (e as CustomEvent<{ book?: string; chapter?: number }>).detail;
+      // Like the Passage Guide, an absent ref takes the pane in focus.
+      const book =
+        detail && typeof detail.book === "string" ? detail.book : activeRefRef.current?.book;
+      if (!book) return;
+      const chapter =
+        detail && typeof detail.chapter === "number"
+          ? detail.chapter
+          : (activeRefRef.current?.chapter ?? 1);
+      dispatch({ type: "openSermonStarter", book, chapter });
+    };
     const onOpenTopicGuide = (e: Event) => {
       const detail = (e as CustomEvent<{ work?: string; id?: string; title?: string }>).detail;
       if (!detail || typeof detail.work !== "string" || typeof detail.id !== "string") return;
@@ -289,6 +301,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     window.addEventListener("berean:open-guideeditor", onOpenGuideEditor);
     window.addEventListener("berean:open-wordstudy", onOpenWordStudy);
     window.addEventListener("berean:open-exegetical", onOpenExegetical);
+    window.addEventListener("berean:open-sermonstarter", onOpenSermonStarter);
     window.addEventListener("berean:open-topicguide", onOpenTopicGuide);
     window.addEventListener("berean:open-factbook", onOpenFactbook);
     window.addEventListener("berean:open-textcompare", onOpenTextCompare);
@@ -309,6 +322,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("berean:open-guideeditor", onOpenGuideEditor);
       window.removeEventListener("berean:open-wordstudy", onOpenWordStudy);
       window.removeEventListener("berean:open-exegetical", onOpenExegetical);
+      window.removeEventListener("berean:open-sermonstarter", onOpenSermonStarter);
       window.removeEventListener("berean:open-topicguide", onOpenTopicGuide);
       window.removeEventListener("berean:open-factbook", onOpenFactbook);
       window.removeEventListener("berean:open-textcompare", onOpenTextCompare);

@@ -144,6 +144,14 @@ export default function PulpitPane() {
         >
           Appoint the text
         </button>
+        <button
+          type="button"
+          title={`Open the Sermon Starter for ${selectedBook?.name ?? book} ${chapter}`}
+          onClick={() => dispatch({ type: "openSermonStarter", book, chapter })}
+          className="rounded-[4px] border border-rule bg-paper px-4 py-2 text-sm text-ink hover:border-sapphire"
+        >
+          Sermon starter
+        </button>
       </form>
 
       <div className="no-print mb-6 flex flex-wrap gap-2">

@@ -76,6 +76,7 @@ import BookExplorerPane from "./BookExplorerPane";
 import HarmonyPane from "./HarmonyPane";
 import WisdomExplorerPane from "./WisdomExplorerPane";
 import MediaPane from "./MediaPane";
+import SermonStarterPane from "./SermonStarterPane";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
 
 /**
@@ -173,6 +174,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "wordstudy") return `Word Study: ${tab.strongsId}`;
   if (tab.type === "exegetical") {
     return `Exegetical: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+  }
+  if (tab.type === "sermonstarter") {
+    return `Sermon prep: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
   }
   if (tab.type === "topicguide") {
     return `Topic: ${tab.title.replace(/\b\w/g, (c) => c.toUpperCase())}`;
@@ -635,6 +639,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "exegetical" ? (
             <div className="h-full overflow-y-auto p-4">
               <ExegeticalGuide book={activeTab.book} chapter={activeTab.chapter} />
+            </div>
+          ) : activeTab.type === "sermonstarter" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <SermonStarterPane book={activeTab.book} chapter={activeTab.chapter} />
             </div>
           ) : activeTab.type === "topicguide" ? (
             <div className="h-full overflow-y-auto p-4">

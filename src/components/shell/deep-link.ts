@@ -30,6 +30,7 @@ import {
  *                       wordstudy:G25            word study for a Strong's id
  *                       guide:jn.3               Passage Guide for a chapter
  *                       exegetical:jn.3          Exegetical Guide for a chapter
+ *                       sermonstarter:jn.3       Sermon Starter for a chapter
  *                       compare:jn.3             Text Comparison for a chapter
  *                       concordance:romans       a book's concordance
  *                       factbook:H0175           a TIPNR entity's Factbook
@@ -122,6 +123,7 @@ export type DeepLinkTab =
   | { kind: "wordstudy"; strongsId: string }
   | { kind: "guide"; book: string; chapter: number }
   | { kind: "exegetical"; book: string; chapter: number }
+  | { kind: "sermonstarter"; book: string; chapter: number }
   | { kind: "compare"; book: string; chapter: number }
   | { kind: "concordance"; book: string }
   | { kind: "factbook"; entityId: string }
@@ -236,12 +238,16 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
     }
     case "guide":
     case "exegetical":
+    case "sermonstarter":
     case "compare": {
       const ref = parseDeepLinkRef(payload);
       if (!ref) return null;
       if (kind === "guide") return { kind: "guide", book: ref.book, chapter: ref.chapter };
       if (kind === "exegetical") {
         return { kind: "exegetical", book: ref.book, chapter: ref.chapter };
+      }
+      if (kind === "sermonstarter") {
+        return { kind: "sermonstarter", book: ref.book, chapter: ref.chapter };
       }
       return { kind: "compare", book: ref.book, chapter: ref.chapter };
     }
