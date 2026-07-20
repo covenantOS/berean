@@ -7,17 +7,26 @@ import {
   getActiveCollectionId,
   scopedWallWorkIds,
 } from "@/lib/collections";
+import type { CommentaryWorkMeta } from "@/lib/commentary";
+import {
+  DEFAULT_FACETS,
+  filterWall,
+  sortWall,
+  type CommentaryFacets,
+} from "@/lib/commentaryFacets";
 import { GUIDE_SECTIONS, type GuideSectionKey } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
-import { librarymeta } from "@/lib/librarymeta";
+import { commentaryPriority, librarymeta } from "@/lib/librarymeta";
 import { copyReferences } from "@/lib/powerLookup";
 import { useWorkspace } from "./WorkspaceContext";
+import CommentaryFacetBar from "./CommentaryFacetBar";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
 
 interface GuideCommentary {
   id: string;
   label: string;
+  meta: CommentaryWorkMeta;
   sections: number;
   excerpt: { verses: string; text: string };
 }
@@ -135,7 +144,10 @@ type LoadState =
  * a custom guide's pinned collection wins, the workspace's active collection
  * applies otherwise, and with neither the whole shelf answers. The route is
  * server-side and cannot see device data, so the filter applies here by
- * work id after the fetch, the same handoff as the dock's wall.
+ * work id after the fetch, the same handoff as the dock's wall. The section
+ * also carries the facet controls (src/lib/commentaryFacets.ts): ordering by
+ * priority, author, or era and narrowing by tradition and type, over the
+ * metadata the route returns with each work.
  */
 export default function PassageGuide({
   book,
@@ -158,6 +170,8 @@ export default function PassageGuide({
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy actions; clears itself. */
   const [copied, setCopied] = useState<"texts" | "link" | null>(null);
+  /** Ordering and narrowing of the commentaries section. */
+  const [facets, setFacets] = useState<CommentaryFacets>(DEFAULT_FACETS);
   const savedCollections = useCollection(collections);
   useCollection(activeCollection);
   /* Membership reads librarymeta live; subscribing keeps the scope honest
@@ -196,7 +210,17 @@ export default function PassageGuide({
     commentaryCollectionId === undefined ? getActiveCollectionId() : commentaryCollectionId;
   const scope = savedCollections.find((c) => c.id === scopeId) ?? null;
   const scopeIds = scope ? scopedWallWorkIds(scope.rules) : null;
-  const commentary = scopeIds ? g.commentary.filter((w) => scopeIds.has(w.id)) : g.commentary;
+  const scopedCommentary = scopeIds
+    ? g.commentary.filter((w) => scopeIds.has(w.id))
+    : g.commentary;
+  /* Facets narrow by tradition and type, then order by priority (the
+   * reader's shelf order), author, or era; applied client-side after the
+   * fetch, the same handoff as the dock's wall. */
+  const commentary = sortWall(
+    filterWall(scopedCommentary, facets),
+    facets.sort,
+    commentaryPriority()?.order
+  );
 
   const confirm = (what: "texts" | "link") => {
     setCopied(what);
@@ -252,20 +276,27 @@ export default function PassageGuide({
    * registry's order. A section with nothing to say stays null either way. */
   const sectionNodes: Record<GuideSectionKey, ReactNode> = {
     commentary:
-      commentary.length > 0 ? (
+      scopedCommentary.length > 0 ? (
         <GuideSection
           title="Commentaries"
           hint={
             scope
-              ? `${commentary.length} ${commentary.length === 1 ? "work" : "works"} answering from ${scope.name}`
-              : `${commentary.length} ${commentary.length === 1 ? "work" : "works"} on the shelf`
+              ? `${scopedCommentary.length} ${scopedCommentary.length === 1 ? "work" : "works"} answering from ${scope.name}`
+              : `${scopedCommentary.length} ${scopedCommentary.length === 1 ? "work" : "works"} on the shelf`
           }
         >
+          <CommentaryFacetBar works={scopedCommentary} facets={facets} onChange={setFacets} />
+          {commentary.length === 0 ? (
+            <p className="text-xs text-muted">No work on the shelf matches those facets.</p>
+          ) : (
           <div className="space-y-4">
             {commentary.map((w) => (
               <div key={w.id}>
-                <p className="flex items-baseline gap-2">
+                <p className="flex flex-wrap items-baseline gap-2">
                   <span className="small-caps text-xs font-semibold text-muted">{w.label}</span>
+                  <span className="text-[0.68rem] text-muted">
+                    {w.meta.years} · {w.meta.tradition}
+                  </span>
                   <button
                     type="button"
                     title={`Open ${reference} in the reader`}
@@ -284,6 +315,7 @@ export default function PassageGuide({
               </div>
             ))}
           </div>
+          )}
         </GuideSection>
       ) : null,
 

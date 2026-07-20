@@ -19,6 +19,11 @@ export async function GET(req: NextRequest) {
     book: book.slug,
     bookName: book.name,
     chapter,
-    works: wall.map((w) => ({ id: w.work.id, label: w.work.label, sections: w.sections })),
+    works: wall.map((w) => ({
+      id: w.work.id,
+      label: w.work.label,
+      meta: w.work.meta,
+      sections: w.sections,
+    })),
   });
 }

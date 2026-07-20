@@ -9,10 +9,18 @@ import {
   scopedWallWorkIds,
   setActiveCollection,
 } from "@/lib/collections";
+import type { CommentaryWorkMeta } from "@/lib/commentary";
+import {
+  DEFAULT_FACETS,
+  filterWall,
+  sortWall,
+  type CommentaryFacets,
+} from "@/lib/commentaryFacets";
 import { useCollection } from "@/lib/hooks";
-import { COMMENTARY_SHELF, librarymeta, orderByPriority } from "@/lib/librarymeta";
+import { COMMENTARY_SHELF, librarymeta } from "@/lib/librarymeta";
 import { sectionsForVerse } from "@/lib/sections";
 import ClippingsPicker from "./ClippingsPicker";
+import CommentaryFacetBar from "./CommentaryFacetBar";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface CommentarySection {
@@ -23,6 +31,7 @@ interface CommentarySection {
 interface CommentaryWork {
   id: string;
   label: string;
+  meta: CommentaryWorkMeta;
   sections: CommentarySection[];
 }
 
@@ -44,7 +53,9 @@ const EXCERPT = 320;
  * cannot see device data, so it answers in the default order and the dock
  * applies the preference. A workspace-active collection scopes the wall the
  * same way, client-side by work id: the wall answers from the collection's
- * members and says so.
+ * members and says so. Facet controls order the wall by priority, author,
+ * or era and narrow it by tradition and type (src/lib/commentaryFacets.ts),
+ * client-side over the metadata the route returns with each work.
  */
 export default function CommentaryDock() {
   const { state, activeRef, dispatch } = useWorkspace();
@@ -56,6 +67,8 @@ export default function CommentaryDock() {
   const book = sel?.book ?? activeRef?.book ?? null;
   const chapter = sel?.chapter ?? activeRef?.chapter ?? null;
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
+  /** Ordering and narrowing of the wall; the priority order is the default. */
+  const [facets, setFacets] = useState<CommentaryFacets>(DEFAULT_FACETS);
 
   /* The workspace-active collection scopes which works answer; the metaRows
    * subscription above keeps membership live as tags and ratings change. */
@@ -143,25 +156,30 @@ export default function CommentaryDock() {
     );
   }
   const pooled = scopeIds ? load.works.filter((w) => scopeIds.has(w.id)) : load.works;
-  const works = orderByPriority(
-    sel
-      ? pooled
-          .map((w) => ({ ...w, sections: sectionsForVerse(w.sections, sel.verse) }))
-          .filter((w) => w.sections.length > 0)
-      : pooled,
-    priority
-  );
+  const narrowed = sel
+    ? pooled
+        .map((w) => ({ ...w, sections: sectionsForVerse(w.sections, sel.verse) }))
+        .filter((w) => w.sections.length > 0)
+    : pooled;
+  /* Facets narrow by tradition and type, then order: priority (the reader's
+   * shelf order), author, or era. The route answers wall order, so ordering
+   * applies here after the fetch, the same handoff as the priority record. */
+  const works = sortWall(filterWall(narrowed, facets), facets.sort, priority);
+  const facetBar = <CommentaryFacetBar works={pooled} facets={facets} onChange={setFacets} />;
   if (works.length === 0) {
     return (
       <>
         {scopeRow}
         {header}
+        {facetBar}
         <p className="text-xs text-muted">
-          {scope
-            ? `No work in ${scope.name} treats this ${sel ? "verse" : "chapter"}.`
-            : sel
-              ? "No volume on the shelf treats this verse directly."
-              : "The commentary shelf holds no volume for this chapter yet."}
+          {narrowed.length > 0
+            ? "No work on the shelf matches those facets."
+            : scope
+              ? `No work in ${scope.name} treats this ${sel ? "verse" : "chapter"}.`
+              : sel
+                ? "No volume on the shelf treats this verse directly."
+                : "The commentary shelf holds no volume for this chapter yet."}
         </p>
       </>
     );
@@ -170,10 +188,16 @@ export default function CommentaryDock() {
     <div>
       {scopeRow}
       {header}
+      {facetBar}
       <div className="space-y-6">
         {works.map((w) => (
           <section key={w.id}>
-            <p className="small-caps mb-2 text-xs font-semibold text-muted">{w.label}</p>
+            <p className="mb-2 flex flex-wrap items-baseline gap-x-2">
+              <span className="small-caps text-xs font-semibold text-muted">{w.label}</span>
+              <span className="text-[0.68rem] text-muted">
+                {w.meta.years} · {w.meta.tradition}
+              </span>
+            </p>
             <div className="space-y-4">
               {w.sections.map((s, i) => (
                 <WallSection

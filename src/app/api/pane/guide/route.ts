@@ -90,6 +90,7 @@ export async function GET(req: NextRequest) {
   const commentary = wall.map(({ work, sections }) => ({
     id: work.id,
     label: work.label,
+    meta: work.meta,
     sections: sections.length,
     excerpt: { verses: sections[0].verses, text: trimExcerpt(sections[0].text) },
   }));
