@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBook } from "@/lib/canon";
+import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
 import { getChapter, type Verse } from "@/lib/bible";
 import { getChapterCommentary } from "@/lib/commentary";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterEntities, type EntityKind } from "@/lib/entities";
+import { getQuotesInChapter, getQuotedByChapter, type OtntRef } from "@/lib/otnt";
+import { getPericopes } from "@/lib/pericopes";
+import { findRefs } from "@/lib/refs";
 import { getChapterTopics } from "@/lib/topics";
 import { formatEventYears, formatRef, listTimelineEvents } from "@/lib/timeline";
 import { getTaggedChapter, STOP_STRONGS } from "@/lib/tagged";
@@ -69,14 +72,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   }
 
-  const [wall, crossRefs, entities, topics, events, tagged] = await Promise.all([
-    getChapterCommentary(book.slug, chapter),
-    getChapterCrossRefs(book.slug, chapter),
-    getChapterEntities(book.slug, chapter),
-    getChapterTopics(book.slug, chapter),
-    listTimelineEvents(),
-    getTaggedChapter(book.slug, chapter),
-  ]);
+  const isGospel = (GOSPEL_SLUGS as readonly string[]).includes(book.slug);
+  const [wall, crossRefs, entities, topics, events, tagged, quotes, quotedBy, pericopes] =
+    await Promise.all([
+      getChapterCommentary(book.slug, chapter),
+      getChapterCrossRefs(book.slug, chapter),
+      getChapterEntities(book.slug, chapter),
+      getChapterTopics(book.slug, chapter),
+      listTimelineEvents(),
+      getTaggedChapter(book.slug, chapter),
+      getQuotesInChapter(book.slug, chapter),
+      getQuotedByChapter(book.slug, chapter),
+      isGospel ? getPericopes(book.slug, chapter) : Promise.resolve([]),
+    ]);
 
   // (a) The commentary wall: section counts and the first excerpt per work.
   const commentary = wall.map(({ work, sections }) => ({
@@ -241,6 +249,88 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // (h) Parallel Passages: the OT texts the chapter quotes (the NT view) and
+  // the NT passages quoting it (the OT view), one row per cited source, from
+  // the OT-in-NT dataset (src/lib/otnt.ts). A gospel chapter adds its
+  // pericope parallels from the harmony dataset (src/lib/pericopes.ts), the
+  // same gospels-only read the harmony index runs.
+  const fmtOtnt = (r: OtntRef): string => {
+    const b = getBook(r.book);
+    const start = `${r.chapter}:${r.verse}`;
+    return `${b?.name ?? r.book} ${r.endVerse ? `${start}–${r.endVerse}` : start}`;
+  };
+  interface ParallelRow {
+    /** The verse in the guide's own chapter the row hangs on. */
+    verse: number;
+    endVerse?: number;
+    /** "quotes": the chapter quotes the row's OT text; "quotedBy": the row's
+     * NT passage quotes the chapter. */
+    direction: "quotes" | "quotedBy";
+    kind: "quotation" | "allusion";
+    formula?: "written" | "fulfilled";
+    note?: string;
+    /** The other side of the parallel. */
+    ref: string;
+    slug: string;
+    chapter: number;
+    fromVerse: number;
+    toVerse: number;
+  }
+  const parallels: ParallelRow[] = [];
+  for (const rec of quotes) {
+    for (const src of rec.ot) {
+      parallels.push({
+        verse: rec.nt.verse,
+        endVerse: rec.nt.endVerse,
+        direction: "quotes",
+        kind: rec.kind,
+        formula: rec.formula,
+        note: rec.note,
+        ref: fmtOtnt(src),
+        slug: src.book,
+        chapter: src.chapter,
+        fromVerse: src.verse,
+        toVerse: src.endVerse ?? src.verse,
+      });
+    }
+  }
+  for (const rec of quotedBy) {
+    // One row per citing passage, hung on its first source verse here; a
+    // composite citation with two sources in this chapter answers once.
+    const src = rec.ot.find((s) => s.book === book.slug && s.chapter === chapter);
+    if (!src) continue;
+    parallels.push({
+      verse: src.verse,
+      endVerse: src.endVerse,
+      direction: "quotedBy",
+      kind: rec.kind,
+      formula: rec.formula,
+      note: rec.note,
+      ref: fmtOtnt(rec.nt),
+      slug: rec.nt.book,
+      chapter: rec.nt.chapter,
+      fromVerse: rec.nt.verse,
+      toVerse: rec.nt.endVerse ?? rec.nt.verse,
+    });
+  }
+  parallels.sort((a, b) => a.verse - b.verse || a.direction.localeCompare(b.direction));
+  const gospelParallels = pericopes
+    .map((p) => {
+      const gospels = new Set<string>();
+      for (const r of findRefs(p.parallels ?? "")) {
+        if ((GOSPEL_SLUGS as readonly string[]).includes(r.book.slug) && r.book.slug !== book.slug) {
+          gospels.add(r.book.slug);
+        }
+      }
+      return {
+        chapter,
+        verse: p.verse,
+        heading: p.heading,
+        gospels: GOSPEL_SLUGS.filter((s) => gospels.has(s)).map((s) => getBook(s)?.name ?? s),
+      };
+    })
+    .filter((p) => p.gospels.length > 0);
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -255,5 +345,7 @@ export async function GET(req: NextRequest) {
     timeline,
     notableWords,
     compareVersions,
+    parallels,
+    gospelParallels,
   });
 }

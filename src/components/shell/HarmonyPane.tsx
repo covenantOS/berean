@@ -30,6 +30,8 @@ interface Account {
   ref: string;
   spanChapters: boolean;
   verses: HarmonyVerse[];
+  /** The OT sources quoted inside the account's range. */
+  otQuotes: { ref: string; slug: string; chapter: number; kind: "quotation" | "allusion" }[];
 }
 
 interface Report {
@@ -281,6 +283,25 @@ export default function HarmonyPane({
                           {v.text}
                         </p>
                       ))}
+                      {acc.otQuotes.length > 0 && (
+                        <p className="flex flex-wrap items-baseline gap-x-1.5 border-t border-rule/50 pt-2 text-[0.68rem] text-muted">
+                          <span>Quotes</span>
+                          {acc.otQuotes.map((q) => (
+                            <button
+                              key={q.ref}
+                              type="button"
+                              title={`Open ${q.ref}${q.kind === "allusion" ? " (allusion)" : ""}`}
+                              onClick={() =>
+                                dispatch({ type: "openRef", book: q.slug, chapter: q.chapter })
+                              }
+                              className="small-caps text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                            >
+                              {q.ref}
+                              {q.kind === "allusion" ? " (allusion)" : ""}
+                            </button>
+                          ))}
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <p className="px-3 py-3 text-[0.68rem] leading-relaxed text-muted">

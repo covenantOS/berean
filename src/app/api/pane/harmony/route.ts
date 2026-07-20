@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
+import { getQuotesInRange } from "@/lib/otnt";
 import { getAllPericopes, type FlatPericope } from "@/lib/pericopes";
 import { findRefs } from "@/lib/refs";
 
@@ -34,6 +35,9 @@ interface Account {
   /** True when the account crosses a chapter boundary. */
   spanChapters: boolean;
   verses: VerseRow[];
+  /** The OT sources quoted inside the account's range, from the OT-in-NT
+   * dataset; deduplicated by display ref. */
+  otQuotes: { ref: string; slug: string; chapter: number; kind: "quotation" | "allusion" }[];
 }
 
 const isGospel = (slug: string): boolean =>
@@ -91,12 +95,29 @@ async function buildAccount(
   const book = getBook(slug);
   if (!book) return null;
   const verses = await rangeVerses(slug, from.chapter, from.verse, to.chapter, to.verse);
+  const seen = new Set<string>();
+  const otQuotes: Account["otQuotes"] = [];
+  for (const rec of await getQuotesInRange(slug, from.chapter, from.verse, to.chapter, to.verse)) {
+    for (const src of rec.ot) {
+      const srcBook = getBook(src.book);
+      if (!srcBook) continue;
+      const ref = fmtRef(
+        srcBook.name,
+        { chapter: src.chapter, verse: src.verse },
+        { chapter: src.chapter, verse: src.endVerse ?? src.verse }
+      );
+      if (seen.has(ref)) continue;
+      seen.add(ref);
+      otQuotes.push({ ref, slug: src.book, chapter: src.chapter, kind: rec.kind });
+    }
+  }
   return {
     book: slug,
     bookName: book.name,
     ref: fmtRef(book.name, from, to),
     spanChapters: from.chapter !== to.chapter,
     verses,
+    otQuotes,
   };
 }
 

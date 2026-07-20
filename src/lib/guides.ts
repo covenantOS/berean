@@ -16,6 +16,7 @@ import { collection, type Record_ } from "./store";
 export const GUIDE_SECTIONS = [
   { key: "commentary", title: "Commentaries" },
   { key: "crossRefs", title: "Cross References" },
+  { key: "parallels", title: "Parallel Passages" },
   { key: "people", title: "People" },
   { key: "places", title: "Places" },
   { key: "others", title: "Things" },

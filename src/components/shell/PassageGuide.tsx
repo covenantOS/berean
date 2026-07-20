@@ -32,6 +32,32 @@ interface GuideCrossRef {
   votes: number;
 }
 
+interface GuideParallel {
+  /** The verse in the guide's own chapter the row hangs on. */
+  verse: number;
+  endVerse?: number;
+  /** "quotes": the chapter quotes the row's OT text; "quotedBy": the row's
+   * NT passage quotes the chapter. */
+  direction: "quotes" | "quotedBy";
+  kind: "quotation" | "allusion";
+  formula?: "written" | "fulfilled";
+  note?: string;
+  /** The other side of the parallel. */
+  ref: string;
+  slug: string;
+  chapter: number;
+  fromVerse: number;
+  toVerse: number;
+}
+
+interface GuideGospelParallel {
+  chapter: number;
+  verse: number;
+  heading: string;
+  /** Display names of the other gospels carrying a parallel account. */
+  gospels: string[];
+}
+
 interface GuideMention {
   id: string;
   name: string;
@@ -85,6 +111,8 @@ interface GuidePayload {
   notableWords: GuideWord[];
   /** Null when the base or a second text is missing, or every text agrees. */
   compareVersions: { base: string; rows: GuideCompareRow[] } | null;
+  parallels: GuideParallel[];
+  gospelParallels: GuideGospelParallel[];
 }
 
 type LoadState =
@@ -286,6 +314,112 @@ export default function PassageGuide({
               </li>
             ))}
           </ul>
+        </GuideSection>
+      ) : null,
+
+    parallels:
+      g.parallels.length > 0 || g.gospelParallels.length > 0 ? (
+        <GuideSection
+          title="Parallel Passages"
+          hint={
+            [
+              g.parallels.filter((r) => r.direction === "quotes").length > 0
+                ? `${g.parallels.filter((r) => r.direction === "quotes").length} quoted here`
+                : null,
+              g.parallels.filter((r) => r.direction === "quotedBy").length > 0
+                ? `${g.parallels.filter((r) => r.direction === "quotedBy").length} quoting this chapter`
+                : null,
+              g.gospelParallels.length > 0
+                ? `${g.gospelParallels.length} gospel ${g.gospelParallels.length === 1 ? "parallel" : "parallels"}`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || undefined
+          }
+        >
+          <div className="space-y-3">
+            {(["quotes", "quotedBy"] as const).map((dir) => {
+              const rows = g.parallels.filter((r) => r.direction === dir);
+              if (rows.length === 0) return null;
+              return (
+                <div key={dir}>
+                  <p className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
+                    {dir === "quotes" ? "Old Testament quoted here" : "Quoted in the New Testament"}
+                  </p>
+                  <ul className="space-y-1.5">
+                    {rows.map((r, i) => (
+                      <li key={i} className="flex items-baseline gap-2">
+                        <span className="w-8 shrink-0 text-[0.68rem] text-muted">v{r.verse}</span>
+                        <button
+                          type="button"
+                          title={`Open ${r.ref}`}
+                          onMouseEnter={() =>
+                            reportHoverRef({
+                              book: r.slug,
+                              chapter: r.chapter,
+                              fromVerse: r.fromVerse,
+                              toVerse: r.toVerse,
+                            })
+                          }
+                          onMouseLeave={() => reportHoverRef(null)}
+                          onClick={() =>
+                            dispatch({ type: "openRef", book: r.slug, chapter: r.chapter })
+                          }
+                          className="small-caps text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        >
+                          {r.ref}
+                        </button>
+                        <span className="min-w-0 flex-1 truncate text-[0.68rem] text-muted">
+                          {[
+                            r.kind === "allusion" ? "allusion" : null,
+                            r.formula === "written"
+                              ? "it is written"
+                              : r.formula === "fulfilled"
+                                ? "that it might be fulfilled"
+                                : null,
+                            r.note ?? null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+            {g.gospelParallels.length > 0 && (
+              <div>
+                <p className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
+                  Gospel parallels
+                </p>
+                <ul className="space-y-1.5">
+                  {g.gospelParallels.map((p) => (
+                    <li key={`${p.chapter}:${p.verse}`} className="flex items-baseline gap-2">
+                      <button
+                        type="button"
+                        title={`Open ${p.heading} in the harmony reader`}
+                        onClick={() =>
+                          dispatch({
+                            type: "openHarmony",
+                            book: g.book,
+                            chapter: p.chapter,
+                            verse: p.verse,
+                          })
+                        }
+                        className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      >
+                        {p.heading}
+                      </button>
+                      <span className="min-w-0 flex-1 truncate text-[0.68rem] text-muted">
+                        {p.gospels.join(", ")}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </GuideSection>
       ) : null,
 
