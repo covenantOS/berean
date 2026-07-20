@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- The leaded-window mark: four stained panes under an arch, paper ground. -->
+  <rect width="512" height="512" fill="#f3ecdd"/>
+  <path d="M106 430 V206 a150 150 0 0 1 300 0 V430 Z" fill="#262016"/>
+  <path d="M120 206 a136 136 0 0 1 129 -135.9 V311 H120 Z" fill="#2d5977"/>
+  <path d="M263 70.1 A136 136 0 0 1 392 206 V311 H263 Z" fill="#7d2d3e"/>
+  <rect x="120" y="325" width="129" height="91" fill="#a97a1f"/>
+  <rect x="263" y="325" width="129" height="91" fill="#3d6b52"/>
+</svg>

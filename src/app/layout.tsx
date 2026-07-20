@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EB_Garamond } from "next/font/google";
 import CandleToggle from "@/components/CandleToggle";
+import PwaRegister from "@/components/PwaRegister";
 import "./globals.css";
 
 const garamond = EB_Garamond({
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
   title: { default: "Berean", template: "%s · Berean" },
   description:
     "Berean — Scripture study and authored knowledge. A study prepared, by Church Posting.",
+  // iOS home-screen icon; the Android/install set rides on the manifest.
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 function LeadedMark() {
@@ -69,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="flex-1">{children}</main>
+        <PwaRegister />
         <footer className="border-t border-rule bg-surface">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-muted sm:px-6">
             <span>
