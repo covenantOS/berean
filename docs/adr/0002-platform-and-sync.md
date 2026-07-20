@@ -74,3 +74,31 @@ The hosted service furnishes the Scribe (`/api/brief`, `/api/liturgy`,
 installations furnish their own key. Without one, every route degrades
 honestly: deterministic verification (quotation checks, reference validation)
 still runs; nothing pretends to be intelligent.
+
+## Implementation notes
+
+*2026-07-19 — sync v1 client groundwork landed, provider-agnostic as designed.*
+
+- `deletedAt` tombstones are on the envelope (`src/lib/store.ts`): `remove()`
+  and `removeAll()` stamp rather than drop, read paths hide tombstones,
+  `purgeTombstones()` reclaims them, and `listIncludingDeleted()` /
+  `replaceAll()` are the sync layer's raw access. Records written before
+  this change load unchanged.
+- The merge (`src/lib/sync.ts`) is last-writer-wins at `updatedAt`
+  granularity with deterministic tie-breaking (a tombstone beats a
+  same-stamp edit), an idempotent upsert, and per-collection high-water
+  marks. Whole-graph export carries tombstones, since format 1 is the
+  shape sync speaks; a full import resets the sync cursors so both sides
+  reconcile from the beginning.
+- One refinement over the sketch above: the pull cursor is a server
+  commit sequence, not a client `updatedAt`. A record pushed late with a
+  stamp older than a device's cursor would otherwise never reach that
+  device. `updatedAt` still decides every merge; the sequence only
+  decides what a device has seen. The Postgres implementation satisfies
+  this with an ordinary sequence column.
+- `SyncTransport` is the seam between the engine and the wire. The
+  reference implementation is in-memory; the two-device convergence proof
+  (creates, edits, deletes, and conflicts on both sides) ran in a
+  throwaway harness against it, 38 checks green. No network, no route, no
+  provider SDK; the sync matrix rows stay unchecked until a server exists.
+

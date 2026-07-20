@@ -9,7 +9,10 @@
  * server database remain open decisions, so persistence is localStorage
  * behind this one interface. Every record carries the sync envelope fields
  * (id, visibility, createdAt, updatedAt) so the Cloudflare sync layer in
- * ADR 0002 can adopt these collections without a data migration.
+ * ADR 0002 can adopt these collections without a data migration. Deletes
+ * are tombstones (deletedAt) rather than dropped rows, so a delete can
+ * travel to the user's other devices; read paths hide tombstones and the
+ * sync layer (src/lib/sync.ts) is the only consumer of the raw rows.
  */
 
 export type Visibility = "private" | "personal" | "church" | "public";
@@ -19,6 +22,9 @@ export interface Record_ {
   visibility: Visibility;
   createdAt: string;
   updatedAt: string;
+  /** Tombstone stamp set by remove(); sync carries it so the delete reaches
+   *  every device. Optional: records written before sync load unchanged. */
+  deletedAt?: string;
 }
 
 type Listener = () => void;
@@ -47,12 +53,19 @@ export class Collection<T extends Record_> {
   }
 
   list(filter?: (row: T) => boolean): T[] {
+    const rows = this.read().filter((r) => !r.deletedAt);
+    return filter ? rows.filter(filter) : rows;
+  }
+
+  /** The raw row set, tombstones included. Sync and purge read through
+   *  here; the app reads through list/get. */
+  listIncludingDeleted(filter?: (row: T) => boolean): T[] {
     const rows = this.read();
     return filter ? rows.filter(filter) : rows;
   }
 
   get(id: string): T | undefined {
-    return this.read().find((r) => r.id === id);
+    return this.read().find((r) => r.id === id && !r.deletedAt);
   }
 
   create(data: Omit<T, keyof Record_> & { visibility?: Visibility }): T {
@@ -72,19 +85,49 @@ export class Collection<T extends Record_> {
 
   update(id: string, patch: Partial<Omit<T, "id" | "createdAt">>): T | undefined {
     const rows = this.read();
-    const row = rows.find((r) => r.id === id);
+    const row = rows.find((r) => r.id === id && !r.deletedAt);
     if (!row) return undefined;
     Object.assign(row, patch, { updatedAt: new Date().toISOString() });
     this.write(rows);
     return row;
   }
 
+  /** Tombstone the record rather than dropping it: the row stays with a
+   *  deletedAt stamp so sync can carry the delete to other devices, and
+   *  purgeTombstones reclaims the space once every device has caught up. */
   remove(id: string) {
-    this.write(this.read().filter((r) => r.id !== id));
+    const rows = this.read();
+    const row = rows.find((r) => r.id === id && !r.deletedAt);
+    if (!row) return;
+    const now = new Date().toISOString();
+    row.deletedAt = now;
+    row.updatedAt = now;
+    this.write(rows);
   }
 
   removeAll() {
-    this.write([]);
+    const rows = this.read();
+    const now = new Date().toISOString();
+    for (const row of rows) {
+      if (row.deletedAt) continue;
+      row.deletedAt = now;
+      row.updatedAt = now;
+    }
+    this.write(rows);
+  }
+
+  /** Drop tombstoned rows for good. Pass an ISO cutoff to keep recent
+   *  tombstones that sync may still need to propagate. */
+  purgeTombstones(before?: string) {
+    this.write(
+      this.read().filter((r) => !r.deletedAt || (before !== undefined && r.deletedAt >= before)),
+    );
+  }
+
+  /** Write a merged row set verbatim. The sync engine's merge lands here;
+   *  nothing else should call it. */
+  replaceAll(rows: T[]) {
+    this.write(rows);
   }
 
   subscribe(fn: Listener): () => void {
@@ -112,6 +155,10 @@ export function collection<T extends Record_>(key: string): Collection<T> {
   }
   return c as unknown as Collection<T>;
 }
+
+/** Where the sync engine keeps its per-device cursors. Device bookkeeping,
+ *  not user data: deliberately outside GRAPH_KEYS. */
+export const SYNC_CURSOR_KEY = "berean.sync.cursors.v1";
 
 export const GRAPH_KEYS = [
   "berean.marginalia.v1",
@@ -144,7 +191,10 @@ export const GRAPH_KEYS = [
   "berean.printbooks.v1",
 ] as const;
 
-/** Export the entire knowledge graph as one JSON document. */
+/** Export the entire knowledge graph as one JSON document. Tombstones ride
+ *  along (format 1 is the shape sync speaks, ADR 0002), so an imported
+ *  graph keeps the same deletes; a graph with no tombstones exports
+ *  byte-for-byte as before. */
 export function exportGraph(): string {
   const out: Record<string, unknown> = {
     product: "berean",
@@ -172,6 +222,9 @@ export function importGraph(json: string): { ok: boolean; error?: string } {
         notify(key);
       }
     }
+    // A full import replaces every record, so sync cursors start over and
+    // both sides reconcile from the beginning.
+    window.localStorage.removeItem(SYNC_CURSOR_KEY);
     return { ok: true };
   } catch {
     return { ok: false, error: "The file could not be read as JSON." };
