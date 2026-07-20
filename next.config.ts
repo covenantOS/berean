@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   // Standalone server for the managed-container deploy (see DEPLOY.md): the
   // runner image ships the traced server plus data/, not full node_modules.
   output: "standalone",
+  // better-sqlite3 is a native module: keep it external so the standalone
+  // build traces the prebuilt binary instead of bundling it.
+  serverExternalPackages: ["better-sqlite3"],
   outputFileTracingIncludes: {
     "/**": ["./data/kjv/*.json"],
   },

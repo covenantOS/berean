@@ -32,6 +32,7 @@ import {
 } from "@/lib/highlights";
 import { CONFESSIONS, deleteProfile, profiles, saveProfile } from "@/lib/settings";
 import { deleteGraph, exportGraph, importGraph } from "@/lib/store";
+import AccountSection from "./AccountSection";
 import { STORAGE_KEY } from "./workspace-state";
 
 /**
@@ -95,6 +96,8 @@ export default function SettingsPane() {
           your back.
         </p>
       </header>
+
+      <AccountSection />
 
       <section className="rounded-[4px] border border-rule bg-surface p-5">
         <h3 className="small-caps mb-3 text-sm text-muted">Your standards — what the Scribe may know</h3>

@@ -135,3 +135,37 @@ still runs; nothing pretends to be intelligent.
   subject, provision Neon, and wire a settings surface to
   `configuredTransport()`.
 
+*2026-07-20, auth wave: better-auth accounts landed, with magic links and anonymous sessions.*
+
+- `src/lib/auth.ts`: better-auth 1.6 with the magicLink and anonymous
+  plugins, nothing else. genericOAuth stays reserved and unwired per the
+  plan. The database dialect follows DATABASE_URL: a pg Pool against Neon
+  when set, a better-sqlite3 file at data/auth.db (gitignored) when not, so
+  the full sign-in flow verifies locally with zero servers. better-auth
+  drives both through its Kysely adapter; the schema is one shape either
+  way. Delivery is a plain POST to the Resend API when RESEND_API_KEY and
+  RESEND_FROM are set; without them the link prints to the server log and
+  the flow completes, the documented dev mode.
+- The handler mounts at `src/app/api/auth/[...all]`; `src/lib/auth-client.ts`
+  is the browser half. The Settings tab gains the Account section
+  (`src/components/shell/AccountSection.tsx`): email field and send-link,
+  an anonymous-session option, sign-out, and the sync namespace the current
+  identity resolves to. No header or status-bar presence; the surface stays
+  quiet.
+- The identity swap is `resolveNamespace` in `src/lib/sync-server.ts`: a
+  valid session's user id wins and is never slug-validated (account ids are
+  not slugs), the caller's slug decides otherwise, and both sync routes
+  resolve through it. `configuredTransport(accountId)` on the client mirrors
+  the choice, and the server's session ruling wins any disagreement, so a
+  stale client value cannot write to the wrong namespace. Signed-out
+  behavior everywhere is unchanged; no surface requires an account.
+- `db/migrations/0002_auth.sql` carries the better-auth tables (user,
+  session, account, verification) translated to pg types from the CLI's own
+  generated schema. The sync "userId" column intentionally holds no foreign
+  key to it: a slug and an account id share the column by design. The sqlite
+  dialect creates its tables automatically on first use; the CLI migrate
+  path remains for the pg side.
+- Remaining: provision Neon (apply 0001 and 0002), set the auth env vars
+  (DEPLOY.md), verify a Resend domain, and wire the Settings surface to run
+  sync cycles through `configuredTransport()`.
+

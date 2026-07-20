@@ -10,10 +10,13 @@
  * in JS inside a transaction so the SQL holds rows and the code arbitrates
  * them, one ruling in one place (lwwWinner).
  *
- * Namespaces: auth is not wired, so rows are scoped by a namespace slug the
- * caller supplies (a device-generated UUID until identity lands). The
- * schema's "userId" column carries this slug today and the identity subject
- * later; the auth wave swaps where the value comes from, not the shape.
+ * Namespaces: rows are scoped by a namespace the request resolves in one of
+ * two ways. A request carrying a valid account session syncs under the
+ * account's user id (src/lib/auth.ts); anything else falls back to the
+ * pre-auth slug the caller supplies (a device-generated UUID), which stays
+ * for devices and deployments that never sign in. The schema's "userId"
+ * column carries either value; the auth wave changed where the value comes
+ * from, not the shape.
  *
  * Driver selection is config-gated so a deploy with no sync configuration
  * behaves exactly as the app always has: SYNC_DRIVER=memory turns the
@@ -252,6 +255,21 @@ const NAMESPACE_RE = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/;
 
 export function parseNamespace(value: unknown): string | null {
   return typeof value === "string" && NAMESPACE_RE.test(value) ? value : null;
+}
+
+/**
+ * Where a sync request's rows belong. A signed-in account wins: the session
+ * subject is server-derived and cannot be forged by the body, so its user id
+ * becomes the namespace without slug validation (account ids are not slugs).
+ * With no session the caller's slug decides, validated as before; null means
+ * neither path produced a namespace and the route answers 400.
+ */
+export function resolveNamespace(
+  accountUserId: string | null,
+  slug: unknown,
+): string | null {
+  if (accountUserId !== null) return accountUserId;
+  return parseNamespace(slug);
 }
 
 export function isCollection(value: unknown): value is string {

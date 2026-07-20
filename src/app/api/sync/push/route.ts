@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sessionUserId } from "@/lib/auth";
 import {
   getSyncStore,
   isCollection,
-  parseNamespace,
   parseRecords,
+  resolveNamespace,
 } from "@/lib/sync-server";
 
 /**
@@ -11,8 +12,9 @@ import {
  * (src/lib/sync.ts) plus the pre-auth namespace slug: { namespace,
  * collection, records }. The store merges last-writer-wins and answers how
  * many rows it actually wrote; a retried push merges away idempotently.
- * Auth is not wired: the namespace stands in for the identity subject until
- * that wave lands, and the shape does not change when it does.
+ * Identity: a request with a valid account session syncs under the account's
+ * user id and the slug is ignored; without one the slug decides, which keeps
+ * pre-auth devices and account-free deployments working unchanged.
  */
 export async function POST(req: NextRequest) {
   const store = getSyncStore();
@@ -29,7 +31,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Body must be JSON." }, { status: 400 });
   }
   const b = body as Record<string, unknown>;
-  const namespace = parseNamespace(b?.namespace);
+  const namespace = resolveNamespace(await sessionUserId(req.headers), b?.namespace);
   if (namespace === null) {
     return NextResponse.json({ error: "Invalid namespace." }, { status: 400 });
   }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sessionUserId } from "@/lib/auth";
 import {
   getSyncStore,
   isCollection,
   parseCursor,
-  parseNamespace,
+  resolveNamespace,
 } from "@/lib/sync-server";
 
 /**
@@ -11,7 +12,8 @@ import {
  * a PullRequest (src/lib/sync.ts) plus the pre-auth namespace slug:
  * { namespace, collection, after }. after is null for the whole collection
  * (tombstones included) or the cursor from the last PullResponse, held
- * verbatim and never parsed by the device.
+ * verbatim and never parsed by the device. Identity resolves as in push: a
+ * session subject beats the slug.
  */
 export async function POST(req: NextRequest) {
   const store = getSyncStore();
@@ -28,7 +30,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Body must be JSON." }, { status: 400 });
   }
   const b = body as Record<string, unknown>;
-  const namespace = parseNamespace(b?.namespace);
+  const namespace = resolveNamespace(await sessionUserId(req.headers), b?.namespace);
   if (namespace === null) {
     return NextResponse.json({ error: "Invalid namespace." }, { status: 400 });
   }

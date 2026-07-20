@@ -84,5 +84,7 @@ Commentary, Ellicott, and the Geneva notes are registered as planned pending
 clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter/catechism texts (need verified datasets;
 registered as planned in rights), and all Covenant OS integration (contracts first). The ADR 0002 sync server half shipped:
 Postgres schema (db/migrations), SyncStore drivers and push/pull routes (src/lib/sync-server.ts, src/app/api/sync),
-and the HttpTransport behind a config flag; the auth wave (namespace to identity subject, Neon provisioning,
-settings wiring) remains, and export/import remains the bridge until then.
+and the HttpTransport behind a config flag. The auth wave shipped: better-auth magic-link and anonymous
+accounts (src/lib/auth.ts, src/app/api/auth, the Settings account section), the sync namespace resolved
+from the session subject, and the Neon-side auth DDL (db/migrations/0002_auth.sql); Neon provisioning
+and wiring live sync cycles from Settings remain, and export/import remains the bridge until then.

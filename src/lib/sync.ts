@@ -213,13 +213,13 @@ export class MemoryTransport implements SyncTransport {
 /* ------------------------------------------------------------------ */
 
 /** Where the pre-auth namespace slug persists on this device. Device
- *  bookkeeping, not user data; the auth wave replaces the slug with the
- *  identity subject and retires this key. */
+ *  bookkeeping, not user data. Signed-in devices sync under the account's
+ *  user id instead; the slug stays for signed-out and device-only use. */
 export const SYNC_NAMESPACE_KEY = "berean.sync.namespace.v1";
 
-/** The namespace this device syncs under until identity lands: a UUID
- *  minted once and held in localStorage, stable across sessions so every
- *  device the user signs onto the same slug converges. */
+/** The namespace this device syncs under when no account session exists: a
+ *  UUID minted once and held in localStorage, stable across sessions so
+ *  every device the user signs onto the same slug converges. */
 export function deviceNamespace(): string {
   const existing = window.localStorage.getItem(SYNC_NAMESPACE_KEY);
   if (existing) return existing;
@@ -230,8 +230,10 @@ export function deviceNamespace(): string {
 
 /**
  * The SyncTransport that speaks to the API routes. The namespace rides in
- * the request body (the pre-auth shape, documented in
- * src/lib/sync-server.ts); baseUrl defaults to same-origin. A failed
+ * the request body and the session cookie rides with the fetch; when a
+ * session exists the server syncs under the account's user id whatever the
+ * body says (resolveNamespace in src/lib/sync-server.ts). baseUrl defaults
+ * to same-origin. A failed
  * response or a network error rejects, so a sync cycle that cannot reach
  * the server changes nothing and retries whole next time: both sides merge
  * idempotently, so repetition is safe.
@@ -263,17 +265,22 @@ export class HttpTransport implements SyncTransport {
 }
 
 /**
- * The config gate for live sync: an HttpTransport for this device's
- * namespace when NEXT_PUBLIC_BEREAN_SYNC is set, null otherwise. Nothing in
- * the app calls this yet; the settings surface that wires the engine to a
- * transport arrives with the auth wave, and deployments without the flag
- * behave exactly as before.
+ * The config gate for live sync: an HttpTransport when NEXT_PUBLIC_BEREAN_SYNC
+ * is set, null otherwise. Pass the signed-in account's user id (the Settings
+ * account section reads it from the session) so the transport syncs under the
+ * account; without one the device slug decides. The server resolves the same
+ * question from the session cookie and its ruling wins (resolveNamespace in
+ * src/lib/sync-server.ts), so a stale value here can never write rows to the
+ * wrong namespace. Deployments without the flag behave exactly as before.
  */
-export function configuredTransport(): SyncTransport | null {
+export function configuredTransport(accountId?: string | null): SyncTransport | null {
   if (typeof window === "undefined") return null;
   const flag = process.env.NEXT_PUBLIC_BEREAN_SYNC ?? "";
   if (flag !== "1" && flag !== "true") return null;
-  return new HttpTransport(deviceNamespace(), process.env.NEXT_PUBLIC_BEREAN_SYNC_URL ?? "");
+  return new HttpTransport(
+    accountId ?? deviceNamespace(),
+    process.env.NEXT_PUBLIC_BEREAN_SYNC_URL ?? "",
+  );
 }
 
 /* ------------------------------------------------------------------ */

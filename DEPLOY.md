@@ -24,13 +24,34 @@ Railway.
 - **ANTHROPIC_API_KEY (optional).** Set it in the host's environment to
   enable the Scribe and semantic search. Without it the app runs fully and
   those surfaces say so honestly.
-- **Sync (optional, pre-auth).** The sync routes (`/api/sync/push`,
-  `/api/sync/pull`) answer 503 until a store is configured. Set
-  `SYNC_DRIVER=memory` for a single-process in-memory store (rows vanish on
-  restart), or set `DATABASE_URL` to a Postgres connection string after
-  applying `db/migrations/0001_sync.sql` for the real store. Auth is not
-  wired: clients pass a namespace slug, documented in
-  `src/lib/sync-server.ts`.
+- **Accounts and sync (optional).** Accounts are better-auth magic links;
+  sync is the push/pull pair under `/api/sync`. Both share one Postgres
+  database, Neon in production (ADR 0002):
+  - `DATABASE_URL`: the Neon connection string. It turns on the pg sync
+    store and puts the account tables in Postgres. Without it the sync
+    routes answer 503 and accounts fall back to a local sqlite file
+    (`data/auth.db` under the server's working directory, overridable with
+    `BEREAN_AUTH_DB`), which suits a single-process self-host but not a
+    shared deployment.
+  - `BETTER_AUTH_SECRET`: a random 32+ character string (`openssl rand
+    -base64 32`). Required in production; sessions cannot sign without it.
+  - `BETTER_AUTH_URL`: the public origin, for example
+    `https://berean.onrender.com`. Magic links are built from it.
+  - `RESEND_API_KEY` and `RESEND_FROM`: the Resend key and a verified
+    sender (for example `Berean <login@yourdomain.com>`). Without them the
+    sign-in flow still completes and the server log prints the link, which
+    is the dev mode, not a production posture.
+  - Provisioning is two files, applied in order against the Neon database:
+    `psql "$DATABASE_URL" -f db/migrations/0001_sync.sql` then
+    `db/migrations/0002_auth.sql`. Both are idempotent. Equivalently,
+    `npx @better-auth/cli migrate` creates the auth tables from the app
+    config; the SQL file keeps provisioning one documented step with no CLI.
+    The sqlite fallback needs no provisioning: its tables are created
+    automatically on first use.
+  - `SYNC_DRIVER=memory` remains available for a single-process in-memory
+    sync store (rows vanish on restart). Signed-in requests sync under the
+    account's user id; signed-out requests use the caller's namespace slug
+    as before (src/lib/sync-server.ts).
 - **First build is slow.** The repo carries about 600MB of processed JSON.
   The first clone and the first Docker build take several minutes; later
   deploys reuse the cached clone.

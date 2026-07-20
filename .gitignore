@@ -22,3 +22,6 @@ data/_sources/bsb-usfm/*.zip
 data/_sources/bsb-usfm/*.usfm
 data/_sources/bsb-usfm/*.css
 data/_sources/bsb-usfm/*.asc
+
+# Dev auth database (better-sqlite3 dialect when DATABASE_URL is unset)
+data/auth.db*
