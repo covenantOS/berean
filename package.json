@@ -4,11 +4,15 @@
   "private": true,
   "description": "Berean — software for the Christian life of the mind and the ordered life of worship. A study prepared.",
   "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/build-precache.mjs",
     "build": "next build",
-    "start": "next start",
+    "postbuild": "node -e \"const fs=require('fs');fs.cpSync('public','.next/standalone/public',{recursive:true});fs.cpSync('.next/static','.next/standalone/.next/static',{recursive:true})\"",
+    "start": "node .next/standalone/server.js",
     "lint": "next lint"
   },
   "dependencies": {

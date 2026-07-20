@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+desktop
+docs
+*.tsbuildinfo
+
+# Raw sources are reproducible inputs, not runtime files. The atlas still
+# reads the Natural Earth land shapes at request time, so keep those.
+data/_sources/*
+!data/_sources/naturalearth

@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Standalone server for the managed-container deploy (see DEPLOY.md): the
+  // runner image ships the traced server plus data/, not full node_modules.
+  output: "standalone",
   outputFileTracingIncludes: {
     "/**": ["./data/kjv/*.json"],
   },
