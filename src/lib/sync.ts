@@ -265,6 +265,32 @@ export class HttpTransport implements SyncTransport {
 }
 
 /**
+ * Where the last successful sync's stamp persists on this device. Device
+ * bookkeeping, not user data, beside the cursors and the namespace slug:
+ * export never carries it and importGraph leaves it, because an import does
+ * not reconcile with the server. The Settings sync section reads it and the
+ * status bar follows it through the event below.
+ */
+export const SYNC_LAST_KEY = "berean.sync.last.v1";
+
+/** The window event markSynced raises so open surfaces (the status bar)
+ *  refresh their last-synced line without polling localStorage. */
+export const SYNCED_EVENT = "berean:synced";
+
+/** The stamp of the last completed sync on this device, or null. */
+export function lastSyncedAt(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(SYNC_LAST_KEY);
+}
+
+/** Record a completed sync and tell the open surfaces. */
+export function markSynced(at: string = new Date().toISOString()) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SYNC_LAST_KEY, at);
+  window.dispatchEvent(new CustomEvent(SYNCED_EVENT));
+}
+
+/**
  * The config gate for live sync: an HttpTransport when NEXT_PUBLIC_BEREAN_SYNC
  * is set, null otherwise. Pass the signed-in account's user id (the Settings
  * account section reads it from the session) so the transport syncs under the
@@ -354,11 +380,17 @@ export class SyncEngine {
   }
 
   /** Push every local change since the last push, then pull and merge
-   *  everything the server committed past the pull cursor. */
-  async sync(): Promise<SyncSummary> {
+   *  everything the server committed past the pull cursor. onCollection
+   *  fires at the start of each collection with its key, index, and the
+   *  total, so a caller (the Settings sync section) can report honest
+   *  progress without the engine knowing anything about UI. */
+  async sync(
+    onCollection?: (key: string, index: number, total: number) => void,
+  ): Promise<SyncSummary> {
     let pushed = 0;
     let pulled = 0;
-    for (const key of this.keys) {
+    for (const [index, key] of this.keys.entries()) {
+      onCollection?.(key, index, this.keys.length);
       const col = collection(key);
       const c = this.cursorFor(key);
 

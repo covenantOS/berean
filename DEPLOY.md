@@ -52,6 +52,18 @@ Railway.
     sync store (rows vanish on restart). Signed-in requests sync under the
     account's user id; signed-out requests use the caller's namespace slug
     as before (src/lib/sync-server.ts).
+  - Tombstone purge. Deletes travel as tombstones; once every device has
+    caught up they are dead weight. `POST /api/sync/purge` drops tombstones
+    older than a cutoff (default 30 days, tunable with `SYNC_TOMBSTONE_DAYS`
+    or a `days` field in the body). Scoped like push and pull: a session
+    purges its account namespace, anything else purges the caller's slug.
+    For a scheduled sweep of every namespace, set `SYNC_PURGE_SECRET` and
+    have the host hit the route on a cadence, for example a weekly cron job
+    running
+    `curl -X POST https://your-host/api/sync/purge -H "authorization: Bearer $SYNC_PURGE_SECRET" -H "content-type: application/json" -d '{}'`.
+    Purging is safe to repeat; the worst case of purging a tombstone a
+    device has not pulled yet is that the device still holds the record and
+    pushes it back on its next cycle.
 - **First build is slow.** The repo carries about 600MB of processed JSON.
   The first clone and the first Docker build take several minutes; later
   deploys reuse the cached clone.

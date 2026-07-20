@@ -49,6 +49,13 @@ export interface SyncStore {
     collection: string,
     after: string | null,
   ): Promise<PullResponse>;
+  /** Drop tombstones older than the ISO cutoff. A null namespace purges
+   *  every namespace; the routes only allow that behind the purge secret
+   *  (src/app/api/sync/purge). Returns how many rows were dropped. */
+  purgeTombstones(
+    namespace: string | null,
+    before: string,
+  ): Promise<{ purged: number }>;
 }
 
 const COLLECTIONS = new Set<string>(GRAPH_KEYS);
@@ -127,6 +134,31 @@ export class MemorySyncStore implements SyncStore {
       .filter((r) => (t.seqById.get(r.id) ?? 0) > afterSeq)
       .sort((a, b) => (t.seqById.get(a.id) ?? 0) - (t.seqById.get(b.id) ?? 0));
     return { records, cursor: String(t.counter) };
+  }
+
+  async purgeTombstones(
+    namespace: string | null,
+    before: string,
+  ): Promise<{ purged: number }> {
+    let purged = 0;
+    const namespaces = namespace === null ? this.namespaces.keys() : [namespace];
+    for (const ns of namespaces) {
+      const tables = this.namespaces.get(ns);
+      if (!tables) continue;
+      for (const t of tables.values()) {
+        const kept = t.rows.filter(
+          (r) => !r.deletedAt || r.deletedAt >= before,
+        );
+        for (const r of t.rows) {
+          if (r.deletedAt && r.deletedAt < before) {
+            t.seqById.delete(r.id);
+            purged++;
+          }
+        }
+        t.rows = kept;
+      }
+    }
+    return { purged };
   }
 }
 
@@ -238,6 +270,46 @@ export class PgSyncStore implements SyncStore {
     } finally {
       client.release();
     }
+  }
+
+  async purgeTombstones(
+    namespace: string | null,
+    before: string,
+  ): Promise<{ purged: number }> {
+    const client = await (await this.pool()).connect();
+    let purged = 0;
+    try {
+      await client.query("BEGIN");
+      for (const collection of COLLECTIONS) {
+        const table = syncTable(collection);
+        // ISO stamps compare as strings, so the cutoff filters in SQL. The
+        // row's commit sequence leaves with it; cursors already past it are
+        // unaffected, and a device that never saw the delete has the record
+        // live locally and pushes it back on its next cycle, which is the
+        // documented risk of purging before every device has caught up.
+        const res =
+          namespace === null
+            ? await client.query(
+                `DELETE FROM ${table}
+                 WHERE record->>'deletedAt' IS NOT NULL AND record->>'deletedAt' < $1`,
+                [before],
+              )
+            : await client.query(
+                `DELETE FROM ${table}
+                 WHERE "userId" = $1
+                   AND record->>'deletedAt' IS NOT NULL AND record->>'deletedAt' < $2`,
+                [namespace, before],
+              );
+        purged += res.rowCount ?? 0;
+      }
+      await client.query("COMMIT");
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
+    return { purged };
   }
 }
 
