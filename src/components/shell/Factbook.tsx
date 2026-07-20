@@ -232,6 +232,20 @@ export default function Factbook({ entityId }: { entityId: string }) {
               )
             )}
           </div>
+          {r.kind === "person" && (
+            <p className="mt-2">
+              <button
+                type="button"
+                title={`${r.name}'s kin as a generational map`}
+                onClick={() =>
+                  dispatch({ type: "openFamilyMap", entityId: r.id, title: r.name })
+                }
+                className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire text-xs"
+              >
+                Open the family map
+              </button>
+            </p>
+          )}
         </GuideSection>
       )}
 

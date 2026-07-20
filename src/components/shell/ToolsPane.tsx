@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CANTILLATIONS,
   GREEK_LETTERS,
@@ -28,6 +28,7 @@ import {
 } from "@/lib/measures";
 import { NT_NAMES, OT_NAMES, type NameOfGod } from "@/lib/namesOfGod";
 import { REIGN_TABLES } from "@/lib/reigns";
+import { APPOINTED_OBSERVANCES, LEVITICAL_OFFERINGS, type Sacrifice } from "@/lib/sacrifices";
 import { useWorkspace } from "./WorkspaceContext";
 
 type ToolSection =
@@ -38,6 +39,8 @@ type ToolSection =
   | "cantillations"
   | "names"
   | "reigns"
+  | "sacrifices"
+  | "family"
   | "commandments"
   | "goliath";
 
@@ -49,6 +52,8 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
   { id: "cantillations", label: "Cantillations" },
   { id: "names", label: "Names of God" },
   { id: "reigns", label: "Reigns" },
+  { id: "sacrifices", label: "Sacrifices" },
+  { id: "family", label: "Family maps" },
   { id: "commandments", label: "Commandments" },
   { id: "goliath", label: "Goliath" },
 ];
@@ -62,9 +67,11 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
  * transliteration (and Greek back); Cantillations tables the accents the
  * pointed text carries; Names of God tables the received names and titles
  * with meaning and first occurrence; Reigns tables the kings, judges,
- * prophets, and high priests in order; Commandments lays the three
- * numberings side by side; Goliath sends the reader to the comparison tool
- * for the two texts.
+ * prophets, and high priests in order; Sacrifices tables the five
+ * Levitical offerings and the two appointed observances; Family maps
+ * opens the generational explorer over the TIPNR kinship data; Commandments
+ * lays the three numberings side by side; Goliath sends the reader to the
+ * comparison tool for the two texts.
  */
 export default function ToolsPane({ paneId }: { paneId: string }) {
   const [section, setSection] = useState<ToolSection>("measures");
@@ -97,6 +104,8 @@ export default function ToolsPane({ paneId }: { paneId: string }) {
       {section === "cantillations" && <CantillationsTool />}
       {section === "names" && <NamesTool paneId={paneId} />}
       {section === "reigns" && <ReignsTool paneId={paneId} />}
+      {section === "sacrifices" && <SacrificesTool paneId={paneId} />}
+      {section === "family" && <FamilyMapsTool paneId={paneId} />}
       {section === "commandments" && <CommandmentsTool paneId={paneId} />}
       {section === "goliath" && <GoliathTool paneId={paneId} />}
     </div>
@@ -655,6 +664,178 @@ function ReignsTool({ paneId }: { paneId: string }) {
         </tbody>
       </table>
       <p className={NOTE}>{table.note}</p>
+    </section>
+  );
+}
+
+/* ---------- the offerings of the law ---------- */
+
+function SacrificeTable({
+  paneId,
+  rows,
+}: {
+  paneId: string;
+  rows: Sacrifice[];
+}) {
+  const { dispatch } = useWorkspace();
+  return (
+    <table className="w-full border-y border-rule text-[0.78rem]">
+      <thead>
+        <tr className="text-left">
+          <th className={`${HEAD3} py-1 pr-2`}>Offering</th>
+          <th className={`${HEAD3} py-1 pr-2`}>What was offered</th>
+          <th className={`${HEAD3} py-1 pr-2`}>Who brought it</th>
+          <th className={`${HEAD3} py-1 pr-2`}>Purpose</th>
+          <th className={`${HEAD3} py-1`}>Key text</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-rule">
+        {rows.map((s) => (
+          <tr key={s.name}>
+            <td className="py-1 pr-2 align-top">
+              <span className="font-semibold text-ink">{s.name}</span>
+              <br />
+              <span className="text-[0.68rem] italic text-muted">{s.hebrew}</span>
+            </td>
+            <td className="py-1 pr-2 align-top text-muted">{s.offered}</td>
+            <td className="py-1 pr-2 align-top text-muted">{s.broughtBy}</td>
+            <td className="py-1 pr-2 align-top text-muted">{s.purpose}</td>
+            <td className="py-1 align-top">
+              <button
+                type="button"
+                title={`Open ${s.ref.label}`}
+                onClick={() =>
+                  dispatch({ type: "openRef", book: s.ref.book, chapter: s.ref.chapter, paneId })
+                }
+                className="small-caps whitespace-nowrap text-[0.68rem] font-semibold text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {s.ref.label}
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function SacrificesTool({ paneId }: { paneId: string }) {
+  return (
+    <section className="space-y-3">
+      <SacrificeTable paneId={paneId} rows={LEVITICAL_OFFERINGS} />
+      <SacrificeTable paneId={paneId} rows={APPOINTED_OBSERVANCES} />
+      <p className={NOTE}>
+        The five offerings stand in the law&rsquo;s own order, Leviticus 1 through 7; the day of
+        atonement (Leviticus 16) and the Passover (Exodus 12) are appointed days that turn on an
+        offering, kept beside the five rather than among them.
+      </p>
+    </section>
+  );
+}
+
+/* ---------- family maps ---------- */
+
+/** Notable roots for the explorer, resolved against the TIPNR index. */
+const FAMILY_MAP_STARTS: { id: string; label: string }[] = [
+  { id: "H0121G", label: "Adam" },
+  { id: "H5146", label: "Noah" },
+  { id: "H0085", label: "Abraham" },
+  { id: "H3478", label: "Israel (Jacob)" },
+  { id: "H4872", label: "Moses" },
+  { id: "H1732", label: "David" },
+];
+
+interface FamilySearchHit {
+  id: string;
+  name: string;
+  type: string;
+  tag: string;
+  brief: string;
+}
+
+function FamilyMapsTool({ paneId }: { paneId: string }) {
+  const { dispatch } = useWorkspace();
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<FamilySearchHit[]>([]);
+
+  /** The picker searches the TIPNR people, debounced a beat. */
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length < 2) {
+      setHits([]);
+      return;
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      fetch(`/api/pane/familymap?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+        .then(async (res) => {
+          if (!res.ok) throw new Error(String(res.status));
+          setHits(((await res.json()) as { results: FamilySearchHit[] }).results);
+        })
+        .catch(() => {});
+    }, 200);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [q]);
+
+  const openMap = (id: string, name: string) =>
+    dispatch({ type: "openFamilyMap", entityId: id, title: name, paneId });
+
+  return (
+    <section className="space-y-3">
+      <p className="text-[0.78rem] leading-relaxed text-ink">
+        The family map walks the TIPNR kinship data from any figure: parents upward, partners
+        beside, children downward, every node opening its Factbook report. Pick a starting point
+        or find any person.
+      </p>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {FAMILY_MAP_STARTS.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => openMap(s.id, s.label)}
+            className="border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <input
+        type="text"
+        value={q}
+        aria-label="Find a person to map"
+        placeholder="Find any person, e.g. Bathsheba"
+        onChange={(e) => setQ(e.target.value)}
+        className={`${INPUT} w-full`}
+      />
+      {hits.length > 0 && (
+        <ul className="divide-y divide-rule border-y border-rule">
+          {hits.map((h) => (
+            <li key={h.id}>
+              <button
+                type="button"
+                onClick={() => openMap(h.id, h.name)}
+                title={h.brief || h.tag}
+                className="flex w-full items-baseline gap-2 py-1 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                <span className="text-[0.78rem] font-semibold text-sapphire hover:underline">
+                  {h.name}
+                </span>
+                <span className="truncate text-[0.68rem] text-muted">
+                  {h.type}
+                  {h.tag ? ` · ${h.tag}` : ""}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className={NOTE}>
+        Where the records intermarry, the map shows a person once and marks later appearances
+        with a dashed cell; the Factbook carries every relationship in full.
+      </p>
     </section>
   );
 }

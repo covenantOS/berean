@@ -316,6 +316,19 @@ export interface FactbookTab {
   title: string;
 }
 
+/**
+ * The family map: one TIPNR person's kin as a generational graph, pinned
+ * to the root person at open time; the pane re-roots and re-paces the
+ * generations in place.
+ */
+export interface FamilyMapTab {
+  id: string;
+  type: "familymap";
+  entityId: string;
+  /** The root person's name, captured at open time for the tab strip. */
+  title: string;
+}
+
 /** The library browser: the faceted catalog, one tab with no payload. */
 export interface LibraryTab {
   id: string;
@@ -574,6 +587,7 @@ export type Tab =
   | ChapelTab
   | ServiceTab
   | FactbookTab
+  | FamilyMapTab
   | LibraryTab
   | MultiviewTab
   | TextCompareTab
@@ -951,6 +965,10 @@ export const SERVICE_ID_PATTERN = MEMORY_ID_PATTERN;
 
 export function factbookTab(entityId: string, title: string): FactbookTab {
   return { id: newId("tab"), type: "factbook", entityId, title };
+}
+
+export function familyMapTab(entityId: string, title: string): FamilyMapTab {
+  return { id: newId("tab"), type: "familymap", entityId, title };
 }
 
 export function libraryTab(): LibraryTab {
@@ -1350,6 +1368,7 @@ export type WorkspaceAction =
   | { type: "setWisdomBook"; paneId: string; tabId: string; book: "psalms" | "proverbs" }
   | { type: "openMedia"; book?: string; chapter?: number; verse?: number; paneId?: string }
   | { type: "openFactbook"; entityId: string; title: string; paneId?: string }
+  | { type: "openFamilyMap"; entityId: string; title: string; paneId?: string }
   | { type: "openLibrary"; paneId?: string }
   | { type: "openTextCompare"; book: string; chapter: number; paneId?: string }
   | { type: "openMultiview"; book: string; chapter: number; paneId?: string }
@@ -2472,6 +2491,26 @@ export function workspaceReducer(
       };
     }
 
+    case "openFamilyMap": {
+      const entityId = action.entityId.trim();
+      if (!ENTITY_ID_PATTERN.test(entityId)) return state;
+      const title = action.title.trim() || entityId;
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      if (!findLeaf(state.root, paneId)) return state;
+      // Like the Factbook, the map pins its root person at open time.
+      const tab = familyMapTab(entityId, title);
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
     case "openLibrary": {
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
@@ -3458,6 +3497,13 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : t.entityId;
         tabs.push({ id: t.id, type: "factbook", entityId: t.entityId, title });
+        continue;
+      }
+      if (t.type === "familymap" && typeof t.id === "string") {
+        if (typeof t.entityId !== "string" || !ENTITY_ID_PATTERN.test(t.entityId)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : t.entityId;
+        tabs.push({ id: t.id, type: "familymap", entityId: t.entityId, title });
         continue;
       }
       if (t.type === "library" && typeof t.id === "string") {

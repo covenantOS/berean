@@ -55,6 +55,7 @@ import ChapelPane from "./ChapelPane";
 import ServicePane from "./ServicePane";
 import AlmanacPane from "./AlmanacPane";
 import Factbook from "./Factbook";
+import FamilyMapPane from "./FamilyMapPane";
 import LibraryPane from "./LibraryPane";
 import MultiviewPane from "./MultiviewPane";
 import TextCompare from "./TextCompare";
@@ -190,6 +191,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "service") return tab.title;
   if (tab.type === "almanac") return "Almanac";
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
+  if (tab.type === "familymap") return `Family: ${tab.title}`;
   if (tab.type === "library") return "Library";
   if (tab.type === "multiview") {
     return `Multiview: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
@@ -691,6 +693,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "factbook" ? (
             <div className="h-full overflow-y-auto p-4">
               <Factbook entityId={activeTab.entityId} />
+            </div>
+          ) : activeTab.type === "familymap" ? (
+            <div className="h-full overflow-auto p-4">
+              <FamilyMapPane entityId={activeTab.entityId} />
             </div>
           ) : activeTab.type === "library" ? (
             <div className="h-full overflow-y-auto p-4">
