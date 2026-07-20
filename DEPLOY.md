@@ -95,3 +95,10 @@ KJV chapter set, about 5.4MB) only activate on a secure origin. Both hosts
 above provide HTTPS by default, so install works out of the box on their
 domains. A plain-IP or HTTP demo will run but will not install or work
 offline.
+
+## The desktop shell
+
+The Tauri desktop shell (desktop/) loads the deployed origin in its window.
+Once the server is live, hand the origin to the shell with
+`node scripts/set-tauri-url.mjs https://your-host`, then build the installer
+with `cargo tauri build`. The full procedure is in `desktop/README.md`.

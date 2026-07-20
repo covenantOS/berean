@@ -6,8 +6,9 @@
  * zlib, so the set is reproducible and carries no external assets.
  *
  * Output: public/icons/icon-192.png, icon-512.png, icon-maskable-512.png
- * (full-bleed, window inside the safe zone), apple-touch-icon.png (180).
- * The vector originals live at public/icons/icon.svg and src/app/icon.svg.
+ * (full-bleed, window inside the safe zone), apple-touch-icon.png (180),
+ * plus the Tauri bundle set under desktop/src-tauri/icons. The vector
+ * originals live at public/icons/icon.svg and src/app/icon.svg.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -115,3 +116,51 @@ for (const [name, size, scale] of targets) {
   fs.writeFileSync(path.join(OUT_DIR, name), png);
   console.log(`${name}: ${size}x${size}, ${png.length} bytes`);
 }
+
+// -- Tauri bundle icons: desktop/src-tauri/icons. ---------------------------
+// The names match bundle.icon in desktop/src-tauri/tauri.conf.json, which is
+// the set Tauri 2 bundling expects (icon.png is the 512px source the Linux
+// bundles and `tauri icon` regeneration use). The Square*Logo.png Store set
+// is skipped on purpose: it only matters to MSIX packaging, and the shell
+// ships NSIS.
+const TAURI_OUT = path.join(ROOT, "desktop", "src-tauri", "icons");
+fs.mkdirSync(TAURI_OUT, { recursive: true });
+const tauriTargets = [
+  ["32x32.png", 32],
+  ["128x128.png", 128],
+  ["128x128@2x.png", 256],
+  ["icon.png", 512],
+];
+for (const [name, size] of tauriTargets) {
+  const png = encodePng(size, 1);
+  fs.writeFileSync(path.join(TAURI_OUT, name), png);
+  console.log(`desktop/src-tauri/icons/${name}: ${size}x${size}, ${png.length} bytes`);
+}
+
+// icon.ico carries the same mark as PNG-in-ICO frames: each directory entry
+// points at a complete PNG, which Windows has accepted since Vista and the
+// NSIS bundler passes through untouched. Width and height bytes are 0 for
+// the 256px frame, per the ICO format.
+const ICO_SIZES = [16, 32, 48, 64, 128, 256];
+const frames = ICO_SIZES.map((size) => ({ size, png: encodePng(size, 1) }));
+const icoHeader = Buffer.alloc(6);
+icoHeader.writeUInt16LE(0, 0); // reserved
+icoHeader.writeUInt16LE(1, 2); // type: icon
+icoHeader.writeUInt16LE(frames.length, 4);
+const icoDir = Buffer.alloc(16 * frames.length);
+let frameOffset = icoHeader.length + icoDir.length;
+frames.forEach((frame, i) => {
+  const o = i * 16;
+  icoDir[o] = frame.size === 256 ? 0 : frame.size;
+  icoDir[o + 1] = frame.size === 256 ? 0 : frame.size;
+  icoDir[o + 2] = 0; // palette colors: none
+  icoDir[o + 3] = 0; // reserved
+  icoDir.writeUInt16LE(1, o + 4); // color planes
+  icoDir.writeUInt16LE(32, o + 6); // bits per pixel
+  icoDir.writeUInt32LE(frame.png.length, o + 8);
+  icoDir.writeUInt32LE(frameOffset, o + 12);
+  frameOffset += frame.png.length;
+});
+const ico = Buffer.concat([icoHeader, icoDir, ...frames.map((f) => f.png)]);
+fs.writeFileSync(path.join(TAURI_OUT, "icon.ico"), ico);
+console.log(`desktop/src-tauri/icons/icon.ico: ${frames.length} frames (${ICO_SIZES.join(", ")}), ${ico.length} bytes`);
