@@ -261,7 +261,7 @@ Sources: logos.com/features and logos.com/compare, the support.logos.com help ce
 
 - [x] [SW] Bible Word Study guide: one lemma or English word in, a full lexical report out, with English and original language modes.
 - [x] [DATA] Translation section: ring graph of how a lemma is rendered across your reverse interlinears, with Charts handoff.
-- [ ] [DATA] Septuagint Translation section: Hebrew lemma to Greek equivalents in the LXX.
+- [x] [DATA] Septuagint Translation section: Hebrew lemma to Greek equivalents in the LXX. (The MACULA Hebrew Linguistic Datasets (Clear Bible/Biblica, CC BY 4.0) align every Hebrew morpheme with the Greek equivalent the LXX translators used, Strong's-numbered on both sides, so the aggregation is direct: scripts/build-lxx-strongs.mjs counts the pairs into data/lxx-strongs/hebrew-greek.json (4,109 Hebrew ids, 15,640 pairs), MACULA's private prefix/suffix numbers excluded by an empirical rule recorded in _meta.json. The Word Study guide's Septuagint Translation section (src/app/api/pane/wordstudy, WordStudyGuide.tsx) lists a Hebrew lemma's Greek equivalents with counts and lexicon glosses, each opening its Greek word study; every tagged-LXX text alternative traced back to restricted CCAT-derived sources, documented in data/_sources/macula-hebrew/PROVENANCE.md.)
 - [ ] [DATA] Lemma, Root, and Senses sections: dictionary entries, root relationships, and the sense taxonomy with example occurrences.
 - [x] [DATA] Morphology section: form distribution of the lemma across the corpus.
 - [ ] [LICENSED] Grammars section: discussion of the construction in your grammar resources.

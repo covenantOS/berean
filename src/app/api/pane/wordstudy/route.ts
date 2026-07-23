@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
 import { countRenderings, findOccurrences } from "@/lib/tagged";
 import { searchOriginal } from "@/lib/morphsearch";
+import { getSeptuagintEquivalents } from "@/lib/lxx-strongs";
 import { getTopic } from "@/lib/topics";
 
 /**
@@ -28,6 +29,9 @@ const LIST_CAP = 600;
 
 /** Ranked renderings sent to the pane; the distinct count stays complete. */
 const RENDERING_CAP = 30;
+
+/** Ranked Septuagint equivalents sent to the pane; the distinct count stays complete. */
+const LXX_CAP = 12;
 
 const topicVerseCache = new Map<string, Record<string, string[]> | null>();
 
@@ -61,6 +65,39 @@ export async function GET(req: NextRequest) {
     searchOriginal(id, {}, 50000).catch(() => null),
     countRenderings(id),
   ]);
+
+  // Septuagint Translation: for a Hebrew lemma, the Greek lemmas the LXX
+  // uses for it (MACULA alignment), each resolved against the Greek
+  // dictionary so the pane can show the lemma and gloss and open the Greek
+  // word study. Greek ids have no LXX section.
+  let septuagint: {
+    total: number;
+    distinct: number;
+    renderings: { id: string; lemma?: string; xlit?: string; gloss?: string; count: number }[];
+  } | null = null;
+  if (id.startsWith("H")) {
+    const equivalents = await getSeptuagintEquivalents(id);
+    if (equivalents && equivalents.length > 0) {
+      const renderings = await Promise.all(
+        equivalents.slice(0, LXX_CAP).map(async ({ greekId, count }) => {
+          const hit = await getLexiconEntry(greekId);
+          const entry = hit?.entry;
+          return {
+            id: greekId,
+            lemma: entry?.lemma,
+            xlit: entry?.xlit,
+            gloss: entry?.tyndale?.[0]?.gloss ?? entry?.strongs_def,
+            count,
+          };
+        })
+      );
+      septuagint = {
+        total: equivalents.reduce((n, e) => n + e.count, 0),
+        distinct: equivalents.length,
+        renderings,
+      };
+    }
+  }
 
   // Occurrence counts and book distribution, canon order.
   const byBook = occ.byBook.map((b) => ({
@@ -135,5 +172,6 @@ export async function GET(req: NextRequest) {
       distinct: renderings.length,
       renderings: renderings.slice(0, RENDERING_CAP),
     },
+    septuagint,
   });
 }

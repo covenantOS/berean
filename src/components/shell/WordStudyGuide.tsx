@@ -43,6 +43,11 @@ interface WordStudyPayload {
     distinct: number;
     renderings: { word: string; count: number }[];
   };
+  septuagint: {
+    total: number;
+    distinct: number;
+    renderings: { id: string; lemma?: string; xlit?: string; gloss?: string; count: number }[];
+  } | null;
 }
 
 type LoadState =
@@ -99,6 +104,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const langClass = s.id.startsWith("H") ? "lang-hebrew" : "lang-greek";
   const maxCount = Math.max(1, ...s.occurrences.byBook.map((b) => b.count));
   const maxRendering = Math.max(1, ...s.translation.renderings.map((r) => r.count));
+  const maxLxx = Math.max(1, ...(s.septuagint?.renderings.map((r) => r.count) ?? [1]));
   const shown = s.occurrences.list.slice(0, LIST_SHOWN);
 
   /** The study's lemmas as a word list: the Tyndale variants when present, the bare entry otherwise. */
@@ -230,9 +236,46 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
         </GuideSection>
       )}
 
-      {s.occurrences.total > 0 && (
+      {s.septuagint && s.septuagint.renderings.length > 0 && (
         <GuideSection
           stagger={3}
+          title="Septuagint Translation"
+          hint={`${s.septuagint.distinct.toLocaleString()} Greek ${
+            s.septuagint.distinct === 1 ? "equivalent" : "equivalents"
+          } in the LXX`}
+        >
+          <div className="space-y-1">
+            {s.septuagint.renderings.map((r) => (
+              <p key={r.id} className="flex items-center gap-2 text-xs">
+                <button
+                  type="button"
+                  title={`Open the word study for ${r.lemma ?? r.id} (${r.id})`}
+                  onClick={() => dispatch({ type: "openWordStudy", strongsId: r.id })}
+                  className="lang-greek w-28 shrink-0 truncate text-left text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {r.lemma ?? r.id}
+                </button>
+                <span className="min-w-0 flex-1 truncate text-muted">{r.gloss}</span>
+                <span
+                  className="h-2 shrink-0 bg-sapphire/70"
+                  style={{ width: `${(r.count / maxLxx) * 40}%` }}
+                />
+                <span className="shrink-0 text-[0.68rem] text-muted">{r.count.toLocaleString()}</span>
+              </p>
+            ))}
+          </div>
+          {s.septuagint.distinct > s.septuagint.renderings.length && (
+            <p className="mt-2 text-[0.68rem] text-muted">
+              Top {s.septuagint.renderings.length} of {s.septuagint.distinct.toLocaleString()}{" "}
+              equivalents, from the MACULA Hebrew-Greek alignment.
+            </p>
+          )}
+        </GuideSection>
+      )}
+
+      {s.occurrences.total > 0 && (
+        <GuideSection
+          stagger={4}
           title="Occurrences"
           hint={`${s.occurrences.total.toLocaleString()} in ${s.occurrences.books} ${
             s.occurrences.books === 1 ? "book" : "books"
@@ -281,7 +324,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.occurrences.total > 0 && (
-        <GuideSection stagger={4} title="Chart" hint="frequency graph by book">
+        <GuideSection stagger={5} title="Chart" hint="frequency graph by book">
           <SearchChart
             series={s.occurrences.byBook.map((b) => ({ key: b.slug, label: b.name, value: b.count }))}
             kind={chartKind}
@@ -295,7 +338,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.forms.length > 0 && (
-        <GuideSection stagger={5} title="Forms" hint="parsings across the tagged originals">
+        <GuideSection stagger={6} title="Forms" hint="parsings across the tagged originals">
           <ul className="space-y-1">
             {s.forms.map((f) => (
               <li key={f.parsing} className="flex items-baseline gap-2 text-xs">
@@ -310,7 +353,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.topics.length > 0 && (
-        <GuideSection stagger={6} title="Topics" hint="cited where this word appears">
+        <GuideSection stagger={7} title="Topics" hint="cited where this word appears">
           <ul className="space-y-1.5">
             {s.topics.map((t) => (
               <li key={`${t.work}:${t.id}`}>
@@ -335,11 +378,12 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       <p
-        style={{ "--i": 7 } as CSSProperties}
+        style={{ "--i": 8 } as CSSProperties}
         className="border-t border-rule pt-2 text-[0.68rem] text-muted"
       >
         Strong's dictionary (public domain). Occurrences and renderings from
-        the tagged KJV; forms from TAHOT and TAGNT.
+        the tagged KJV; forms from TAHOT and TAGNT; Septuagint equivalents
+        from the MACULA Hebrew Linguistic Datasets (CC BY 4.0).
       </p>
     </div>
   );

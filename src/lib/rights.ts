@@ -131,6 +131,20 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "macula-hebrew",
+    title: "MACULA Hebrew Linguistic Datasets (Septuagint Hebrew-Greek alignment)",
+    kind: "dataset",
+    rightsHolder: "Biblica, Inc. (Clear Bible)",
+    license: "CC BY 4.0",
+    source:
+      "https://github.com/Clear-Bible/macula-hebrew (sources/Clear/annotations/annotations.xml)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Attribution: MACULA Hebrew Linguistic Datasets, available at https://github.com/Clear-Bible/macula-hebrew/ (CC BY 4.0). The word-level alignment behind the Word Study guide's Septuagint Translation section: each Hebrew morpheme carries its Hebrew Strong's id and the Greek equivalent the LXX translators used, with that Greek word's Strong's id. Only the aggregate ships: Hebrew Strong's id to Greek Strong's ids with counts, stored as data/lxx-strongs/hebrew-greek.json and built by scripts/build-lxx-strongs.mjs; both sides use standard Strong's numbering, so no cross-system mapping is built. MACULA's private prefix/suffix numbers (which collide with real Strong's entries) are excluded by an empirical rule recorded in data/lxx-strongs/_meta.json. Chosen after every Strong's-tagged LXX text traced back to restricted sources (CCAT/CATSS user agreement, CrossWire LXX and ABPGrk modules, eliranwong's CC BY-NC-SA and GPL repos); the full audit is in data/_sources/macula-hebrew/PROVENANCE.md. The raw annotations file is kept out of git; the repository's LICENSE.md is kept as the license evidence.",
+    status: "shipped",
+  },
+  {
     id: "bsb-paratext",
     title: "Berean Standard Bible paratext (pericope headings and parallel references)",
     kind: "dataset",

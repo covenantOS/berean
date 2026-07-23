@@ -51,7 +51,11 @@ mode of `/search`. Brenton's English Septuagint and the Greek LXX (Brenton
 diglot text, both public domain via eBible.org) ship as OT-only parallel
 columns (data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
 scripts/build-lxx.mjs); LXX versification is kept as-is, with divergence
-notices and honest gaps instead of silent realignment. The Factbook backbone
+notices and honest gaps instead of silent realignment. The Word Study
+guide's Septuagint Translation section ships on the MACULA Hebrew-Greek
+alignment (Clear Bible/Biblica, CC BY 4.0): Hebrew lemma to the Greek
+equivalents the LXX uses for it, with counts and glosses
+(data/lxx-strongs, scripts/build-lxx-strongs.mjs). The Factbook backbone
 shipped: TIPNR people and places under `data/entities`
 (scripts/build-entities.mjs, src/lib/entities.ts), entity factbooks in the
 workspace's factbook tab (`/library/entity/[id]` redirects in), a

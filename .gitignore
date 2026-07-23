@@ -29,5 +29,8 @@ data/_sources/web-usfm/*.usfm
 data/_sources/web-usfm/*.css
 data/_sources/web-usfm/*.asc
 
+# Raw MACULA Hebrew annotations (~80MB); reproducible from data/_sources/macula-hebrew/PROVENANCE.md
+data/_sources/macula-hebrew/annotations.xml
+
 # Dev auth database (better-sqlite3 dialect when DATABASE_URL is unset)
 data/auth.db*
