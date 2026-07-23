@@ -22,6 +22,7 @@ import {
 import { formatCitation } from "@/lib/citation";
 import { docxFor } from "@/lib/docx";
 import { isAnchored, notes, type MarginNote } from "@/lib/marginalia";
+import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
 import { renderInline, renderMarkdown } from "./markdown";
 import { useWorkspace } from "./WorkspaceContext";
@@ -46,10 +47,12 @@ interface Critique {
 /**
  * A manuscript open for editing, moved from the retired /desk/[id] page.
  * The body saves on a debounce straight into the documents collection, so
- * the desk, the rails, and Docs Search read every keystroke moments later.
- * Scripture inserts as verified quotation from the passage APIs; the Scribe
- * reads the draft through its critique route and never writes a word of it.
- * The Preach overlay rises over the workspace and changes nothing beneath.
+ * the desk, the rails, and Docs Search read every keystroke moments later;
+ * the small bell rings when that debounced write lands, never on a
+ * keystroke. Scripture inserts as verified quotation from the passage APIs;
+ * the Scribe reads the draft through its critique route and never writes a
+ * word of it. The Preach overlay rises over the workspace and changes
+ * nothing beneath.
  */
 export default function ManuscriptPane({ docId }: { docId: string }) {
   const { dispatch } = useWorkspace();
@@ -85,7 +88,11 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
   function onBodyChange(value: string) {
     setBody(value);
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => documents.update(docId, { body: value }), 500);
+    /* The bell answers the completed write alone: update returns undefined
+     * when the record is gone, and a save that wrote nothing stays silent. */
+    saveTimer.current = setTimeout(() => {
+      if (documents.update(docId, { body: value })) playSound("complete");
+    }, 500);
   }
 
   function insertAtCursor(snippet: string) {
@@ -217,9 +224,11 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       setCritique(data);
       setCritiqueState("idle");
+      playSound("complete");
     } catch (err) {
       setCritiqueState("error");
       setCritiqueError(err instanceof Error ? err.message : "The critique could not be prepared.");
+      playSound("error");
     }
   }
 
@@ -298,15 +307,18 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => setPreaching(true)}
-            className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
+            onClick={() => {
+              setPreaching(true);
+              playSound("open");
+            }}
+            className="fx-press rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
           >
             Preach
           </button>
           <button
             onClick={requestCritique}
             disabled={critiqueState === "working"}
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             {critiqueState === "working" ? "The Scribe is reading…" : "Ask the Scribe to read it"}
           </button>
@@ -314,7 +326,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
             onClick={createHandout}
             disabled={!handoutReady}
             title="A new manuscript with the outline, the question blocks, and the cited passages"
-            className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             Create handout
           </button>
@@ -323,7 +335,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
       </div>
 
       {doc.kind === "sermon" && (
-        <div className="mb-4 grid gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print sm:grid-cols-2 lg:grid-cols-5">
+        <div className="glass mb-4 grid gap-2 rounded-[4px] p-3 no-print sm:grid-cols-2 lg:grid-cols-5">
           <div>
             <input
               value={doc.passage ?? ""}
@@ -375,7 +387,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
         </div>
       )}
 
-      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print">
+      <div className="glass mb-4 flex flex-wrap items-center gap-2 rounded-[4px] p-3 no-print">
         <span className="small-caps text-xs text-muted">Insert Scripture (verified):</span>
         <select
           value={insBook}
@@ -421,7 +433,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
         <button
           onClick={insertScripture}
           disabled={inserting}
-          className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
+          className="fx-press rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
         >
           Insert at cursor
         </button>
@@ -442,36 +454,39 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
         <button
           onClick={insertPassage}
           disabled={inserting}
-          className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
+          className="fx-press rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface disabled:opacity-50"
         >
           Insert passage
         </button>
         {refError && <span className="text-xs text-ruby">{refError}</span>}
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-3 no-print">
+      <div className="glass mb-4 flex flex-wrap items-center gap-2 rounded-[4px] p-3 no-print">
         <span className="small-caps text-xs text-muted">Blocks:</span>
         {BLOCK_BUTTONS.map((b) => (
           <button
             key={b.label}
             onClick={() => insertAtCursor(b.snippet)}
             title={b.title}
-            className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
+            className="fx-press rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
           >
             {b.label}
           </button>
         ))}
         <button
-          onClick={() => setNotesOpen(!notesOpen)}
+          onClick={() => {
+            setNotesOpen(!notesOpen);
+            playSound(notesOpen ? "toggle-off" : "toggle-on");
+          }}
           aria-expanded={notesOpen}
-          className="rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
+          className="fx-press rounded-[4px] border border-rule bg-paper px-3 py-1.5 text-sm font-medium hover:bg-surface"
         >
           Insert from notes {notesOpen ? "▾" : "▸"}
         </button>
       </div>
 
       {notesOpen && (
-        <div className="mb-4 rounded-[4px] border border-rule bg-surface p-3 no-print">
+        <div className="glass fx-fade mb-4 rounded-[4px] p-3 no-print">
           {noteGroups.length === 0 ? (
             <p className="text-xs text-muted">
               No notes yet. Notes written in the reader&rsquo;s margins file under notebooks and
@@ -508,7 +523,10 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,13rem)_minmax(0,2fr)_minmax(0,1fr)]">
         <aside className="no-print">
           <button
-            onClick={() => setOutlineOpen(!outlineOpen)}
+            onClick={() => {
+              setOutlineOpen(!outlineOpen);
+              playSound(outlineOpen ? "toggle-off" : "toggle-on");
+            }}
             aria-expanded={outlineOpen}
             className="small-caps mb-2 text-sm text-muted hover:text-ink"
           >
@@ -520,24 +538,26 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
                 Headings and typed blocks appear here as you write them.
               </p>
             ) : (
-              <ul className="space-y-1">
-                {blocks.map((b, i) => (
-                  <li key={i}>
-                    <button
-                      onClick={() => scrollToOffset(b.offset)}
-                      style={{ paddingLeft: `${(b.depth - 1) * 0.75}rem` }}
-                      className="block w-full text-left text-sm leading-snug text-ink hover:text-sapphire"
-                    >
-                      {b.kind && (
-                        <span className="small-caps mr-1 text-[0.65rem] text-amber">
-                          {CALLOUT_KINDS.find((k) => k.key === b.kind)?.label}
-                        </span>
-                      )}
-                      {b.text}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="glass rounded-[4px] p-3">
+                <ul className="fx-stagger space-y-1">
+                  {blocks.map((b, i) => (
+                    <li key={i} style={{ "--i": Math.min(i, 10) } as React.CSSProperties}>
+                      <button
+                        onClick={() => scrollToOffset(b.offset)}
+                        style={{ paddingLeft: `${(b.depth - 1) * 0.75}rem` }}
+                        className="block w-full text-left text-sm leading-snug text-ink hover:text-sapphire"
+                      >
+                        {b.kind && (
+                          <span className="small-caps mr-1 text-[0.65rem] text-amber">
+                            {CALLOUT_KINDS.find((k) => k.key === b.kind)?.label}
+                          </span>
+                        )}
+                        {b.text}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
         </aside>
 
@@ -565,7 +585,7 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
             </p>
           )}
           {!critique ? (
-            <div className="rounded-[4px] border border-rule bg-surface p-4 text-sm leading-relaxed text-muted">
+            <div className="glass rounded-[4px] p-4 text-sm leading-relaxed text-muted">
               <p>
                 When asked, the Scribe reads the manuscript with the text open: every Scripture
                 quotation is checked verbatim against the cited verses, and its editorial counsel
@@ -574,8 +594,11 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="rounded-[4px] border border-rule bg-surface p-4 text-sm">
+            <div className="fx-stagger space-y-3">
+              <div
+                style={{ "--i": 0 } as React.CSSProperties}
+                className="glass rounded-[4px] p-4 text-sm"
+              >
                 <p className="small-caps mb-2 text-xs text-muted">Quotation check</p>
                 {critique.quoteChecks.length === 0 ? (
                   <p className="text-muted">
@@ -601,7 +624,10 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
                 )}
               </div>
               {critique.counsel && critique.counsel.length > 0 && (
-                <div className="rounded-[4px] border border-rule bg-surface p-4 text-sm">
+                <div
+                  style={{ "--i": 1 } as React.CSSProperties}
+                  className="glass rounded-[4px] p-4 text-sm"
+                >
                   <p className="small-caps mb-2 text-xs text-muted">Editorial counsel</p>
                   <ul className="space-y-2">
                     {critique.counsel.map((c, i) => (
@@ -613,14 +639,25 @@ export default function ManuscriptPane({ docId }: { docId: string }) {
                   </ul>
                 </div>
               )}
-              {critique.note && <p className="text-xs text-muted">{critique.note}</p>}
+              {critique.note && (
+                <p style={{ "--i": 2 } as React.CSSProperties} className="text-xs text-muted">
+                  {critique.note}
+                </p>
+              )}
             </div>
           )}
         </aside>
       </div>
 
       {preaching && (
-        <PreachOverlay doc={doc} body={body} onExit={() => setPreaching(false)} />
+        <PreachOverlay
+          doc={doc}
+          body={body}
+          onExit={() => {
+            setPreaching(false);
+            playSound("close");
+          }}
+        />
       )}
     </div>
   );
@@ -648,11 +685,16 @@ function ExportMenu({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        playSound("close");
+      }
     };
     const onPointer = (e: PointerEvent) => {
-      if (ref.current && e.target instanceof Node && !ref.current.contains(e.target))
+      if (ref.current && e.target instanceof Node && !ref.current.contains(e.target)) {
         setOpen(false);
+        playSound("close");
+      }
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
@@ -668,10 +710,13 @@ function ExportMenu({
   return (
     <div ref={ref} className="relative">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setOpen(!open);
+          playSound(open ? "close" : "open");
+        }}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
+        className="fx-press rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium hover:bg-paper"
       >
         Export {open ? "▾" : "▸"}
       </button>
@@ -679,7 +724,8 @@ function ExportMenu({
         <div
           role="menu"
           aria-label="Export this manuscript"
-          className="absolute right-0 z-40 mt-1 w-60 rounded-[4px] border border-rule bg-surface py-1 shadow-lg"
+          style={{ "--fx-origin": "100% 0" } as React.CSSProperties}
+          className="glass fx-scale absolute right-0 z-40 mt-1 w-60 rounded-[4px] py-1 shadow-lg"
         >
           <button
             type="button"
@@ -687,6 +733,7 @@ function ExportMenu({
             onClick={() => {
               onCopyAll();
               setOpen(false);
+              playSound("close");
             }}
           >
             Copy all
@@ -698,6 +745,7 @@ function ExportMenu({
             onClick={() => {
               onMarkdown();
               setOpen(false);
+              playSound("close");
             }}
           >
             Export .md (Markdown)
@@ -709,12 +757,19 @@ function ExportMenu({
             onClick={() => {
               onDocx();
               setOpen(false);
+              playSound("close");
             }}
           >
             Export .docx (Word)
           </button>
           <div className="my-1 border-t border-rule" />
-          <div className="px-3 py-1.5 text-sm" onClick={() => setOpen(false)}>
+          <div
+            className="px-3 py-1.5 text-sm"
+            onClick={() => {
+              setOpen(false);
+              playSound("close");
+            }}
+          >
             <PrintButton className="text-sm" />
           </div>
           <p className="px-3 pb-1 text-xs text-muted">
@@ -757,7 +812,10 @@ function fmtClock(seconds: number): string {
  * every heading, quotation, and typed callout of the manuscript (slidesOf
  * in src/lib/documents.ts), paged with the same keys, with a current-of-
  * total indicator in the header. Slide editing and style controls stay
- * out; the slides are the manuscript's own blocks, read.
+ * out; the slides are the manuscript's own blocks, read. The overlay
+ * settles in with the pane entrance and each slide crossfades as it
+ * pages; the bells mark the rise and the return to the editor, and the
+ * pulpit's own controls keep silence.
  */
 function PreachOverlay({
   doc,
@@ -920,11 +978,11 @@ function PreachOverlay({
           : "border-rule bg-surface text-muted";
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-paper">
+    <div className="fx-pane-enter fixed inset-0 z-40 flex flex-col bg-paper">
       <header className="flex items-center justify-between gap-3 border-b border-rule px-4 py-2 no-print">
         <button
           onClick={onExit}
-          className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
+          className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
         >
           Back to the editor
         </button>
@@ -943,7 +1001,7 @@ function PreachOverlay({
                 ? "No headings, quotations, or typed blocks to show as slides"
                 : "One block per screen, paged with the same keys"
             }
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             {mode === "slides" ? "Reading" : "Slides"}
           </button>
@@ -969,7 +1027,7 @@ function PreachOverlay({
           </div>
           <button
             onClick={toggleTimer}
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
           >
             {running ? "Pause" : "Resume"}
           </button>
@@ -978,7 +1036,7 @@ function PreachOverlay({
             disabled={target <= TIMER_MIN}
             aria-label="Shorter target"
             title="Five minutes off the target, kept on this device"
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             −
           </button>
@@ -987,7 +1045,7 @@ function PreachOverlay({
             disabled={target >= TIMER_MAX}
             aria-label="Longer target"
             title="Five minutes on the target, kept on this device"
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             +
           </button>
@@ -995,7 +1053,7 @@ function PreachOverlay({
             onClick={() => chooseSize(size - 1)}
             disabled={size === 0}
             aria-label="Smaller text"
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             A−
           </button>
@@ -1003,13 +1061,13 @@ function PreachOverlay({
             onClick={() => chooseSize(size + 1)}
             disabled={size === SIZES.length - 1}
             aria-label="Larger text"
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper disabled:opacity-50"
           >
             A+
           </button>
           <button
             onClick={fullScreen}
-            className="rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
+            className="fx-press rounded-[4px] border border-rule bg-surface px-3 py-1.5 text-sm font-medium hover:bg-paper"
           >
             Full screen
           </button>
@@ -1017,10 +1075,11 @@ function PreachOverlay({
       </header>
 
       {mode === "slides" ? (
-        <div className="flex flex-1 items-center justify-center overflow-hidden px-6">
+        <div className="fx-fade flex flex-1 items-center justify-center overflow-hidden px-6">
           {slides[slide] && (
             <div
-              className="max-w-prose font-reader leading-relaxed"
+              key={slide}
+              className="fx-fade max-w-prose font-reader leading-relaxed"
               style={{ fontSize: `${SIZES[size]}rem` }}
             >
               <SlideView slide={slides[slide]} />
@@ -1028,7 +1087,7 @@ function PreachOverlay({
           )}
         </div>
       ) : (
-        <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        <div ref={scrollRef} className="fx-fade flex-1 overflow-y-auto">
           <div
             className="mx-auto max-w-prose px-6 py-10 font-reader leading-relaxed"
             style={{ fontSize: `${SIZES[size]}rem` }}

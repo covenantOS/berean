@@ -14,6 +14,7 @@ import {
 } from "@/lib/projects";
 import { projects as projectsCollection } from "@/lib/projects";
 import { getProfile } from "@/lib/settings";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 /** The free study notes ride beside the pipeline as one more stage tab. */
@@ -23,12 +24,12 @@ type StageTab = StageKey | "notes";
  * A project open at its pipeline, moved from the retired /pulpit/[id] and
  * /study/[id] pages. One record model serves both rooms, so one surface
  * carries both aspects: the study's free notes sit beside the Pulpit's
- * stages, each stage saving on a debounce into the projects collection, and
- * the Scribe's brief comes through its citation-verified route and never
- * writes a word of the sermon. Passage and citation links dispatch
- * berean:open-ref, carrying the pane in focus to the text. A record id that
- * answers to nothing renders the gone notice, the way a missing manuscript
- * does.
+ * stages, each stage saving on a debounce into the projects collection
+ * with the bell ringing when that write lands, and the Scribe's brief
+ * comes through its citation-verified route and never writes a word of
+ * the sermon. Passage and citation links dispatch berean:open-ref,
+ * carrying the pane in focus to the text. A record id that answers to
+ * nothing renders the gone notice, the way a missing manuscript does.
  */
 export default function ProjectPane({ projectId }: { projectId: string }) {
   const { dispatch } = useWorkspace();
@@ -67,6 +68,9 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
     saveTimer.current = setTimeout(() => {
       if (stage === "notes") updateProject(projectId, { notes: value });
       else updateStage(projectId, stage, value);
+      /* The bell answers the completed write alone: a project gone from
+       * this device wrote nothing, and nothing rings. */
+      if (getProject(projectId)) playSound("complete");
     }, 500);
   }
 
@@ -90,9 +94,11 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
       updateProject(projectId, { brief: data.brief });
       setShowBrief(true);
       setBriefState("idle");
+      playSound("complete");
     } catch (err) {
       setBriefState("error");
       setBriefError(err instanceof Error ? err.message : "The brief could not be prepared.");
+      playSound("error");
     }
   }
 
@@ -146,7 +152,7 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
           <button
             onClick={requestBrief}
             disabled={briefState === "working"}
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             {briefState === "working"
               ? "The Scribe is at work…"
@@ -156,12 +162,16 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
           </button>
           {project.kind !== "study" && (
             <button
-              onClick={() =>
+              onClick={() => {
+                const delivering = project.status !== "delivered";
                 updateProject(projectId, {
-                  status: project.status === "delivered" ? "preparing" : "delivered",
-                })
-              }
-              className="rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper"
+                  status: delivering ? "delivered" : "preparing",
+                });
+                /* Delivered rings the completion figure; reopening returns
+                 * the work to the bench with the falling one. */
+                playSound(delivering ? "complete" : "toggle-off");
+              }}
+              className="fx-press rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper"
             >
               {project.status === "delivered" ? "Reopen preparation" : "Mark delivered"}
             </button>
@@ -176,7 +186,7 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
       )}
 
       {prior.length > 0 && (
-        <div className="mb-6 rounded-[4px] border border-rule bg-surface p-4 text-sm no-print">
+        <div className="glass mb-6 rounded-[4px] p-4 text-sm no-print">
           <p className="small-caps mb-1 text-xs text-muted">You have handled this text before</p>
           {prior.map((p) => (
             <p key={p.id}>
@@ -234,7 +244,10 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
             <h3 className="small-caps text-sm text-muted">The Scribe&apos;s brief</h3>
             {project.brief && (
               <button
-                onClick={() => setShowBrief(!showBrief)}
+                onClick={() => {
+                  setShowBrief(!showBrief);
+                  playSound(showBrief ? "toggle-off" : "toggle-on");
+                }}
                 className="text-xs text-sapphire hover:underline"
               >
                 {showBrief ? "Collapse" : "Open"}
@@ -246,15 +259,18 @@ export default function ProjectPane({ projectId }: { projectId: string }) {
               <BriefView brief={project.brief} />
             ) : (
               <button
-                onClick={() => setShowBrief(true)}
-                className="w-full rounded-[4px] border border-rule bg-surface p-4 text-left text-sm text-muted hover:bg-paper"
+                onClick={() => {
+                  setShowBrief(true);
+                  playSound("toggle-on");
+                }}
+                className="glass fx-fade fx-press w-full rounded-[4px] p-4 text-left text-sm text-muted hover:bg-paper"
               >
                 Brief prepared {new Date(project.brief.generatedAt).toLocaleDateString()} — open it
                 alongside your work.
               </button>
             )
           ) : (
-            <div className="rounded-[4px] border border-rule bg-surface p-5 text-sm leading-relaxed text-muted">
+            <div className="glass rounded-[4px] p-5 text-sm leading-relaxed text-muted">
               <p>
                 When you request it, the Scribe prepares the study before you enter: the structure
                 of the passage, key terms and their function, the questions the text raises — every
@@ -285,7 +301,7 @@ function StageButton({
       role="tab"
       aria-selected={active}
       onClick={onSelect}
-      className={`rounded-[4px] border px-3 py-1.5 text-xs font-medium ${
+      className={`fx-press rounded-[4px] border px-3 py-1.5 text-xs font-medium transition-colors ${
         active
           ? "border-ink bg-ink text-white"
           : filled
@@ -332,7 +348,7 @@ function placeholderFor(stage: StageTab): string {
 function BriefView({ brief }: { brief: ExegeticalBrief }) {
   const book = getBook(brief.passage.book);
   return (
-    <div className="rounded-[4px] border border-rule bg-surface p-5">
+    <div className="glass fx-fade rounded-[4px] p-5">
       <p className="font-reader leading-relaxed">{brief.overview}</p>
       {brief.sections.map((s, i) => (
         <section key={i} className="mt-5 border-t border-rule pt-4">

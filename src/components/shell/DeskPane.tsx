@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DOCUMENT_KINDS, DocumentKind, documents, wordCount } from "@/lib/documents";
 import { useCollection } from "@/lib/hooks";
 import { importSermons, type SermonImportRow } from "@/lib/sermonimport";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 type SortKey = "updated" | "date" | "title";
@@ -15,7 +16,9 @@ type SortKey = "updated" | "date" | "title";
  * the row. The Import affordance reads .md/.txt files into sermon
  * manuscripts with detected metadata (src/lib/sermonimport.ts), the report
  * showing what was set. Everything reads and writes the documents
- * collection, so the rails and Docs Search follow every change.
+ * collection, so the rails and Docs Search follow every change. The rows
+ * rise in a cascade as they arrive, and the import's completion rings the
+ * small bell; no sound answers a keystroke here.
  */
 export default function DeskPane() {
   const { dispatch } = useWorkspace();
@@ -50,6 +53,7 @@ export default function DeskPane() {
       [...files].map(async (f) => ({ name: f.name, body: await read(f) }))
     );
     setReport(importSermons(picked));
+    playSound("complete");
   };
 
   const filtered = rows
@@ -80,7 +84,7 @@ export default function DeskPane() {
 
       <form
         onSubmit={add}
-        className="no-print mt-6 mb-8 grid gap-3 rounded-[4px] border border-rule bg-surface p-5 sm:grid-cols-[1fr_auto_auto]"
+        className="glass no-print mt-6 mb-8 grid gap-3 rounded-[4px] p-5 sm:grid-cols-[1fr_auto_auto]"
       >
         <input
           value={title}
@@ -103,7 +107,7 @@ export default function DeskPane() {
         </select>
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
           Open a manuscript
         </button>
@@ -112,7 +116,7 @@ export default function DeskPane() {
       <div className="no-print mb-8 flex flex-wrap items-center gap-3">
         <label
           title="Import .md or .txt files as sermons; a DOCX converts through Word or Google Docs first"
-          className="cursor-pointer rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm text-ink hover:border-sapphire"
+          className="fx-press cursor-pointer rounded-[4px] border border-rule bg-surface px-4 py-2 text-sm text-ink hover:border-sapphire"
         >
           Import sermons
           <input
@@ -133,14 +137,17 @@ export default function DeskPane() {
       </div>
 
       {report && (
-        <section className="no-print mb-8 rounded-[4px] border border-rule bg-surface p-4">
+        <section className="glass fx-rise no-print mb-8 rounded-[4px] p-4">
           <div className="mb-2 flex items-baseline justify-between">
             <p className="small-caps text-xs font-semibold text-muted">
               Imported {report.length} {report.length === 1 ? "sermon" : "sermons"}
             </p>
             <button
               type="button"
-              onClick={() => setReport(null)}
+              onClick={() => {
+                setReport(null);
+                playSound("close");
+              }}
               className="text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Dismiss
@@ -217,11 +224,12 @@ export default function DeskPane() {
           {rows.length === 0 ? "Nothing on the desk yet." : "Nothing matches that filter."}
         </p>
       ) : (
-        <ul className="space-y-3">
-          {filtered.map((d) => (
+        <ul className="fx-stagger space-y-3">
+          {filtered.map((d, i) => (
             <li
               key={d.id}
-              className="flex items-center justify-between gap-3 rounded-[4px] border border-rule bg-surface p-4"
+              style={{ "--i": Math.min(i, 10) } as React.CSSProperties}
+              className="glass glass-hover flex items-center justify-between gap-3 rounded-[4px] p-4"
             >
               <div>
                 <button
@@ -246,7 +254,7 @@ export default function DeskPane() {
               </div>
               <button
                 onClick={() => documents.remove(d.id)}
-                className="no-print rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
+                className="fx-press no-print rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
               >
                 Delete
               </button>

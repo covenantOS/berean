@@ -79,7 +79,7 @@ export default function PulpitPane() {
 
       <form
         onSubmit={add}
-        className="no-print mt-6 mb-8 grid gap-3 rounded-[4px] border border-rule bg-surface p-5 sm:grid-cols-2 lg:grid-cols-3"
+        className="glass no-print mt-6 mb-8 grid gap-3 rounded-[4px] p-5 sm:grid-cols-2 lg:grid-cols-3"
       >
         <select
           value={kind}
@@ -140,7 +140,7 @@ export default function PulpitPane() {
         </select>
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
           Appoint the text
         </button>
@@ -148,7 +148,7 @@ export default function PulpitPane() {
           type="button"
           title={`Open the Sermon Starter for ${selectedBook?.name ?? book} ${chapter}`}
           onClick={() => dispatch({ type: "openSermonStarter", book, chapter })}
-          className="rounded-[4px] border border-rule bg-paper px-4 py-2 text-sm text-ink hover:border-sapphire"
+          className="fx-press rounded-[4px] border border-rule bg-paper px-4 py-2 text-sm text-ink hover:border-sapphire"
         >
           Sermon starter
         </button>
@@ -199,13 +199,14 @@ export default function PulpitPane() {
 function ProjectList({ rows }: { rows: StudyProject[] }) {
   const { dispatch } = useWorkspace();
   return (
-    <ul className="space-y-3">
-      {rows.map((p) => {
+    <ul className="fx-stagger space-y-3">
+      {rows.map((p, i) => {
         const b = getBook(p.book);
         return (
           <li
             key={p.id}
-            className="flex items-center justify-between gap-3 rounded-[4px] border border-rule bg-surface p-4"
+            style={{ "--i": Math.min(i, 10) } as React.CSSProperties}
+            className="glass glass-hover flex items-center justify-between gap-3 rounded-[4px] p-4"
           >
             <div>
               <button
@@ -228,7 +229,7 @@ function ProjectList({ rows }: { rows: StudyProject[] }) {
             </div>
             <button
               onClick={() => deleteProject(p.id)}
-              className="no-print rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
+              className="fx-press no-print rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
             >
               Delete
             </button>
