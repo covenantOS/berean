@@ -125,16 +125,16 @@ export interface GuideTab {
 
 /**
  * A custom guide (src/lib/guides.ts) run on one chapter: the Passage Guide's
- * report filtered and ordered to the named composition. The guide's name is
- * captured at open time for the tab strip; the pane reads the collection
- * live, so edits and renames apply to the open tab, and a deleted guide
- * degrades the way a deleted list document does.
+ * report filtered and ordered to the named composition. The pane and the
+ * tab strip read the collection live, so edits and renames apply to the
+ * open tab, and a deleted guide degrades the way a deleted list document
+ * does, the captured name answering for it.
  */
 export interface CustomGuideTab {
   id: string;
   type: "customguide";
   guideId: string;
-  /** The guide's name, captured at open time for the tab strip. */
+  /** The guide's name at open time; the strip resolves the collection live. */
   name: string;
   book: string;
   chapter: number;
@@ -214,7 +214,7 @@ export interface CanvasDocTab {
   id: string;
   type: "canvasdoc";
   canvasId: string;
-  /** The canvas's name, captured at open time for the tab strip. */
+  /** The canvas's name at open time; the strip resolves the collection live. */
   title: string;
 }
 
@@ -223,7 +223,7 @@ export interface DiagramTab {
   id: string;
   type: "diagram";
   diagramId: string;
-  /** The diagram's name, captured at open time for the tab strip. */
+  /** The diagram's name at open time; the strip resolves the collection live. */
   title: string;
 }
 
@@ -241,21 +241,21 @@ export interface ManuscriptTab {
   id: string;
   type: "manuscript";
   docId: string;
-  /** Display title, captured at open time for the tab strip. */
+  /** Display title at open time; the strip resolves the collection live. */
   title: string;
 }
 
 /**
  * A personal book (src/lib/personalbooks.ts) open for reading, pinned to its
- * record id. The title is captured at open time for the tab strip; the pane
- * reads the collection live, and a deleted book degrades the way a deleted
- * manuscript does.
+ * record id. The pane and the tab strip read the collection live, and a
+ * deleted book degrades the way a deleted manuscript does, the captured
+ * title answering for it.
  */
 export interface PersonalBookTab {
   id: string;
   type: "personalbook";
   bookId: string;
-  /** Display title, captured at open time for the tab strip. */
+  /** Display title at open time; the strip resolves the collection live. */
   title: string;
   /** The reading-plan session the tab stands on (1-based); absent reads the whole book. */
   session?: number;
@@ -303,7 +303,7 @@ export interface ServiceTab {
   id: string;
   type: "service";
   serviceId: string;
-  /** Display title, captured at open time for the tab strip. */
+  /** Display title at open time; the strip resolves the collection live. */
   title: string;
 }
 
@@ -1130,6 +1130,85 @@ export function dockTabForTab(tab: Tab): DockTab | null {
   return null;
 }
 
+/* ---------- singletons (one tab of a kind per pane) ---------- */
+
+/**
+ * The registry of tab kinds a pane carries at most one of: the rooms with
+ * no payload (desk, pulpit, chapel, almanac, topics, settings, tools,
+ * library, notes, journal, prayers, plans, dashboard, the canon explorer),
+ * the per-pane studios (harmony and media, one each; the wisdom explorer,
+ * one per book), and the two composition editors (one tab per guide or
+ * workflow, the editor's own list included). Every entry point honors the
+ * rule: the openX actions guard with it where a tab enters by name, and
+ * replaceTab, openTab, and moveTab enforce it where a finished tab lands,
+ * so the launcher, a drop, and a drag can no more stack a duplicate than
+ * the rail can. Null for the kinds that append by design: readers,
+ * searches, and the reports pinned at open time.
+ */
+export function singletonKey(tab: Tab): string | null {
+  switch (tab.type) {
+    case "desk":
+    case "pulpit":
+    case "chapel":
+    case "almanac":
+    case "topics":
+    case "settings":
+    case "tools":
+    case "bookexplorer":
+    case "library":
+    case "journal":
+    case "prayers":
+    case "plans":
+    case "notes":
+    case "dashboard":
+    case "harmony":
+    case "media":
+      return tab.type;
+    case "wisdomexplorer":
+      return `${tab.type}:${tab.book}`;
+    case "guideeditor":
+      return `${tab.type}:${tab.guideId ?? ""}`;
+    case "workfloweditor":
+      return `${tab.type}:${tab.workflowId ?? ""}`;
+    default:
+      return null;
+  }
+}
+
+/** The leaf's tab already standing where tab would land as a singleton. */
+function findSingleton(leaf: LeafNode, tab: Tab, excludeId?: string): Tab | undefined {
+  const key = singletonKey(tab);
+  if (key === null) return undefined;
+  return leaf.tabs.find((t) => t.id !== excludeId && singletonKey(t) === key);
+}
+
+/**
+ * The tab already there absorbs what the duplicate carried: a harmony or
+ * media pin retargets it, the open action's own rule; anything else it
+ * keeps as it stands.
+ */
+function absorbSingleton(existing: Tab, incoming: Tab): Tab {
+  if (existing.type === "harmony" && incoming.type === "harmony" && incoming.book !== undefined) {
+    return {
+      id: existing.id,
+      type: "harmony",
+      book: incoming.book,
+      chapter: incoming.chapter as number,
+      verse: incoming.verse as number,
+    };
+  }
+  if (existing.type === "media" && incoming.type === "media" && incoming.book !== undefined) {
+    return {
+      id: existing.id,
+      type: "media",
+      book: incoming.book,
+      chapter: incoming.chapter as number,
+      ...(incoming.verse !== undefined ? { verse: incoming.verse } : {}),
+    };
+  }
+  return existing;
+}
+
 export function leafNode(tabs: Tab[] = []): LeafNode {
   return {
     kind: "leaf",
@@ -1573,6 +1652,28 @@ function clampReaderTab(tab: ReaderTab): ReaderTab | null {
     : tab;
 }
 
+/** Focuses a tab already in the pane. */
+function focusTab(state: WorkspaceState, paneId: string, tabId: string): WorkspaceState {
+  return {
+    ...state,
+    activePaneId: paneId,
+    root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: tabId })),
+  };
+}
+
+/** Lands a tab in the pane and focuses it. */
+function landTab(state: WorkspaceState, paneId: string, tab: Tab): WorkspaceState {
+  return {
+    ...state,
+    activePaneId: paneId,
+    root: updateLeaf(state.root, paneId, (l) => ({
+      ...l,
+      tabs: [...l.tabs, tab],
+      activeTabId: tab.id,
+    })),
+  };
+}
+
 export function workspaceReducer(
   state: WorkspaceState,
   action: WorkspaceAction
@@ -1751,21 +1852,17 @@ export function workspaceReducer(
     case "openGuideEditor": {
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
-      if (!findLeaf(state.root, paneId)) return state;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
       const guideId =
         typeof action.guideId === "string" && action.guideId.trim()
           ? action.guideId.trim()
           : null;
+      // One editor tab per guide per pane, the singleton rule: reopening a
+      // guide already open in the editor activates its tab.
       const tab = guideEditorTab(guideId);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openWordStudy": {
@@ -1810,21 +1907,17 @@ export function workspaceReducer(
     case "openWorkflowEditor": {
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
-      if (!findLeaf(state.root, paneId)) return state;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
       const workflowId =
         typeof action.workflowId === "string" && action.workflowId.trim()
           ? action.workflowId.trim()
           : null;
+      // One editor tab per workflow per pane, the singleton rule: reopening
+      // a workflow already open in the editor activates its tab.
       const tab = workflowEditorTab(workflowId);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openExegetical": {
@@ -1893,19 +1986,17 @@ export function workspaceReducer(
       const title = action.title.trim() || "Untitled list";
       const paneId =
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
-      if (!findLeaf(state.root, paneId)) return state;
-      // Like a guide, the list pins its document at open time; edits land in
-      // the collection and the pane reads them live.
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // One tab per list per pane: reopening the same document activates
+      // the tab already there, the manuscript's pattern keyed by docId.
+      // Edits land in the collection and the pane reads them live.
+      const existing = leaf.tabs.find((t) => t.type === "listdoc" && t.docId === docId);
+      if (existing) {
+        return focusTab(state, paneId, existing.id);
+      }
       const tab = listDocTab(docId, title);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      return landTab(state, paneId, tab);
     }
 
     case "openCanvasDoc": {
@@ -1975,25 +2066,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One desk per pane: a second open activates the tab already there,
-      // the way the Library browser does.
-      const existing = leaf.tabs.find((t) => t.type === "desk");      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One desk per pane, the singleton rule: a second open activates the
+      // tab already there.
       const tab = deskTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openManuscript": {
@@ -2111,26 +2188,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One pulpit per pane: a second open activates the tab already there,
-      // the desk's singleton pattern.
-      const existing = leaf.tabs.find((t) => t.type === "pulpit");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One pulpit per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = pulpitTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openProject": {
@@ -2169,26 +2231,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One chapel per pane: a second open activates the tab already there,
-      // the pulpit's singleton pattern.
-      const existing = leaf.tabs.find((t) => t.type === "chapel");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One chapel per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = chapelTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openService": {
@@ -2227,26 +2274,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One almanac per pane: a second open activates the tab already there,
-      // the pulpit's singleton pattern.
-      const existing = leaf.tabs.find((t) => t.type === "almanac");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One almanac per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = almanacTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openTopics": {
@@ -2254,26 +2286,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One index per pane: a second open activates the tab already there,
-      // the pulpit's singleton pattern.
-      const existing = leaf.tabs.find((t) => t.type === "topics");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One index per pane, the singleton rule: a second open activates the
+      // tab already there.
       const tab = topicsTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openSettings": {
@@ -2281,26 +2298,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One settings tab per pane: a second open activates the tab already
-      // there, the pulpit's singleton pattern.
-      const existing = leaf.tabs.find((t) => t.type === "settings");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One settings tab per pane, the singleton rule: a second open
+      // activates the tab already there.
       const tab = settingsTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openTools": {
@@ -2308,25 +2310,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One tools tab per pane, the settings singleton's pattern.
-      const existing = leaf.tabs.find((t) => t.type === "tools");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One tools tab per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = toolsTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openBookExplorer": {
@@ -2334,25 +2322,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One explorer tab per pane, the settings singleton's pattern.
-      const existing = leaf.tabs.find((t) => t.type === "bookexplorer");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One explorer tab per pane, the singleton rule: a second open
+      // activates the tab already there.
       const tab = bookExplorerTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openHarmony": {
@@ -2365,9 +2339,11 @@ export function workspaceReducer(
         action.book !== undefined
           ? gospelRef(action.book, action.chapter, action.verse)
           : null;
-      // One harmony tab per pane, the explorer's pattern. Reopening with a
-      // pericope retargets it; reopening bare focuses it as it stands.
-      const existing = leaf.tabs.find((t) => t.type === "harmony");
+      // One harmony tab per pane, the singleton rule. Reopening with a
+      // pericope retargets the tab already there; reopening bare focuses
+      // it as it stands.
+      const tab = harmonyTab(ref ?? undefined);
+      const existing = findSingleton(leaf, tab);
       if (existing) {
         return {
           ...state,
@@ -2375,26 +2351,11 @@ export function workspaceReducer(
           root: updateLeaf(state.root, paneId, (l) => ({
             ...l,
             activeTabId: existing.id,
-            tabs: ref
-              ? l.tabs.map((t) =>
-                  t.id === existing.id && t.type === "harmony"
-                    ? { id: t.id, type: "harmony" as const, ...ref }
-                    : t
-                )
-              : l.tabs,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? absorbSingleton(t, tab) : t)),
           })),
         };
       }
-      const tab = harmonyTab(ref ?? undefined);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      return landTab(state, paneId, tab);
     }
 
     case "setHarmonyRef": {
@@ -2425,27 +2386,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One explorer tab per book per pane, the explorer's pattern.
-      const existing = leaf.tabs.find(
-        (t) => t.type === "wisdomexplorer" && t.book === action.book
-      );
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One explorer tab per book per pane, the singleton rule: a second
+      // open of the same book activates the tab already there.
       const tab = wisdomExplorerTab(action.book);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "setWisdomBook": {
@@ -2477,9 +2422,11 @@ export function workspaceReducer(
         action.book !== undefined
           ? mediaRef(action.book, action.chapter, action.verse)
           : null;
-      // One media tab per pane, the harmony's pattern. Reopening with a
-      // passage retargets it; reopening bare focuses it as it stands.
-      const existing = leaf.tabs.find((t) => t.type === "media");
+      // One media tab per pane, the singleton rule. Reopening with a
+      // passage retargets the tab already there; reopening bare focuses it
+      // as it stands.
+      const tab = mediaTab(ref ?? undefined);
+      const existing = findSingleton(leaf, tab);
       if (existing) {
         return {
           ...state,
@@ -2487,26 +2434,11 @@ export function workspaceReducer(
           root: updateLeaf(state.root, paneId, (l) => ({
             ...l,
             activeTabId: existing.id,
-            tabs: ref
-              ? l.tabs.map((t) =>
-                  t.id === existing.id && t.type === "media"
-                    ? { id: t.id, type: "media" as const, ...ref }
-                    : t
-                )
-              : l.tabs,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? absorbSingleton(t, tab) : t)),
           })),
         };
       }
-      const tab = mediaTab(ref ?? undefined);
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      return landTab(state, paneId, tab);
     }
 
     case "openFactbook": {
@@ -2554,25 +2486,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One browser per pane: a second open activates the tab already there.
-      const existing = leaf.tabs.find((t) => t.type === "library");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One browser per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = libraryTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openTextCompare": {
@@ -2746,24 +2664,8 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One of each discipline per pane: a second open activates the tab
-      // already there, the way the Library browser does.
-      const type =
-        action.type === "openJournal"
-          ? "journal"
-          : action.type === "openPrayers"
-            ? "prayers"
-            : action.type === "openPlans"
-              ? "plans"
-              : "notes";
-      const existing = leaf.tabs.find((t) => t.type === type);
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One of each discipline per pane, the singleton rule: a second open
+      // activates the tab already there.
       const tab =
         action.type === "openJournal"
           ? journalTab()
@@ -2772,15 +2674,8 @@ export function workspaceReducer(
             : action.type === "openPlans"
               ? plansTab()
               : notesTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "openDashboard": {
@@ -2788,25 +2683,11 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // One dashboard per pane, the settings singleton's pattern.
-      const existing = leaf.tabs.find((t) => t.type === "dashboard");
-      if (existing) {
-        return {
-          ...state,
-          activePaneId: paneId,
-          root: updateLeaf(state.root, paneId, (l) => ({ ...l, activeTabId: existing.id })),
-        };
-      }
+      // One dashboard per pane, the singleton rule: a second open activates
+      // the tab already there.
       const tab = dashboardTab();
-      return {
-        ...state,
-        activePaneId: paneId,
-        root: updateLeaf(state.root, paneId, (l) => ({
-          ...l,
-          tabs: [...l.tabs, tab],
-          activeTabId: tab.id,
-        })),
-      };
+      const existing = findSingleton(leaf, tab);
+      return existing ? focusTab(state, paneId, existing.id) : landTab(state, paneId, tab);
     }
 
     case "selectVerse": {
@@ -2912,6 +2793,23 @@ export function workspaceReducer(
         const clamped = clampReaderTab(tab);
         if (!clamped) return state;
         tab = clamped;
+      }
+      // A singleton the pane already carries never stacks: the tab already
+      // there absorbs the choice and takes the focus, and the replaced tab
+      // closes with the duplicate that never lands.
+      const dupe = findSingleton(leaf, tab, action.tabId);
+      if (dupe) {
+        return {
+          ...state,
+          activePaneId: action.paneId,
+          root: updateLeaf(state.root, action.paneId, (l) => ({
+            ...l,
+            tabs: l.tabs
+              .filter((t) => t.id !== action.tabId)
+              .map((t) => (t.id === dupe.id ? absorbSingleton(t, tab) : t)),
+            activeTabId: dupe.id,
+          })),
+        };
       }
       // In place at the same index: the launcher hands its slot to whatever
       // was chosen, and the choice takes the focus.
@@ -3061,6 +2959,23 @@ export function workspaceReducer(
 
       const targetLeaf = findLeaf(root, target.paneId);
       if (!targetLeaf) return state;
+
+      // A singleton may not stack in the target pane either: the tab
+      // already there absorbs the moved one, which leaves its pane and
+      // never lands.
+      const dupe = findSingleton(targetLeaf, tab);
+      if (dupe) {
+        return {
+          ...state,
+          activePaneId: target.paneId,
+          root: updateLeaf(root, target.paneId, (l) => ({
+            ...l,
+            tabs: l.tabs.map((t) => (t.id === dupe.id ? absorbSingleton(t, tab) : t)),
+            activeTabId: dupe.id,
+          })),
+        };
+      }
+
       const index =
         target.kind === "strip" && target.index !== undefined
           ? Math.min(Math.max(0, Math.trunc(target.index)), targetLeaf.tabs.length)
@@ -3107,6 +3022,21 @@ export function workspaceReducer(
           activePaneId: targetLeaf.id,
           selection: null,
           root: retargetLinked(state.root, targetLeaf.id, tab.book, tab.chapter),
+        };
+      }
+
+      // A singleton the target pane already carries never stacks: the tab
+      // already there absorbs the drop and takes the focus.
+      const dupe = findSingleton(targetLeaf, tab);
+      if (dupe) {
+        return {
+          ...state,
+          activePaneId: targetLeaf.id,
+          root: updateLeaf(state.root, targetLeaf.id, (l) => ({
+            ...l,
+            tabs: l.tabs.map((t) => (t.id === dupe.id ? absorbSingleton(t, tab) : t)),
+            activeTabId: dupe.id,
+          })),
         };
       }
 

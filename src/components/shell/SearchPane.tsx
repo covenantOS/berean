@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
-import { alignedScope, alignedTextIds } from "@/lib/aligned";
+import { alignedChapter, alignedScope, alignedTextIds, type AlignedChapterPayload } from "@/lib/aligned";
 import { CANON, getBook, resolveBookName } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
@@ -156,7 +156,9 @@ function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; p
  * fetch to /api/pane/search carries the whole working set; the Verses,
  * Grid, Analysis, and Chart arrangements are different readings of that
  * same set, computed on the client, never re-fetched, while the Aligned
- * arrangement batches the hit set's chapters through the multiview route.
+ * arrangement batches the hit set's chapters through the multiview route,
+ * the payloads cached in src/lib/aligned.ts so returning to the view
+ * re-reads the cache.
  * Every row in every view dispatches berean:open-ref, carrying the pane to
  * the passage. The header pin keeps the query among the Search rail's
  * pinned searches.
@@ -479,24 +481,6 @@ function GridView({ hits, total }: { hits: Hit[]; total: number }) {
 
 /* ---------- Aligned: hit verses in more than one translation ---------- */
 
-interface AlignedColumnPayload {
-  id: string;
-  abbrev: string;
-  name: string;
-  /** The LXX numbering note where the Septuagint counts differently. */
-  note: string | null;
-  /** True when the text has no such chapter at all. */
-  missing: boolean;
-  verses: { verse: number; text: string }[];
-}
-
-interface AlignedChapterPayload {
-  book: string;
-  bookName: string;
-  chapter: number;
-  columns: AlignedColumnPayload[];
-}
-
 type AlignedLoad =
   | { status: "loading" }
   | { status: "error" }
@@ -507,42 +491,38 @@ type AlignedLoad =
  * beside the KJV and one more witness, the multiview report fetched once
  * per chapter the capped hit set touches (src/lib/aligned.ts). Rows align
  * by verse number under each text's own numbering, a verse a text does not
- * number naming the gap, the multiview pane's discipline. Unlike the other
- * arrangements this one fetches per view, so the cap keeps the batch
- * honest: the first ALIGNED_HIT_CAP hits align, and the header note says so
- * when the set runs longer.
+ * number naming the gap, the multiview pane's discipline. The payloads
+ * cache at module scope, so leaving the view and returning re-reads the
+ * cache rather than fetching again; the cap keeps the first batch honest:
+ * the first ALIGNED_HIT_CAP hits align, and the header note says so when
+ * the set runs longer.
  */
 function AlignedView({ hits, total }: { hits: Hit[]; total: number }) {
   const scope = useMemo(() => alignedScope(hits), [hits]);
   const [load, setLoad] = useState<AlignedLoad>({ status: "loading" });
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
     setLoad({ status: "loading" });
-    let texts = "kjv,web";
     translationShelf()
       .then((shelf) => {
         const hasNT = scope.hits.some((h) => getBook(h.book)?.testament === "NT");
-        texts = alignedTextIds(preferredTranslation(), shelf, hasNT).join(",");
-        return Promise.all(
-          scope.chapters.map(async (c) => {
-            const q = new URLSearchParams({
-              book: c.book,
-              chapter: String(c.chapter),
-              texts,
-            });
-            const res = await fetch(`/api/pane/multiview?${q}`, { signal: controller.signal });
-            if (!res.ok) throw new Error(String(res.status));
-            return [c.key, (await res.json()) as AlignedChapterPayload] as const;
-          })
-        );
+        const texts = alignedTextIds(preferredTranslation(), shelf, hasNT).join(",");
+        return Promise.all(scope.chapters.map((c) => alignedChapter(c.book, c.chapter, texts)));
       })
-      .then((entries) => setLoad({ status: "ready", chapters: new Map(entries) }))
-      .catch((err: unknown) => {
-        if (err instanceof DOMException && err.name === "AbortError") return;
-        setLoad({ status: "error" });
+      .then((payloads) => {
+        if (cancelled) return;
+        setLoad({
+          status: "ready",
+          chapters: new Map(scope.chapters.map((c, i) => [c.key, payloads[i]])),
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setLoad({ status: "error" });
       });
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [scope]);
 
   /* The fetched chapters share one column set (the request resolves against

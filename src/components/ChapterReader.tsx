@@ -12,6 +12,7 @@ import {
 } from "@/lib/marginalia";
 import { shareCard, canShareCard } from "@/lib/shareCard";
 import { verseCardSvg } from "@/lib/verseCard";
+import NotebookPicker from "@/components/shell/NotebookPicker";
 
 type Mode = "paper" | "warm" | "evening";
 type PanelTab = "margin" | "refs" | "shelf" | "word";
@@ -176,6 +177,7 @@ export default function ChapterReader({
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [draft, setDraft] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [notebook, setNotebook] = useState("");
   const [wordsOn, setWordsOn] = useState(false);
   const [origOn, setOrigOn] = useState(false);
   const [interlinear, setInterlinear] = useState({ gloss: true, xlit: false });
@@ -199,6 +201,7 @@ export default function ChapterReader({
     setNotes(listNotes(bookSlug, chapter));
     setSelectedVerse(null);
     setActiveWord(null);
+    setNotebook("");
   }, [bookSlug, chapter]);
 
   // Escape closes a pinned word, the same way an outside tap returns to the margin.
@@ -271,6 +274,7 @@ export default function ChapterReader({
     setSelectedVerse(v);
     const existing = notes.find((n) => n.verse === v);
     setDraft(existing?.text ?? "");
+    setNotebook(existing?.notebook ?? "");
     setEditingId(existing?.id ?? null);
     if (tab === "word") setTab("margin");
   }
@@ -333,10 +337,12 @@ export default function ChapterReader({
       chapter,
       verse: selectedVerse,
       text: draft.trim(),
+      notebook,
     });
     setNotes(listNotes(bookSlug, chapter));
     setSelectedVerse(null);
     setDraft("");
+    setNotebook("");
     setEditingId(null);
   }
 
@@ -344,6 +350,7 @@ export default function ChapterReader({
     deleteNote(id);
     setNotes(listNotes(bookSlug, chapter));
     setSelectedVerse(null);
+    setNotebook("");
     setEditingId(null);
   }
 
@@ -770,6 +777,8 @@ export default function ChapterReader({
                 draft={draft}
                 setDraft={setDraft}
                 editingId={editingId}
+                notebook={notebook}
+                setNotebook={setNotebook}
                 submitNote={submitNote}
                 removeNote={removeNote}
                 openVerse={openVerse}
@@ -779,6 +788,7 @@ export default function ChapterReader({
                 verseTopics={verseTopics}
                 cancel={() => {
                   setSelectedVerse(null);
+                  setNotebook("");
                   setEditingId(null);
                 }}
               />
@@ -823,6 +833,8 @@ function MarginPanel(props: {
   draft: string;
   setDraft: (s: string) => void;
   editingId: string | null;
+  notebook: string;
+  setNotebook: (name: string) => void;
   submitNote: () => void;
   removeNote: (id: string) => void;
   openVerse: (v: number) => void;
@@ -841,6 +853,8 @@ function MarginPanel(props: {
     draft,
     setDraft,
     editingId,
+    notebook,
+    setNotebook,
     submitNote,
     removeNote,
     openVerse,
@@ -869,7 +883,7 @@ function MarginPanel(props: {
             placeholder="A note in the margin…"
             className="w-full rounded-[4px] border border-rule bg-paper p-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
           />
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <button
               onClick={submitNote}
               disabled={!draft.trim()}
@@ -877,6 +891,7 @@ function MarginPanel(props: {
             >
               {editingId ? "Update note" : "Save note"}
             </button>
+            <NotebookPicker value={notebook} onChange={setNotebook} />
             {editingId && (
               <button
                 onClick={() => removeNote(editingId)}

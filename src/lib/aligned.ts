@@ -4,7 +4,9 @@
  * multiview report (/api/pane/multiview) batched over the hit set's chapters,
  * and the batching is honest: at most ALIGNED_HIT_CAP hits align, first come
  * first served, and each chapter fetches once however many hits it holds.
- * The pane's note says so when the cap bites.
+ * The pane's note says so when the cap bites. Fetched chapters cache at
+ * module scope (alignedChapter below), so leaving the view and returning
+ * costs nothing.
  */
 
 export const ALIGNED_HIT_CAP = 50;
@@ -14,6 +16,53 @@ export interface AlignedChapter {
   chapter: number;
   /** The fetch key: one request per chapter, however many hits it holds. */
   key: string;
+}
+
+/** One column of the multiview report the view aligns on. */
+export interface AlignedColumnPayload {
+  id: string;
+  abbrev: string;
+  name: string;
+  /** The LXX numbering note where the Septuagint counts differently. */
+  note: string | null;
+  /** True when the text has no such chapter at all. */
+  missing: boolean;
+  verses: { verse: number; text: string }[];
+}
+
+export interface AlignedChapterPayload {
+  book: string;
+  bookName: string;
+  chapter: number;
+  columns: AlignedColumnPayload[];
+}
+
+const payloadCache = new Map<string, Promise<AlignedChapterPayload>>();
+
+/**
+ * One chapter's multiview report, cached at module scope by chapter and
+ * column set the way the other data libs cache the shelf (the concordance's
+ * pattern, src/lib/concordance.ts): switching out of the Aligned view and
+ * back re-reads the cache instead of fetching again. The fetch is shared,
+ * never aborted by an unmounting view, and a failed request leaves nothing
+ * behind, so the next visit tries again.
+ */
+export function alignedChapter(
+  book: string,
+  chapter: number,
+  texts: string
+): Promise<AlignedChapterPayload> {
+  const key = `${book}:${chapter}|${texts}`;
+  const hit = payloadCache.get(key);
+  if (hit) return hit;
+  const q = new URLSearchParams({ book, chapter: String(chapter), texts });
+  const job = fetch(`/api/pane/multiview?${q}`).then((res) => {
+    if (!res.ok) throw new Error(String(res.status));
+    return res.json() as Promise<AlignedChapterPayload>;
+  });
+  job.catch(() => payloadCache.delete(key));
+  payloadCache.set(key, job);
+  return job;
 }
 
 /** The hits the view aligns (the cap applied) and the chapters to fetch. */

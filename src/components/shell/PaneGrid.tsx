@@ -9,7 +9,14 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { getBook } from "@/lib/canon";
+import { canvases } from "@/lib/canvas";
+import { diagrams } from "@/lib/diagram";
+import { documents } from "@/lib/documents";
+import { guides } from "@/lib/guides";
+import { useCollectionWrites } from "@/lib/hooks";
+import { liturgies } from "@/lib/liturgy";
 import { memoryPassages } from "@/lib/memory";
+import { personalbooks } from "@/lib/personalbooks";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
 import {
@@ -147,7 +154,14 @@ function SplitView({ split }: { split: SplitNode }) {
   );
 }
 
-/** The label every tab wears, in the strip and on the drag chip. */
+/* The collections a tab label can read live; the strip subscribes to them
+ * so a rename lands on an open tab without a reopen. */
+const TITLE_SOURCES = [guides, canvases, diagrams, documents, personalbooks, liturgies];
+
+/** The label every tab wears, in the strip and on the drag chip. Titles
+ *  with a rename path resolve from their collection live, the memory tab's
+ *  pattern, so a rename lands without reopening; the title captured at
+ *  open time answers when the record is gone. */
 function tabLabel(tab: Tab): string {
   if (tab.type === "reader") {
     return `${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}${
@@ -166,7 +180,7 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "crossrefs") return "Cross-refs";
   if (tab.type === "guide") return `Guide: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
   if (tab.type === "customguide") {
-    return `${tab.name}: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
+    return `${guides.get(tab.guideId)?.name ?? tab.name}: ${getBook(tab.book)?.name ?? tab.book} ${tab.chapter}`;
   }
   if (tab.type === "guideeditor") return "Guide editor";
   if (tab.type === "workflow") return tab.title;
@@ -182,17 +196,18 @@ function tabLabel(tab: Tab): string {
     return `Topic: ${tab.title.replace(/\b\w/g, (c) => c.toUpperCase())}`;
   }
   if (tab.type === "listdoc") return `List: ${tab.title}`;
-  if (tab.type === "canvasdoc") return `Canvas: ${tab.title}`;
-  if (tab.type === "diagram") return `Diagram: ${tab.title}`;
+  if (tab.type === "canvasdoc") return `Canvas: ${canvases.get(tab.canvasId)?.name ?? tab.title}`;
+  if (tab.type === "diagram") return `Diagram: ${diagrams.get(tab.diagramId)?.name ?? tab.title}`;
   if (tab.type === "desk") return "Writing";
-  if (tab.type === "manuscript") return tab.title;
+  if (tab.type === "manuscript") return documents.get(tab.docId)?.title ?? tab.title;
   if (tab.type === "personalbook") {
-    return tab.session !== undefined ? `${tab.title} · Session ${tab.session}` : tab.title;
+    const title = personalbooks.get(tab.bookId)?.title ?? tab.title;
+    return tab.session !== undefined ? `${title} · Session ${tab.session}` : title;
   }
   if (tab.type === "pulpit") return "Pulpit";
   if (tab.type === "project") return tab.title;
   if (tab.type === "chapel") return "Chapel";
-  if (tab.type === "service") return tab.title;
+  if (tab.type === "service") return liturgies.get(tab.serviceId)?.title ?? tab.title;
   if (tab.type === "almanac") return "Almanac";
   if (tab.type === "factbook") return `Factbook: ${tab.title}`;
   if (tab.type === "familymap") return `Family: ${tab.title}`;
@@ -379,6 +394,9 @@ function Pane({ leaf }: { leaf: LeafNode }) {
   const isActive = state.activePaneId === leaf.id;
   const panes = countLeaves(state.root);
   const activeTab = leaf.tabs.find((t) => t.id === leaf.activeTabId) ?? null;
+  /* The strip's live labels: a rename written in any pane re-renders the
+   * strip, and tabLabel reads the new name. */
+  useCollectionWrites(TITLE_SOURCES);
 
   /* Drop indicators: an insertion index on the strip, a tint or split
    * preview on the body. Both reset on drop, dragleave, and any dragend. */

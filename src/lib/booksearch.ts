@@ -34,7 +34,10 @@ import { getTopic, listTopics, TOPIC_WORKS, type TopicNode, type TopicWork } fro
  * or body text (the labels); commentary sections carry one prose field
  * with no heading of their own, so a heading-scoped query answers from the
  * topical works alone. The commentary index builds once at module scope
- * and stays resident, the way the other data libs cache the shelf.
+ * and stays resident, the way the other data libs cache the shelf. It
+ * keeps one copy of each section's text; the case fold happens on the
+ * scan (one regex per query), not as a lowercased second copy of the
+ * shelf, which measured at 124 MB of prose and as much again retained.
  */
 
 /** Which prose the query reads: everything, headings, or body text. */
@@ -87,7 +90,6 @@ interface SectionRow {
   toV: number;
   verses: string;
   text: string;
-  lower: string;
 }
 
 /** First and last numbers of a verse label ("1-3" -> [1, 3]); an empty
@@ -130,7 +132,6 @@ async function buildSectionIndex(): Promise<SectionRow[]> {
             toV,
             verses: s.verses,
             text: s.text,
-            lower: s.text.toLowerCase(),
           });
         }
       }
@@ -158,7 +159,7 @@ function inScopes(scopes: ScopeSegment[], row: SectionRow): boolean {
 /* ------------------------------- matching ------------------------------- */
 
 /** A match as its offset and length in the original text; null on a miss. */
-type Matcher = (text: string, lower: string) => { at: number; span: number } | null;
+type Matcher = (text: string) => { at: number; span: number } | null;
 
 /** The first literal word or phrase in the tree, for placing the snippet
  * near a real match; wildcards and pure boolean trees give none. */
@@ -185,10 +186,11 @@ function firstLiteral(n: Node): string | null {
  * the first literal when the text carries it verbatim. */
 function preciseMatcher(root: Node): Matcher {
   const literal = firstLiteral(root);
-  return (text, lower) => {
+  return (text) => {
     if (!evalVerse(root, verseWords(text))) return null;
     if (literal) {
-      const at = lower.indexOf(literal);
+      // The fold is paid only by a section that already answered.
+      const at = text.toLowerCase().indexOf(literal);
       if (at >= 0) return { at, span: literal.length };
     }
     return { at: 0, span: 0 };
@@ -196,9 +198,12 @@ function preciseMatcher(root: Node): Matcher {
 }
 
 function substringMatcher(needle: string): Matcher {
-  return (_text, lower) => {
-    const at = lower.indexOf(needle);
-    return at < 0 ? null : { at, span: needle.length };
+  // One case-folding regex per query; no lowercased copy of the shelf is
+  // retained or swept per scan.
+  const re = new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+  return (text) => {
+    const m = re.exec(text);
+    return m ? { at: m.index, span: needle.length } : null;
   };
 }
 
@@ -241,7 +246,7 @@ export async function searchBooks(
     const rows = await loadSectionIndex();
     for (const row of rows) {
       if (!inScopes(scopes, row)) continue;
-      const m = match(row.text, row.lower);
+      const m = match(row.text);
       if (!m) continue;
       out.commentaryTotal++;
       if (out.commentary.length < cap) {
@@ -265,7 +270,7 @@ export async function searchBooks(
     for (const t of await listTopics(work.id)) {
       let hit: TopicHit | null = null;
       if (field !== "text") {
-        const m = match(t.title, t.title.toLowerCase());
+        const m = match(t.title);
         if (m) {
           hit = {
             work: work.id,
@@ -304,7 +309,7 @@ export async function searchBooks(
 /** The first outline label that answers, as a snippet; null when none do. */
 function labelMatch(nodes: TopicNode[], match: Matcher): string | null {
   for (const node of nodes) {
-    const m = match(node.label, node.label.toLowerCase());
+    const m = match(node.label);
     if (m) return snippet(node.label, m.at, m.span);
     const child = labelMatch(node.children, match);
     if (child !== null) return child;
