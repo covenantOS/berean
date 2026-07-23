@@ -63,6 +63,35 @@ interface ConstructionClause {
   parts: ConstructionPart[];
 }
 
+interface FrameArg {
+  role: string;
+  text?: string;
+  gloss?: string;
+  strongs?: string;
+  c?: number;
+  v?: number;
+  implied?: boolean;
+}
+
+interface VerbFrame {
+  verb: string;
+  gloss?: string;
+  strongs?: string;
+  args: FrameArg[];
+}
+
+interface ReferentRow {
+  word: string;
+  gloss?: string;
+  strongs?: string;
+  of: { text?: string; gloss?: string; strongs?: string; c?: number; v?: number }[];
+}
+
+interface VerseRoles {
+  frames: VerbFrame[];
+  referents: ReferentRow[];
+}
+
 interface ExegeticalPayload {
   book: string;
   bookName: string;
@@ -73,6 +102,7 @@ interface ExegeticalPayload {
   lemmas: LemmaRow[];
   variants: VariantRow[];
   constructions: Record<string, ConstructionClause[]> | null;
+  frames: Record<string, VerseRoles> | null;
 }
 
 type LoadState =
@@ -80,13 +110,25 @@ type LoadState =
   | { status: "missing" }
   | { status: "ready"; report: ExegeticalPayload };
 
+/** Consecutive arguments of one role group under one label, order kept. */
+function groupArgs(args: FrameArg[]): [string, FrameArg[]][] {
+  const out: [string, FrameArg[]][] = [];
+  for (const a of args) {
+    const last = out[out.length - 1];
+    if (last && last[0] === a.role) last[1].push(a);
+    else out.push([a.role, [a]]);
+  }
+  return out;
+}
+
 /**
  * The Exegetical Guide pane: one chapter's original-language report, pinned
  * at open time. Word by Word renders every tagged token with its parsing;
  * each word opens its word study, each Strong's id opens the lexicon, and
  * each verse chip opens the passage. Important Words, Lemma in Passage, the
- * MACULA syntax-tree Constructions, and the edition-flag Textual Variants
- * ride the same payload. Hovering a word
+ * MACULA syntax-tree Constructions, the Clear semantic frames and
+ * participant referents (Who Does What), and the edition-flag Textual
+ * Variants ride the same payload. Hovering a word
  * card or a lemma reports its base Strong's id on the lemma hover bus, so
  * every occurrence lights up in the open readers. Sections with
  * nothing to say stay out of the report.
@@ -442,8 +484,133 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
         </GuideSection>
       )}
 
+      {r.frames && Object.keys(r.frames).length > 0 && (
+        <GuideSection
+          stagger={5}
+          title="Who Does What"
+          hint="semantic roles and participant referents from the MACULA annotations (CC BY 4.0)"
+          defaultOpen={false}
+        >
+          <ul className="space-y-3">
+            {Object.entries(r.frames)
+              .sort((a, b) => Number(a[0]) - Number(b[0]))
+              .map(([verse, row]) => (
+                <li key={verse} className="flex items-start gap-2">
+                  <button
+                    type="button"
+                    title={`Open ${reference}:${verse} in the reader`}
+                    onClick={() => dispatch({ type: "openRef", book: r.book, chapter: r.chapter })}
+                    className="mt-0.5 w-8 shrink-0 text-left text-[0.68rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    v{verse}
+                  </button>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    {row.frames.map((f, i) => (
+                      <p key={`f${i}`} className="text-xs leading-relaxed">
+                        {f.strongs ? (
+                          <button
+                            type="button"
+                            title={`Open the word study for ${f.strongs}`}
+                            onClick={() => dispatch({ type: "openWordStudy", strongsId: f.strongs! })}
+                            className={`${langClass} font-semibold hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
+                          >
+                            {f.verb}
+                          </button>
+                        ) : (
+                          <span className={`${langClass} font-semibold`}>{f.verb}</span>
+                        )}
+                        {f.gloss && <span className="text-muted"> “{f.gloss}”</span>}
+                        {groupArgs(f.args).map(([role, args]) => (
+                          <span key={role}>
+                            <span className="text-muted"> · </span>
+                            <span className="font-semibold capitalize">{role}</span>{" "}
+                            {args.map((a, j) => (
+                              <span key={j}>
+                                {j > 0 && ", "}
+                                {a.implied ? (
+                                  <span className="text-muted">(implied)</span>
+                                ) : (
+                                  <>
+                                    {a.strongs ? (
+                                      <button
+                                        type="button"
+                                        title={`Open the word study for ${a.strongs}`}
+                                        onClick={() =>
+                                          dispatch({ type: "openWordStudy", strongsId: a.strongs! })
+                                        }
+                                        className={`${langClass} hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
+                                      >
+                                        {a.text}
+                                      </button>
+                                    ) : (
+                                      <span className={langClass}>{a.text}</span>
+                                    )}
+                                    {a.gloss && <span className="text-muted"> “{a.gloss}”</span>}
+                                    {a.v !== undefined && (
+                                      <span className="text-muted">
+                                        {" "}({a.c !== undefined ? `${a.c}:${a.v}` : `v${a.v}`})
+                                      </span>
+                                    )}
+                                  </>
+                                )}
+                              </span>
+                            ))}
+                          </span>
+                        ))}
+                      </p>
+                    ))}
+                    {row.referents.map((ref, i) => (
+                      <p key={`r${i}`} className="text-xs leading-relaxed">
+                        {ref.strongs ? (
+                          <button
+                            type="button"
+                            title={`Open the word study for ${ref.strongs}`}
+                            onClick={() => dispatch({ type: "openWordStudy", strongsId: ref.strongs! })}
+                            className={`${langClass} hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
+                          >
+                            {ref.word}
+                          </button>
+                        ) : (
+                          <span className={langClass}>{ref.word}</span>
+                        )}
+                        {ref.gloss && <span className="text-muted"> “{ref.gloss}”</span>}
+                        <span className="text-muted"> refers to </span>
+                        {ref.of.map((t, j) => (
+                          <span key={j}>
+                            {j > 0 && ", "}
+                            {t.strongs ? (
+                              <button
+                                type="button"
+                                title={`Open the word study for ${t.strongs}`}
+                                onClick={() =>
+                                  dispatch({ type: "openWordStudy", strongsId: t.strongs! })
+                                }
+                                className={`${langClass} hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
+                              >
+                                {t.text}
+                              </button>
+                            ) : (
+                              <span className={langClass}>{t.text}</span>
+                            )}
+                            {t.gloss && <span className="text-muted"> “{t.gloss}”</span>}
+                            {t.v !== undefined && (
+                              <span className="text-muted">
+                                {" "}({t.c !== undefined ? `${t.c}:${t.v}` : `v${t.v}`})
+                              </span>
+                            )}
+                          </span>
+                        ))}
+                      </p>
+                    ))}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </GuideSection>
+      )}
+
       {r.variants.length > 0 && (
-        <GuideSection stagger={5} title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
+        <GuideSection stagger={6} title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
           <ul className="space-y-1.5">
             {r.variants.map((v) => (
               <li key={v.verse} className="flex items-baseline gap-2">
@@ -471,13 +638,14 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       )}
 
       <p
-        style={{ "--i": 6 } as CSSProperties}
+        style={{ "--i": 7 } as CSSProperties}
         className="border-t border-rule pt-2 text-[0.68rem] text-muted"
       >
         {source}: data created by www.STEPBible.org based on work at Tyndale
         House Cambridge (CC BY 4.0). Parsings decoded from the shipped
-        morphology codes. Constructions from the MACULA syntax trees, Clear
-        Bible / Biblica (CC BY 4.0).
+        morphology codes. Constructions, semantic roles, and participant
+        referents from the MACULA datasets, Clear Bible / Biblica
+        (CC BY 4.0).
       </p>
     </div>
   );

@@ -64,12 +64,22 @@ OpenScriptures Hebrew Bible morphology", and the third-party list licenses
 the Westminster Hebrew Syntax (Groves Center) and the OpenScriptures Hebrew
 Bible each under CC BY 4.0.
 
-Only the tree structure ships: `data/constructions/<Book>.json` records, per
-chapter and verse, every clause carrying at least one constituent with a
-clause-level function role, each part labeled from the MACULA Hebrew
-Treebank manual's documented set (ADV, O, O2, OC, P, S, V, PP). Built by
-`scripts/build-constructions.mjs`; the Hebrew-numbered WLC references map
-onto the shipped TAHOT English numbering through the TAHOT `alt` table.
+Two layers ship from the lowfat files. `data/constructions/<Book>.json`
+records, per chapter and verse, every clause carrying at least one
+constituent with a clause-level function role, each part labeled from the
+MACULA Hebrew Treebank manual's documented set (ADV, O, O2, OC, P, S, V,
+PP). `data/frames/<Book>.json` records, per chapter and verse, the Clear
+semantic frames (each annotated verb's arguments: A0 agent, A1 patient,
+A2 recipient, AA causer on the causative stems; the role labels are
+empirical, the manuals do not document them) and the participant referents
+(`@participantref`, resolving pronominal mentions and suffixes to their
+antecedent words); the LICENSE.md names both datasets ("Semantic frames
+(see `@frame`)" and "Participant referents (see `@subjref`,
+`@participantref`)") under the same CC BY 4.0 grant. The `@subjref`
+attribute (verb to its expressed subject) stays reserved: it overlaps the
+frames' A0 layer. Built by `scripts/build-constructions.mjs` and
+`scripts/build-frames.mjs`; the Hebrew-numbered WLC references map onto
+the shipped TAHOT English numbering through the TAHOT `alt` table.
 The word-level SDBH attributes the same files carry (`@sdbh`, `@lexdomain`,
 `@coredomain`, `@contextualdomain`) trace to the Semantic Dictionary of
 Biblical Hebrew, which the LICENSE.md's third-party list gives as "Used
@@ -80,3 +90,4 @@ instead (see `data/_sources/ubs-dictionaries/PROVENANCE.md`). To rebuild:
     git clone --depth 1 --filter=blob:none --sparse https://github.com/Clear-Bible/macula-hebrew.git
     git sparse-checkout set WLC/lowfat
     node scripts/build-constructions.mjs
+    node scripts/build-frames.mjs

@@ -3,6 +3,7 @@ import { getBook } from "@/lib/canon";
 import { decodeMorph, getOriginalChapter, STOP_STRONGS } from "@/lib/tagged";
 import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
 import { getConstructions } from "@/lib/constructions";
+import { getFrames, type ReferentTarget, type VerbFrame } from "@/lib/frames";
 
 /**
  * The Exegetical Guide: one chapter's original-language report, composed
@@ -11,7 +12,10 @@ import { getConstructions } from "@/lib/constructions";
  * decoded parsing, and gloss of every token; Important Words ranks the
  * chapter's significant Strong's ids; Lemma in Passage gathers the repeated
  * lemmas with their verses; Constructions lists the clause functions of the
- * MACULA syntax trees verse by verse; Textual Variants lists the words the
+ * MACULA syntax trees verse by verse; Who Does What lists the Clear
+ * semantic frames (each annotated verb's agent, patient, and further
+ * arguments) and participant referents (who each pronoun refers to) from
+ * the MACULA annotations; Textual Variants lists the words the
  * TAGNT edition flags mark absent from one or more editions (New Testament
  * only, the only place edition data ships). A passage without the apparatus
  * answers 404, never a stub section.
@@ -129,6 +133,35 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // (e) Constructions: the MACULA syntax trees' clause records per verse,
+  // keyed by verse number. Absent verses have no clauses beginning in
+  // them; a book without the trees answers null and the section stays out.
+  const constructions = await getConstructions(book.slug, chapter);
+
+  // (f) Who Does What: the Clear semantic frames and participant
+  // referents per verse, same keying. The padded build-time Strong's ids
+  // normalize to the form the word study and lexicon routes take.
+  const rawFrames = await getFrames(book.slug, chapter);
+  let frames: Record<number, { frames: VerbFrame[]; referents: { word: string; gloss?: string; strongs?: string; of: ReferentTarget[] }[] }> | null = null;
+  if (rawFrames) {
+    const norm = (id?: string) => (id ? normalizeStrongs(id) ?? undefined : undefined);
+    frames = {};
+    for (const [verse, row] of Object.entries(rawFrames)) {
+      frames[Number(verse)] = {
+        frames: row.frames.map((f) => ({
+          ...f,
+          strongs: norm(f.strongs),
+          args: f.args.map((a) => ({ ...a, strongs: norm(a.strongs) })),
+        })),
+        referents: row.referents.map((r) => ({
+          ...r,
+          strongs: norm(r.strongs),
+          of: r.of.map((t) => ({ ...t, strongs: norm(t.strongs) })),
+        })),
+      };
+    }
+  }
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -138,9 +171,7 @@ export async function GET(req: NextRequest) {
     importantWords,
     lemmas,
     variants,
-    // (e) Constructions: the MACULA syntax trees' clause records per verse,
-    // keyed by verse number. Absent verses have no clauses beginning in
-    // them; a book without the trees answers null and the section stays out.
-    constructions: await getConstructions(book.slug, chapter),
+    constructions,
+    frames,
   });
 }

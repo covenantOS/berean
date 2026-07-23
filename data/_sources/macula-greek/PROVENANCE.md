@@ -15,19 +15,26 @@ https://github.com/Clear-Bible/macula-greek/". Registered in
 `src/lib/rights.ts` (id `macula-greek`). The underlying Nestle 1904 text is
 a 1904 publication in the public domain.
 
-Only the tree structure ships: `data/constructions/<Book>.json` records, per
-chapter and verse, every clause carrying at least one constituent with a
-clause-level function role, each part labeled from the treebank manual's
-documented set (ADV, IO, O, O2, P, S, V, VC) plus the `aux` role the trees
-use for appositions and other attachments outside the clause core (the
-manual does not document `aux`; the label is empirical and noted in the
-build). Built by `scripts/build-constructions.mjs`; the raw XML (about 100
-MB) is kept out of git (see `.gitignore`). Versification follows the shipped
-TAGNT (NA-style numbering, the N1904's own). To rebuild:
+Two layers ship. `data/constructions/<Book>.json` records, per chapter and
+verse, every clause carrying at least one constituent with a clause-level
+function role, each part labeled from the treebank manual's documented set
+(ADV, IO, O, O2, P, S, V, VC) plus the `aux` role the trees use for
+appositions and other attachments outside the clause core (the manual does
+not document `aux`; the label is empirical and noted in the build).
+`data/frames/<Book>.json` records, per chapter and verse, the Clear
+semantic frames (each annotated verb's arguments: A0 agent, A1 patient,
+A2 recipient, AA2 experiencer; the role labels are empirical, the manuals
+do not document them) and the participant referents (`@referent`,
+resolving pronouns and other mentions to their antecedent words). Built by
+`scripts/build-constructions.mjs` and `scripts/build-frames.mjs`; the raw
+XML (about 100 MB) is kept out of git (see `.gitignore`). Versification
+follows the shipped TAGNT (NA-style numbering, the N1904's own). To
+rebuild:
 
     git clone --depth 1 --filter=blob:none --sparse https://github.com/Clear-Bible/macula-greek.git
     git sparse-checkout set Nestle1904/lowfat
     node scripts/build-constructions.mjs
+    node scripts/build-frames.mjs
 
 ## Layers investigated and NOT taken from this repository
 
@@ -43,9 +50,13 @@ TAGNT (NA-style numbering, the N1904's own). To rebuild:
   (see `data/_sources/ubs-dictionaries/PROVENANCE.md`). Five constituents
   whose role attribute carries the source's own `err_...` annotation-error
   markers are skipped and counted in `data/constructions/_meta.json`.
-- Semantic frames and participant referents (`sources/Clear/annotations`):
-  Clear Bible's own data, CC BY 4.0, real and well-formed. Reserved for a
-  future wave; the clause-function constructions ship first.
+- Semantic frames and participant referents (`sources/Clear/annotations`,
+  carried on the lowfat words as `@frame` and `@referent`): Clear Bible's
+  own data, CC BY 4.0, shipped 2026-07-23 as `data/frames/` behind the
+  Exegetical Guide's Who Does What section and the original-language
+  search's `role:` filter (`scripts/build-frames.mjs`). The `@subjref`
+  attribute (verb to its expressed subject) stays reserved: it overlaps
+  the frames' A0 layer, which already names the agent with its role.
 - Clear's own word-sense numbers (`sources/Clear/wordsense`): bare sense
   numbers without definitions or labels, nothing honest to present.
 - Synonyms (`sources/Clear/synonyms`): a proximity table without a stated

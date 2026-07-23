@@ -44,6 +44,8 @@ export async function GET(req: NextRequest) {
       total: r.total,
       verses: r.verses,
       lang: r.lang,
+      domain: r.domain ?? null,
+      totalLabel: r.totalLabel ?? null,
     });
   } catch (e) {
     if (e instanceof QueryError) {

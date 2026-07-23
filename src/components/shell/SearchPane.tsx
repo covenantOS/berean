@@ -116,7 +116,8 @@ const SEARCH_MODES: { key: SearchMode; label: string; title: string }[] = [
   {
     key: "original",
     label: "Original",
-    title: "Lemma, Strong's number, or script letters over the tagged Greek and Hebrew, narrowed by parsing",
+    title:
+      "Lemma, Strong's number, script letters, or a semantic domain over the tagged Greek and Hebrew, narrowed by parsing, semantic role, and clause function",
   },
   {
     key: "semantic",
@@ -769,9 +770,10 @@ const TPL_RUN =
  * The templates strip: a small set of forms for the questions the precise
  * grammar answers, so the syntax is never a prerequisite. Each form builds
  * its query live under the inputs; running one dispatches an ordinary
- * search. The Strong's form is the exception: Greek and Hebrew numbers are
- * original-language questions, so it runs in the pane's original mode,
- * which answers them; the concordance never sees the query.
+ * search. Four forms are the exception: Strong's numbers, semantic
+ * domains, semantic roles, and clause functions are original-language
+ * questions, so they run in the pane's original mode, which answers them;
+ * the concordance never sees the query.
  */
 function TemplatesPanel({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
   return (
@@ -785,6 +787,9 @@ function TemplatesPanel({ onRun }: { onRun: (q: string, mode?: SearchMode) => vo
       <AnyOfTemplate onRun={onRun} />
       <WithoutTemplate onRun={onRun} />
       <StrongsTemplate onRun={onRun} />
+      <DomainTemplate onRun={onRun} />
+      <RoleTemplate onRun={onRun} />
+      <ClauseTemplate onRun={onRun} />
     </div>
   );
 }
@@ -972,6 +977,120 @@ function StrongsTemplate({ onRun }: { onRun: (q: string, mode?: SearchMode) => v
   );
 }
 
+/** domain:33 in:john, answered by the pane's original-language mode */
+function DomainTemplate({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
+  const [term, setTerm] = useState("");
+  const [book, setBook] = useState("");
+  const resolved = resolveBookName(book);
+  const t = term.trim().replace(/^domain:/i, "");
+  const ready = t.length >= 2 && (book.trim() === "" || resolved !== undefined);
+  const q = ready ? `domain:${t}${resolved ? ` in:${resolved.slug}` : ""}` : "";
+  return (
+    <TemplateRow label="Every lemma in a domain" ready={ready} onRun={() => onRun(q, "original")} preview={q}>
+      <input
+        value={term}
+        onChange={(e) => setTerm(e.target.value)}
+        placeholder="33 or communication"
+        aria-label="Domain number or name"
+        className={`w-36 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">in</span>
+      <input
+        value={book}
+        onChange={(e) => setBook(e.target.value)}
+        placeholder="whole canon"
+        aria-label="Book, optional"
+        className={`w-24 ${TPL_INPUT}`}
+      />
+      {book.trim().length > 0 && !resolved && (
+        <span className="text-[0.68rem] text-ruby">No book answers to that name.</span>
+      )}
+      <span className="text-[0.68rem] text-muted">runs in the original-language mode</span>
+    </TemplateRow>
+  );
+}
+
+/** λόγος role:agent, answered by the pane's original-language mode */
+function RoleTemplate({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
+  const ROLES = ["agent", "patient", "recipient", "causer", "experiencer"] as const;
+  const [word, setWord] = useState("");
+  const [role, setRole] = useState<(typeof ROLES)[number]>("agent");
+  const w = word.trim();
+  const ready = w.length >= 2;
+  const q = ready ? `${w} role:${role}` : "";
+  return (
+    <TemplateRow label="A word in a semantic role" ready={ready} onRun={() => onRun(q, "original")} preview={q}>
+      <input
+        value={word}
+        onChange={(e) => setWord(e.target.value)}
+        placeholder="G3056 or λόγος"
+        aria-label="Lemma or Strong's number"
+        className={`w-32 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.72rem] text-muted">as</span>
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value as (typeof ROLES)[number])}
+        aria-label="Semantic role"
+        className={TPL_INPUT}
+      >
+        {ROLES.map((r) => (
+          <option key={r} value={r}>
+            {r}
+          </option>
+        ))}
+      </select>
+      <span className="text-[0.68rem] text-muted">runs in the original-language mode</span>
+    </TemplateRow>
+  );
+}
+
+/** clause:o2, with an optional word, answered by the pane's original-language mode */
+function ClauseTemplate({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
+  const FUNCTIONS = [
+    { code: "o2", label: "second object" },
+    { code: "io", label: "indirect object" },
+    { code: "oc", label: "object complement" },
+    { code: "s", label: "subject" },
+    { code: "o", label: "object" },
+    { code: "v", label: "verb" },
+    { code: "vc", label: "copula" },
+    { code: "p", label: "predicate" },
+    { code: "adv", label: "adverbial" },
+    { code: "pp", label: "prepositional phrase" },
+    { code: "aux", label: "auxiliary" },
+  ] as const;
+  const [fn, setFn] = useState<(typeof FUNCTIONS)[number]["code"]>("o2");
+  const [word, setWord] = useState("");
+  const w = word.trim();
+  const q = w ? `${w} clause:${fn}` : `clause:${fn}`;
+  return (
+    <TemplateRow label="Clauses carrying a function" ready onRun={() => onRun(q, "original")} preview={q}>
+      <select
+        value={fn}
+        onChange={(e) => setFn(e.target.value as (typeof FUNCTIONS)[number]["code"])}
+        aria-label="Clause function"
+        className={TPL_INPUT}
+      >
+        {FUNCTIONS.map((f) => (
+          <option key={f.code} value={f.code}>
+            {f.label}
+          </option>
+        ))}
+      </select>
+      <span className="text-[0.72rem] text-muted">with</span>
+      <input
+        value={word}
+        onChange={(e) => setWord(e.target.value)}
+        placeholder="any word (optional)"
+        aria-label="Word in the clause, optional"
+        className={`w-32 ${TPL_INPUT}`}
+      />
+      <span className="text-[0.68rem] text-muted">runs in the original-language mode</span>
+    </TemplateRow>
+  );
+}
+
 /* ---------- Original: the morphology-aware Greek and Hebrew search ---------- */
 
 interface MorphMatch {
@@ -996,12 +1115,21 @@ type MorphLoad =
   | { status: "loading" }
   | { status: "error" }
   | { status: "invalid"; message: string }
-  | { status: "ready"; hits: MorphHit[]; total: number; verses: number; lang: string };
+  | {
+      status: "ready";
+      hits: MorphHit[];
+      total: number;
+      verses: number;
+      lang: string;
+      domain: { term: string; label: string; lemmas: number } | null;
+      totalLabel: { one: string; many: string } | null;
+    };
 
 /**
  * The original-language mode: the /search page's morph search carried into
  * the workspace. The query takes a lemma, a transliteration, a Strong's
- * number, or letters in the script, with in: scoping; the "Narrow by
+ * number, letters in the script, or a semantic domain (domain:33), with
+ * in: scoping and the role: and clause: dataset tokens; the "Narrow by
  * parsing" strip adds the Greek and Hebrew morphology filters. One fetch to
  * /api/pane/morph carries the working set; the Verses view keeps the old
  * page's parsing and gloss display, while Aligned, Grid, Analysis, and
@@ -1066,6 +1194,8 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
           total: number;
           verses: number;
           lang: string;
+          domain: { term: string; label: string; lemmas: number } | null;
+          totalLabel: { one: string; many: string } | null;
           error?: string;
         };
         if (data.error) setLoad({ status: "invalid", message: data.error });
@@ -1076,6 +1206,8 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
             total: data.total,
             verses: data.verses,
             lang: data.lang,
+            domain: data.domain ?? null,
+            totalLabel: data.totalLabel ?? null,
           });
         }
       })
@@ -1190,7 +1322,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
           name="mq"
           value={mq}
           onChange={(e) => setMq(e.target.value)}
-          placeholder="Lemma, transliteration, Strong's (G25, H1254), or letters in the script (λογ, ברא)"
+          placeholder="Lemma, transliteration, Strong's (G25, H1254), script letters (λογ, ברא), domain:33, or λόγος role:agent"
           aria-label="Search the Greek and Hebrew text"
           className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
         />
@@ -1348,7 +1480,13 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
         {load.status === "ready" && load.total > 0 && (
           <div key={view} className="fx-fade">
             {view === "verses" && (
-              <OriginalVersesView hits={load.hits} total={load.total} verses={load.verses} />
+              <OriginalVersesView
+                hits={load.hits}
+                total={load.total}
+                verses={load.verses}
+                domain={load.domain}
+                totalLabel={load.totalLabel}
+              />
             )}
             {view === "aligned" && <AlignedView hits={verseHits} total={load.verses} />}
             {view === "grid" && <GridView hits={verseHits} total={load.verses} />}
@@ -1404,17 +1542,34 @@ function OriginalVersesView({
   hits,
   total,
   verses,
+  domain,
+  totalLabel,
 }: {
   hits: MorphHit[];
   total: number;
   verses: number;
+  domain: { term: string; label: string; lemmas: number } | null;
+  totalLabel: { one: string; many: string } | null;
 }) {
   const { dispatch } = useWorkspaceDispatch();
   return (
     <div className="mx-auto max-w-prose px-6 py-4">
+      {domain && (
+        <p className="small-caps mb-2 text-xs text-muted">
+          Domain {domain.label} · {domain.lemmas.toLocaleString()}{" "}
+          {domain.lemmas === 1 ? "lemma" : "lemmas"} from the UBS dictionaries
+        </p>
+      )}
       <p className="mb-3 text-xs text-muted">
-        {total.toLocaleString()} {total === 1 ? "occurrence" : "occurrences"} in{" "}
-        {verses.toLocaleString()} {verses === 1 ? "verse" : "verses"}
+        {total.toLocaleString()}{" "}
+        {totalLabel
+          ? total === 1
+            ? totalLabel.one
+            : totalLabel.many
+          : total === 1
+            ? "occurrence"
+            : "occurrences"}{" "}
+        in {verses.toLocaleString()} {verses === 1 ? "verse" : "verses"}
         {verses > hits.length ? `; the first ${hits.length} verses are listed` : ""}.
       </p>
       <ul>

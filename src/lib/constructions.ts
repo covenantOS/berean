@@ -73,3 +73,43 @@ export async function getConstructions(
   for (const v of ch.verses) out[Number(v.verse)] = v.clauses;
   return Object.keys(out).length > 0 ? out : null;
 }
+
+/**
+ * The search side of the constructions: for one book, a map of
+ * "chapter.verse" to each clause-function role present and the number of
+ * clauses carrying it (a verse with two O2 clauses counts two). The
+ * clause filter in morphsearch gates hit verses against this map and
+ * counts constructions for a clause-only query.
+ */
+export type ClauseRoleIndex = Map<string, Map<string, number>>;
+
+const clauseRoleIndexes = new Map<string, Promise<ClauseRoleIndex | null>>();
+
+export async function getClauseRoleIndex(file: string): Promise<ClauseRoleIndex | null> {
+  let hit = clauseRoleIndexes.get(file);
+  if (!hit) {
+    hit = (async () => {
+      const raw = await loadBook(file);
+      if (!raw) return null;
+      const index: ClauseRoleIndex = new Map();
+      for (const ch of raw.chapters) {
+        for (const v of ch.verses) {
+          const key = `${Number(ch.chapter)}.${Number(v.verse)}`;
+          for (const clause of v.clauses) {
+            const seen = new Set<string>();
+            for (const part of clause.parts) {
+              if (seen.has(part.role)) continue;
+              seen.add(part.role);
+              if (!index.has(key)) index.set(key, new Map());
+              const atVerse = index.get(key)!;
+              atVerse.set(part.role, (atVerse.get(part.role) ?? 0) + 1);
+            }
+          }
+        }
+      }
+      return index;
+    })();
+    clauseRoleIndexes.set(file, hit);
+  }
+  return hit;
+}

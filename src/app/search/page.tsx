@@ -257,7 +257,7 @@ async function OriginalMode({
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="Lemma, transliteration, Strong's (G25, H1254), or letters in the script (λογ, ברא)"
+            placeholder="Lemma, transliteration, Strong's (G25, H1254), script letters (λογ, ברא), domain:33, or λόγος role:agent"
             aria-label="Search the Greek and Hebrew text"
             className="w-full rounded-[4px] border border-rule bg-surface px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
           />
@@ -298,8 +298,21 @@ async function OriginalMode({
 
       {results && (
         <>
+          {results.domain && (
+            <p className="small-caps mb-4 border-b border-rule pb-2 text-sm text-muted">
+              Domain {results.domain.label} · {results.domain.lemmas.toLocaleString()}{" "}
+              {results.domain.lemmas === 1 ? "lemma" : "lemmas"} from the UBS dictionaries
+            </p>
+          )}
           <p className="small-caps mb-4 border-b border-rule pb-2 text-sm text-muted">
-            {results.total.toLocaleString()} {results.total === 1 ? "occurrence" : "occurrences"}
+            {results.total.toLocaleString()}{" "}
+            {results.totalLabel
+              ? results.total === 1
+                ? results.totalLabel.one
+                : results.totalLabel.many
+              : results.total === 1
+                ? "occurrence"
+                : "occurrences"}
             {" in "}
             {results.verses.toLocaleString()} {results.verses === 1 ? "verse" : "verses"}
             {results.verses > results.hits.length &&

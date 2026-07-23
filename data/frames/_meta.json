@@ -1,0 +1,166 @@
+{
+  "id": "frames",
+  "title": "Semantic frames and participant referents (MACULA Clear annotations)",
+  "attribution": "MACULA Greek Linguistic Datasets (https://github.com/Clear-Bible/macula-greek/) and MACULA Hebrew Linguistic Datasets (https://github.com/Clear-Bible/macula-hebrew/), both CC BY 4.0; the repositories' LICENSE.md files name Semantic Frames and Participant Referents among the licensed datasets.",
+  "retrieved": "2026-07-23",
+  "builtBy": "scripts/build-frames.mjs",
+  "books": 66,
+  "greek": {
+    "frameVerbs": 25493,
+    "roleLinks": 42015,
+    "roles": {
+      "a0": 22281,
+      "a1": 14131,
+      "a2": 2530,
+      "aa2": 90
+    },
+    "implied": 1897,
+    "phantomNullTargets": 0,
+    "crossVerse": 12922,
+    "referentWords": 14471,
+    "referentLinks": 18120,
+    "unmapped": 0,
+    "unresolvedRefs": 0,
+    "unmappedSamples": [],
+    "phantomSamples": [],
+    "unresolvedRefSamples": []
+  },
+  "hebrew": {
+    "frameVerbs": 69205,
+    "roleLinks": 108153,
+    "roles": {
+      "a0": 64264,
+      "a1": 27924,
+      "aa": 6755,
+      "a2": 273
+    },
+    "implied": 2678,
+    "phantomNullTargets": 1387,
+    "crossVerse": 27339,
+    "referentWords": 50781,
+    "referentLinks": 57855,
+    "unmapped": 33,
+    "unresolvedRefs": 1372,
+    "unmappedSamples": [
+      "Numbers 26.1",
+      "1Samuel 21.1",
+      "1Kings 22.22",
+      "1Kings 22.44",
+      "Psalms 51.2",
+      "Psalms 52.2",
+      "Psalms 54.2",
+      "Psalms 60.2"
+    ],
+    "phantomSamples": [
+      "GEN 3:13!7 A0:010030130043;",
+      "GEN 13:3!10 A0:010130030121;",
+      "GEN 14:7!8 A0:010140070101;010140070142;",
+      "GEN 14:7!16 A0:010140070142;",
+      "GEN 14:18!5 A0:010140180051;010140180062;",
+      "GEN 19:8!27 A0:010190080193;",
+      "GEN 21:23!13 A1:010210230113;",
+      "GEN 21:23!15 A1:010210230113;",
+      "GEN 21:31!10 A0:010210310102;",
+      "GEN 21:32!5 A0:010210320051;010210320062;",
+      "GEN 21:32!10 A0:010210320051;010210320062;",
+      "GEN 23:2!13 A1:010230020124;",
+      "GEN 24:62!8 A0:010240620052;",
+      "GEN 26:2!11 A1:010260020093;",
+      "GEN 26:18!22 A1:010260180203;",
+      "GEN 28:6!16 A0:010280060153;",
+      "GEN 31:47!7 A0:010310470052;",
+      "GEN 31:49!9 A1:010310470052;010310480021;",
+      "GEN 31:50!2 A0:010310470052;",
+      "GEN 31:50!6 A0:010310470052;",
+      "GEN 31:50!13 A0:010310470052;",
+      "GEN 32:21!12 A0:010320210113;",
+      "GEN 34:28!13 A1:010340280021;010340280041;010340280061;010340280093;010340280123;",
+      "GEN 35:1!15 A1:010350010133;",
+      "GEN 35:1!17 A0:010350010163;"
+    ],
+    "unresolvedRefSamples": [
+      "GEN 6:3!9 010060030063",
+      "GEN 6:3!12 010060030063",
+      "GEN 7:11!14 010070110073",
+      "GEN 7:13!3 010070110133",
+      "GEN 9:7!7 010090070053",
+      "GEN 12:7!10 010120060123",
+      "GEN 13:17!4 010130170033",
+      "GEN 13:17!5 010130170033",
+      "GEN 13:17!8 010130170033",
+      "GEN 19:9!13 010190080193",
+      "GEN 19:13!15 010190120153",
+      "GEN 23:17!19 010230170163",
+      "GEN 24:57!6 010240570033",
+      "GEN 26:3!3 010260020093",
+      "GEN 26:11!10 010260110083",
+      "GEN 28:16!9 010280110143",
+      "GEN 28:17!6 010280160083",
+      "GEN 28:20!11 010280100042",
+      "GEN 31:48!7 010310470052",
+      "GEN 31:49!7 010310470052",
+      "GEN 31:49!10 010310470052",
+      "GEN 31:50!12 010310470052",
+      "GEN 31:50!17 010310470052",
+      "GEN 32:23!3 010320220073",
+      "GEN 34:21!9 010340210073"
+    ]
+  },
+  "checks": [
+    {
+      "label": "John 1:5 katelaben names the darkness agent and the light patient",
+      "ok": true,
+      "detail": "[{\"verb\":\"φαίνει\",\"gloss\":\"shines\",\"strongs\":\"G5316\",\"args\":[{\"role\":\"agent\",\"text\":\"φῶς\",\"gloss\":\"Light\",\"strongs\":\"G5457\"}]},{\"verb\":\"κατέλαβεν\",\"gloss\":\"overcame\",\"strongs\":\"G2638\",\"args\":[{\"role\":\"agent\",\"text\":\"σκοτία\",\"gloss\":\"darkness\",\"strongs\":\"G4653\"},{\"role\":\"patient\",\"text\":\"αὐτὸ\",\"gloss"
+    },
+    {
+      "label": "Genesis 1:1 bara names elohim agent and heavens plus earth patients",
+      "ok": true,
+      "detail": "[{\"verb\":\"בָּרָ֣א\",\"gloss\":\"created\",\"strongs\":\"H1254\",\"args\":[{\"role\":\"agent\",\"text\":\"אֱלֹהִ֑ים\",\"gloss\":\"God\",\"strongs\":\"H0430\"},{\"role\":\"patient\",\"text\":\"שָּׁמַ֖יִם\",\"gloss\":\"heavens\",\"strongs\":\"H8064\"},{\"role\":\"patient\",\"text\":\"אָֽרֶץ\",\"gloss\":\"earth\",\"strongs\":\"H0776\"}]}]"
+    },
+    {
+      "label": "John 1:2 houtos refers to the Logos of verse 1",
+      "ok": true,
+      "detail": "[{\"word\":\"Οὗτος\",\"gloss\":\"He\",\"strongs\":\"G3778\",\"of\":[{\"text\":\"Λόγος\",\"gloss\":\"Word\",\"strongs\":\"G3056\",\"v\":1}]}]"
+    },
+    {
+      "label": "Genesis 1:17 them refers to the luminaries and the stars",
+      "ok": true,
+      "detail": "[{\"word\":\"ם\",\"gloss\":\"them\",\"strongs\":null,\"of\":[{\"text\":\"מְּאֹרֹ֖ת\",\"gloss\":\"lights\",\"strongs\":\"H3974\",\"v\":16},{\"text\":\"כּוֹכָבִֽים\",\"gloss\":\"stars\",\"strongs\":\"H3556\",\"v\":16}]}]"
+    },
+    {
+      "label": "Greek frame verbs cover the New Testament",
+      "ok": true,
+      "detail": "25493"
+    },
+    {
+      "label": "Hebrew frame verbs cover the Old Testament",
+      "ok": true,
+      "detail": "69205"
+    },
+    {
+      "label": "Greek referent mentions cover the New Testament",
+      "ok": true,
+      "detail": "14471"
+    },
+    {
+      "label": "Hebrew referent mentions cover the Old Testament",
+      "ok": true,
+      "detail": "50781"
+    },
+    {
+      "label": "Unresolved referent targets stay below 3% of referent links",
+      "ok": true,
+      "detail": "greek=0 hebrew=1372"
+    },
+    {
+      "label": "Phantom (null-node) frame targets stay below 2% of role links",
+      "ok": true,
+      "detail": "greek=0 hebrew=1387"
+    },
+    {
+      "label": "All 66 books ship",
+      "ok": true,
+      "detail": "books=66"
+    }
+  ]
+}
