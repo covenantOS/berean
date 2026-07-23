@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useCollection } from "@/lib/hooks";
 import { createProject, priorHandlings, projects } from "@/lib/projects";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -125,12 +126,13 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
    * straight into its pipeline, the pulpit form's own path. */
   const startSermon = () => {
     const p = createProject(reference, s.book, s.chapter, "sermon");
+    playSound("complete");
     dispatch({ type: "openProject", projectId: p.id, title: p.title });
   };
 
   return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6" data-print-root>
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Sermon Starter</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
         <p className="no-print mt-1 flex items-center gap-3">
@@ -140,6 +142,7 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
 
       {s.themes.length > 0 && (
         <GuideSection
+          stagger={1}
           title="Themes"
           hint="the topical works as the theme layer · entries citing this chapter"
         >
@@ -168,6 +171,7 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
 
       {s.keyPassages.length > 0 && (
         <GuideSection
+          stagger={2}
           title="Key Passages"
           hint="the texts the most verses of the chapter cite first; a theme citation breaks ties"
         >
@@ -211,6 +215,7 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
 
       {(s.notableWords.length > 0 || s.parallels.length > 0) && (
         <GuideSection
+          stagger={3}
           title="Out of the Text"
           hint="exegetical hooks from the chapter's tagging and quotations"
         >
@@ -297,7 +302,7 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
 
       {/* Media is composed, not stocked: the card link always answers, and
        * each place the chapter mentions hands off to the atlas. */}
-      <GuideSection title="Media" hint="composed on this device">
+      <GuideSection stagger={4} title="Media" hint="composed on this device">
         <ul className="space-y-1.5">
           <li>
             <button
@@ -339,14 +344,14 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
 
       {/* The pulpit handoff: start the sermon pinned to this passage, and
        * open the projects already standing on it. */}
-      <GuideSection title="Sermons" hint="the pulpit takes it from here">
+      <GuideSection stagger={5} title="Sermons" hint="the pulpit takes it from here">
         <div className="space-y-3">
           <p className="no-print">
             <button
               type="button"
               title={`Start a sermon project on ${reference}`}
               onClick={startSermon}
-              className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Start the sermon
             </button>
@@ -377,7 +382,10 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
         </div>
       </GuideSection>
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": 6 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         Composed from the datasets shipped on this installation; every section
         opens its source.
       </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface InsightCommentary {
@@ -72,7 +72,7 @@ function trimCard(text: string, max = 160): string {
 }
 
 const CHIP =
-  "inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire glass-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 /**
  * The insights rail: the chapter's resources as compact cards at the head of
@@ -114,8 +114,12 @@ export default function InsightsRail({
 
   const openGuide = () => dispatch({ type: "openGuide", book, chapter, paneId });
 
-  const card = (title: string, hint: string, children: ReactNode) => (
-    <section key={title} className="border border-rule bg-paper px-3 py-2">
+  const card = (i: number, title: string, hint: string, children: ReactNode) => (
+    <section
+      key={title}
+      style={{ "--i": i } as CSSProperties}
+      className="glass glass-hover rounded-[4px] px-3 py-2"
+    >
       <p className="flex items-baseline gap-2">
         <span className="small-caps text-[0.68rem] font-semibold text-muted">{title}</span>
         <span className="text-[0.68rem] text-muted">{hint}</span>
@@ -144,6 +148,7 @@ export default function InsightsRail({
       const top = g.commentary[0];
       cards.push(
         card(
+          cards.length,
           "Commentaries",
           `${g.commentary.length} ${g.commentary.length === 1 ? "work" : "works"} on the shelf`,
           <>
@@ -162,6 +167,7 @@ export default function InsightsRail({
     if (g.crossRefs.length > 0) {
       cards.push(
         card(
+          cards.length,
           "Cross References",
           `${g.crossRefsTotal} in the chapter, top by votes`,
           <p className="flex flex-wrap gap-1.5">
@@ -197,6 +203,7 @@ export default function InsightsRail({
       ];
       cards.push(
         card(
+          cards.length,
           "People & Places",
           `${g.people.length + g.places.length} mentioned`,
           <p className="flex flex-wrap gap-1.5">
@@ -221,6 +228,7 @@ export default function InsightsRail({
     if (g.topics.length > 0) {
       cards.push(
         card(
+          cards.length,
           "Topics",
           "Nave's and Torrey's citing this chapter",
           <p className="flex flex-wrap gap-1.5">
@@ -251,6 +259,7 @@ export default function InsightsRail({
     if (g.notableWords.length > 0) {
       cards.push(
         card(
+          cards.length,
           "Notable Words",
           "most frequent in the chapter's tagging",
           <p className="flex flex-wrap gap-1.5">
@@ -272,7 +281,7 @@ export default function InsightsRail({
 
     body =
       cards.length > 0 ? (
-        <div className="space-y-2">{cards}</div>
+        <div className="fx-stagger space-y-2">{cards}</div>
       ) : (
         <p className="text-xs text-muted">Nothing gathered for this chapter yet.</p>
       );
@@ -280,7 +289,7 @@ export default function InsightsRail({
 
   return (
     <div dir="ltr" className="mx-auto max-w-prose px-6">
-      <div className="mt-4 space-y-2 border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)]">
+      <div className="glass mt-4 space-y-2 rounded-[4px] px-3 py-2 font-[family-name:var(--font-interface)] print:bg-none print:bg-transparent print:shadow-none">
         <p className="small-caps text-xs font-semibold text-amber">Insights</p>
         {body}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -137,6 +138,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       ?.writeText(`${window.location.origin}/read/${book}/${chapter}`)
       .then(() => {
         setLinkCopied(true);
+        playSound("complete");
         window.setTimeout(() => setLinkCopied(false), 1500);
       })
       .catch(() => {});
@@ -148,7 +150,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       dir="ltr"
       onMouseEnter={hoverWord(w.strongs)}
       onMouseLeave={unhoverWord}
-      className="flex w-[7.5rem] shrink-0 flex-col gap-0.5 rounded-[3px] border border-rule bg-paper p-1.5"
+      className="glass-hover flex w-[7.5rem] shrink-0 flex-col gap-0.5 rounded-[3px] border border-rule bg-paper p-1.5"
     >
       {w.strongs ? (
         <button
@@ -179,8 +181,8 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
   );
 
   return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6" data-print-root>
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Exegetical Guide</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
@@ -199,7 +201,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
         </p>
       </header>
 
-      <GuideSection title="Word by Word" hint={`${source}, every tagged token`}>
+      <GuideSection stagger={1} title="Word by Word" hint={`${source}, every tagged token`}>
         <div className="space-y-4">
           {r.verses.map((v) => (
             <div key={v.verse} className="flex items-start gap-2">
@@ -223,7 +225,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       </GuideSection>
 
       {r.importantWords.length > 0 && (
-        <GuideSection title="Important Words" hint="most frequent in the chapter, function words skipped">
+        <GuideSection stagger={2} title="Important Words" hint="most frequent in the chapter, function words skipped">
           <ul className="space-y-1.5">
             {r.importantWords.map((w) => (
               <li key={w.strongs} className="flex items-baseline gap-2">
@@ -255,7 +257,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       )}
 
       {r.lemmas.length > 0 && (
-        <GuideSection title="Lemma in Passage" hint="lemmas this chapter repeats">
+        <GuideSection stagger={3} title="Lemma in Passage" hint="lemmas this chapter repeats">
           <ul className="space-y-2">
             {r.lemmas.map((l) => (
               <li key={l.lemma}>
@@ -283,7 +285,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
                       type="button"
                       title={`Open ${reference}:${v} in the reader`}
                       onClick={() => dispatch({ type: "openRef", book: r.book, chapter: r.chapter })}
-                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire glass-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       v{v}
                     </button>
@@ -296,7 +298,7 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       )}
 
       {r.variants.length > 0 && (
-        <GuideSection title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
+        <GuideSection stagger={4} title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
           <ul className="space-y-1.5">
             {r.variants.map((v) => (
               <li key={v.verse} className="flex items-baseline gap-2">
@@ -323,7 +325,10 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
         </GuideSection>
       )}
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": 5 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         {source}: data created by www.STEPBible.org based on work at Tyndale
         House Cambridge (CC BY 4.0). Parsings decoded from the shipped
         morphology codes.

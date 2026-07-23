@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { getBook } from "@/lib/canon";
 import { dailyRef } from "@/lib/daily-verse";
 import { useCollection } from "@/lib/hooks";
@@ -19,7 +19,7 @@ import { useWorkspace } from "./WorkspaceContext";
  * nothing counted as an achievement: a study landing, not a feed.
  */
 
-const CARD = "rounded-[4px] border border-rule bg-surface p-5";
+const CARD = "glass glass-hover rounded-[4px] p-5";
 const CARD_HEAD = "small-caps mb-2 text-sm text-muted";
 const LINK = "text-sapphire hover:underline";
 
@@ -66,8 +66,8 @@ export default function DashboardPane() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger mx-auto max-w-3xl space-y-4">
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Today</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">The day&apos;s appointed work</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
@@ -76,7 +76,7 @@ export default function DashboardPane() {
         </p>
       </header>
 
-      <section className={CARD}>
+      <section className={CARD} style={{ "--i": 1 } as CSSProperties}>
         <h3 className={CARD_HEAD}>Verse of the day</h3>
         {verseText && <p className="font-editorial text-base leading-relaxed">{verseText}</p>}
         <p className="mt-2 text-sm">
@@ -86,14 +86,14 @@ export default function DashboardPane() {
         </p>
       </section>
 
-      {planRows.map((plan) => {
+      {planRows.map((plan, planIndex) => {
         const gen = generatorFor(plan);
         if (!gen) return null;
         const today = Math.min(currentDay(plan), gen.days);
         const readings = readingsForDay(gen, today);
         const progress = planProgress(plan, gen);
         return (
-          <section key={plan.id} className={CARD}>
+          <section key={plan.id} className={CARD} style={{ "--i": 2 + planIndex } as CSSProperties}>
             <h3 className={CARD_HEAD}>Today&apos;s reading · {gen.name}</h3>
             <div className="space-y-1 text-sm">
               {readings.map((r, i) => (
@@ -129,7 +129,7 @@ export default function DashboardPane() {
       })}
 
       {dueMemory.length > 0 && (
-        <section className={CARD}>
+        <section className={CARD} style={{ "--i": 2 + planRows.length } as CSSProperties}>
           <h3 className={CARD_HEAD}>Memory work due</h3>
           <ul className="space-y-1 text-sm">
             {dueMemory.map((p) => (
@@ -154,7 +154,7 @@ export default function DashboardPane() {
       )}
 
       {duePrayers.length > 0 && (
-        <section className={CARD}>
+        <section className={CARD} style={{ "--i": 3 + planRows.length } as CSSProperties}>
           <h3 className={CARD_HEAD}>Prayers appointed today</h3>
           <ul className="space-y-1 text-sm">
             {duePrayers.map(({ list, request }) => (
@@ -175,7 +175,7 @@ export default function DashboardPane() {
       )}
 
       {studies.length > 0 && (
-        <section className={CARD}>
+        <section className={CARD} style={{ "--i": 4 + planRows.length } as CSSProperties}>
           <h3 className={CARD_HEAD}>Studies in progress</h3>
           <ul className="space-y-1 text-sm">
             {studies.map((run) => {
@@ -208,7 +208,7 @@ export default function DashboardPane() {
       )}
 
       {recent.length > 0 && (
-        <section className={CARD}>
+        <section className={CARD} style={{ "--i": 5 + planRows.length } as CSSProperties}>
           <h3 className={CARD_HEAD}>Recent searches</h3>
           <ul className="space-y-1 text-sm">
             {recent.map((entry) => (

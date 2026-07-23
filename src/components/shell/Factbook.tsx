@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 
@@ -115,8 +115,8 @@ export default function Factbook({ entityId }: { entityId: string }) {
   const overview = r.brief || (r.short && r.short !== r.brief) || r.article;
 
   return (
-    <div className="space-y-6">
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6">
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Factbook</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{r.name}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
@@ -131,7 +131,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
       </header>
 
       {overview && (
-        <GuideSection title="Overview" hint="the dataset's own prose">
+        <GuideSection stagger={1} title="Overview" hint="the dataset's own prose">
           {r.brief && <p className="font-editorial text-sm leading-relaxed">{r.brief}</p>}
           {r.short && r.short !== r.brief && (
             <p className="mt-2 text-xs leading-relaxed">{r.short}</p>
@@ -149,7 +149,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
       )}
 
       {r.locator && r.geo && (
-        <GuideSection title="Location" hint={`${r.geo.lat.toFixed(5)}, ${r.geo.lng.toFixed(5)}${r.area ? ` · ${r.area}` : ""}`}>
+        <GuideSection stagger={2} title="Location" hint={`${r.geo.lat.toFixed(5)}, ${r.geo.lng.toFixed(5)}${r.area ? ` · ${r.area}` : ""}`}>
           <div className="w-full max-w-xs">
             <button
               type="button"
@@ -205,7 +205,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
       )}
 
       {hasRelations && (
-        <GuideSection title="Family" hint="the record's relationship lists">
+        <GuideSection stagger={3} title="Family" hint="the record's relationship lists">
           <div className="space-y-1.5">
             {RELATION_LABELS.map(([key, label]) =>
               r.relations[key].length === 0 ? null : (
@@ -250,7 +250,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
       )}
 
       {r.timeline.length > 0 && (
-        <GuideSection title="On the Timeline" hint="dated events linked to this entity">
+        <GuideSection stagger={4} title="On the Timeline" hint="dated events linked to this entity">
           <ul className="space-y-1">
             {r.timeline.map((e) => (
               <li key={e.id} className="text-xs">
@@ -271,6 +271,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
 
       {r.refCount > 0 && (
         <GuideSection
+          stagger={5}
           title="Every Reference"
           hint={`${r.refCount.toLocaleString()} ${r.refCount === 1 ? "verse" : "verses"}`}
         >
@@ -287,7 +288,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
                       onClick={() =>
                         dispatch({ type: "openRef", book: b.slug, chapter: ref.chapter })
                       }
-                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire glass-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       {ref.chapter}:{ref.verse}
                     </button>
@@ -299,7 +300,10 @@ export default function Factbook({ entityId }: { entityId: string }) {
         </GuideSection>
       )}
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": 6 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         People and places: TIPNR, data created by www.STEPBible.org based on
         work at Tyndale House Cambridge (CC BY 4.0).
       </p>

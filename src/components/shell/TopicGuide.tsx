@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -123,7 +123,7 @@ export default function TopicGuide({
               type="button"
               title={`Open ${ref.label} in the reader`}
               onClick={() => dispatch({ type: "openRef", book: ref.slug, chapter: ref.chapter })}
-              className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire glass-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {ref.label}
             </button>
@@ -140,8 +140,8 @@ export default function TopicGuide({
   );
 
   return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6" data-print-root>
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Topic Guide</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold capitalize">{r.title}</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
@@ -153,13 +153,13 @@ export default function TopicGuide({
       </header>
 
       {r.sections.length > 0 && (
-        <GuideSection title="Key Passages" hint="the entry's own section tree">
+        <GuideSection stagger={1} title="Key Passages" hint="the entry's own section tree">
           <div className="space-y-4">{r.sections.map((n, i) => nodeView(n, 0, i))}</div>
         </GuideSection>
       )}
 
       {(r.related.length > 0 || r.otherWork) && (
-        <GuideSection title="Related Topics" hint="cross-references inside the topical works">
+        <GuideSection stagger={2} title="Related Topics" hint="cross-references inside the topical works">
           <ul className="space-y-1.5">
             {r.related.map((t) => (
               <li key={`${t.work}:${t.id}`}>
@@ -198,7 +198,7 @@ export default function TopicGuide({
       )}
 
       {r.entities.length > 0 && (
-        <GuideSection title="People and Places" hint="entity index entries matching this title">
+        <GuideSection stagger={3} title="People and Places" hint="entity index entries matching this title">
           <ul className="space-y-1.5">
             {r.entities.map((e) => (
               <li key={e.id}>
@@ -220,7 +220,10 @@ export default function TopicGuide({
         </GuideSection>
       )}
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": 4 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         {r.workLabel}, a public-domain work, digitized by CCEL and distributed
         through the CrossWire SWORD project.
       </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import {
   activeCollection,
   collections,
@@ -18,6 +18,7 @@ import { GUIDE_SECTIONS, type GuideSectionKey } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
 import { commentaryPriority, librarymeta } from "@/lib/librarymeta";
 import { copyReferences } from "@/lib/powerLookup";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import CommentaryFacetBar from "./CommentaryFacetBar";
 import GuideSection from "./GuideSection";
@@ -239,7 +240,10 @@ export default function PassageGuide({
       ),
     ];
     void copyReferences(refs).then((ok) => {
-      if (ok) confirm("texts");
+      if (ok) {
+        confirm("texts");
+        playSound("complete");
+      }
     });
   };
 
@@ -247,7 +251,10 @@ export default function PassageGuide({
   const copyLink = () => {
     navigator.clipboard
       ?.writeText(`${window.location.origin}/read/${g.book}/${g.chapter}`)
-      .then(() => confirm("link"))
+      .then(() => {
+        confirm("link");
+        playSound("complete");
+      })
       .catch(() => {});
   };
 
@@ -530,7 +537,7 @@ export default function PassageGuide({
                       }}
                       onMouseLeave={() => reportHoverRef(null)}
                       onClick={() => dispatch({ type: "openRef", book: r.slug, chapter: r.chapter })}
-                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="inline-block rounded-[3px] border border-rule bg-paper px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire glass-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       {r.label}
                     </button>
@@ -641,10 +648,13 @@ export default function PassageGuide({
    * cross-reference and timeline sections there are no referenced texts. */
   const order = sections ?? GUIDE_SECTIONS.map((s) => s.key);
   const showsReferences = order.includes("crossRefs") || order.includes("timeline");
+  /* The sections with something to say, in the guide's own order: the
+   * entrance cascade and its footer count only what renders. */
+  const visible = order.filter((key) => sectionNodes[key]);
 
   return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6" data-print-root>
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">{guideName ?? "Passage Guide"}</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{reference}</h2>
         <p className="no-print mt-1 flex items-center gap-3">
@@ -680,11 +690,16 @@ export default function PassageGuide({
         </p>
       </header>
 
-      {order.map((key) => (
-        <Fragment key={key}>{sectionNodes[key]}</Fragment>
+      {visible.map((key, i) => (
+        <div key={key} style={{ "--i": i + 1 } as CSSProperties}>
+          {sectionNodes[key]}
+        </div>
       ))}
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": visible.length + 1 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         Composed from the datasets shipped on this installation; every section
         opens its source.
       </p>

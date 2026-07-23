@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { listDocuments, type WordItem } from "@/lib/documents";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -111,6 +112,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       kind: "word-list",
       items,
     });
+    playSound("complete");
     dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
   };
 
@@ -125,8 +127,8 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   };
 
   return (
-    <div className="space-y-6" data-print-root>
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-6" data-print-root>
+      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Bible Word Study</p>
         <h2 className="mt-0.5 flex flex-wrap items-baseline gap-3">
           <span className={`${langClass} text-xl`}>{e.lemma ?? s.id}</span>
@@ -152,8 +154,8 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
         </h2>
       </header>
 
-      <GuideSection title="Lexicon" hint="Strong's dictionary, Tyndale House variants">
-        <div className="rounded-[4px] border border-rule bg-paper p-3">
+      <GuideSection stagger={1} title="Lexicon" hint="Strong's dictionary, Tyndale House variants">
+        <div className="glass rounded-[4px] p-3">
           {e.pron && <p className="text-xs italic text-muted">{e.pron}</p>}
           {e.derivation && (
             <p className="mt-1 text-xs text-muted">
@@ -183,6 +185,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
 
       {s.translation.renderings.length > 0 && (
         <GuideSection
+          stagger={2}
           title="Translation"
           hint={`${s.translation.distinct.toLocaleString()} KJV ${
             s.translation.distinct === 1 ? "rendering" : "renderings"
@@ -224,6 +227,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
 
       {s.occurrences.total > 0 && (
         <GuideSection
+          stagger={3}
           title="Occurrences"
           hint={`${s.occurrences.total.toLocaleString()} in ${s.occurrences.books} ${
             s.occurrences.books === 1 ? "book" : "books"
@@ -272,7 +276,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.occurrences.total > 0 && (
-        <GuideSection title="Chart" hint="frequency graph by book">
+        <GuideSection stagger={4} title="Chart" hint="frequency graph by book">
           <SearchChart
             series={s.occurrences.byBook.map((b) => ({ key: b.slug, label: b.name, value: b.count }))}
             kind={chartKind}
@@ -286,7 +290,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.forms.length > 0 && (
-        <GuideSection title="Forms" hint="parsings across the tagged originals">
+        <GuideSection stagger={5} title="Forms" hint="parsings across the tagged originals">
           <ul className="space-y-1">
             {s.forms.map((f) => (
               <li key={f.parsing} className="flex items-baseline gap-2 text-xs">
@@ -301,7 +305,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.topics.length > 0 && (
-        <GuideSection title="Topics" hint="cited where this word appears">
+        <GuideSection stagger={6} title="Topics" hint="cited where this word appears">
           <ul className="space-y-1.5">
             {s.topics.map((t) => (
               <li key={`${t.work}:${t.id}`}>
@@ -325,7 +329,10 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
         </GuideSection>
       )}
 
-      <p className="border-t border-rule pt-2 text-[0.68rem] text-muted">
+      <p
+        style={{ "--i": 7 } as CSSProperties}
+        className="border-t border-rule pt-2 text-[0.68rem] text-muted"
+      >
         Strong's dictionary (public domain). Occurrences and renderings from
         the tagged KJV; forms from TAHOT and TAGNT.
       </p>
