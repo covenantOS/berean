@@ -407,9 +407,10 @@ export default function ReaderPane({
     setSpeechOk("speechSynthesis" in window);
   }, []);
 
-  /* One voice at a time: a pronunciation elsewhere takes the speech
-   * channel and names the moment on SPEECH_TAKEN_EVENT; the read-aloud
-   * retires exactly as Stop would retire it. */
+  /* One voice at a time: any speaker taking the channel names the moment
+   * on SPEECH_TAKEN_EVENT (a pronunciation, an exegetical verse run, a
+   * read-aloud elsewhere); the read-aloud retires exactly as Stop would
+   * retire it. */
   useEffect(() => {
     const retire = () => stopAudio();
     window.addEventListener(SPEECH_TAKEN_EVENT, retire);
@@ -654,13 +655,11 @@ export default function ReaderPane({
   const startRecording = () => {
     const info = ready?.audio;
     if (!info) return;
-    const run = speechRun.current;
-    if (run) {
-      run.cancelled = true;
-      speechRun.current = null;
-      window.speechSynthesis.cancel();
-      setSpokenVerse(null);
-    }
+    /* Taking the channel names the moment, the pronounce module's
+     * discipline: a pronunciation or an exegetical verse run stands down,
+     * and this pane's own retire answers the same event, clearing whatever
+     * the speech channel held here. */
+    window.dispatchEvent(new Event(SPEECH_TAKEN_EVENT));
     const el = new Audio(info.url);
     el.preload = "none";
     el.playbackRate = listenRateRef.current;
@@ -672,15 +671,12 @@ export default function ReaderPane({
   };
 
   /* The fallback: the system voice over the pane's own verses, recording
-   * or not. Starting it silences the recorder. */
+   * or not. Starting it silences the recorder: taking the channel retires
+   * every other speaker, and this pane's own retire stops the recording
+   * and drains the queue. */
   const startSpeech = () => {
     if (!ready || !("speechSynthesis" in window)) return;
-    const el = recordRef.current;
-    if (el) {
-      el.pause();
-      recordRef.current = null;
-    }
-    window.speechSynthesis.cancel();
+    window.dispatchEvent(new Event(SPEECH_TAKEN_EVENT));
     const run: SpeechRun = { cancelled: false, verses: ready.verses, idx: 0, utterance: null };
     speechRun.current = run;
     setListen("speech");

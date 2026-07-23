@@ -122,6 +122,101 @@ export function pronounceLemma({
 }
 
 /**
+ * A run of tokens spoken in order through one voice: the Exegetical Guide's
+ * verse read-aloud. The reader's SpeechRun discipline at word granularity:
+ * one utterance at a time, chained on end, the live utterance pinned
+ * against the collector. Starting a run takes the channel
+ * (SPEECH_TAKEN_EVENT, then a drained queue), and the run retires the
+ * moment another speaker takes the channel back. onWord fires with the
+ * token's index as it starts; onDone fires exactly once, however the run
+ * ends. Null where speech cannot run or nothing was given to say.
+ */
+export function speakSequence({
+  tokens,
+  voice,
+  onWord,
+  onDone,
+}: {
+  tokens: string[];
+  voice: SpeechSynthesisVoice;
+  onWord?: (index: number) => void;
+  onDone?: () => void;
+}): { stop: () => void } | null {
+  if (!speechAvailable() || tokens.length === 0) return null;
+  try {
+    window.dispatchEvent(new Event(SPEECH_TAKEN_EVENT));
+    window.speechSynthesis.cancel();
+    let cancelled = false;
+    let current: SpeechSynthesisUtterance | null = null;
+    const finish = () => {
+      if (cancelled) return;
+      cancelled = true;
+      window.removeEventListener(SPEECH_TAKEN_EVENT, retire);
+      onDone?.();
+    };
+    const stop = () => {
+      if (cancelled) return;
+      window.speechSynthesis.cancel();
+      finish();
+    };
+    const retire = () => stop();
+    const speakNext = (idx: number) => {
+      if (cancelled) return;
+      const text = tokens[idx];
+      if (text === undefined) {
+        finish();
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+      utterance.rate = PRONOUNCE_RATE;
+      utterance.onstart = () => {
+        if (!cancelled) onWord?.(idx);
+      };
+      /* An error on one token skips it rather than stalling the verse; a
+       * cancelled run has already gone quiet by the time either fires. */
+      const advance = () => {
+        if (cancelled || current !== utterance) return;
+        current = null;
+        speakNext(idx + 1);
+      };
+      utterance.onend = advance;
+      utterance.onerror = advance;
+      current = utterance;
+      window.speechSynthesis.speak(utterance);
+    };
+    window.addEventListener(SPEECH_TAKEN_EVENT, retire);
+    speakNext(0);
+    return { stop };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The matching voice as a render-time answer, for affordances that only
+ * make sense when the platform can read the language: null until mount (the
+ * server render and the first client pass agree), then re-queried on every
+ * voiceschanged because Chrome populates the list asynchronously. Where the
+ * answer stays null the affordance hides, the module's standing rule.
+ */
+export function useVoiceForLang(lang: PronounceLang | null): SpeechSynthesisVoice | null {
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
+  useEffect(() => {
+    if (!speechAvailable() || !lang) {
+      setVoice(null);
+      return;
+    }
+    const update = () => setVoice(voiceForLang(lang));
+    update();
+    window.speechSynthesis.addEventListener("voiceschanged", update);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", update);
+  }, [lang]);
+  return voice;
+}
+
+/**
  * Arms after mount, so the server render and the first client pass agree
  * (the ReaderPane idiom): affordances hide where speech cannot run rather
  * than offering a dead button.

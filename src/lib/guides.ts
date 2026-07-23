@@ -23,6 +23,7 @@ export const GUIDE_SECTIONS = [
   { key: "topics", title: "Topics" },
   { key: "timeline", title: "Timeline" },
   { key: "notableWords", title: "Notable Words" },
+  { key: "questions", title: "Questions to Ask" },
   { key: "compareVersions", title: "Compare Versions" },
   { key: "media", title: "Media" },
 ] as const;

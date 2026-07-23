@@ -1,11 +1,16 @@
 import { BOOK_NAME_PATTERN, resolveBookName } from "@/lib/canon";
 import {
+  CANVAS_ID_PATTERN,
+  DIAGRAM_ID_PATTERN,
   DOCUMENT_ID_PATTERN,
   ENTITY_ID_PATTERN,
   EVENT_ID_PATTERN,
+  LIST_ID_PATTERN,
   MEMORY_ID_PATTERN,
+  PERSONALBOOK_ID_PATTERN,
   PROJECT_ID_PATTERN,
   SERVICE_ID_PATTERN,
+  WORKFLOW_ID_PATTERN,
 } from "./workspace-state";
 
 /**
@@ -72,6 +77,16 @@ import {
  *                     The wisdom explorers name their book:
  *                       wisdom:psalms            the Psalms Explorer tab
  *                       wisdom:proverbs          the Proverbs Explorer tab
+ *                     The saved-document kinds take their store id, validated
+ *                     the way the session sanitizer validates the id-bearing
+ *                     tabs; a well-formed id with no record behind it opens
+ *                     anyway and the pane says the record is gone, the
+ *                     manuscript's rule:
+ *                       listdoc:<id>             a saved list open in its pane
+ *                       canvasdoc:<id>           a canvas on its whiteboard
+ *                       diagram:<id>             a sentence diagram on its layout
+ *                       workflow:<id>            a workflow run on its step
+ *                       personalbook:<id>        a personal book open for reading
  *                     Unknown kinds and bad payloads are ignored, never fatal.
  *
  * Both params together: the reference lands first (openRef, then selectVerse
@@ -148,7 +163,12 @@ export type DeepLinkTab =
   | { kind: "bookexplorer" }
   | { kind: "harmony"; book?: string; chapter?: number; verse?: number }
   | { kind: "wisdom"; book: "psalms" | "proverbs" }
-  | { kind: "media"; book?: string; chapter?: number; verse?: number };
+  | { kind: "media"; book?: string; chapter?: number; verse?: number }
+  | { kind: "listdoc"; docId: string }
+  | { kind: "canvasdoc"; canvasId: string }
+  | { kind: "diagram"; diagramId: string }
+  | { kind: "workflow"; runId: string }
+  | { kind: "personalbook"; bookId: string };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -226,6 +246,33 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
       // pane says the service is gone.
       if (!SERVICE_ID_PATTERN.test(payload)) return null;
       return { kind: "service", serviceId: payload };
+    }
+    case "listdoc": {
+      // The manuscript's rule: a well-formed id opens even unanswered, and
+      // the pane says the list is gone.
+      if (!LIST_ID_PATTERN.test(payload)) return null;
+      return { kind: "listdoc", docId: payload };
+    }
+    case "canvasdoc": {
+      // The manuscript's rule, on the whiteboard: the pane says the canvas
+      // is gone.
+      if (!CANVAS_ID_PATTERN.test(payload)) return null;
+      return { kind: "canvasdoc", canvasId: payload };
+    }
+    case "diagram": {
+      // The canvas's rule: the pane says the diagram is gone.
+      if (!DIAGRAM_ID_PATTERN.test(payload)) return null;
+      return { kind: "diagram", diagramId: payload };
+    }
+    case "workflow": {
+      // The list's rule: the pane says the run is gone.
+      if (!WORKFLOW_ID_PATTERN.test(payload)) return null;
+      return { kind: "workflow", runId: payload };
+    }
+    case "personalbook": {
+      // The manuscript's rule: the pane says the book is gone.
+      if (!PERSONALBOOK_ID_PATTERN.test(payload)) return null;
+      return { kind: "personalbook", bookId: payload };
     }
     case "topicguide": {
       const j = payload.indexOf(":");

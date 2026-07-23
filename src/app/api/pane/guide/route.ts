@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
 import { getChapter, type Verse } from "@/lib/bible";
+import { getBookMeta } from "@/lib/bookmeta";
 import { getChapterCommentary } from "@/lib/commentary";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterEntities, type EntityKind } from "@/lib/entities";
 import { getQuotesInChapter, getQuotedByChapter, type OtntRef } from "@/lib/otnt";
 import { getPericopes } from "@/lib/pericopes";
 import { findRefs } from "@/lib/refs";
+import { questionSetFor } from "@/lib/studyquestions";
 import { getChapterTopics } from "@/lib/topics";
 import { formatEventYears, formatRef, listTimelineEvents } from "@/lib/timeline";
 import { getTaggedChapter, STOP_STRONGS } from "@/lib/tagged";
@@ -332,6 +334,12 @@ export async function GET(req: NextRequest) {
     })
     .filter((p) => p.gospels.length > 0);
 
+  // (i) Questions to Ask: the inductive set keyed to the genre of the book
+  // this chapter sits in (src/lib/studyquestions.ts). Every book in the
+  // canon carries a genre, so the section always answers.
+  const meta = getBookMeta(book.slug);
+  const questions = meta ? questionSetFor(meta.genre) : null;
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -348,5 +356,6 @@ export async function GET(req: NextRequest) {
     compareVersions,
     parallels,
     gospelParallels,
+    questions,
   });
 }

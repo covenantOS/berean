@@ -2,9 +2,13 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { documents } from "@/lib/documents";
+import { canvases } from "@/lib/canvas";
+import { diagrams } from "@/lib/diagram";
+import { documents, listDocuments } from "@/lib/documents";
 import { liturgies } from "@/lib/liturgy";
+import { personalbooks } from "@/lib/personalbooks";
 import { getProject } from "@/lib/projects";
+import { runNotebook, runs } from "@/lib/workflows";
 import { useWorkspace } from "./WorkspaceContext";
 import { lexiconTab } from "./workspace-state";
 import { parseDeepLinkRef, parseDeepLinkTab } from "./deep-link";
@@ -154,6 +158,64 @@ function Intake() {
             type: "openService",
             serviceId: tab.serviceId,
             title: service?.title ?? "Order of Worship",
+            paneId,
+          });
+          break;
+        }
+        case "listdoc": {
+          // The manuscript's rule: the title resolves when the list answers;
+          // a missing one opens anyway and the pane says the list is gone.
+          const doc = listDocuments.get(tab.docId);
+          dispatch({
+            type: "openListDoc",
+            docId: tab.docId,
+            title: doc?.title || "Untitled list",
+            paneId,
+          });
+          break;
+        }
+        case "canvasdoc": {
+          // The list's rule, on the whiteboard.
+          const canvas = canvases.get(tab.canvasId);
+          dispatch({
+            type: "openCanvasDoc",
+            canvasId: tab.canvasId,
+            title: canvas?.name || "Untitled canvas",
+            paneId,
+          });
+          break;
+        }
+        case "diagram": {
+          // The canvas's rule, on the layout.
+          const diagram = diagrams.get(tab.diagramId);
+          dispatch({
+            type: "openDiagram",
+            diagramId: tab.diagramId,
+            title: diagram?.name || "Untitled diagram",
+            paneId,
+          });
+          break;
+        }
+        case "workflow": {
+          // The list's rule: the run's name resolves when it answers; a
+          // missing one opens anyway and the pane says the run is gone.
+          const run = runs.get(tab.runId);
+          dispatch({
+            type: "openWorkflow",
+            runId: tab.runId,
+            title: run ? runNotebook(run) : "Workflow",
+            paneId,
+          });
+          break;
+        }
+        case "personalbook": {
+          // The manuscript's rule: the title resolves when the book answers;
+          // a missing one opens anyway and the pane says the book is gone.
+          const book = personalbooks.get(tab.bookId);
+          dispatch({
+            type: "openPersonalBook",
+            bookId: tab.bookId,
+            title: book?.title || "Untitled book",
             paneId,
           });
           break;

@@ -974,6 +974,12 @@ export const CANVAS_ID_PATTERN = MEMORY_ID_PATTERN;
 /** Diagram ids are the store's UUIDs, the same shape memory passage ids take. */
 export const DIAGRAM_ID_PATTERN = MEMORY_ID_PATTERN;
 
+/** List document ids are the store's UUIDs, the same shape memory passage ids take. */
+export const LIST_ID_PATTERN = MEMORY_ID_PATTERN;
+
+/** Workflow run ids are the store's UUIDs, the same shape memory passage ids take. */
+export const WORKFLOW_ID_PATTERN = MEMORY_ID_PATTERN;
+
 /** Project ids are the store's UUIDs, the same shape memory passage ids take. */
 export const PROJECT_ID_PATTERN = MEMORY_ID_PATTERN;
 

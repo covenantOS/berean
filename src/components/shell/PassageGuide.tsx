@@ -119,6 +119,8 @@ interface GuidePayload {
   topics: GuideTopic[];
   timeline: GuideTimelineEvent[];
   notableWords: GuideWord[];
+  /** Null only where the book's metadata is missing, which the canon never is. */
+  questions: { label: string; questions: string[] } | null;
   /** Null when the base or a second text is missing, or every text agrees. */
   compareVersions: { base: string; rows: GuideCompareRow[] } | null;
   parallels: GuideParallel[];
@@ -135,7 +137,10 @@ type LoadState =
  * pinned at open time. Every section deep-links back into the workspace: a
  * commentary's verses and a cross-reference open the passage, a person or
  * place opens its factbook, a notable word opens the lexicon. Sections
- * with nothing to say stay out of the report.
+ * with nothing to say stay out of the report. Two sections are composed
+ * rather than stocked and always answer: Media, and Questions to Ask,
+ * whose inductive set keys on the genre of the book the chapter sits in
+ * (src/lib/studyquestions.ts).
  *
  * A custom guide (src/lib/guides.ts) runs through this same pane: it passes
  * its section keys in its own order and its name, and the report renders
@@ -576,6 +581,18 @@ export default function PassageGuide({
           </ul>
         </GuideSection>
       ) : null,
+    questions: g.questions ? (
+      <GuideSection title="Questions to Ask" hint={`keyed to the book's genre: ${g.questions.label}`}>
+        <ol className="list-decimal space-y-1.5 pl-4 marker:text-muted">
+          {g.questions.questions.map((q, i) => (
+            <li key={i} className="text-xs leading-relaxed">
+              {q}
+            </li>
+          ))}
+        </ol>
+      </GuideSection>
+    ) : null,
+
     compareVersions:
       g.compareVersions && g.compareVersions.rows.length > 0 ? (
         <GuideSection

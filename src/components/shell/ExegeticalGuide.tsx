@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  speakSequence,
+  useSpeechAvailable,
+  useVoiceForLang,
+  voiceForLang,
+  type PronounceLang,
+} from "@/lib/pronounce";
 import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
+import { SpeakerIcon } from "./icons";
 import PrintButton from "./PrintButton";
 
 interface ExegeticalWord {
@@ -68,6 +76,15 @@ type LoadState =
  * card or a lemma reports its base Strong's id on the lemma hover bus, so
  * every occurrence lights up in the open readers. Sections with
  * nothing to say stay out of the report.
+ *
+ * A verse's speaker glyph reads the verse's original tokens aloud in order
+ * through the platform voice matching the text's language (speakSequence,
+ * src/lib/pronounce.ts), the word being spoken marked in the read-aloud
+ * channel. One voice at a time: starting a verse takes the speech channel,
+ * and the run stands down the moment anything else takes it. Where the
+ * platform furnishes no matching voice the glyph hides, the pronounce
+ * module's standing rule; reading Greek letters through an English voice
+ * would answer nothing.
  */
 export default function ExegeticalGuide({ book, chapter }: { book: string; chapter: number }) {
   const { dispatch, reportHoverWord } = useWorkspace();
@@ -95,6 +112,52 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       if (reportedWord.current) reportHoverWord(null);
     };
   }, [reportHoverWord]);
+
+  /* Verse read-aloud. The verse's original tokens spoken in order through
+   * the matching platform voice, the spoken word marked in the read-aloud
+   * channel. spokenWord names the verse and the token index being spoken;
+   * the run itself lives in a ref, and its own SPEECH_TAKEN_EVENT
+   * subscription retires it when anything else takes the channel. The voice
+   * is queried at render for the affordance and again at speak time, where
+   * Chrome's late voice list has settled. */
+  const [spokenWord, setSpokenWord] = useState<{ verse: number; index: number } | null>(null);
+  const verseSpeech = useRef<{ stop: () => void } | null>(null);
+  const speechOk = useSpeechAvailable();
+  const verseLang: PronounceLang | null =
+    load.status === "ready" ? (load.report.lang === "hebrew" ? "he" : "el") : null;
+  const verseVoice = useVoiceForLang(verseLang);
+
+  const stopVerseSpeech = useCallback(() => {
+    const run = verseSpeech.current;
+    if (run) {
+      verseSpeech.current = null;
+      run.stop();
+    }
+    setSpokenWord(null);
+  }, []);
+
+  /* A retarget or the pane's close silences the run. */
+  useEffect(() => stopVerseSpeech, [book, chapter, stopVerseSpeech]);
+
+  const toggleVerseSpeech = (v: ExegeticalVerse) => {
+    if (spokenWord?.verse === v.verse) {
+      stopVerseSpeech();
+      return;
+    }
+    stopVerseSpeech();
+    if (!verseLang) return;
+    const voice = voiceForLang(verseLang);
+    if (!voice) return;
+    verseSpeech.current = speakSequence({
+      tokens: v.words.map((w) => w.t),
+      voice,
+      onWord: (index) => setSpokenWord({ verse: v.verse, index }),
+      onDone: () => {
+        verseSpeech.current = null;
+        setSpokenWord(null);
+      },
+    });
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -144,13 +207,15 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       .catch(() => {});
   };
 
-  const wordCell = (w: ExegeticalWord, i: number) => (
+  const wordCell = (w: ExegeticalWord, i: number, verse: number) => (
     <div
       key={i}
       dir="ltr"
       onMouseEnter={hoverWord(w.strongs)}
       onMouseLeave={unhoverWord}
-      className="glass-hover flex w-[7.5rem] shrink-0 flex-col gap-0.5 rounded-[3px] border border-rule bg-paper p-1.5"
+      className={`glass-hover flex w-[7.5rem] shrink-0 flex-col gap-0.5 rounded-[3px] border border-rule bg-paper p-1.5${
+        spokenWord?.verse === verse && spokenWord.index === i ? " read-aloud" : ""
+      }`}
     >
       {w.strongs ? (
         <button
@@ -205,19 +270,45 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
         <div className="space-y-4">
           {r.verses.map((v) => (
             <div key={v.verse} className="flex items-start gap-2">
-              <button
-                type="button"
-                title={`Open ${reference}:${v.verse} in the reader`}
-                onClick={() => dispatch({ type: "openRef", book: r.book, chapter: r.chapter })}
-                className="mt-1 w-8 shrink-0 text-left text-[0.68rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-              >
-                v{v.verse}
-              </button>
+              <div className="mt-1 flex w-8 shrink-0 flex-col items-start gap-1.5">
+                <button
+                  type="button"
+                  title={`Open ${reference}:${v.verse} in the reader`}
+                  onClick={() => dispatch({ type: "openRef", book: r.book, chapter: r.chapter })}
+                  className="text-left text-[0.68rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  v{v.verse}
+                </button>
+                {speechOk && verseVoice && (
+                  <button
+                    type="button"
+                    title={
+                      spokenWord?.verse === v.verse
+                        ? `Stop hearing ${reference}:${v.verse} in ${r.lang === "hebrew" ? "Hebrew" : "Greek"}`
+                        : `Hear ${reference}:${v.verse} in ${r.lang === "hebrew" ? "Hebrew" : "Greek"}`
+                    }
+                    aria-label={
+                      spokenWord?.verse === v.verse
+                        ? `Stop hearing ${reference}:${v.verse} in ${r.lang === "hebrew" ? "Hebrew" : "Greek"}`
+                        : `Hear ${reference}:${v.verse} in ${r.lang === "hebrew" ? "Hebrew" : "Greek"}`
+                    }
+                    aria-pressed={spokenWord?.verse === v.verse}
+                    onClick={() => toggleVerseSpeech(v)}
+                    className={`fx-press inline-flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                      spokenWord?.verse === v.verse
+                        ? "text-sapphire"
+                        : "text-muted hover:text-sapphire"
+                    }`}
+                  >
+                    <SpeakerIcon />
+                  </button>
+                )}
+              </div>
               <div
                 dir={r.lang === "hebrew" ? "rtl" : "ltr"}
                 className="flex min-w-0 flex-1 flex-wrap gap-1.5"
               >
-                {v.words.map(wordCell)}
+                {v.words.map((w, i) => wordCell(w, i, v.verse))}
               </div>
             </div>
           ))}
