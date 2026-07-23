@@ -21,7 +21,7 @@ import {
   type WorkflowRun,
 } from "@/lib/workflows";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The workflow runner: one run standing on one step of its definition
@@ -253,7 +253,7 @@ function StartRow({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [subject, setSubject] = useState("");
   const [rejected, setRejected] = useState(false);
 
@@ -342,7 +342,7 @@ function StartRow({
  * list.
  */
 export function WorkflowsSection() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const inProgress = useCollection(runs);
   const customs = useCollection(customWorkflows);
 

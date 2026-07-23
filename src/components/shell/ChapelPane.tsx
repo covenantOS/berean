@@ -12,7 +12,7 @@ import {
 } from "@/lib/liturgy";
 import { plans, generatorFor, currentDay, readingsForDay } from "@/lib/plans";
 import { getBook } from "@/lib/canon";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number) {
@@ -27,7 +27,7 @@ function openRef(book: string, chapter: number) {
  * dispatch berean:open-ref, carrying the pane in focus to the text.
  */
 export default function ChapelPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const rows = useCollection(liturgies).sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
   const templates = useCollection(liturgyTemplates);
   const activePlans = useCollection(plans);

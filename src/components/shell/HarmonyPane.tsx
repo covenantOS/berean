@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { GOSPEL_SLUGS, getBook, resolveBookName } from "@/lib/canon";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 interface IndexPericope {
   chapter: number;
@@ -100,7 +100,7 @@ export default function HarmonyPane({
   chapter?: number;
   verse?: number;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [index, setIndex] = useState<IndexLoad>({ status: "loading" });
   const [report, setReport] = useState<ReportLoad>({ status: "idle" });
 

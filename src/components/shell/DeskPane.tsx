@@ -5,7 +5,7 @@ import { DOCUMENT_KINDS, DocumentKind, documents, wordCount } from "@/lib/docume
 import { useCollection } from "@/lib/hooks";
 import { importSermons, type SermonImportRow } from "@/lib/sermonimport";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type SortKey = "updated" | "date" | "title";
 
@@ -21,7 +21,7 @@ type SortKey = "updated" | "date" | "title";
  * small bell; no sound answers a keystroke here.
  */
 export default function DeskPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const rows = useCollection(documents);
   const [title, setTitle] = useState("");
   const [kind, setKind] = useState<DocumentKind>("article");

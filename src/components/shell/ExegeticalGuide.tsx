@@ -9,7 +9,7 @@ import {
   type PronounceLang,
 } from "@/lib/pronounce";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import { SpeakerIcon } from "./icons";
 import PrintButton from "./PrintButton";
@@ -87,7 +87,7 @@ type LoadState =
  * would answer nothing.
  */
 export default function ExegeticalGuide({ book, chapter }: { book: string; chapter: number }) {
-  const { dispatch, reportHoverWord } = useWorkspace();
+  const { dispatch, reportHoverWord } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy link action; clears itself. */
   const [linkCopied, setLinkCopied] = useState(false);

@@ -29,7 +29,7 @@ import {
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The canvas pane: the whiteboard itself. Pan by dragging empty space, zoom
@@ -76,7 +76,7 @@ const TOOL_BUTTON =
   "fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 export default function CanvasPane({ canvasId }: { canvasId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const doc = useRecord(canvases, canvasId);
   const [view, setView] = useState<CanvasView>(DEFAULT_VIEW);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -602,7 +602,7 @@ function CanvasItemView({
  * manuscript does.
  */
 export function CanvasesSection() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const docs = useCollection(canvases);
   /** The canvas being renamed, with its draft. */
   const [renaming, setRenaming] = useState<{ id: string; draft: string } | null>(null);

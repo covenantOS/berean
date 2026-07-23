@@ -30,7 +30,7 @@ import { NT_NAMES, OT_NAMES, type NameOfGod } from "@/lib/namesOfGod";
 import { REIGN_TABLES } from "@/lib/reigns";
 import { APPOINTED_OBSERVANCES, LEVITICAL_OFFERINGS, type Sacrifice } from "@/lib/sacrifices";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type ToolSection =
   | "measures"
@@ -126,7 +126,7 @@ const HEAD3 = "small-caps text-[0.62rem] font-semibold text-muted";
 /* ---------- measures ---------- */
 
 function MeasuresTool({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [kind, setKind] = useState<MeasureKind>("length");
   const [value, setValue] = useState("1");
   const [fromId, setFromId] = useState("cubit");
@@ -570,7 +570,7 @@ function NameTable({
   paneId: string;
   names: NameOfGod[];
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <table className="w-full border-y border-rule text-[0.78rem]">
       <thead>
@@ -623,7 +623,7 @@ function NamesTool({ paneId }: { paneId: string }) {
 /* ---------- prophets, priests, regents, and judges ---------- */
 
 function ReignsTool({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [tableId, setTableId] = useState("united");
   const table = REIGN_TABLES.find((t) => t.id === tableId) ?? REIGN_TABLES[0];
   return (
@@ -693,7 +693,7 @@ function SacrificeTable({
   paneId: string;
   rows: Sacrifice[];
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <table className="w-full border-y border-rule text-[0.78rem]">
       <thead>
@@ -770,7 +770,7 @@ interface FamilySearchHit {
 }
 
 function FamilyMapsTool({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<FamilySearchHit[]>([]);
 
@@ -881,7 +881,7 @@ const COMMANDMENT_ROWS: { n: number; jewish: string; augustine: string; reformed
 ];
 
 function CommandmentsTool({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <section className="space-y-3">
       <table className="w-full border-y border-rule text-[0.78rem]">
@@ -923,7 +923,7 @@ function CommandmentsTool({ paneId }: { paneId: string }) {
 /* ---------- who killed goliath ---------- */
 
 function GoliathTool({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <section className="space-y-3">
       <p className="text-[0.78rem] leading-relaxed text-ink">

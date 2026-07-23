@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { BookExplorerEntry, BookGenre } from "@/lib/bookmeta";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type View = "order" | "author" | "genre" | "size" | "date";
 
@@ -78,7 +78,7 @@ type LoadState =
  * record and hands off to the reader and the concordance.
  */
 export default function BookExplorerPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [view, setView] = useState<View>("order");
   const [openSlug, setOpenSlug] = useState<string | null>(null);

@@ -30,7 +30,7 @@ import { normalize, projects as projectsCollection } from "@/lib/projects";
 import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
 import { playSound } from "@/lib/sound";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { phoneViewport } from "./viewport";
@@ -183,7 +183,7 @@ function Placeholder({ text }: { text: string }) {
  * a Bible search.
  */
 function SearchPanel() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const { history, favorites } = useSearchSaves();
   /* An entry re-runs against the engine that answered it; absent mode reads
    * as the Bible concordance, the way old history entries do. */
@@ -313,7 +313,7 @@ function ModeTag({ mode }: { mode?: SearchEntry["mode"] }) {
  * at the top.
  */
 function AlmanacPanel() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const rows = useCollection(plans);
   const prayers = useCollection(prayerLists);
   const memory = useCollection(memoryPassages);
@@ -525,7 +525,7 @@ const SETTINGS_SELECT =
  */
 function SettingsPanel() {
   const { lit, scale } = useDisplayPrefs();
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   const [translation, setTranslation] = useState("kjv");
   const customStyles = useCollection(copyStyles);
@@ -773,7 +773,7 @@ function CanonTree() {
  * lives on the verse's right-click menu in the reader.
  */
 function FavoritesSection() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const rows = useCollection(favorites);
   if (rows.length === 0) return null;
 
@@ -937,7 +937,7 @@ const LIBRARY_SECTIONS: { title: string; items: { label: string; note?: string }
  * the archive.
  */
 function StudyPanel() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const docs = useCollection(documents);
   const projectRows = useCollection(projectsCollection).map(normalize);
   return (
@@ -1019,7 +1019,7 @@ function StudyPanel() {
 }
 
 function LibrarySections() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <div className="py-1">
       <div className="px-3 pt-2 pb-1">

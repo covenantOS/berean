@@ -20,7 +20,7 @@ import { verseCardSvg } from "@/lib/verseCard";
 import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
 import ClippingsPicker from "./ClippingsPicker";
 import NotebookPicker from "./NotebookPicker";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import type { WordSelection } from "./workspace-state";
 
 /**
@@ -248,7 +248,7 @@ export function VerseContextMenu({
   hasOriginal: boolean;
   onClose: () => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [mentions, setMentions] = useState<Mention[] | null>(null);
   /** True once "Add to passage list" opens its chooser inside the menu. */
   const [pickingList, setPickingList] = useState(false);
@@ -708,7 +708,7 @@ export function WordContextMenu({
   word: WordSelection;
   onClose: () => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const speechOk = useSpeechAvailable();
   /* The Pronounce row arms after mount; re-measure when it lands. */
   const { ref, style } = useFloatingMenu(x, y, onClose, { deps: [speechOk] });
@@ -842,7 +842,7 @@ export function SelectionMenu({
   text: string;
   onClose: () => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   /** True once "Note" swaps the toolbar for inline capture. */
   const [writingNote, setWritingNote] = useState(false);
   /** True once "Clip" swaps the toolbar for the clippings chooser. */

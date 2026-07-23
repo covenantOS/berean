@@ -15,7 +15,7 @@ import {
 import { projects as projectsCollection } from "@/lib/projects";
 import { getProfile } from "@/lib/settings";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /** The free study notes ride beside the pipeline as one more stage tab. */
 type StageTab = StageKey | "notes";
@@ -32,7 +32,7 @@ type StageTab = StageKey | "notes";
  * nothing renders the gone notice, the way a missing manuscript does.
  */
 export default function ProjectPane({ projectId }: { projectId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [project, setProject] = useState<StudyProject | null | undefined>(undefined);
   const [stage, setStage] = useState<StageTab>("exegesis");
   const [text, setText] = useState("");

@@ -25,7 +25,7 @@ import { isAnchored, notes, type MarginNote } from "@/lib/marginalia";
 import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
 import { renderInline, renderMarkdown } from "./markdown";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /* The block scaffolds the toolbar inserts at the caret. Headings and
  * quotes are Markdown itself; the callouts carry their marker line, which
@@ -55,7 +55,7 @@ interface Critique {
  * nothing beneath.
  */
 export default function ManuscriptPane({ docId }: { docId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const doc = useRecord(documents, docId);
   const [body, setBody] = useState("");
   const loadedRef = useRef(false);

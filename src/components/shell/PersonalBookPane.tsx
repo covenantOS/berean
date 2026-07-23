@@ -6,7 +6,7 @@ import { personalbooks } from "@/lib/personalbooks";
 import { bookSessions } from "@/lib/plans";
 import { scanRefs } from "@/lib/refscan";
 import { renderMarkdown } from "./markdown";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * A personal book open for reading: the imported text in the reading idiom,
@@ -37,7 +37,7 @@ export default function PersonalBookPane({
   session?: number;
   of?: number;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const book = useRecord(personalbooks, bookId);
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");

@@ -99,6 +99,33 @@ export function useWorkspace(): WorkspaceContextValue {
   return ctx;
 }
 
+/*
+ * The dispatch half of the contract, split from the state half. Most
+ * consumers only ever send actions or ride the hover and scroll buses; while
+ * dispatch rode inside the state context, every selection or navigation
+ * re-rendered them all. Every member here is a useCallback constant, so the
+ * provided value keeps one identity for the life of the provider, and a
+ * dispatch-only consumer never re-renders from context again.
+ */
+type WorkspaceDispatchValue = Pick<
+  WorkspaceContextValue,
+  | "dispatch"
+  | "reportLinkedVerse"
+  | "subscribeLinkedVerse"
+  | "reportHoverRef"
+  | "subscribeHoverRef"
+  | "reportHoverWord"
+  | "subscribeHoverWord"
+>;
+
+const WorkspaceDispatchContext = createContext<WorkspaceDispatchValue | null>(null);
+
+export function useWorkspaceDispatch(): WorkspaceDispatchValue {
+  const ctx = useContext(WorkspaceDispatchContext);
+  if (!ctx) throw new Error("useWorkspaceDispatch must be used inside WorkspaceProvider");
+  return ctx;
+}
+
 /**
  * The chime a workspace action answers with, or null when the action keeps
  * silent. The whole open* family chimes open: the singletons among them
@@ -457,6 +484,29 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  // Stable by construction: every dependency is a useCallback constant, so
+  // this memo computes once and the dispatch context never broadcasts.
+  const dispatchValue = useMemo<WorkspaceDispatchValue>(
+    () => ({
+      dispatch: soundedDispatch,
+      reportLinkedVerse,
+      subscribeLinkedVerse,
+      reportHoverRef,
+      subscribeHoverRef,
+      reportHoverWord,
+      subscribeHoverWord,
+    }),
+    [
+      soundedDispatch,
+      reportLinkedVerse,
+      subscribeLinkedVerse,
+      reportHoverRef,
+      subscribeHoverRef,
+      reportHoverWord,
+      subscribeHoverWord,
+    ]
+  );
+
   const value = useMemo(
     () => ({
       state,
@@ -485,5 +535,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       subscribeHoverWord,
     ]
   );
-  return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
+  return (
+    <WorkspaceDispatchContext.Provider value={dispatchValue}>
+      <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>
+    </WorkspaceDispatchContext.Provider>
+  );
 }

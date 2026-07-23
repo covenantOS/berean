@@ -13,7 +13,7 @@ import {
   newElement,
 } from "@/lib/liturgy";
 import { listProjects } from "@/lib/projects";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 interface FetchedPassage {
   bookName: string;
@@ -32,7 +32,7 @@ interface FetchedPassage {
  * does.
  */
 export default function ServicePane({ serviceId }: { serviceId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [liturgy, setLiturgy] = useState<Liturgy | null | undefined>(undefined);
   const [passages, setPassages] = useState<Record<string, FetchedPassage>>({});
   const [addType, setAddType] = useState<ElementType>("psalm");

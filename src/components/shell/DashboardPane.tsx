@@ -9,7 +9,7 @@ import { currentDay, generatorFor, planProgress, plans, readingsForDay } from "@
 import { dueRequests, frequencyLabel, prayerLists } from "@/lib/prayers";
 import { useSearchSaves, recordSearch } from "@/lib/search-history";
 import { isComplete, runs, workflowFor } from "@/lib/workflows";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The dashboard: the day's verse, readings, memory work, prayers, and
@@ -24,7 +24,7 @@ const CARD_HEAD = "small-caps mb-2 text-sm text-muted";
 const LINK = "text-sapphire hover:underline";
 
 export default function DashboardPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const planRows = useCollection(plans);
   const memoryRows = useCollection(memoryPassages);
   const listRows = useCollection(prayerLists);

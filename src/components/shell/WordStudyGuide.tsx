@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { listDocuments, type WordItem } from "@/lib/documents";
 import PronounceButton from "./PronounceButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
 import SearchChart, { type ChartKind } from "./SearchChart";
@@ -62,7 +62,7 @@ const LIST_SHOWN = 24;
  * in the reader; every rendering opens a search for that English word.
  */
 export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [chartKind, setChartKind] = useState<ChartKind>("bar");
   const [translationKind, setTranslationKind] = useState<ChartKind>("donut");

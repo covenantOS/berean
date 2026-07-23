@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type DiffMark = "same" | "added" | "omitted";
 
@@ -65,7 +65,7 @@ export default function TextCompare({
   chapter: number;
   base: string;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
 
   useEffect(() => {

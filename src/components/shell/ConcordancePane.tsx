@@ -7,7 +7,7 @@ import type {
   ConcordanceMode,
   ConcordancePayload,
 } from "@/lib/concordance";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type LoadState =
   | { status: "loading" }
@@ -38,7 +38,7 @@ export default function ConcordancePane({
   tabId: string;
   book: string;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [mode, setMode] = useState<ConcordanceMode>("words");
   const [showAll, setShowAll] = useState(false);
   const [sort, setSort] = useState<SortOrder>("freq");

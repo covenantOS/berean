@@ -20,7 +20,7 @@ import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
 import { printbooks } from "@/lib/printbooks";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The Docs Search pane: the concordance turned on the user's own writing.
@@ -34,7 +34,7 @@ import { useWorkspace } from "./WorkspaceContext";
  * target to open. The header handoff runs the same query against the canon.
  */
 export default function DocSearchPane({ q }: { q: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const notes = useCollection(marginNotes);
   const marks = useCollection(highlightCollection);
   const customStyles = useCollection(highlightStyles);

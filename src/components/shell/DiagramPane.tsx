@@ -20,7 +20,7 @@ import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
 import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The Sentence Diagram pane: a passage's words arranged for grammatical
@@ -44,7 +44,7 @@ const CONTROL_BUTTON =
   "fx-press border border-rule bg-paper px-1.5 py-0.5 text-[0.66rem] leading-none text-muted hover:border-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 export default function DiagramPane({ diagramId }: { diagramId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const doc = useRecord(diagrams, diagramId);
   /** The chip whose label tray is open. */
   const [selected, setSelected] = useState<string | null>(null);
@@ -353,7 +353,7 @@ function LabelTray({
  * the way a deleted canvas does.
  */
 export function DiagramsSection() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const docs = useCollection(diagrams);
   const [refInput, setRefInput] = useState("");
   const [mode, setMode] = useState<"original" | "english">("original");

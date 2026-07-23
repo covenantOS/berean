@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /** One topic row in a work's index, from GET /api/topics. */
 interface TopicRow {
@@ -26,7 +26,7 @@ const PAGE = 200;
  * once.
  */
 export default function TopicsPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [works, setWorks] = useState<WorkIndex[] | null>(null);
   const [query, setQuery] = useState("");
 

@@ -19,7 +19,7 @@ import { buildWordFind, puzzleWords, type WordFind } from "@/lib/puzzle";
 import { getRights } from "@/lib/rights";
 import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * A list document in a pane: the saved set a search or guide handed off.
@@ -292,7 +292,7 @@ function RowButton({
 }
 
 function PassageRow({ item }: { item: PassageItem }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const name = getBook(item.book)?.name ?? item.book;
   return (
     <button
@@ -307,7 +307,7 @@ function PassageRow({ item }: { item: PassageItem }) {
 }
 
 function WordRow({ item }: { item: WordItem }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const langClass = item.strongs.startsWith("H") ? "lang-hebrew" : "lang-greek";
   return (
     <button
@@ -329,7 +329,7 @@ function WordRow({ item }: { item: WordItem }) {
 /** A clipping: the excerpt as captured, its citation beneath, linked back to
  * the source passage when the excerpt is Scripture. */
 function ClipRow({ item }: { item: ClipItem }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const source = item.sourceRef;
   return (
     <span className="block">

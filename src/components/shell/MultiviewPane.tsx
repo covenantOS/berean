@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { adjacentChapter, getBook } from "@/lib/canon";
 import { translationShelf, type ShelfTranslation } from "./ReaderPane";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import { MULTIVIEW_TEXTS_MAX, MULTIVIEW_TEXTS_MIN } from "./workspace-state";
 
 interface MultiviewColumn {
@@ -59,7 +59,7 @@ export default function MultiviewPane({
   chapter: number;
   texts: string[];
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [shelf, setShelf] = useState<ShelfTranslation[]>([]);
   /** False is the shared scroll; true gives each column its own. */

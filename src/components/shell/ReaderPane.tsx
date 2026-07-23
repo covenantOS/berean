@@ -43,7 +43,7 @@ import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
 import NotebookPicker from "./NotebookPicker";
 import { SelectionMenu, StylePalette, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import { findLeaf, READER_FONT_SCALE_DEFAULT, type WordSelection } from "./workspace-state";
 
 interface Verse {
@@ -1932,7 +1932,7 @@ function ContextStrip({
   onMark: (styleId: string) => void;
   onClearMark: () => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [noteOpen, setNoteOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [notebook, setNotebook] = useState("");

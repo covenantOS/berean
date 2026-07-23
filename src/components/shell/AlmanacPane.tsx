@@ -8,7 +8,7 @@ import { listProjects, projects as projectsCollection, StudyProject } from "@/li
 import { plans, generatorFor, currentDay, readingsForDay } from "@/lib/plans";
 import { memoryPassages, isDue } from "@/lib/memory";
 import { prayerLists, dueRequests } from "@/lib/prayers";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number) {
@@ -36,7 +36,7 @@ interface CalendarRow {
  * keeps its plain kept-or-not record, with no scoring.
  */
 export default function AlmanacPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const entries = useCollection(calendar).sort((a, b) => a.date.localeCompare(b.date));
   const ruleItems = useCollection(rule);
   const activePlans = useCollection(plans);

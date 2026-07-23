@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { useCollection } from "@/lib/hooks";
 import { createProject, priorHandlings, projects } from "@/lib/projects";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
 
@@ -88,7 +88,7 @@ type LoadState =
  * so the report offers none. Every row deep-links its source.
  */
 export default function SermonStarterPane({ book, chapter }: { book: string; chapter: number }) {
-  const { dispatch, reportHoverRef } = useWorkspace();
+  const { dispatch, reportHoverRef } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /* The Sermons section reads the projects collection live, so a project
    * started here lists at once and edits land without a refetch. */

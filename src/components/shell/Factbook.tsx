@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 
 interface FactbookRelation {
@@ -75,7 +75,7 @@ const RELATION_LABELS: [keyof FactbookPayload["relations"], string][] = [
  * the report.
  */
 export default function Factbook({ entityId }: { entityId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
 
   useEffect(() => {

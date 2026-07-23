@@ -16,7 +16,7 @@ import { personalbooks } from "@/lib/personalbooks";
 import { prayerLists } from "@/lib/prayers";
 import { printbooks } from "@/lib/printbooks";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * All Search: one query across the canon, the shipped library, and the
@@ -82,7 +82,7 @@ type BooksState =
     };
 
 export default function AllSearchPane({ q }: { q: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const notes = useCollection(marginNotes);
   const marks = useCollection(highlightCollection);
   const customStyles = useCollection(highlightStyles);
@@ -231,7 +231,7 @@ function ScriptureGroup({
   state: ScriptureState;
   onOpenVerse: (h: VerseHit) => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const shown = state.status === "ready" ? state.hits.slice(0, TOP) : [];
 
   return (
@@ -294,7 +294,7 @@ function ScriptureGroup({
 /* ---------- Books: the commentary shelf and topical works, first hits ---------- */
 
 function BooksGroup({ q, state }: { q: string; state: BooksState }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const total = state.status === "ready" ? state.commentaryTotal + state.topicsTotal : 0;
 
   /* One flattened row across the two server groups, shelf hits first. */
@@ -401,7 +401,7 @@ function DocumentsGroup({
   results: DocResults;
   onOpenNote: (n: AnchoredNote) => void;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const total = resultCount(results);
 
   const rows: DocRow[] = [];

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PsalmExplorerEntry, PsalmGenre, ProverbSectionEntry } from "@/lib/wisdommeta";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type View = "number" | "genre" | "author" | "length";
 
@@ -56,7 +56,7 @@ export default function WisdomExplorerPane({
   tabId: string;
   book: "psalms" | "proverbs";
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [view, setView] = useState<View>("number");
 

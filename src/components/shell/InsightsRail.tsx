@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 interface InsightCommentary {
   id: string;
@@ -90,7 +90,7 @@ export default function InsightsRail({
   book: string;
   chapter: number;
 }) {
-  const { dispatch, reportHoverRef } = useWorkspace();
+  const { dispatch, reportHoverRef } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
 
   // One composition per chapter, aborted when the passage moves on. The rail

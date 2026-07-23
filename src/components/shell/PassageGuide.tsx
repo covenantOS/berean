@@ -19,7 +19,7 @@ import { useCollection } from "@/lib/hooks";
 import { commentaryPriority, librarymeta } from "@/lib/librarymeta";
 import { copyReferences } from "@/lib/powerLookup";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import CommentaryFacetBar from "./CommentaryFacetBar";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -172,7 +172,7 @@ export default function PassageGuide({
    * whole shelf, absent to follow the workspace's active collection. */
   commentaryCollectionId?: string | null;
 }) {
-  const { dispatch, reportHoverRef } = useWorkspace();
+  const { dispatch, reportHoverRef } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   /** Quiet confirmation for the copy actions; clears itself. */
   const [copied, setCopied] = useState<"texts" | "link" | null>(null);

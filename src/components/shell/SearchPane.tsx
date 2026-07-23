@@ -16,7 +16,7 @@ import { createVisualFilter } from "@/lib/visualfilters";
 import { translationShelf } from "./ReaderPane";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import { preferredTranslation, searchTab, type SearchMode } from "./workspace-state";
 
 interface Hit {
@@ -126,7 +126,7 @@ const SEARCH_MODES: { key: SearchMode; label: string; title: string }[] = [
 
 /** Re-asks the tab's query of another engine, replacing the tab in place. */
 function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; paneId: string; tabId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <span className="seg no-print ml-3" role="group" aria-label="Search mode">
       {SEARCH_MODES.map((m) => (
@@ -162,7 +162,7 @@ function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; p
  * pinned searches.
  */
 function BiblePane({ q, paneId, tabId }: PaneProps) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [view, setView] = useState<View>("verses");
   const { favorites } = useSearchSaves();
@@ -1010,7 +1010,7 @@ type MorphLoad =
  * query has nothing to persist or re-run.
  */
 function OriginalPane({ q, paneId, tabId }: PaneProps) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<MorphLoad>({ status: "loading" });
   const [view, setView] = useState<View>("verses");
   const { favorites } = useSearchSaves();
@@ -1361,7 +1361,7 @@ function OriginalVersesView({
   total: number;
   verses: number;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <div className="mx-auto max-w-prose px-6 py-4">
       <p className="mb-3 text-xs text-muted">
@@ -1461,7 +1461,7 @@ type SemanticLoad =
  * curation would dress judgment up as frequency.
  */
 function SemanticPane({ q, paneId, tabId }: PaneProps) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<SemanticLoad>({ status: "loading" });
   const { favorites } = useSearchSaves();
   const pinned = favorites.some(

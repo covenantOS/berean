@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 import type { Tab } from "./workspace-state";
 import CommentaryDock from "./CommentaryDock";
 import CrossRefsDock from "./CrossRefsDock";
@@ -42,7 +42,7 @@ function LexiconTabBody({
   tabId: string;
   entryId: string | null;
 }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [value, setValue] = useState("");
 
   const submit = (e: FormEvent) => {

@@ -5,7 +5,7 @@ import { searchDocs } from "@/lib/docsearch";
 import { useCollection } from "@/lib/hooks";
 import { personalbooks, type PersonalBook } from "@/lib/personalbooks";
 import PrintButton from "./PrintButton";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
  * The Books Search pane: the concordance turned on the library. Where the
@@ -65,7 +65,7 @@ type ServerState =
     };
 
 export default function BooksSearchPane({ q }: { q: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const books = useCollection(personalbooks);
   const [field, setField] = useState<Field>("all");
   const [server, setServer] = useState<ServerState>({ status: "loading" });

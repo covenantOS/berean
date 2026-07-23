@@ -22,7 +22,7 @@ import {
 import { personalbooks } from "@/lib/personalbooks";
 import { playSound } from "@/lib/sound";
 import { todayISO } from "@/lib/almanac";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number, verse?: number) {
@@ -35,7 +35,7 @@ function openRef(book: string, chapter: number, verse?: number) {
  * is a private record, not a score; a missed day simply waits.
  */
 export default function PlansPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const rows = useCollection(plans);
 
   return (

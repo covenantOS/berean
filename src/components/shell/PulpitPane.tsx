@@ -10,7 +10,7 @@ import {
   searchArchive,
 } from "@/lib/projects";
 import { projects as projectsCollection } from "@/lib/projects";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 type KindFilter = "all" | "sermon" | "study";
 
@@ -23,7 +23,7 @@ type KindFilter = "all" | "sermon" | "study";
  * own tab, and rows open the same way. Delete stays on the row.
  */
 export default function PulpitPane() {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [rows, setRows] = useState<StudyProject[]>([]);
   const [query, setQuery] = useState("");
   const [kindFilter, setKindFilter] = useState<KindFilter>("all");
@@ -197,7 +197,7 @@ export default function PulpitPane() {
 }
 
 function ProjectList({ rows }: { rows: StudyProject[] }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <ul className="fx-stagger space-y-3">
       {rows.map((p, i) => {

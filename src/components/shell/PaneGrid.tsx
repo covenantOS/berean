@@ -20,7 +20,7 @@ import { liturgies } from "@/lib/liturgy";
 import { memoryPassages } from "@/lib/memory";
 import { personalbooks } from "@/lib/personalbooks";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
 import {
   countLeaves,
@@ -131,7 +131,7 @@ function NodeView({ node }: { node: PaneNode }) {
 }
 
 function SplitView({ split }: { split: SplitNode }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const containerRef = useRef<HTMLDivElement>(null);
   const horizontal = split.direction === "horizontal";
 
@@ -323,7 +323,7 @@ function useDragEndReset(reset: () => void) {
  * no link; panes sharing a letter navigate and scroll together.
  */
 function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | null }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -948,7 +948,7 @@ function TabStrip({ leaf }: { leaf: LeafNode }) {
 }
 
 function EmptyPane({ paneId }: { paneId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
       <p className="max-w-[26ch] text-xs leading-relaxed text-muted">

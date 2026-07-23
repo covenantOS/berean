@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { playSound } from "@/lib/sound";
-import { useWorkspace } from "./WorkspaceContext";
+import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 interface MapNode {
   id: string | null;
@@ -182,7 +182,7 @@ const MAX_DEPTH = 4;
  * already stands elsewhere on the map and the walk refused a second copy.
  */
 export default function FamilyMapPane({ entityId }: { entityId: string }) {
-  const { dispatch } = useWorkspace();
+  const { dispatch } = useWorkspaceDispatch();
   const [root, setRoot] = useState<{ id: string }>({ id: entityId });
   const [up, setUp] = useState(2);
   const [down, setDown] = useState(2);
