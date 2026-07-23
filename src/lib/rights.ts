@@ -277,6 +277,45 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "wesley",
+    title: "John Wesley, Explanatory Notes on the Bible",
+    kind: "commentary",
+    rightsHolder: "Public domain",
+    license: "Public Domain (module .conf)",
+    source: "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/Wesley.zip (CrossWire SWORD module 1.1)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Whole-Bible notes (New Testament 1755, Old Testament 1765), stored per-book as JSON under data/commentary/wesley. The source module lacks 1 Kings and Philemon entirely and carries production damage: Judges and Jonah are flooded by neighboring notes and are dropped at build time, and multi-verse notes flooded across lost text are kept only at their first verse when the catch-phrase verifies against the KJV text (10 unverifiable runs dropped; counts in the build output). Raw module kept out of git; provenance in data/_sources/wesley/PROVENANCE.md; normalized by scripts/build-commentary-wesley.mjs.",
+    status: "shipped",
+  },
+  {
+    id: "tdavid",
+    title: "C. H. Spurgeon, The Treasury of David",
+    kind: "commentary",
+    rightsHolder: "Public domain",
+    license: "Public Domain (module .conf; seven volumes 1865-1885)",
+    source: "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/TDavid.zip (CrossWire SWORD module 2.1, text via archive.spurgeon.org/treasury/)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Spurgeon's commentary on the Psalms: overview, title, and division per psalm, verse-by-verse exposition, explanatory notes and quaint sayings gathered from older divines, and hints to the village preacher. Stored as data/commentary/tdavid/Psalms.json. The per-psalm WORKS UPON bibliographies are apparatus and are omitted (29 parts); Psalm 119's first-verse exposition is absent from the source. Raw module kept out of git; provenance in data/_sources/tdavid/PROVENANCE.md; normalized by scripts/build-commentary-tdavid.mjs.",
+    status: "shipped",
+  },
+  {
+    id: "scofield",
+    title: "C. I. Scofield, Scofield Reference Notes (1917 edition)",
+    kind: "commentary",
+    rightsHolder: "Public domain",
+    license: "Public Domain (module .conf; the 1917 edition)",
+    source: "https://crosswire.org/ftpmirror/pub/sword/packages/rawzip/Scofield.zip (CrossWire SWORD module 2.1, text via Wikisource)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "The 1917 Scofield Reference Bible notes across the whole Bible, with book introductions shipped as intro sections; verses without a note simply do not appear. Stored per-book as JSON under data/commentary/scofield. Raw module kept out of git; provenance in data/_sources/scofield/PROVENANCE.md; normalized by scripts/build-commentary-scofield.mjs.",
+    status: "shipped",
+  },
+  {
     id: "gill",
     title: "John Gill, Exposition of the Entire Bible",
     kind: "commentary",
@@ -286,7 +325,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "—",
     allowedUses: [],
     notes:
-      "Confessional shelf priority. Registered as planned; the text ships only once a verified, openly licensed digitization is vendored.",
+      "Confessional shelf priority. Registered as planned; the text ships only once a verified, openly licensed digitization is vendored. Rechecked 2026-07-23: the Internet Sacred Text Archive transcription is served behind a bot wall and carries a non-commercial reuse condition, e-Sword module conversions are unlicensed, and no CCEL, CrossWire, or Project Gutenberg edition exists. Still no shippable digitization.",
     status: "planned",
   },
   {
@@ -298,7 +337,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     source: "To be sourced: no clean machine-readable digitization found yet",
     sourceRetrieved: "—",
     allowedUses: [],
-    notes: "Confessional shelf priority. Registered as planned until a verified digitization is vendored.",
+    notes:
+      "Confessional shelf priority. Registered as planned until a verified digitization is vendored. Rechecked 2026-07-23: the only machine-readable transcriptions are BibleHub's and StudyLight's copyrighted digitizations; archive.org holds the 1840 edition in scan OCR with dense Latin and Greek marginalia. Still no shippable digitization.",
     status: "planned",
   },
   {
@@ -310,7 +350,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     source: "To be sourced: no clean machine-readable digitization found yet",
     sourceRetrieved: "—",
     allowedUses: [],
-    notes: "Registered as planned until a verified digitization is vendored.",
+    notes:
+      "Registered as planned until a verified digitization is vendored. Rechecked 2026-07-23: BibleHub and StudyLight carry copyrighted digitizations; archive.org holds scans only. No CCEL or CrossWire edition exists.",
     status: "planned",
   },
   {
@@ -322,7 +363,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     source: "To be sourced: no clean machine-readable digitization found yet",
     sourceRetrieved: "—",
     allowedUses: [],
-    notes: "Registered as planned until a verified digitization is vendored.",
+    notes:
+      "Registered as planned until a verified digitization is vendored. Rechecked 2026-07-23: StudyLight's transcription is a copyrighted digitization; archive.org holds scans only. No CCEL or CrossWire edition exists.",
     status: "planned",
   },
   {
@@ -334,7 +376,8 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     source: "To be sourced: a verified notes-bearing edition is needed (scrollmapper's Geneva1599 is the text without notes)",
     sourceRetrieved: "—",
     allowedUses: [],
-    notes: "Registered as planned until a verified digitization of the notes is vendored.",
+    notes:
+      "Registered as planned until a verified digitization of the notes is vendored. Rechecked 2026-07-23: the CrossWire \"Geneva\" zCom module (Geneva Bible Translation Notes) carries no DistributionLicense or TextSource in its .conf, and its modernized-spelling text matches the Tolle Lege Press 1599 edition (copyright 2006-2007 per Bible Gateway's version information), so the module fails the rights-first bar. The 1560/1599 notes themselves are public domain, but no verified clean digitization was found.",
     status: "planned",
   },
   {

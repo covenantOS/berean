@@ -37,6 +37,9 @@ export const COMMENTARY_WALL: { workId: string; rightsId: string }[] = [
   { workId: "jfb", rightsId: "jfb" },
   { workId: "clarke", rightsId: "clarke" },
   { workId: "barnes", rightsId: "barnes" },
+  { workId: "wesley", rightsId: "wesley" },
+  { workId: "tdavid", rightsId: "tdavid" },
+  { workId: "scofield", rightsId: "scofield" },
 ];
 
 export function metaFor(resourceId: string): LibraryMeta | undefined {

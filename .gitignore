@@ -12,6 +12,9 @@ data/_sources/stepbible/*.txt
 data/_sources/jfb/*.xml
 data/_sources/barnes/*.zip
 data/_sources/clarke/*.zip
+data/_sources/wesley/*.zip
+data/_sources/tdavid/*.zip
+data/_sources/scofield/*.zip
 
 # Raw LXX sources (~3MB); reproducible from each PROVENANCE.md
 data/_sources/brenton/*.zip

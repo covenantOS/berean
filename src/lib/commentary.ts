@@ -147,6 +147,64 @@ export const COMMENTARY_WORKS: CommentaryWork[] = [
       type: "new-testament",
     },
   },
+  {
+    id: "wesley",
+    label: "John Wesley — Explanatory Notes",
+    rightsId: "wesley",
+    /* Explanatory Notes upon the New Testament (1755) and Explanatory Notes
+     * upon the Old Testament (1765, three volumes). Wesley, fellow of Lincoln
+     * College Oxford and an ordained Anglican priest, led the Methodist
+     * revival; the notes are the movement's standard Bible companion. The
+     * source module lacks 1 Kings and Philemon and lost Judges and Jonah to
+     * production damage (both dropped at build time, documented in
+     * data/_sources/wesley/PROVENANCE.md). */
+    meta: {
+      author: "John Wesley",
+      years: "1755–1765",
+      from: 1755,
+      era: "Post-Reformation",
+      tradition: "Methodist",
+      type: "whole-bible",
+    },
+  },
+  {
+    id: "tdavid",
+    label: "C. H. Spurgeon — The Treasury of David",
+    rightsId: "tdavid",
+    /* The Treasury of David, Spurgeon's commentary on the Psalms in seven
+     * volumes, published in weekly installments through The Sword and the
+     * Trowel, 1865–1885. Spurgeon pastored the Metropolitan Tabernacle in
+     * London, a Particular Baptist congregation. Psalms only: his exposition
+     * rides with a gathering of Puritan and older voices per verse and his
+     * hints to the village preacher per psalm. */
+    meta: {
+      author: "C. H. Spurgeon",
+      years: "1865–1885",
+      from: 1865,
+      era: "19th century",
+      tradition: "Baptist",
+      type: "selective",
+    },
+  },
+  {
+    id: "scofield",
+    label: "C. I. Scofield — Scofield Reference Notes",
+    rightsId: "scofield",
+    /* Scofield Reference Notes, 1917 edition (the first edition appeared in
+     * 1909). Cyrus I. Scofield was a Congregational minister (First Church,
+     * Dallas); the notes frame dispensational premillennialism and became
+     * the century's most influential study-Bible apparatus. The notes
+     * comment selectively across the whole Bible; verses without a note
+     * simply do not appear. */
+    meta: {
+      author: "C. I. Scofield",
+      years: "1917",
+      from: 1917,
+      era: "20th century",
+      tradition: "Dispensational",
+      type: "whole-bible",
+    },
+  },
 ];
 
 interface RawCommentaryBook {
