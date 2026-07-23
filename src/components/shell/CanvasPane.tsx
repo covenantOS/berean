@@ -610,7 +610,6 @@ export function CanvasesSection() {
   const openNew = () => {
     const c = createCanvas("Untitled canvas");
     dispatch({ type: "openCanvasDoc", canvasId: c.id, title: c.name });
-    playSound("navigate");
   };
 
   const commitRename = () => {

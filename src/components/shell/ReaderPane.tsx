@@ -634,7 +634,6 @@ export default function ReaderPane({
   const go = (dir: -1 | 1) => {
     const next = adjacentChapter(book, chapter, dir);
     if (next) {
-      playSound("navigate");
       dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
     }
   };
@@ -742,7 +741,6 @@ export default function ReaderPane({
       const next = adjacentChapter(book, chapter, e.key === "ArrowLeft" ? -1 : 1);
       if (!next) return;
       e.preventDefault();
-      playSound("navigate");
       dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
     };
     window.addEventListener("keydown", onKey);

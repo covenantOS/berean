@@ -215,11 +215,9 @@ export default function BookExplorerPane() {
                 }}
                 onRead={() => {
                   dispatch({ type: "openRef", book: b.slug, chapter: 1 });
-                  playSound("navigate");
                 }}
                 onConcordance={() => {
                   dispatch({ type: "openConcordance", book: b.slug });
-                  playSound("navigate");
                 }}
               />
             ))}

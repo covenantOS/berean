@@ -387,7 +387,6 @@ export function VerseContextMenu({
               title={m.brief || m.type}
               style={rowI(Math.min(i + 1, 6))}
               onClick={() => {
-                playSound("navigate");
                 dispatch({ type: "openFactbook", entityId: m.id, title: m.name, paneId });
                 onClose();
               }}
@@ -408,7 +407,6 @@ export function VerseContextMenu({
           className={ROW}
           style={rowI(1)}
           onClick={() => {
-            playSound("navigate");
             dispatch({ type: "openGuide", book, chapter, paneId });
             onClose();
           }}
@@ -421,7 +419,6 @@ export function VerseContextMenu({
             className={ROW}
             style={rowI(2)}
             onClick={() => {
-              playSound("navigate");
               dispatch({ type: "openExegetical", book, chapter, paneId });
               onClose();
             }}
@@ -441,7 +438,6 @@ export function VerseContextMenu({
                   className={ROW}
                   style={rowI(i + 1)}
                   onClick={() => {
-                    playSound("navigate");
                     dispatch({
                       type: "openCustomGuide",
                       guideId: g.id,
@@ -463,7 +459,6 @@ export function VerseContextMenu({
                 className={ROW}
                 style={rowI(customGuides.length + 1)}
                 onClick={() => {
-                  playSound("navigate");
                   dispatch({ type: "openGuideEditor", guideId: null, paneId });
                   onClose();
                 }}
@@ -497,7 +492,6 @@ export function VerseContextMenu({
           className={ROW}
           style={rowI(6)}
           onClick={() => {
-            playSound("navigate");
             dispatch({ type: "openMedia", book, chapter, verse, paneId });
             onClose();
           }}
@@ -754,7 +748,6 @@ export function WordContextMenu({
             className={`${ROW} text-sapphire`}
             style={rowI(info.length + i + 1)}
             onClick={() => {
-              playSound("navigate");
               dispatch({ type: "openLexicon", id: id.toUpperCase() });
               onClose();
             }}
@@ -772,7 +765,6 @@ export function WordContextMenu({
             className={ROW}
             style={rowI(1)}
             onClick={() => {
-              playSound("navigate");
               dispatch({ type: "openWordStudy", strongsId: first, paneId });
               onClose();
             }}
@@ -786,7 +778,6 @@ export function WordContextMenu({
             className={ROW}
             style={rowI(2)}
             onClick={() => {
-              playSound("navigate");
               dispatch({ type: "openSearch", q: word.text, paneId });
               onClose();
             }}
@@ -974,7 +965,6 @@ export function SelectionMenu({
         className={TOOL}
         style={rowI(3)}
         onClick={() => {
-          playSound("navigate");
           dispatch({ type: "openSearch", q: text, paneId });
           onClose();
         }}

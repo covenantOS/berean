@@ -304,7 +304,6 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
                           entityId: p.node.id!,
                           title: p.node.name,
                         });
-                        playSound("navigate");
                       }}
                       className="w-full truncate text-[0.72rem] font-semibold leading-tight hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >

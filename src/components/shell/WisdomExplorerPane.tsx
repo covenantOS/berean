@@ -203,7 +203,6 @@ export default function WisdomExplorerPane({
                   type="button"
                   onClick={() => {
                     dispatch({ type: "openRef", book: "psalms", chapter: p.psalm });
-                    playSound("navigate");
                   }}
                   style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
                   title={`Psalm ${p.psalm}: ${load.payload.genres.find((g) => g.id === p.genre)?.label ?? p.genre} · ${p.author} · ${p.verses} vv · ${p.words} words`}
@@ -243,7 +242,6 @@ export default function WisdomExplorerPane({
                   type="button"
                   onClick={() => {
                     dispatch({ type: "openRef", book: "proverbs", chapter: s.fromChapter });
-                    playSound("navigate");
                   }}
                   className="flex w-full items-baseline gap-3 px-3 py-2 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >

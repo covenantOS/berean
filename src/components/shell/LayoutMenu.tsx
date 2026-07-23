@@ -94,10 +94,9 @@ export default function LayoutMenu() {
                   type="button"
                   title={p.blurb}
                   onClick={() => {
-                    playSound("navigate");
-                    dispatch({ type: "applyPreset", preset: p.id });
-                    setOpen(false);
-                  }}
+                  dispatch({ type: "applyPreset", preset: p.id });
+                  setOpen(false);
+                }}
                   className="fx-press flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.8rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="min-w-0 flex-1 truncate">{p.name}</span>

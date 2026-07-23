@@ -182,7 +182,6 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
    * form passes "original", so its query goes to the morph engine. */
   const runGenerated = (generated: string, mode: SearchMode = "bible") => {
     recordSearch(generated, mode);
-    playSound("navigate");
     dispatch({ type: "openSearch", q: generated, mode });
   };
 

@@ -3,7 +3,6 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { useCollection } from "@/lib/hooks";
 import { createProject, priorHandlings, projects } from "@/lib/projects";
-import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -126,7 +125,6 @@ export default function SermonStarterPane({ book, chapter }: { book: string; cha
    * straight into its pipeline, the pulpit form's own path. */
   const startSermon = () => {
     const p = createProject(reference, s.book, s.chapter, "sermon");
-    playSound("complete");
     dispatch({ type: "openProject", projectId: p.id, title: p.title });
   };
 

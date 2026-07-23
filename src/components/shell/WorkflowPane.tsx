@@ -151,10 +151,7 @@ export default function WorkflowPane({ runId }: { runId: string }) {
         {action && (
           <button
             type="button"
-            onClick={() => {
-              playSound("open");
-              handoff(run, action);
-            }}
+            onClick={() => handoff(run, action)}
             className={BUTTON}
           >
             {ACTION_LABELS[action]}
@@ -269,7 +266,6 @@ function StartRow({
     }
     const run = startRun(def.id, raw);
     if (!run) return;
-    playSound("open");
     setRejected(false);
     setSubject("");
     dispatch({ type: "openWorkflow", runId: run.id, title: `${def.name}: ${run.subject}` });
@@ -352,7 +348,6 @@ export function WorkflowsSection() {
 
   const openRun = (run: WorkflowRun) => {
     const def = workflowFor(run.workflowId);
-    playSound("open");
     dispatch({
       type: "openWorkflow",
       runId: run.id,
@@ -375,7 +370,6 @@ export function WorkflowsSection() {
             def={w}
             custom
             onEdit={() => {
-              playSound("open");
               dispatch({ type: "openWorkflowEditor", workflowId: w.id });
             }}
             onDelete={() => customWorkflows.remove(w.id)}
@@ -385,7 +379,6 @@ export function WorkflowsSection() {
       <button
         type="button"
         onClick={() => {
-          playSound("open");
           dispatch({ type: "openWorkflowEditor" });
         }}
         className="fx-press mx-3 mt-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"

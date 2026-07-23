@@ -74,10 +74,7 @@ export default function IconRail() {
         <button
           type="button"
           title="Preset: Reading — one pane, dock closed"
-          onClick={() => {
-            playSound("navigate");
-            dispatch({ type: "applyPreset", preset: "reading" });
-          }}
+          onClick={() => dispatch({ type: "applyPreset", preset: "reading" })}
           className="fx-press flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           <PresetReadingIcon />
@@ -86,10 +83,7 @@ export default function IconRail() {
         <button
           type="button"
           title="Preset: Study — two panes side by side, commentary at hand"
-          onClick={() => {
-            playSound("navigate");
-            dispatch({ type: "applyPreset", preset: "study" });
-          }}
+          onClick={() => dispatch({ type: "applyPreset", preset: "study" })}
           className="fx-press flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           <PresetStudyIcon />

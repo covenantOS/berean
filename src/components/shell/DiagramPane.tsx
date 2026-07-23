@@ -435,7 +435,6 @@ export function DiagramsSection() {
       });
       setRefInput("");
       dispatch({ type: "openDiagram", diagramId: doc.id, title: doc.name });
-      playSound("complete");
     } catch {
       setError("The passage could not be fetched.");
       playSound("error");

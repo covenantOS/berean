@@ -798,7 +798,6 @@ function FamilyMapsTool({ paneId }: { paneId: string }) {
 
   const openMap = (id: string, name: string) => {
     dispatch({ type: "openFamilyMap", entityId: id, title: name, paneId });
-    playSound("navigate");
   };
 
   return (
@@ -937,7 +936,6 @@ function GoliathTool({ paneId }: { paneId: string }) {
           type="button"
           onClick={() => {
             dispatch({ type: "openTextCompare", book: "2-samuel", chapter: 21, paneId });
-            playSound("navigate");
           }}
           className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
@@ -947,7 +945,6 @@ function GoliathTool({ paneId }: { paneId: string }) {
           type="button"
           onClick={() => {
             dispatch({ type: "openTextCompare", book: "1-chronicles", chapter: 20, paneId });
-            playSound("navigate");
           }}
           className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >

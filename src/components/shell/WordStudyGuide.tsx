@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import { listDocuments, type WordItem } from "@/lib/documents";
-import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -112,7 +111,6 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       kind: "word-list",
       items,
     });
-    playSound("complete");
     dispatch({ type: "openListDoc", docId: doc.id, title: doc.title });
   };
 

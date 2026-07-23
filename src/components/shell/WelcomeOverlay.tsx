@@ -27,8 +27,10 @@ interface ShelfTranslation {
  *
  * The room wears the study's own light: the stained-glass wash drifts behind
  * a glass card under the leaded-window mark, the steps crossfade, and the
- * task cards cascade in. The bells answer the threshold: opening rises,
- * backing up falls, and finishing completes.
+ * task cards cascade in. The bells answer the gestures: the Settings row's
+ * summons rises, backing up falls, and finishing completes at the
+ * switchboard. The first-run arrival itself keeps silent: no gesture has
+ * sounded yet, and boot does not ring its own bell.
  */
 export default function WelcomeOverlay() {
   const { firstRun, dispatch } = useWorkspace();
@@ -39,6 +41,9 @@ export default function WelcomeOverlay() {
 
   useEffect(() => {
     const onWelcome = () => {
+      /* The Settings row's click is a gesture; the first-run mount is not,
+       * so the arrival chime lives here rather than in the open effect. */
+      playSound("open");
       setStep(1);
       setOpen(true);
     };
@@ -48,7 +53,6 @@ export default function WelcomeOverlay() {
 
   useEffect(() => {
     if (!open) return;
-    playSound("open");
     setTranslation(window.localStorage.getItem(PREFERRED_TRANSLATION_KEY) ?? "kjv");
     fetch("/api/translations")
       .then((res) => (res.ok ? res.json() : { translations: [] }))
@@ -67,7 +71,6 @@ export default function WelcomeOverlay() {
       if (translation === "kjv") window.localStorage.removeItem(PREFERRED_TRANSLATION_KEY);
       else window.localStorage.setItem(PREFERRED_TRANSLATION_KEY, translation);
     }
-    playSound("complete");
     markOnboarded();
     seedStarterDocuments();
     dispatch({ type: "applyPreset", preset });

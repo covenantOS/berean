@@ -317,30 +317,29 @@ export default function Omnibox() {
   }
 
   function openRef(detail: OpenRefDetail, label: string) {
-    playSound("navigate");
     pushRecent({ kind: "ref", label, detail });
     emit("berean:open-ref", detail);
     closePalette();
   }
 
   function openStrongs(id: string) {
-    playSound("navigate");
     pushRecent({ kind: "lexicon", label: id, detail: { id } });
     emit("berean:open-lexicon", { id });
     closePalette();
   }
 
   function runSearch(q: string) {
-    playSound("navigate");
     pushRecent({ kind: "search", label: q, detail: { q } });
     emit("berean:search", { q });
     closePalette();
   }
 
   function runCommand(id: string) {
-    /* A preset completes a reshaping; the daily verse chimes inside openRef. */
-    if (id.startsWith("preset-")) playSound("complete");
-    else if (id !== "daily") playSound("navigate");
+    /* Every emit below chimes at the shell's switchboard: a preset completes
+     * there, the opens rise there, and the daily verse navigates inside
+     * openRef. Only the dock toggle keeps its bell here, because toggleDock
+     * keeps silent at the switchboard. */
+    if (id === "toggle-dock") playSound("navigate");
     if (id.startsWith("preset-")) {
       emit("berean:apply-preset", { preset: id.slice("preset-".length) });
     } else if (id === "guide") {
@@ -366,7 +365,7 @@ export default function Omnibox() {
   }
 
   function runRecent(r: Recent) {
-    playSound("navigate");
+    /* The emits chime at the switchboard; a router walk keeps its bell here. */
     if (r.kind === "ref") emit("berean:open-ref", r.detail);
     else if (r.kind === "lexicon") emit("berean:open-lexicon", r.detail);
     else if (r.kind === "search") emit("berean:search", r.detail);
@@ -374,8 +373,14 @@ export default function Omnibox() {
       // Recents written before the Factbook tab carried an href, not a
       // detail; those rows fall through to the router like a topic.
       if ("detail" in r && r.detail) emit("berean:open-factbook", r.detail);
-      else if ("href" in r && typeof r.href === "string") router.push(r.href);
-    } else router.push(r.href);
+      else if ("href" in r && typeof r.href === "string") {
+        playSound("navigate");
+        router.push(r.href);
+      }
+    } else {
+      playSound("navigate");
+      router.push(r.href);
+    }
     pushRecent(r);
     closePalette();
   }
@@ -412,7 +417,6 @@ export default function Omnibox() {
         label: l.name,
         meta: "Saved layout",
         run: () => {
-          playSound("complete");
           emit("berean:restore-layout", { id: l.id });
           closePalette();
         },
@@ -438,7 +442,6 @@ export default function Omnibox() {
         label: `Passage guide: ${parsed.label}`,
         sub: "Commentaries, cross-references, people, topics",
         run: () => {
-          playSound("navigate");
           emit("berean:open-guide", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -449,7 +452,6 @@ export default function Omnibox() {
         label: `Exegetical guide: ${parsed.label}`,
         sub: "Word by word, important words, lemmas, variants",
         run: () => {
-          playSound("navigate");
           emit("berean:open-exegetical", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -460,7 +462,6 @@ export default function Omnibox() {
         label: `Sermon starter: ${parsed.label}`,
         sub: "Themes, key passages, and the pulpit handoff",
         run: () => {
-          playSound("navigate");
           emit("berean:open-sermonstarter", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -472,7 +473,6 @@ export default function Omnibox() {
           label: `${g.name}: ${parsed.label}`,
           sub: "Your custom guide",
           run: () => {
-            playSound("navigate");
             emit("berean:open-customguide", {
               guideId: g.id,
               name: g.name,
@@ -489,7 +489,6 @@ export default function Omnibox() {
         label: `Compare texts: ${parsed.label}`,
         sub: "Every translation against a base, word by word",
         run: () => {
-          playSound("navigate");
           emit("berean:open-textcompare", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -500,7 +499,6 @@ export default function Omnibox() {
         label: `Multiview: ${parsed.label}`,
         sub: "Translations side by side, verses aligned",
         run: () => {
-          playSound("navigate");
           emit("berean:open-multiview", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -511,7 +509,6 @@ export default function Omnibox() {
         label: `Concordance: ${parsed.bookName}`,
         sub: "Every word and lemma in the book, counted, with its verses",
         run: () => {
-          playSound("navigate");
           emit("berean:open-concordance", { book: parsed.book });
           closePalette();
         },
@@ -531,7 +528,6 @@ export default function Omnibox() {
         label: `Word study: ${parsed.id}`,
         sub: "Lexicon, occurrences, forms, topics",
         run: () => {
-          playSound("navigate");
           emit("berean:open-wordstudy", { id: parsed.id });
           closePalette();
         },
@@ -558,7 +554,6 @@ export default function Omnibox() {
           label: l.name,
           meta: "Saved layout",
           run: () => {
-            playSound("complete");
             emit("berean:restore-layout", { id: l.id });
             closePalette();
           },
@@ -576,7 +571,6 @@ export default function Omnibox() {
             e.brief ? ` · ${e.brief}` : ""
           } · ${e.refs.toLocaleString()} ${e.refs === 1 ? "reference" : "references"}`,
           run: () => {
-            playSound("navigate");
             pushRecent({ kind: "entity", label: e.name, detail: { id: e.id, name: e.name } });
             emit("berean:open-factbook", { id: e.id, name: e.name });
             closePalette();
@@ -591,7 +585,6 @@ export default function Omnibox() {
           sub: `${t.work === "naves" ? "Nave's" : "Torrey's"} · ${t.refs.toLocaleString()} ${
             t.refs === 1 ? "reference" : "references"}`,
           run: () => {
-            playSound("navigate");
             const href = `/workspace?tab=topicguide:${t.work}:${t.id}`;
             pushRecent({ kind: "topic", label: t.title, href });
             emit("berean:open-topicguide", { work: t.work, id: t.id, title: t.title });

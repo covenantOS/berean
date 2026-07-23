@@ -487,8 +487,9 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             stripDepth.current = 0;
             setInsertAt(null);
             dispatchDrop(e, { kind: "strip", paneId: leaf.id, index }, dispatch, state.lexiconId);
-            /* A dropped tab walks to its new place; anything else opens here. */
-            playSound(e.dataTransfer.types.includes(DND.paneTab) ? "navigate" : "open");
+            /* A dropped tab walks to its new place; anything else opens here,
+             * and the switchboard chimes that openTab itself. */
+            if (e.dataTransfer.types.includes(DND.paneTab)) playSound("navigate");
           }}
         >
           {leaf.tabs.map((tab, i) => {
@@ -541,7 +542,6 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                   aria-label={`Close ${label}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    playSound("close");
                     dispatch({ type: "closeTab", paneId: leaf.id, tabId: tab.id });
                   }}
                   className={`fx-press px-0.5 text-[0.85rem] leading-none hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
@@ -563,7 +563,6 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             type="button"
             title="New tab"
             onClick={() => {
-              playSound("open");
               dispatch({ type: "newTab", paneId: leaf.id });
             }}
             className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
@@ -602,7 +601,6 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             title="Close pane"
             disabled={panes <= 1}
             onClick={() => {
-              playSound("close");
               dispatch({ type: "closePane", paneId: leaf.id });
             }}
             className="fx-press px-1 text-[0.85rem] leading-none text-muted transition-colors hover:text-ruby disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
@@ -639,12 +637,12 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           bodyDepth.current = 0;
           setBodyHint(null);
           dispatchDrop(e, target, dispatch, state.lexiconId);
-          /* A tab landing in a body walks there; a split or a new module opens. */
-          playSound(
-            target.kind === "body" && e.dataTransfer.types.includes(DND.paneTab)
-              ? "navigate"
-              : "open"
-          );
+          /* A tab landing in a body walks there; a tab split opens a pane.
+           * Both arrive as moveTab, which keeps silent at the switchboard;
+           * anything else is an openTab and the switchboard chimes it. */
+          if (e.dataTransfer.types.includes(DND.paneTab)) {
+            playSound(target.kind === "body" ? "navigate" : "open");
+          }
         }}
       >
         {/* Tab activation crossfade: keying on the live tab remounts the body
@@ -915,7 +913,6 @@ function EmptyPane({ paneId }: { paneId: string }) {
       <button
         type="button"
         onClick={() => {
-          playSound("open");
           dispatch({ type: "openRef", book: "genesis", chapter: 1, paneId });
         }}
         className="glass glass-hover fx-press px-3 py-1.5 text-xs text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
