@@ -1,4 +1,5 @@
 import { Book, CANON } from "./canon";
+import { greekToTranslit } from "./alphabets";
 import { extractScopes, scopeMatch } from "./query";
 import {
   OriginalWord,
@@ -66,9 +67,14 @@ function normalizeHebrew(s: string): string {
   return s.replace(/[֑-ׇ׃]/g, "").replace(/[^א-ת]/g, "");
 }
 
-/** Transliteration comparison: lowercase, letters only. */
+/** Transliteration comparison: diacritics fold to their base letters
+ *  (agapē answers to agape, ēgapēsen to egapesen), lowercase, letters only. */
 function normalizeXlit(s: string): string {
-  return s.toLowerCase().replace(/[^a-z']/g, "");
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z']/g, "");
 }
 
 /** Normalize a Strong's query to the padded form used in the data (G0025). */
@@ -115,12 +121,32 @@ function buildMatcher(query: string): QueryMatcher | null {
     };
   }
 
-  // Plain ASCII: treat as transliteration, searching both testaments.
+  // Plain ASCII: treat as transliteration, searching both testaments. A
+  // transliterated lemma answers the way a typed-script lemma does: exact
+  // against the lemma's own transliteration, while surface forms answer by
+  // substring against the word's xlit. The lemma map is Greek only; the
+  // Hebrew transliterator is consonantal, and TAHOT's vocalized xlits
+  // already carry the Hebrew side.
   const needle = normalizeXlit(q);
   if (needle.length < 2) return null;
+  const lemmaCache = new Map<string, string[]>();
+  const lemmaMatch = (w: OriginalWord, lang: "hebrew" | "greek"): boolean => {
+    if (lang !== "greek" || w.l === undefined) return false;
+    let variants = lemmaCache.get(w.l);
+    if (variants === undefined) {
+      variants = w.l
+        .split(/[,;/]/)
+        .map((v) => normalizeXlit(greekToTranslit(v)))
+        .filter((v) => v.length > 0);
+      lemmaCache.set(w.l, variants);
+    }
+    return variants.some((v) => v === needle);
+  };
   return {
     lang: "both",
-    test: (w) => (w.x !== undefined && normalizeXlit(w.x).includes(needle)) || false,
+    test: (w, lang) =>
+      lemmaMatch(w, lang) ||
+      (w.x !== undefined && normalizeXlit(w.x).includes(needle)),
   };
 }
 

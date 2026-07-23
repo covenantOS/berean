@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { alignedChapter, alignedScope, alignedTextIds, type AlignedChapterPayload } from "@/lib/aligned";
+import { translitToGreek, translitToHebrew } from "@/lib/alphabets";
 import { CANON, getBook, resolveBookName } from "@/lib/canon";
 import { listDocuments } from "@/lib/documents";
 import { HIGHLIGHT_COLORS, type HighlightColor } from "@/lib/highlights";
@@ -1026,11 +1027,27 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
   const [filterSaved, setFilterSaved] = useState(false);
 
   /* The query form re-asks the question in place: the rail's history
-   * records it under "original", and the tab wears the new query. */
+   * records it under "original", and the tab wears the new query. The α/א
+   * chip converts typed transliteration to the script it names, the
+   * conversion shown under the field and sent on submit; left off, the
+   * engine matches transliterations against the texts' own. */
+  const [mq, setMq] = useState(q);
+  /* A new tab query refills the field. */
+  useEffect(() => setMq(q), [q]);
+  const [script, setScript] = useState<"off" | "greek" | "hebrew">("off");
+  const converted = useMemo(() => {
+    const raw = mq.trim();
+    if (script === "off" || raw === "") return "";
+    const out = script === "greek" ? translitToGreek(raw) : translitToHebrew(raw);
+    return out !== raw ? out : "";
+  }, [mq, script]);
+
   const runQuery = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const query = String(new FormData(e.currentTarget).get("mq") ?? "").trim();
-    if (!query) return;
+    const raw = String(new FormData(e.currentTarget).get("mq") ?? "").trim();
+    if (!raw) return;
+    const query =
+      script === "off" ? raw : script === "greek" ? translitToGreek(raw) : translitToHebrew(raw);
     recordSearch(query, "original");
     playSound("navigate");
     dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(query, "original") });
@@ -1164,22 +1181,53 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
         </button>
         <PrintButton className="ml-3" />
       </header>
-      <form onSubmit={runQuery} className="no-print flex shrink-0 gap-2 border-b border-rule px-4 py-2">
+      <form
+        onSubmit={runQuery}
+        className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2"
+      >
         <input
-          key={q}
           type="search"
           name="mq"
-          defaultValue={q}
+          value={mq}
+          onChange={(e) => setMq(e.target.value)}
           placeholder="Lemma, transliteration, Strong's (G25, H1254), or letters in the script (λογ, ברא)"
           aria-label="Search the Greek and Hebrew text"
-          className="w-full border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
+          className="min-w-0 flex-1 border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire"
         />
+        <button
+          type="button"
+          title={
+            script === "greek"
+              ? "Transliteration converts to Greek letters as you type (logos → λογος); click for Hebrew"
+              : script === "hebrew"
+                ? "Transliteration converts to Hebrew consonants as you type (ḥesed → חסד); click to turn off"
+                : "Convert typed transliteration to the script it names (logos → λογος, ḥesed → חסד)"
+          }
+          aria-pressed={script !== "off"}
+          onClick={() => setScript((s) => (s === "off" ? "greek" : s === "greek" ? "hebrew" : "off"))}
+          className={`fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+            script === "off" ? "text-muted" : "text-sapphire"
+          }`}
+        >
+          {script === "off" ? "α/א" : script === "greek" ? "→ α" : "→ א"}
+        </button>
         <button
           type="submit"
           className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Search
         </button>
+        {converted !== "" && (
+          <span className="w-full text-[0.72rem] text-muted">
+            Runs as{" "}
+            <span
+              className={script === "hebrew" ? "lang-hebrew" : "lang-greek"}
+              dir={script === "hebrew" ? "rtl" : "ltr"}
+            >
+              {converted}
+            </span>
+          </span>
+        )}
       </form>
       {showFilters && (
         <div className="fx-fade no-print shrink-0 border-b border-rule px-4 py-2">

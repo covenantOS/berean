@@ -15,6 +15,7 @@ import {
   hebrewNumeral,
   hebrewToTranslit,
   translitToGreek,
+  translitToHebrew,
   type LetterInfo,
 } from "@/lib/alphabets";
 import {
@@ -65,7 +66,8 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
  * equivalents and back; Alphabets tables the Greek and Hebrew letters with
  * a flash-style self-test; Numerals spells a number in letters and sums
  * letters back; Transliteration walks Greek and Hebrew script to
- * transliteration (and Greek back); Cantillations tables the accents the
+ * transliteration and back (Hebrew by its consonants); Cantillations tables
+ * the accents the
  * pointed text carries; Names of God tables the received names and titles
  * with meaning and first occurrence; Reigns tables the kings, judges,
  * prophets, and high priests in order; Sacrifices tables the five
@@ -463,7 +465,7 @@ function NumeralsTool() {
 
 /* ---------- transliteration ---------- */
 
-type TranslitDirection = "hebrew-to" | "greek-to" | "greek-from";
+type TranslitDirection = "hebrew-to" | "greek-to" | "greek-from" | "hebrew-from";
 
 function TransliterationTool() {
   const [direction, setDirection] = useState<TranslitDirection>("hebrew-to");
@@ -473,13 +475,15 @@ function TransliterationTool() {
     if (input === "") return "";
     if (direction === "hebrew-to") return hebrewToTranslit(input);
     if (direction === "greek-to") return greekToTranslit(input);
-    return translitToGreek(input);
+    if (direction === "greek-from") return translitToGreek(input);
+    return translitToHebrew(input);
   }, [input, direction]);
 
   const options: { id: TranslitDirection; label: string }[] = [
     { id: "hebrew-to", label: "Hebrew → translit" },
     { id: "greek-to", label: "Greek → translit" },
     { id: "greek-from", label: "Translit → Greek" },
+    { id: "hebrew-from", label: "Translit → Hebrew" },
   ];
 
   return (
@@ -510,7 +514,9 @@ function TransliterationTool() {
             ? "בְּרֵאשִׁית בָּרָא"
             : direction === "greek-to"
               ? "Ἐν ἀρχῇ ἦν ὁ λόγος"
-              : "en archē ēn ho logos"
+              : direction === "greek-from"
+                ? "en archē ēn ho logos"
+                : "ḥesed v'emet"
         }
         onChange={(e) => setInput(e.target.value)}
         className={`${INPUT} w-full resize-y font-editorial text-sm`}
@@ -520,10 +526,12 @@ function TransliterationTool() {
       )}
       <p className={NOTE}>
         {direction === "hebrew-to"
-          ? "Consonants carry over; the vowel points and accents stay behind. Hebrew runs this one way, its pointed spellings reading more than one way back."
+          ? "Consonants carry over; the vowel points and accents stay behind, so the way back runs to consonants only."
           : direction === "greek-to"
             ? "Accents and breathings drop away; upsilon reads as y."
-            : "The long vowels ē and ō land on eta and omega, plain e and o on epsilon and omicron; sigma closes as ς at a word's end."}
+            : direction === "greek-from"
+              ? "The long vowels ē and ō land on eta and omega, plain e and o on epsilon and omicron, u and y on upsilon; sigma closes as ς at a word's end."
+              : "The consonants cross back, the vowels set down with the pointing: ḥ or ch does het's work, sh does shin's, and the five closing letters take their final forms at a word's end. Plain h, s, and t keep the common answers: he, samekh, tav. Where the spelling carries a vowel letter, type the consonant: rwach reads רוח."}
       </p>
     </section>
   );

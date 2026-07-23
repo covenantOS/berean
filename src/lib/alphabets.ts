@@ -3,8 +3,9 @@
  * letter with its name, transliteration, pronunciation hint, and the value
  * it carries when the letters serve as numerals. The same tables drive the
  * numeric converter (a number spelled in letters, letters summed back to a
- * number) and the text converter (script to transliteration; Greek also
- * transliteration back to script, where the mapping has one answer).
+ * number) and the text converter (script to transliteration, and
+ * transliteration back: Greek to its letters, where the mapping has one
+ * answer, Hebrew to unpointed consonants, the only direction a search needs).
  *
  * Sources: the standard grammars. Letter names, sounds, and values follow
  * Gesenius-Kautzsch for Hebrew and Smyth for Greek; the numeral schemes are
@@ -206,7 +207,8 @@ export function greekToTranslit(text: string): string {
 }
 
 /* The reverse path, longest tokens first; plain e and o land on epsilon
- * and omicron, eta and omega answering to their long-marked ē and ō. */
+ * and omicron, eta and omega answering to their long-marked ē and ō. Both
+ * y and u read as upsilon, the Latinized spelling beside the scholarly. */
 const XLIT_TO_GREEK: [string, string][] = [
   ["ps", "ψ"],
   ["ph", "φ"],
@@ -214,6 +216,7 @@ const XLIT_TO_GREEK: [string, string][] = [
   ["th", "θ"],
   ["ē", "η"],
   ["ō", "ω"],
+  ["u", "υ"],
   ...[...GREEK_XLIT.entries()]
     .filter(([g]) => g !== "ς")
     .map(([g, x]) => [x, g] as [string, string])
@@ -222,8 +225,9 @@ const XLIT_TO_GREEK: [string, string][] = [
 
 /**
  * Greek transliteration back to script. The marked vowels ē and ō keep eta
- * and omega unambiguous; sigma closes as ς after anything that is not a
- * letter of its own word. Tokens with no mapping pass through untouched.
+ * and omega unambiguous; u and y both land on upsilon; sigma closes as ς
+ * after anything that is not a letter of its own word. Tokens with no
+ * mapping pass through untouched.
  */
 export function translitToGreek(text: string): string {
   let out = "";
@@ -241,6 +245,110 @@ export function translitToGreek(text: string): string {
       i += hit[0].length;
     } else {
       out += text[i];
+      i += 1;
+    }
+  }
+  return out;
+}
+
+/* The Hebrew reverse path, consonants only: the scholarly marks first
+ * (ḥ ṭ ṣ š ʾ ʿ), then the English digraphs a Bible reader actually types
+ * (ch sh ts th), then the plain letters. Vowels are set down with the
+ * pointing, so ḥesed and chesed both read חסד. The plain letters keep the
+ * common answers: h is he (het wants its mark or ch), s is samekh (shin
+ * wants sh or š), t is tav (tet wants its mark), k is kaf, q is qof. */
+const XLIT_TO_HEBREW: [string, string][] = [
+  ["sh", "ש"],
+  ["ch", "ח"],
+  ["ts", "צ"],
+  ["tz", "צ"],
+  ["th", "ת"],
+  ["ʾ", "א"],
+  ["ʼ", "א"],
+  ["'", "א"],
+  ["ʿ", "ע"],
+  ["`", "ע"],
+  ["ḥ", "ח"],
+  ["ṭ", "ט"],
+  ["ṣ", "צ"],
+  ["š", "ש"],
+  ["b", "ב"],
+  ["g", "ג"],
+  ["d", "ד"],
+  ["h", "ה"],
+  ["w", "ו"],
+  ["v", "ו"],
+  ["z", "ז"],
+  ["y", "י"],
+  ["k", "כ"],
+  ["l", "ל"],
+  ["m", "מ"],
+  ["n", "נ"],
+  ["s", "ס"],
+  ["f", "פ"],
+  ["p", "פ"],
+  ["q", "ק"],
+  ["r", "ר"],
+  ["t", "ת"],
+];
+
+/** Vowels a transliteration carries and a consonantal text does not. */
+const HEBREW_VOWELS = new Set(
+  "aāáàâăäeēéèêĕëiīíìîĭïoōóòôŏöuūúùûŭüə".split("")
+);
+
+/**
+ * Hebrew transliteration back to the unpointed consonants, the input method
+ * a search against the consonantal lemmas needs. Vowels drop; where the
+ * spelling itself carries a vowel letter, type the consonant (w or y) and
+ * it stands: rwach reads רוח. The five letters with closing shapes take
+ * their final forms when no consonant follows them in the word. Tokens
+ * with no mapping pass through untouched, so what the converter heard
+ * stays visible.
+ */
+export function translitToHebrew(text: string): string {
+  const lower = text.normalize("NFC").toLowerCase();
+  let out = "";
+  let i = 0;
+  /* The letter last written and where its token ended, so a doubled Latin
+   * letter (adjacent in the input, dagesh) writes once while a consonant
+   * repeated across a vowel (ʿanan) writes twice. */
+  let lastGlyph = "";
+  let lastEnd = -1;
+  while (i < lower.length) {
+    const hit = XLIT_TO_HEBREW.find(([x]) => lower.startsWith(x, i));
+    if (hit) {
+      let glyph = hit[1];
+      /* A doubled Latin letter is dagesh; the consonantal text writes it once. */
+      if (glyph === lastGlyph && i === lastEnd) {
+        i += hit[0].length;
+        continue;
+      }
+      /* A closing shape when the rest of the word carries no consonant. */
+      const final = Object.entries(HEBREW_FINALS).find(([, base]) => base === glyph)?.[0];
+      if (final) {
+        let j = i + hit[0].length;
+        let more = false;
+        while (j < lower.length) {
+          if (XLIT_TO_HEBREW.some(([x]) => lower.startsWith(x, j))) {
+            more = true;
+            break;
+          }
+          if (/[\s\p{P}]/u.test(lower[j])) break;
+          j += 1;
+        }
+        if (!more) glyph = final;
+      }
+      out += glyph;
+      lastGlyph = hit[1];
+      lastEnd = i + hit[0].length;
+      i += hit[0].length;
+    } else if (HEBREW_VOWELS.has(lower[i])) {
+      i += 1;
+    } else {
+      out += text[i];
+      lastGlyph = "";
+      lastEnd = -1;
       i += 1;
     }
   }
