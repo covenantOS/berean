@@ -108,6 +108,8 @@ interface ChapterPayload {
   hasOriginal: boolean;
   verses: Verse[];
   pericopes: Pericope[];
+  /** Dominical verses this chapter, from the WEB \wj paratext. */
+  redletter: number[];
   audio: ChapterAudioInfo | null;
   tagged?: TaggedVerse[] | null;
   original?: OriginalVerse[] | null;
@@ -192,7 +194,9 @@ export function translationShelf(): Promise<ShelfTranslation[]> {
  * (the tab keeps the step), and Reading raises the text over the whole
  * window as a component-level overlay. Pericope headings (BSB paratext)
  * mark the text's passages, quiet small-caps the Headings toggle and Text
- * only both drop; the locator rail under the header tracks the reading
+ * only both drop; dominical verses (WEB \wj paratext) wear ruby under the
+ * Red letter toggle, canon-anchored so every translation honors them. The
+ * locator rail under the header tracks the reading
  * position with pericope ticks and prev/next stepping; and a reference chip
  * hovered anywhere in the workspace outlines its verses here (ref-hover).
  * A tagged or original word hovered anywhere in the workspace lights every
@@ -238,6 +242,9 @@ export default function ReaderPane({
    * the BSB paratext the chapter payload carries. On while the tab lives,
    * like the other view toggles; Text only hides them too. */
   const [headingsOn, setHeadingsOn] = useState(true);
+  /* Red letter: dominical verses (WEB \wj paratext) wear the ruby pane of
+   * the window. On while the tab lives, like the other view toggles. */
+  const [redLetter, setRedLetter] = useState(true);
   /* Hover emphasis: the reference chip under the pointer anywhere in the
    * workspace; verses it covers wear the ref-hover channel until it clears. */
   const [hoverVerses, setHoverVerses] = useState<{ from: number; to: number } | null>(null);
@@ -900,6 +907,13 @@ export default function ReaderPane({
     return m;
   }, [ready]);
 
+  /* Dominical verses by canon reference; every translation the pane swaps
+   * to wears the same flags, the way the pericopes ride every text. */
+  const dominical = useMemo(() => new Set(ready?.redletter ?? []), [ready]);
+
+  /** True when the verse carries Christ's words and Red letter is on. */
+  const isDominical = (v: number) => redLetter && dominical.has(v);
+
   /* Visible visual filter sets over this chapter: verse to the first set
    * claiming it (a verse in several sets wears one underline). Hidden sets
    * render nothing. */
@@ -1145,40 +1159,47 @@ export default function ReaderPane({
       onContextMenu={openVerseMenu(v.verse)}
     >
       {!textOnly && <VerseNum label={v.label ?? v.verse} verse={v.verse} onTap={tapVerse} />}
-      {markFind(v.verse, v.text)}{" "}
+      {isDominical(v.verse) ? (
+        <span className="red-letter">{markFind(v.verse, v.text)}</span>
+      ) : (
+        markFind(v.verse, v.text)
+      )}{" "}
     </span>
   );
 
-  const renderTaggedVerse = (v: TaggedVerse) => (
-    <span
-      key={v.verse}
-      data-verse={v.verse}
-      className={verseClass(v.verse)}
-      style={verseMarkVar(v.verse)}
-      onClick={() => tapVerse(v.verse)}
-      onContextMenu={openVerseMenu(v.verse)}
-    >
-      {!textOnly && <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />}
-      {v.words.map((w, i) => (
-        <span key={i}>
-          {w.s && w.s.length > 0 ? (
-            <span
-              className={`tagged-word armed ${isActiveWord(v.verse, w.t) ? "word-active" : ""}${wordHoverOn(w.s) ? " word-hover" : ""}`}
-              onClick={tapTaggedWord(v.verse, w)}
-              onDoubleClick={keylink(w.s)}
-              onContextMenu={openWordMenu(wordFromTagged(v.verse, w))}
-              onMouseEnter={hoverWord(w.s)}
-              onMouseLeave={unhoverWord}
-            >
-              {w.t}
-            </span>
-          ) : (
-            w.t
-          )}{" "}
-        </span>
-      ))}
-    </span>
-  );
+  const renderTaggedVerse = (v: TaggedVerse) => {
+    const words = v.words.map((w, i) => (
+      <span key={i}>
+        {w.s && w.s.length > 0 ? (
+          <span
+            className={`tagged-word armed ${isActiveWord(v.verse, w.t) ? "word-active" : ""}${wordHoverOn(w.s) ? " word-hover" : ""}`}
+            onClick={tapTaggedWord(v.verse, w)}
+            onDoubleClick={keylink(w.s)}
+            onContextMenu={openWordMenu(wordFromTagged(v.verse, w))}
+            onMouseEnter={hoverWord(w.s)}
+            onMouseLeave={unhoverWord}
+          >
+            {w.t}
+          </span>
+        ) : (
+          w.t
+        )}{" "}
+      </span>
+    ));
+    return (
+      <span
+        key={v.verse}
+        data-verse={v.verse}
+        className={verseClass(v.verse)}
+        style={verseMarkVar(v.verse)}
+        onClick={() => tapVerse(v.verse)}
+        onContextMenu={openVerseMenu(v.verse)}
+      >
+        {!textOnly && <VerseNum label={v.verse} verse={v.verse} onTap={tapVerse} />}
+        {isDominical(v.verse) ? <span className="red-letter">{words}</span> : words}
+      </span>
+    );
+  };
 
   const renderOrigWord = (lang: "hebrew" | "greek", verse: number, w: OriginalWord, i: number) => (
     <span key={i} className="orig-word">
@@ -1254,7 +1275,11 @@ export default function ReaderPane({
                 {v.label}{" "}
               </span>
             )}
-            {markFind(v.verse, v.text)}
+            {isDominical(v.verse) ? (
+              <span className="red-letter">{markFind(v.verse, v.text)}</span>
+            ) : (
+              markFind(v.verse, v.text)
+            )}
           </div>
           {selVerse === v.verse ? stripNode : null}
         </Fragment>
@@ -1645,6 +1670,17 @@ export default function ReaderPane({
               className={toggleBtn(verseLines)}
             >
               Lines
+            </button>
+          )}
+          {ready && view === "text" && ready.redletter.length > 0 && (
+            <button
+              type="button"
+              aria-pressed={redLetter}
+              title="The words of Christ in ruby"
+              onClick={() => setRedLetter(!redLetter)}
+              className={toggleBtn(redLetter)}
+            >
+              Red letter
             </button>
           )}
           {ready && (

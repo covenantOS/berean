@@ -8,6 +8,7 @@ import {
   translationsForBook,
 } from "@/lib/translations";
 import { isLxxTranslation, lxxNumberingNote } from "@/lib/lxx";
+import { getRedLetterVerses } from "@/lib/redletter";
 import { diffIsClean, diffWords } from "@/lib/textdiff";
 
 /**
@@ -54,6 +55,7 @@ export async function GET(req: NextRequest) {
   if (!baseChapter) {
     return NextResponse.json({ error: "The base text has no such chapter." }, { status: 400 });
   }
+  const redletter = await getRedLetterVerses(book.slug, chapter);
   const baseVerses = groupVerses(baseChapter);
   const baseNumbers = new Set(baseVerses.map((v) => v.verse));
 
@@ -101,6 +103,7 @@ export async function GET(req: NextRequest) {
     chapter,
     base: { id: base.id, abbrev: base.abbrev },
     baseVerses,
+    redletter,
     shelf: available.map((t) => ({ id: t.id, abbrev: t.abbrev, name: t.name })),
     columns,
   });

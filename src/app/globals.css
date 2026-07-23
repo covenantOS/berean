@@ -181,6 +181,14 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   border-radius: 2px;
 }
 /*
+ * Red letter: dominical verses in the deep ruby pane of the window, the
+ * verse numbers beside them untouched. The token darkens for paper and
+ * lifts for candlelight; stained glass, never traffic-light red.
+ */
+.red-letter {
+  color: var(--stained-ruby);
+}
+/*
  * Text comparison marks: words a translation adds wear a sapphire wash and
  * underline; words the base carries that the translation lacks are struck in
  * ruby. Stained glass, never traffic lights.

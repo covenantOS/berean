@@ -23,5 +23,11 @@ data/_sources/bsb-usfm/*.usfm
 data/_sources/bsb-usfm/*.css
 data/_sources/bsb-usfm/*.asc
 
+# Raw WEB USFM (~3MB); reproducible from data/_sources/web-usfm/PROVENANCE.md
+data/_sources/web-usfm/*.zip
+data/_sources/web-usfm/*.usfm
+data/_sources/web-usfm/*.css
+data/_sources/web-usfm/*.asc
+
 # Dev auth database (better-sqlite3 dialect when DATABASE_URL is unset)
 data/auth.db*

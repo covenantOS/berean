@@ -36,6 +36,8 @@ interface ComparePayload {
   chapter: number;
   base: { id: string; abbrev: string };
   baseVerses: { verse: number; text: string }[];
+  /** Dominical verses this chapter, from the WEB \wj paratext. */
+  redletter: number[];
   shelf: { id: string; abbrev: string; name: string }[];
   columns: CompareColumn[];
 }
@@ -94,6 +96,8 @@ export default function TextCompare({
   const columns = r.columns.filter((c) => !c.missing);
   const absent = r.columns.filter((c) => c.missing);
   const noted = r.columns.filter((c) => c.note);
+  // Dominical verses wear ruby, canon-anchored like the reader's Red letter.
+  const dominical = new Set(r.redletter);
 
   return (
     <div className="mx-auto max-w-prose space-y-6">
@@ -145,7 +149,11 @@ export default function TextCompare({
               <span className="small-caps mr-2 align-super text-[0.62rem] font-semibold text-sapphire">
                 {bv.verse}
               </span>
-              {bv.text}
+              {dominical.has(bv.verse) ? (
+                <span className="red-letter">{bv.text}</span>
+              ) : (
+                bv.text
+              )}
             </p>
             {changed.length === 0 ? (
               <p className="mt-1 text-[0.68rem] text-muted">Every furnished text agrees.</p>

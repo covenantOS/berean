@@ -144,6 +144,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "web-redletter",
+    title: "Words-of-Christ verse flags (from the World English Bible USFM)",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain (trademark on the name held by eBible.org)",
+    source: "https://ebible.org/Scriptures/eng-web_usfm.zip (details: https://ebible.org/find/details.php?id=eng-web)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Dominical verse flags extracted from the World English Bible USFM \\wj spans, the 2020 stable text edition, dedicated to the public domain per its copr page. Only the flags ship, not another copy of the WEB text: per-chapter verse lists stored per-book as JSON under data/redletter, worn by every furnished translation since the flags anchor by canon reference. The granularity is the verse because span offsets belong to the WEB wording; 2,059 verses flagged across Matthew, Mark, Luke, John, Acts, 1 and 2 Corinthians, 1 Timothy, and Revelation (the source's full markup coverage). Raw USFM kept out of git; provenance in data/_sources/web-usfm/PROVENANCE.md; built by scripts/build-redletter.mjs.",
+    status: "shipped",
+  },
+  {
     id: "matthew-henry",
     title: "Matthew Henry, Concise Commentary on the Whole Bible",
     kind: "commentary",
