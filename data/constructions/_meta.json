@@ -1,0 +1,99 @@
+{
+  "id": "constructions",
+  "title": "Clause-level grammatical constructions (MACULA lowfat syntax trees)",
+  "attribution": "MACULA Greek Linguistic Datasets (https://github.com/Clear-Bible/macula-greek/) and MACULA Hebrew Linguistic Datasets (https://github.com/Clear-Bible/macula-hebrew/), both CC BY 4.0.",
+  "retrieved": "2026-07-23",
+  "builtBy": "scripts/build-constructions.mjs",
+  "books": 66,
+  "chapters": 1189,
+  "greek": {
+    "words": 137779,
+    "clauses": 28924,
+    "unmappedRefs": 3,
+    "unparseableRefs": 0,
+    "errorRolesSkipped": 5,
+    "roles": [
+      "adv",
+      "aux",
+      "io",
+      "o",
+      "o2",
+      "p",
+      "s",
+      "v",
+      "vc"
+    ],
+    "unmappedSamples": [
+      "Mark 16.99"
+    ]
+  },
+  "hebrew": {
+    "words": 475911,
+    "clauses": 84055,
+    "unmappedRefs": 32,
+    "unparseableRefs": 0,
+    "errorRolesSkipped": 0,
+    "roles": [
+      "adv",
+      "o",
+      "o2",
+      "p",
+      "pp",
+      "s",
+      "v"
+    ],
+    "unmappedSamples": [
+      "Numbers 26.1",
+      "1Samuel 21.1",
+      "1Kings 22.22",
+      "1Kings 22.44",
+      "1Chronicles 12.5",
+      "Psalms 51.2",
+      "Psalms 52.2",
+      "Psalms 54.2",
+      "Psalms 60.2"
+    ]
+  },
+  "checks": [
+    {
+      "label": "John 1:1 carries the P-VC-S copula clause",
+      "ok": true,
+      "detail": "[{\"rule\":\"P-VC-S\",\"parts\":[{\"role\":\"p\",\"label\":\"Predicate\",\"class\":\"pp\",\"text\":\"Ἐν ἀρχῇ\"},{\"role\":\"vc\",\"label\":\"Copula\",\"class\":\"verb\",\"text\":\"ἦν\"},{\"role\":\"s\",\"label\":\"Subject\",\"class\":\"np\",\"text\":\"ὁ Λόγος,\"}]},{\"rule\":\"S-VC-P\",\"parts\":[{\"role\":\"s\",\"label\":\"Subject\",\"class\":\"np\",\"text\":\"ὁ Λόγος\"},{"
+    },
+    {
+      "label": "Genesis 1:1 carries the PP-V-S-O clause with elohim as subject",
+      "ok": true,
+      "detail": "[{\"rule\":\"PP-V-S-O\",\"parts\":[{\"role\":\"pp\",\"label\":\"Prepositional phrase\",\"class\":\"pp\",\"text\":\"בְּרֵאשִׁ֖ית\"},{\"role\":\"v\",\"label\":\"Verb\",\"class\":\"verb\",\"text\":\"בָּרָ֣א\"},{\"role\":\"s\",\"label\":\"Subject\",\"class\":\"noun\",\"text\":\"אֱלֹהִ֑ים\"},{\"role\":\"o\",\"label\":\"Object\",\"class\":\"np\",\"text\":\"אֵ֥ת הַשָּׁמַ֖יִ"
+    },
+    {
+      "label": "Psalm 3:1 (Hebrew 3:2) lands through the versification map",
+      "ok": true,
+      "detail": "[{\"rule\":\"ADV-V-S\",\"parts\":[{\"role\":\"adv\",\"label\":\"Adverbial\",\"class\":\"pron\",\"text\":\"מָֽה\"},{\"role\":\"v\",\"label\":\"Verb\",\"class\":\"verb\",\"text\":\"רַבּ֣וּ\"},{\"role\":\"s\",\"label\":\"Subject\",\"class\":\"np\",\"text"
+    },
+    {
+      "label": "Genesis 31:55 (Hebrew 32:1) lands through the versification map",
+      "ok": true,
+      "detail": "[{\"rule\":\"V-S-PP\",\"parts\":[{\"role\":\"v\",\"label\":\"Verb\",\"class\":\"verb\",\"text\":\"יַּשְׁכֵּ֨ם\"},{\"role\":\"s\",\"label\":\"Subject\",\"class\":\"noun\",\"text\":\"לָבָ֜ן\"},{\"role\":\"pp\",\"label\":\"Prepositional phrase\",\"cl"
+    },
+    {
+      "label": "Greek unmapped refs stay below 0.1% of clauses",
+      "ok": true,
+      "detail": "unmapped=3 clauses=28924"
+    },
+    {
+      "label": "Hebrew unmapped refs stay below 0.1% of clauses",
+      "ok": true,
+      "detail": "unmapped=32 clauses=84055"
+    },
+    {
+      "label": "All 27 Greek books ship",
+      "ok": true,
+      "detail": "Revelation.json"
+    },
+    {
+      "label": "All 39 Hebrew books ship",
+      "ok": true,
+      "detail": "books=66"
+    }
+  ]
+}

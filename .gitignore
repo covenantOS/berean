@@ -32,5 +32,12 @@ data/_sources/web-usfm/*.asc
 # Raw MACULA Hebrew annotations (~80MB); reproducible from data/_sources/macula-hebrew/PROVENANCE.md
 data/_sources/macula-hebrew/annotations.xml
 
+# Raw MACULA lowfat syntax trees (~520MB); reproducible from each PROVENANCE.md
+data/_sources/macula-greek/lowfat/
+data/_sources/macula-hebrew/lowfat/
+
+# Raw UBS dictionary JSON (~39MB); reproducible from data/_sources/ubs-dictionaries/PROVENANCE.md
+data/_sources/ubs-dictionaries/*.JSON
+
 # Dev auth database (better-sqlite3 dialect when DATABASE_URL is unset)
 data/auth.db*

@@ -26,6 +26,17 @@ interface WordStudyEntry {
   tyndale?: TyndaleVariant[];
 }
 
+interface DomainSense {
+  /** Louw-Nida entry code (Greek) or SDBH hierarchical code (Hebrew). */
+  entry?: string;
+  code?: string;
+  domain: string;
+  subdomain?: string;
+  sense: string;
+  glosses: string;
+  refs: number;
+}
+
 interface WordStudyPayload {
   id: string;
   entry: WordStudyEntry;
@@ -48,6 +59,10 @@ interface WordStudyPayload {
     distinct: number;
     renderings: { id: string; lemma?: string; xlit?: string; gloss?: string; count: number }[];
   } | null;
+  domains: {
+    system: "louw-nida" | "sdbh";
+    senses: DomainSense[];
+  } | null;
 }
 
 type LoadState =
@@ -58,13 +73,18 @@ type LoadState =
 /** The occurrence list shows this many verses; the counts stay complete. */
 const LIST_SHOWN = 24;
 
+/** The domains section shows this many senses; the count stays complete. */
+const SENSES_SHOWN = 10;
+
 /**
  * The Bible Word Study pane: one Strong's number's lexical report, pinned
- * at open time. The lexicon entry heads it; the translation breakdown and
- * the occurrence counts and book distribution come from the tagged KJV,
- * the form breakdown from the morphologically tagged originals, and the
- * topics from the verse-to-topic index. Every occurrence opens its passage
- * in the reader; every rendering opens a search for that English word.
+ * at open time. The lexicon entry heads it; the semantic-domain senses come
+ * from the UBS dictionaries (Louw-Nida for Greek, SDBH for Hebrew), the
+ * translation breakdown and the occurrence counts and book distribution
+ * come from the tagged KJV, the form breakdown from the morphologically
+ * tagged originals, and the topics from the verse-to-topic index. Every
+ * occurrence opens its passage in the reader; every rendering opens a
+ * search for that English word.
  */
 export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
   const { dispatch } = useWorkspaceDispatch();
@@ -194,9 +214,55 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
         )}
       </GuideSection>
 
-      {s.translation.renderings.length > 0 && (
+      {s.domains && s.domains.senses.length > 0 && (
         <GuideSection
           stagger={2}
+          title="Semantic Domains"
+          hint={
+            s.domains.system === "louw-nida"
+              ? `${s.domains.senses.length.toLocaleString()} ${
+                  s.domains.senses.length === 1 ? "sense" : "senses"
+                } · Louw-Nida, UBS Dictionary of the Greek NT (CC BY-SA 4.0)`
+              : `${s.domains.senses.length.toLocaleString()} ${
+                  s.domains.senses.length === 1 ? "sense" : "senses"
+                } · SDBH, UBS Dictionary of Biblical Hebrew (CC BY-SA 4.0)`
+          }
+        >
+          <ul className="space-y-2.5">
+            {s.domains.senses.slice(0, SENSES_SHOWN).map((d, i) => (
+              <li key={i} className="text-xs">
+                <p className="flex flex-wrap items-baseline gap-x-2">
+                  {d.entry && (
+                    <span className="shrink-0 font-semibold text-sapphire">{d.entry}</span>
+                  )}
+                  <span className="small-caps font-medium text-amber">
+                    {d.domain}
+                    {d.subdomain ? ` · ${d.subdomain}` : ""}
+                  </span>
+                  <span className="text-[0.68rem] text-muted">
+                    {d.refs.toLocaleString()} {d.refs === 1 ? "occurrence" : "occurrences"}
+                  </span>
+                </p>
+                <p className="mt-0.5 leading-relaxed text-muted">{d.sense}</p>
+                {d.glosses && (
+                  <p className="mt-0.5 text-[0.72rem]">
+                    <span className="font-semibold">Glosses:</span> {d.glosses}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          {s.domains.senses.length > SENSES_SHOWN && (
+            <p className="mt-2 text-[0.68rem] text-muted">
+              First {SENSES_SHOWN} of {s.domains.senses.length.toLocaleString()} attested senses.
+            </p>
+          )}
+        </GuideSection>
+      )}
+
+      {s.translation.renderings.length > 0 && (
+        <GuideSection
+          stagger={3}
           title="Translation"
           hint={`${s.translation.distinct.toLocaleString()} KJV ${
             s.translation.distinct === 1 ? "rendering" : "renderings"
@@ -238,7 +304,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
 
       {s.septuagint && s.septuagint.renderings.length > 0 && (
         <GuideSection
-          stagger={3}
+          stagger={4}
           title="Septuagint Translation"
           hint={`${s.septuagint.distinct.toLocaleString()} Greek ${
             s.septuagint.distinct === 1 ? "equivalent" : "equivalents"
@@ -275,7 +341,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
 
       {s.occurrences.total > 0 && (
         <GuideSection
-          stagger={4}
+          stagger={5}
           title="Occurrences"
           hint={`${s.occurrences.total.toLocaleString()} in ${s.occurrences.books} ${
             s.occurrences.books === 1 ? "book" : "books"
@@ -324,7 +390,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.occurrences.total > 0 && (
-        <GuideSection stagger={5} title="Chart" hint="frequency graph by book">
+        <GuideSection stagger={6} title="Chart" hint="frequency graph by book">
           <SearchChart
             series={s.occurrences.byBook.map((b) => ({ key: b.slug, label: b.name, value: b.count }))}
             kind={chartKind}
@@ -338,7 +404,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.forms.length > 0 && (
-        <GuideSection stagger={6} title="Forms" hint="parsings across the tagged originals">
+        <GuideSection stagger={7} title="Forms" hint="parsings across the tagged originals">
           <ul className="space-y-1">
             {s.forms.map((f) => (
               <li key={f.parsing} className="flex items-baseline gap-2 text-xs">
@@ -353,7 +419,7 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       {s.topics.length > 0 && (
-        <GuideSection stagger={7} title="Topics" hint="cited where this word appears">
+        <GuideSection stagger={8} title="Topics" hint="cited where this word appears">
           <ul className="space-y-1.5">
             {s.topics.map((t) => (
               <li key={`${t.work}:${t.id}`}>
@@ -378,12 +444,15 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
       )}
 
       <p
-        style={{ "--i": 8 } as CSSProperties}
+        style={{ "--i": 9 } as CSSProperties}
         className="border-t border-rule pt-2 text-[0.68rem] text-muted"
       >
         Strong's dictionary (public domain). Occurrences and renderings from
         the tagged KJV; forms from TAHOT and TAGNT; Septuagint equivalents
-        from the MACULA Hebrew Linguistic Datasets (CC BY 4.0).
+        from the MACULA Hebrew Linguistic Datasets (CC BY 4.0). Semantic
+        domains from the UBS Dictionary of the Greek New Testament and the
+        UBS Dictionary of Biblical Hebrew, United Bible Societies
+        (CC BY-SA 4.0).
       </p>
     </div>
   );

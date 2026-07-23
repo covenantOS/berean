@@ -1,0 +1,76 @@
+{
+  "id": "domains",
+  "title": "Semantic domain senses per lemma (UBS dictionaries)",
+  "attribution": "UBS Dictionary of the Greek New Testament and UBS Dictionary of Biblical Hebrew, © United Bible Societies 2023 (CC BY-SA 4.0), available at https://github.com/ubsicap/ubs-open-license.",
+  "retrieved": "2026-07-23",
+  "builtBy": "scripts/build-domains.mjs",
+  "greek": {
+    "dictionaryEntries": 5507,
+    "coded": 5218,
+    "uncoded": 289,
+    "ids": 5193,
+    "senses": 8803,
+    "collisionIds": 5,
+    "collisionResolved": 4,
+    "unresolvedIds": [],
+    "unresolvedCount": 0
+  },
+  "hebrew": {
+    "dictionaryEntries": 7932,
+    "coded": 7358,
+    "uncoded": 574,
+    "ids": 8239,
+    "senses": 19532,
+    "collisionIds": 63,
+    "collisionResolved": 56,
+    "unresolvedIds": [],
+    "unresolvedCount": 0
+  },
+  "checks": [
+    {
+      "label": "G3056 logos carries LN 33.98 in Communication",
+      "ok": true,
+      "detail": "[{\"entry\":\"33.98\",\"domain\":\"Communication\",\"subdomain\":\"Speak, Talk\",\"sense\":\"that which has been stated or said, with primary focus upon the content of the communication\",\"glosses\":\"word, saying, message, statement, question\",\"refs\":201},{\"entry\":\"33.99\",\"domain\":\"Communication\",\"subdomain\":\"Speak, Talk\",\"sense\":\"the act of speaking\",\"glosses\":\"speaking, speech\",\"refs\":29}]"
+    },
+    {
+      "label": "G2316 theos carries LN 12.1 Supernatural Beings",
+      "ok": true,
+      "detail": "[\"12.1\",\"12.22\",\"12.25\",\"12.15\"]"
+    },
+    {
+      "label": "G26 agape carries LN 25.43 Attitudes and Emotions",
+      "ok": true,
+      "detail": "[\"25.43\",\"23.28\"]"
+    },
+    {
+      "label": "H430 elohim carries a Deities sense",
+      "ok": true,
+      "detail": "[\"Deities\",\"Deities\"]"
+    },
+    {
+      "label": "H7225 reshith is furnished",
+      "ok": true,
+      "detail": "6"
+    },
+    {
+      "label": "H2 aramaic ab mapped through the A prefix",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "label": "Greek ids cover the furnished lexicon's core vocabulary",
+      "ok": true,
+      "detail": "5193"
+    },
+    {
+      "label": "Hebrew ids cover the furnished lexicon's core vocabulary",
+      "ok": true,
+      "detail": "8239"
+    },
+    {
+      "label": "No sense text keeps the source's editorial markup",
+      "ok": true,
+      "detail": "brace scan"
+    }
+  ]
+}

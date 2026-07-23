@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getBook } from "@/lib/canon";
 import { decodeMorph, getOriginalChapter, STOP_STRONGS } from "@/lib/tagged";
 import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
+import { getConstructions } from "@/lib/constructions";
 
 /**
  * The Exegetical Guide: one chapter's original-language report, composed
@@ -9,9 +10,10 @@ import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
  * Word carries the surface text, transliteration, lemma, Strong's number,
  * decoded parsing, and gloss of every token; Important Words ranks the
  * chapter's significant Strong's ids; Lemma in Passage gathers the repeated
- * lemmas with their verses; Textual Variants lists the words the TAGNT
- * edition flags mark absent from one or more editions (New Testament only,
- * the only place edition data ships). A passage without the apparatus
+ * lemmas with their verses; Constructions lists the clause functions of the
+ * MACULA syntax trees verse by verse; Textual Variants lists the words the
+ * TAGNT edition flags mark absent from one or more editions (New Testament
+ * only, the only place edition data ships). A passage without the apparatus
  * answers 404, never a stub section.
  */
 
@@ -136,5 +138,9 @@ export async function GET(req: NextRequest) {
     importantWords,
     lemmas,
     variants,
+    // (e) Constructions: the MACULA syntax trees' clause records per verse,
+    // keyed by verse number. Absent verses have no clauses beginning in
+    // them; a book without the trees answers null and the section stays out.
+    constructions: await getConstructions(book.slug, chapter),
   });
 }

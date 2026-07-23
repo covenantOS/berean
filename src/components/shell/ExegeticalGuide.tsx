@@ -51,6 +51,18 @@ interface VariantRow {
   words: { t: string; absent: string[] }[];
 }
 
+interface ConstructionPart {
+  role: string;
+  label: string;
+  class: string;
+  text: string;
+}
+
+interface ConstructionClause {
+  rule: string;
+  parts: ConstructionPart[];
+}
+
 interface ExegeticalPayload {
   book: string;
   bookName: string;
@@ -60,6 +72,7 @@ interface ExegeticalPayload {
   importantWords: ImportantWord[];
   lemmas: LemmaRow[];
   variants: VariantRow[];
+  constructions: Record<string, ConstructionClause[]> | null;
 }
 
 type LoadState =
@@ -71,8 +84,9 @@ type LoadState =
  * The Exegetical Guide pane: one chapter's original-language report, pinned
  * at open time. Word by Word renders every tagged token with its parsing;
  * each word opens its word study, each Strong's id opens the lexicon, and
- * each verse chip opens the passage. Important Words, Lemma in Passage, and
- * the edition-flag Textual Variants ride the same payload. Hovering a word
+ * each verse chip opens the passage. Important Words, Lemma in Passage, the
+ * MACULA syntax-tree Constructions, and the edition-flag Textual Variants
+ * ride the same payload. Hovering a word
  * card or a lemma reports its base Strong's id on the lemma hover bus, so
  * every occurrence lights up in the open readers. Sections with
  * nothing to say stay out of the report.
@@ -388,8 +402,48 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
         </GuideSection>
       )}
 
+      {r.constructions && Object.keys(r.constructions).length > 0 && (
+        <GuideSection
+          stagger={4}
+          title="Constructions"
+          hint="clause functions from the MACULA syntax trees (CC BY 4.0)"
+          defaultOpen={false}
+        >
+          <ul className="space-y-3">
+            {Object.entries(r.constructions)
+              .sort((a, b) => Number(a[0]) - Number(b[0]))
+              .map(([verse, clauses]) => (
+                <li key={verse} className="flex items-start gap-2">
+                  <button
+                    type="button"
+                    title={`Open ${reference}:${verse} in the reader`}
+                    onClick={() => dispatch({ type: "openRef", book: r.book, chapter: r.chapter })}
+                    className="mt-0.5 w-8 shrink-0 text-left text-[0.68rem] font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  >
+                    v{verse}
+                  </button>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    {clauses.map((c, i) => (
+                      <p key={i} className="text-xs leading-relaxed">
+                        <span className="small-caps mr-1.5 font-medium text-amber">{c.rule}</span>
+                        {c.parts.map((p, j) => (
+                          <span key={j}>
+                            {j > 0 && <span className="text-muted"> · </span>}
+                            <span className="font-semibold">{p.label}</span>{" "}
+                            <span className={langClass}>{p.text}</span>
+                          </span>
+                        ))}
+                      </p>
+                    ))}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </GuideSection>
+      )}
+
       {r.variants.length > 0 && (
-        <GuideSection stagger={4} title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
+        <GuideSection stagger={5} title="Textual Variants" hint="TAGNT edition flags" defaultOpen={false}>
           <ul className="space-y-1.5">
             {r.variants.map((v) => (
               <li key={v.verse} className="flex items-baseline gap-2">
@@ -417,12 +471,13 @@ export default function ExegeticalGuide({ book, chapter }: { book: string; chapt
       )}
 
       <p
-        style={{ "--i": 5 } as CSSProperties}
+        style={{ "--i": 6 } as CSSProperties}
         className="border-t border-rule pt-2 text-[0.68rem] text-muted"
       >
         {source}: data created by www.STEPBible.org based on work at Tyndale
         House Cambridge (CC BY 4.0). Parsings decoded from the shipped
-        morphology codes.
+        morphology codes. Constructions from the MACULA syntax trees, Clear
+        Bible / Biblica (CC BY 4.0).
       </p>
     </div>
   );

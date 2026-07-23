@@ -132,7 +132,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
   },
   {
     id: "macula-hebrew",
-    title: "MACULA Hebrew Linguistic Datasets (Septuagint Hebrew-Greek alignment)",
+    title: "MACULA Hebrew Linguistic Datasets (Septuagint alignment and WLC syntax trees)",
     kind: "dataset",
     rightsHolder: "Biblica, Inc. (Clear Bible)",
     license: "CC BY 4.0",
@@ -141,7 +141,35 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-23",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: MACULA Hebrew Linguistic Datasets, available at https://github.com/Clear-Bible/macula-hebrew/ (CC BY 4.0). The word-level alignment behind the Word Study guide's Septuagint Translation section: each Hebrew morpheme carries its Hebrew Strong's id and the Greek equivalent the LXX translators used, with that Greek word's Strong's id. Only the aggregate ships: Hebrew Strong's id to Greek Strong's ids with counts, stored as data/lxx-strongs/hebrew-greek.json and built by scripts/build-lxx-strongs.mjs; both sides use standard Strong's numbering, so no cross-system mapping is built. MACULA's private prefix/suffix numbers (which collide with real Strong's entries) are excluded by an empirical rule recorded in data/lxx-strongs/_meta.json. Chosen after every Strong's-tagged LXX text traced back to restricted sources (CCAT/CATSS user agreement, CrossWire LXX and ABPGrk modules, eliranwong's CC BY-NC-SA and GPL repos); the full audit is in data/_sources/macula-hebrew/PROVENANCE.md. The raw annotations file is kept out of git; the repository's LICENSE.md is kept as the license evidence.",
+      "Attribution: MACULA Hebrew Linguistic Datasets, available at https://github.com/Clear-Bible/macula-hebrew/ (CC BY 4.0). Two layers ship. The word-level alignment behind the Word Study guide's Septuagint Translation section: each Hebrew morpheme carries its Hebrew Strong's id and the Greek equivalent the LXX translators used, with that Greek word's Strong's id, aggregated as data/lxx-strongs/hebrew-greek.json by scripts/build-lxx-strongs.mjs; both sides use standard Strong's numbering, so no cross-system mapping is built, and MACULA's private prefix/suffix numbers (which collide with real Strong's entries) are excluded by an empirical rule recorded in data/lxx-strongs/_meta.json. The Clear Bible syntax trees (Westminster trees, Groves Center CC BY 4.0, combined with OpenScriptures morphology CC BY 4.0) behind the Exegetical Guide's Constructions section: clause-level grammatical functions per verse, stored per-book under data/constructions and built by scripts/build-constructions.mjs from WLC/lowfat, with Hebrew verse numbering mapped onto TAHOT English numbering through the alt table. The word-level SDBH attributes (@sdbh, @lexdomain) are UBS data stated as used with permission and are excluded; Hebrew semantic domains ship from the UBS open-license dictionary (rights id ubs-dictionaries). Chosen after every Strong's-tagged LXX text traced back to restricted sources (CCAT/CATSS user agreement, CrossWire LXX and ABPGrk modules, eliranwong's CC BY-NC-SA and GPL repos); the full audit is in data/_sources/macula-hebrew/PROVENANCE.md. The raw annotations and lowfat files are kept out of git; the repository's LICENSE.md is kept as the license evidence.",
+    status: "shipped",
+  },
+  {
+    id: "macula-greek",
+    title: "MACULA Greek Linguistic Datasets (Nestle 1904 syntax trees)",
+    kind: "dataset",
+    rightsHolder: "Biblica, Inc. (Clear Bible)",
+    license: "CC BY 4.0",
+    source:
+      "https://github.com/Clear-Bible/macula-greek (Nestle1904/lowfat/*.xml)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Attribution: MACULA Greek Linguistic Datasets, available at https://github.com/Clear-Bible/macula-greek/ (CC BY 4.0). The Clear Bible syntax trees over the public-domain Nestle 1904 text: clause-level grammatical constructions (Subject, Verb, Copula, Object, Second Object, Indirect Object, Predicate, Adverbial, plus the trees' auxiliary attachment role) behind the Exegetical Guide's Constructions section. Only the tree structure ships: per-verse clause records with their constituent functions and surface text, stored per-book under data/constructions and built by scripts/build-constructions.mjs. The MARBLE word-sense attributes the same files carry (@ln, @domain) are UBS data stated as used with permission, with no downstream grant, so they are excluded; semantic domains ship from the UBS open-license dictionaries instead (rights id ubs-dictionaries). The repository's LICENSE.md is kept as the license evidence; the raw XML is kept out of git; provenance in data/_sources/macula-greek/PROVENANCE.md.",
+    status: "shipped",
+  },
+  {
+    id: "ubs-dictionaries",
+    title: "UBS Dictionary of the Greek New Testament and UBS Dictionary of Biblical Hebrew (semantic domains)",
+    kind: "lexicon",
+    rightsHolder: "United Bible Societies",
+    license: "CC BY-SA 4.0",
+    source:
+      "https://github.com/ubsicap/ubs-open-license (dictionaries/greek/JSON/UBSGreekNTDic-v1.1-en.JSON v1.1; dictionaries/hebrew/JSON/UBSHebrewDic-v0.9.2-en.JSON v0.9.2)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Attribution: UBS Dictionary of the Greek New Testament and UBS Dictionary of Biblical Hebrew, © United Bible Societies 2023 (CC BY-SA 4.0), available at https://github.com/ubsicap/ubs-open-license. The Greek dictionary adapts Louw and Nida's Greek-English Lexicon of the New Testament Based on Semantic Domains and carries each lemma's Louw-Nida entry codes, domain and subdomain names, definitions, glosses, and attestation counts; the Hebrew dictionary carries the SDBH domain taxonomy, a different system, named as SDBH wherever presented. The lemma-keyed aggregates ship as data/domains/greek.json and hebrew.json behind the Word Study guide's Semantic Domains section, built by scripts/build-domains.mjs; as ShareAlike adaptations the aggregates carry the same CC BY-SA 4.0 license and attribution. Strong's id collisions resolve against the shipped Strong's lexicons by lemma skeleton, recorded in data/domains/_meta.json. Chosen over the same assignments carried in the MACULA trees as MARBLE attributes, which state only used with permission and grant no downstream license. The repository's dictionaries LICENSE.md is kept as the license evidence; the raw JSON is kept out of git; provenance in data/_sources/ubs-dictionaries/PROVENANCE.md.",
     status: "shipped",
   },
   {

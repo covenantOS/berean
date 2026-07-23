@@ -5,14 +5,16 @@ import { getLexiconEntry, normalizeStrongs } from "@/lib/lexicon";
 import { countRenderings, findOccurrences } from "@/lib/tagged";
 import { searchOriginal } from "@/lib/morphsearch";
 import { getSeptuagintEquivalents } from "@/lib/lxx-strongs";
+import { getGreekDomains, getHebrewDomains } from "@/lib/domains";
 import { getTopic } from "@/lib/topics";
 
 /**
  * The Bible Word Study: one Strong's number's lexical report. The lexicon
- * entry, the canonical occurrence counts and book distribution from the
- * tagged KJV, the distinct English renderings the tagged KJV gives the
- * lemma, a morphology breakdown of the original-language occurrences,
- * and the topics that cite verses where the word appears.
+ * entry, the semantic-domain senses from the UBS dictionaries, the canonical
+ * occurrence counts and book distribution from the tagged KJV, the distinct
+ * English renderings the tagged KJV gives the lemma, a morphology breakdown
+ * of the original-language occurrences, and the topics that cite verses
+ * where the word appears.
  *
  * The morphology breakdown reuses searchOriginal with the Strong's id as the
  * query and aggregates the decoded parsings; the high limit keeps the
@@ -155,6 +157,21 @@ export async function GET(req: NextRequest) {
     )
   ).filter((t): t is { work: string; id: string; title: string; verses: number } => t !== null);
 
+  // Semantic Domains: the lemma's attested senses with their domain
+  // assignments from the UBS dictionaries (CC BY-SA 4.0). Greek senses carry
+  // the Louw-Nida entry codes and domain names; Hebrew senses carry the
+  // SDBH domain names (a different taxonomy, named honestly to the pane).
+  const domainSenses = id.startsWith("H")
+    ? await getHebrewDomains(id)
+    : await getGreekDomains(id);
+  const domains =
+    domainSenses && domainSenses.length > 0
+      ? {
+          system: (id.startsWith("H") ? "sdbh" : "louw-nida") as "sdbh" | "louw-nida",
+          senses: domainSenses,
+        }
+      : null;
+
   return NextResponse.json({
     id: hit.id,
     entry: hit.entry,
@@ -173,5 +190,6 @@ export async function GET(req: NextRequest) {
       renderings: renderings.slice(0, RENDERING_CAP),
     },
     septuagint,
+    domains,
   });
 }

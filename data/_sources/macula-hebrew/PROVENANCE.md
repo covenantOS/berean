@@ -53,3 +53,30 @@ tokens single-consonant) and prints and records the excluded list in
   Brenton text already ships as `lxx-greek-brenton`).
 - SalitaNgDiyos/LXX-Strongs-and-RMA-Codes: the CCAT `lxxmorph-rc` data with
   no license file.
+
+## WLC lowfat syntax trees (constructions source, added 2026-07-23)
+
+Also retrieved from the same repository: the `WLC/lowfat/*.xml` chapter
+files (about 417 MB, kept out of git), the Clear Bible syntax trees over the
+Westminster Leningrad Codex. The same LICENSE.md covers them: the licensed
+datasets include "Syntax trees that combine the Westminster trees with
+OpenScriptures Hebrew Bible morphology", and the third-party list licenses
+the Westminster Hebrew Syntax (Groves Center) and the OpenScriptures Hebrew
+Bible each under CC BY 4.0.
+
+Only the tree structure ships: `data/constructions/<Book>.json` records, per
+chapter and verse, every clause carrying at least one constituent with a
+clause-level function role, each part labeled from the MACULA Hebrew
+Treebank manual's documented set (ADV, O, O2, OC, P, S, V, PP). Built by
+`scripts/build-constructions.mjs`; the Hebrew-numbered WLC references map
+onto the shipped TAHOT English numbering through the TAHOT `alt` table.
+The word-level SDBH attributes the same files carry (`@sdbh`, `@lexdomain`,
+`@coredomain`, `@contextualdomain`) trace to the Semantic Dictionary of
+Biblical Hebrew, which the LICENSE.md's third-party list gives as "Used
+with permission" with no downstream grant; they are excluded from the build,
+and Hebrew semantic domains ship from UBS's own CC BY-SA 4.0 dictionary
+instead (see `data/_sources/ubs-dictionaries/PROVENANCE.md`). To rebuild:
+
+    git clone --depth 1 --filter=blob:none --sparse https://github.com/Clear-Bible/macula-hebrew.git
+    git sparse-checkout set WLC/lowfat
+    node scripts/build-constructions.mjs
