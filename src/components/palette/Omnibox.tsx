@@ -67,11 +67,12 @@
  * and are shown when the input is empty.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { dailyRef } from "@/lib/daily-verse";
 import { guides } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 import { layouts } from "@/components/shell/layouts";
 import { LAYOUT_PRESETS } from "@/components/shell/workspace-state";
 import { parseInput, type ParsedInput } from "./parse";
@@ -228,8 +229,17 @@ export default function Omnibox() {
   /** The user's custom guides, listed as guide rows on a parsed reference. */
   const customGuides = useCollection(guides);
 
+  /* A mirror of `open` so the toggle chime knows which way it is going. */
+  const isOpenRef = useRef(open);
+  useEffect(() => {
+    isOpenRef.current = open;
+  }, [open]);
+
   const closePalette = useCallback(() => setOpen(false), []);
-  const togglePalette = useCallback(() => setOpen((o) => !o), []);
+  const togglePalette = useCallback(() => {
+    playSound(isOpenRef.current ? "close" : "open");
+    setOpen((o) => !o);
+  }, []);
 
   /* Global open/close: Ctrl/Cmd+K and the shell's toggle event. */
   useEffect(() => {
@@ -261,7 +271,10 @@ export default function Omnibox() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closePalette();
+      if (e.key === "Escape") {
+        playSound("close");
+        closePalette();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -304,24 +317,30 @@ export default function Omnibox() {
   }
 
   function openRef(detail: OpenRefDetail, label: string) {
+    playSound("navigate");
     pushRecent({ kind: "ref", label, detail });
     emit("berean:open-ref", detail);
     closePalette();
   }
 
   function openStrongs(id: string) {
+    playSound("navigate");
     pushRecent({ kind: "lexicon", label: id, detail: { id } });
     emit("berean:open-lexicon", { id });
     closePalette();
   }
 
   function runSearch(q: string) {
+    playSound("navigate");
     pushRecent({ kind: "search", label: q, detail: { q } });
     emit("berean:search", { q });
     closePalette();
   }
 
   function runCommand(id: string) {
+    /* A preset completes a reshaping; the daily verse chimes inside openRef. */
+    if (id.startsWith("preset-")) playSound("complete");
+    else if (id !== "daily") playSound("navigate");
     if (id.startsWith("preset-")) {
       emit("berean:apply-preset", { preset: id.slice("preset-".length) });
     } else if (id === "guide") {
@@ -347,6 +366,7 @@ export default function Omnibox() {
   }
 
   function runRecent(r: Recent) {
+    playSound("navigate");
     if (r.kind === "ref") emit("berean:open-ref", r.detail);
     else if (r.kind === "lexicon") emit("berean:open-lexicon", r.detail);
     else if (r.kind === "search") emit("berean:search", r.detail);
@@ -392,6 +412,7 @@ export default function Omnibox() {
         label: l.name,
         meta: "Saved layout",
         run: () => {
+          playSound("complete");
           emit("berean:restore-layout", { id: l.id });
           closePalette();
         },
@@ -417,6 +438,7 @@ export default function Omnibox() {
         label: `Passage guide: ${parsed.label}`,
         sub: "Commentaries, cross-references, people, topics",
         run: () => {
+          playSound("navigate");
           emit("berean:open-guide", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -427,6 +449,7 @@ export default function Omnibox() {
         label: `Exegetical guide: ${parsed.label}`,
         sub: "Word by word, important words, lemmas, variants",
         run: () => {
+          playSound("navigate");
           emit("berean:open-exegetical", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -437,6 +460,7 @@ export default function Omnibox() {
         label: `Sermon starter: ${parsed.label}`,
         sub: "Themes, key passages, and the pulpit handoff",
         run: () => {
+          playSound("navigate");
           emit("berean:open-sermonstarter", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -448,6 +472,7 @@ export default function Omnibox() {
           label: `${g.name}: ${parsed.label}`,
           sub: "Your custom guide",
           run: () => {
+            playSound("navigate");
             emit("berean:open-customguide", {
               guideId: g.id,
               name: g.name,
@@ -464,6 +489,7 @@ export default function Omnibox() {
         label: `Compare texts: ${parsed.label}`,
         sub: "Every translation against a base, word by word",
         run: () => {
+          playSound("navigate");
           emit("berean:open-textcompare", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -474,6 +500,7 @@ export default function Omnibox() {
         label: `Multiview: ${parsed.label}`,
         sub: "Translations side by side, verses aligned",
         run: () => {
+          playSound("navigate");
           emit("berean:open-multiview", { book: parsed.book, chapter: parsed.chapter });
           closePalette();
         },
@@ -484,6 +511,7 @@ export default function Omnibox() {
         label: `Concordance: ${parsed.bookName}`,
         sub: "Every word and lemma in the book, counted, with its verses",
         run: () => {
+          playSound("navigate");
           emit("berean:open-concordance", { book: parsed.book });
           closePalette();
         },
@@ -503,6 +531,7 @@ export default function Omnibox() {
         label: `Word study: ${parsed.id}`,
         sub: "Lexicon, occurrences, forms, topics",
         run: () => {
+          playSound("navigate");
           emit("berean:open-wordstudy", { id: parsed.id });
           closePalette();
         },
@@ -529,6 +558,7 @@ export default function Omnibox() {
           label: l.name,
           meta: "Saved layout",
           run: () => {
+            playSound("complete");
             emit("berean:restore-layout", { id: l.id });
             closePalette();
           },
@@ -546,6 +576,7 @@ export default function Omnibox() {
             e.brief ? ` · ${e.brief}` : ""
           } · ${e.refs.toLocaleString()} ${e.refs === 1 ? "reference" : "references"}`,
           run: () => {
+            playSound("navigate");
             pushRecent({ kind: "entity", label: e.name, detail: { id: e.id, name: e.name } });
             emit("berean:open-factbook", { id: e.id, name: e.name });
             closePalette();
@@ -560,6 +591,7 @@ export default function Omnibox() {
           sub: `${t.work === "naves" ? "Nave's" : "Torrey's"} · ${t.refs.toLocaleString()} ${
             t.refs === 1 ? "reference" : "references"}`,
           run: () => {
+            playSound("navigate");
             const href = `/workspace?tab=topicguide:${t.work}:${t.id}`;
             pushRecent({ kind: "topic", label: t.title, href });
             emit("berean:open-topicguide", { work: t.work, id: t.id, title: t.title });
@@ -656,9 +688,12 @@ export default function Omnibox() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-ink/40 px-4 pt-[14vh]"
+      className="fx-fade fixed inset-0 z-50 flex items-start justify-center bg-ink/40 px-4 pt-[14vh]"
       onMouseDown={(e) => {
-        if (e.target === e.currentTarget) closePalette();
+        if (e.target === e.currentTarget) {
+          playSound("close");
+          closePalette();
+        }
       }}
       role="presentation"
     >
@@ -666,7 +701,8 @@ export default function Omnibox() {
         role="dialog"
         aria-modal="true"
         aria-label="Command omnibox"
-        className="w-full max-w-xl rounded-[4px] border border-rule bg-surface shadow-lg"
+        className="glass fx-scale w-full max-w-xl rounded-[4px] shadow-lg"
+        style={{ "--fx-origin": "50% 0" } as CSSProperties}
       >
         <div className="flex items-center gap-3 border-b border-rule px-4">
           <input
@@ -684,7 +720,7 @@ export default function Omnibox() {
 
         <div className="max-h-[50vh] overflow-y-auto px-2 py-2" role="listbox" aria-label="Results">
           {emptyResult ? (
-            <div className="px-4 py-10 text-center">
+            <div className="fx-fade px-4 py-10 text-center">
               <p className="font-editorial text-lg">Nothing answers to “{parsed.q}”.</p>
               <p className="mt-2 text-sm text-muted">
                 Try a reference such as jn 3:16, a Strong's number such as G25, or another word.
@@ -707,8 +743,8 @@ export default function Omnibox() {
                       ref={isActive ? (el) => el?.scrollIntoView({ block: "nearest" }) : undefined}
                       onMouseEnter={() => setActive(index)}
                       onClick={item.run}
-                      className={`flex w-full items-baseline gap-3 rounded-[3px] px-3 py-2 text-left text-sm ${
-                        isActive ? "bg-amber/15" : ""
+                      className={`flex w-full items-baseline gap-3 rounded-[3px] px-3 py-2 text-left text-sm transition-colors ${
+                        isActive ? "bg-amber/15 shadow-[inset_2px_0_0_var(--stained-amber)]" : ""
                       }`}
                     >
                       <span className="min-w-0 flex-1">

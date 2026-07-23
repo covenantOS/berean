@@ -13,6 +13,7 @@ import {
 } from "@/lib/highlights";
 import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
+import { playSound } from "@/lib/sound";
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
 import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
@@ -39,10 +40,13 @@ import type { WordSelection } from "./workspace-state";
  */
 
 const FRAME =
-  "fixed z-50 border border-rule bg-surface shadow-lg font-[family-name:var(--font-interface)]";
+  "fixed z-50 glass fx-scale shadow-lg font-[family-name:var(--font-interface)]";
 const ROW =
-  "flex w-full items-center gap-2 px-3 py-1 text-left text-[0.72rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press flex w-full items-center gap-2 px-3 py-1 text-left text-[0.72rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 const HEAD = "small-caps px-3 pb-1 text-[0.62rem] text-muted";
+
+/** A row names its entrance order in the menu's cascade (globals .fx-stagger). */
+const rowI = (i: number) => ({ "--i": i }) as CSSProperties;
 
 interface FloatingOptions {
   /** Place the menu above the anchor (the selection toolbar) instead of below. */
@@ -57,6 +61,11 @@ function useFloatingMenu(x: number, y: number, onClose: () => void, opts: Floati
   const [pos, setPos] = useState({ left: x, top: y });
   const { above = false, deps = [] } = opts;
 
+  /* Arrival chimes once per mounting; dismissal chimes ride the gestures. */
+  useEffect(() => {
+    playSound("open");
+  }, []);
+
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -70,13 +79,17 @@ function useFloatingMenu(x: number, y: number, onClose: () => void, opts: Floati
   }, [x, y, above, ...deps]);
 
   useEffect(() => {
+    const dismiss = () => {
+      playSound("close");
+      onClose();
+    };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") dismiss();
     };
     const onPointer = (e: PointerEvent) => {
-      if (ref.current && e.target instanceof Node && !ref.current.contains(e.target)) onClose();
+      if (ref.current && e.target instanceof Node && !ref.current.contains(e.target)) dismiss();
     };
-    const onScroll = () => onClose();
+    const onScroll = () => dismiss();
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
     window.addEventListener("scroll", onScroll, true);
@@ -89,7 +102,16 @@ function useFloatingMenu(x: number, y: number, onClose: () => void, opts: Floati
     };
   }, [onClose]);
 
-  return { ref, style: { left: pos.left, top: pos.top } };
+  /* The menu grows from the corner it answers: the click point, or the
+   * selection beneath the toolbar. */
+  return {
+    ref,
+    style: {
+      left: pos.left,
+      top: pos.top,
+      "--fx-origin": above ? "50% 100%" : "0 0",
+    } as CSSProperties,
+  };
 }
 
 /**
@@ -114,7 +136,7 @@ export function StylePalette({
           title={`Highlight ${s.name}`}
           aria-pressed={activeId === s.id}
           onClick={() => onPick(s.id)}
-          className={`flex h-3.5 w-3.5 items-center justify-center border text-[0.62rem] font-bold leading-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+          className={`fx-press flex h-3.5 w-3.5 items-center justify-center border text-[0.62rem] font-bold leading-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
             activeId === s.id ? "border-ink" : "border-rule"
           }`}
           style={styleSwatch(s) as CSSProperties}
@@ -151,6 +173,7 @@ function NoteEditor({
   const save = () => {
     if (!draft.trim()) return;
     saveNote({ id: existing?.id, book, chapter, verse, text: draft.trim(), notebook });
+    playSound("complete");
     onDone();
   };
 
@@ -169,15 +192,18 @@ function NoteEditor({
           type="button"
           onClick={save}
           disabled={!draft.trim()}
-          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Save note
         </button>
         <NotebookPicker value={notebook} onChange={setNotebook} />
         <button
           type="button"
-          onClick={onDone}
-          className="px-2 py-1 text-[0.72rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            playSound("close");
+            onDone();
+          }}
+          className="fx-press px-2 py-1 text-[0.72rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Cancel
         </button>
@@ -271,6 +297,7 @@ export function VerseContextMenu({
 
   const copy = () => {
     void copyPassage([{ number: verse, text }], reference);
+    playSound("complete");
     onClose();
   };
 
@@ -279,12 +306,14 @@ export function VerseContextMenu({
     navigator.clipboard
       ?.writeText(`${window.location.origin}/read/${book}/${chapter}#v${verse}`)
       .catch(() => {});
+    playSound("complete");
     onClose();
   };
 
   /** Files the verse under a folder; "" leaves it unfiled at the top. */
   const bookmark = (folder: string) => {
     addFavorite(book, chapter, verse, folder);
+    playSound("complete");
     onClose();
   };
 
@@ -305,12 +334,14 @@ export function VerseContextMenu({
         items: [{ book, chapter, verse }],
       });
     }
+    playSound("complete");
     onClose();
   };
 
   if (writingNote) {
     return (
       <div
+        key="note"
         ref={ref}
         role="menu"
         aria-label={`${reference} note`}
@@ -331,31 +362,36 @@ export function VerseContextMenu({
 
   return (
     <div
+      key="menu"
       ref={ref}
       role="menu"
       aria-label={`${reference} actions`}
       style={style}
       className={`${FRAME} flex min-w-72`}
     >
-      <div className="min-w-0 flex-1 border-r border-rule py-1">
-        <p className={HEAD}>{reference}</p>
+      <div className="fx-stagger min-w-0 flex-1 border-r border-rule py-1">
+        <p className={HEAD} style={rowI(0)}>{reference}</p>
         {mentions === null ? (
-          <p className="px-3 py-1 text-[0.72rem] text-muted">Reading the verse…</p>
+          <p className="px-3 py-1 text-[0.72rem] text-muted" style={rowI(1)}>
+            Reading the verse…
+          </p>
         ) : mentions.length === 0 ? (
-          <p className="px-3 py-1 text-[0.72rem] text-muted">
+          <p className="px-3 py-1 text-[0.72rem] text-muted" style={rowI(1)}>
             No people or places tagged in this verse.
           </p>
         ) : (
-          mentions.map((m) => (
+          mentions.map((m, i) => (
             <button
               key={m.id}
               type="button"
               title={m.brief || m.type}
+              style={rowI(Math.min(i + 1, 6))}
               onClick={() => {
+                playSound("navigate");
                 dispatch({ type: "openFactbook", entityId: m.id, title: m.name, paneId });
                 onClose();
               }}
-              className="flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.72rem] text-sapphire hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.72rem] text-sapphire hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               <span className="truncate">{m.name}</span>
               <span className="ml-auto pl-3 text-[0.62rem] text-muted">
@@ -365,12 +401,14 @@ export function VerseContextMenu({
           ))
         )}
       </div>
-      <div className="w-36 shrink-0 py-1">
-        <p className={HEAD}>Actions</p>
+      <div className="fx-stagger w-36 shrink-0 py-1">
+        <p className={HEAD} style={rowI(0)}>Actions</p>
         <button
           type="button"
           className={ROW}
+          style={rowI(1)}
           onClick={() => {
+            playSound("navigate");
             dispatch({ type: "openGuide", book, chapter, paneId });
             onClose();
           }}
@@ -381,7 +419,9 @@ export function VerseContextMenu({
           <button
             type="button"
             className={ROW}
+            style={rowI(2)}
             onClick={() => {
+              playSound("navigate");
               dispatch({ type: "openExegetical", book, chapter, paneId });
               onClose();
             }}
@@ -389,183 +429,256 @@ export function VerseContextMenu({
             Exegetical guide
           </button>
         )}
-        {pickingGuide ? (
-          <div className="mt-1 border-t border-rule pt-1">
-            <p className={HEAD}>Custom guide</p>
-            {customGuides.map((g) => (
+        <div style={rowI(3)}>
+          {pickingGuide ? (
+            <div className="fx-stagger mt-1 border-t border-rule pt-1">
+              <p className={HEAD} style={rowI(0)}>Custom guide</p>
+              {customGuides.map((g, i) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  title={`Run ${g.name} on this chapter`}
+                  className={ROW}
+                  style={rowI(i + 1)}
+                  onClick={() => {
+                    playSound("navigate");
+                    dispatch({
+                      type: "openCustomGuide",
+                      guideId: g.id,
+                      name: g.name,
+                      book,
+                      chapter,
+                      paneId,
+                    });
+                    onClose();
+                  }}
+                >
+                  {g.name}
+                  <span className="ml-auto pl-3 text-[0.62rem] text-muted">{g.sections.length}</span>
+                </button>
+              ))}
               <button
-                key={g.id}
                 type="button"
-                title={`Run ${g.name} on this chapter`}
+                title="Compose, rename, and reorder custom guides"
                 className={ROW}
+                style={rowI(customGuides.length + 1)}
                 onClick={() => {
-                  dispatch({
-                    type: "openCustomGuide",
-                    guideId: g.id,
-                    name: g.name,
-                    book,
-                    chapter,
-                    paneId,
-                  });
+                  playSound("navigate");
+                  dispatch({ type: "openGuideEditor", guideId: null, paneId });
                   onClose();
                 }}
               >
-                {g.name}
-                <span className="ml-auto pl-3 text-[0.62rem] text-muted">{g.sections.length}</span>
+                Guide editor
               </button>
-            ))}
+            </div>
+          ) : (
             <button
               type="button"
-              title="Compose, rename, and reorder custom guides"
+              title="Run one of your custom guides on this chapter"
               className={ROW}
               onClick={() => {
-                dispatch({ type: "openGuideEditor", guideId: null, paneId });
-                onClose();
+                playSound("open");
+                setPickingGuide(true);
               }}
             >
-              Guide editor
+              Custom guide
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            title="Run one of your custom guides on this chapter"
-            className={ROW}
-            onClick={() => setPickingGuide(true)}
-          >
-            Custom guide
-          </button>
-        )}
-        <button type="button" className={ROW} onClick={copy}>
+          )}
+        </div>
+        <button type="button" className={ROW} style={rowI(4)} onClick={copy}>
           Copy verse
         </button>
-        <button type="button" className={ROW} onClick={copyLink}>
+        <button type="button" className={ROW} style={rowI(5)} onClick={copyLink}>
           Copy link
         </button>
         <button
           type="button"
           title="Open this verse in the Media studio as a verse card"
           className={ROW}
+          style={rowI(6)}
           onClick={() => {
+            playSound("navigate");
             dispatch({ type: "openMedia", book, chapter, verse, paneId });
             onClose();
           }}
         >
           Verse card
         </button>
-        <button type="button" className={ROW} onClick={() => setWritingNote(true)}>
+        <button
+          type="button"
+          className={ROW}
+          style={rowI(7)}
+          onClick={() => {
+            playSound("open");
+            setWritingNote(true);
+          }}
+        >
           Note{verseNotes.length > 0 ? ` (${verseNotes.length})` : ""}
         </button>
         <button
           type="button"
           title="Take this verse up into memory work"
           className={ROW}
+          style={rowI(8)}
           onClick={() => {
             takeUp(book, chapter, verse, verse);
+            playSound("complete");
             onClose();
           }}
         >
           Memorize
         </button>
-        {pickingFolder ? (
-          <div className="mt-1 border-t border-rule pt-1">
-            <p className={HEAD}>Bookmark in folder</p>
-            {listFolders().map((f) => (
-              <button key={f} type="button" className={ROW} onClick={() => bookmark(f)}>
-                {f}
-              </button>
-            ))}
-            {namingFolder ? (
-              <div className="px-3 py-1">
-                <input
-                  autoFocus
-                  value={folderDraft}
-                  aria-label="New folder name"
-                  placeholder="Folder name"
-                  onChange={(e) => setFolderDraft(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && folderDraft.trim()) bookmark(folderDraft);
-                  }}
-                  className="w-full border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:outline focus:outline-2 focus:outline-sapphire"
-                />
-              </div>
-            ) : (
-              <button type="button" className={ROW} onClick={() => setNamingFolder(true)}>
-                New folder
-              </button>
-            )}
-            <button type="button" className={ROW} onClick={() => bookmark("")}>
-              No folder
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            title="File this verse under a folder in the Read rail"
-            className={ROW}
-            onClick={() => setPickingFolder(true)}
-          >
-            Bookmark
-          </button>
-        )}
-        {pickingList ? (
-          <div className="mt-1 border-t border-rule pt-1">
-            <p className={HEAD}>Add to passage list</p>
-            {passageLists.map((doc) => (
+        <div style={rowI(9)}>
+          {pickingFolder ? (
+            <div className="fx-stagger mt-1 border-t border-rule pt-1">
+              <p className={HEAD} style={rowI(0)}>Bookmark in folder</p>
+              {listFolders().map((f, i) => (
+                <button
+                  key={f}
+                  type="button"
+                  className={ROW}
+                  style={rowI(i + 1)}
+                  onClick={() => bookmark(f)}
+                >
+                  {f}
+                </button>
+              ))}
+              {namingFolder ? (
+                <div className="px-3 py-1" style={rowI(listFolders().length + 1)}>
+                  <input
+                    autoFocus
+                    value={folderDraft}
+                    aria-label="New folder name"
+                    placeholder="Folder name"
+                    onChange={(e) => setFolderDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && folderDraft.trim()) bookmark(folderDraft);
+                    }}
+                    className="w-full border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink placeholder:text-muted focus:outline focus:outline-2 focus:outline-sapphire"
+                  />
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className={ROW}
+                  style={rowI(listFolders().length + 1)}
+                  onClick={() => setNamingFolder(true)}
+                >
+                  New folder
+                </button>
+              )}
               <button
-                key={doc.id}
                 type="button"
                 className={ROW}
-                onClick={() => addToPassageList(doc.id)}
+                style={rowI(listFolders().length + 2)}
+                onClick={() => bookmark("")}
               >
-                {doc.title || "Untitled list"}
-                <span className="ml-auto pl-3 text-[0.62rem] text-muted">{doc.items.length}</span>
+                No folder
               </button>
-            ))}
-            <button type="button" className={ROW} onClick={() => addToPassageList(null)}>
-              New passage list
+            </div>
+          ) : (
+            <button
+              type="button"
+              title="File this verse under a folder in the Read rail"
+              className={ROW}
+              onClick={() => {
+                playSound("open");
+                setPickingFolder(true);
+              }}
+            >
+              Bookmark
             </button>
-          </div>
-        ) : (
-          <button type="button" className={ROW} onClick={() => setPickingList(true)}>
-            Add to passage list
-          </button>
-        )}
-        {pickingClips ? (
-          <ClippingsPicker
-            item={{ text, citation: reference, sourceRef: { book, chapter, verse } }}
-            newTitle={`Clippings from ${bookName}`}
-            heading="Clip verse into"
-            onDone={onClose}
-          />
-        ) : (
-          <button
-            type="button"
-            title="Keep this verse's text and citation in a clippings document"
-            className={ROW}
-            onClick={() => setPickingClips(true)}
-          >
-            Clip verse
-          </button>
-        )}
-        <div className="mt-1 flex items-center gap-1.5 border-t border-rule px-3 pt-1.5">
+          )}
+        </div>
+        <div style={rowI(10)}>
+          {pickingList ? (
+            <div className="fx-stagger mt-1 border-t border-rule pt-1">
+              <p className={HEAD} style={rowI(0)}>Add to passage list</p>
+              {passageLists.map((doc, i) => (
+                <button
+                  key={doc.id}
+                  type="button"
+                  className={ROW}
+                  style={rowI(i + 1)}
+                  onClick={() => addToPassageList(doc.id)}
+                >
+                  {doc.title || "Untitled list"}
+                  <span className="ml-auto pl-3 text-[0.62rem] text-muted">{doc.items.length}</span>
+                </button>
+              ))}
+              <button
+                type="button"
+                className={ROW}
+                style={rowI(passageLists.length + 1)}
+                onClick={() => addToPassageList(null)}
+              >
+                New passage list
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={ROW}
+              onClick={() => {
+                playSound("open");
+                setPickingList(true);
+              }}
+            >
+              Add to passage list
+            </button>
+          )}
+        </div>
+        <div style={rowI(11)}>
+          {pickingClips ? (
+            <div className="fx-rise">
+              <ClippingsPicker
+                item={{ text, citation: reference, sourceRef: { book, chapter, verse } }}
+                newTitle={`Clippings from ${bookName}`}
+                heading="Clip verse into"
+                onDone={() => {
+                  playSound("complete");
+                  onClose();
+                }}
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              title="Keep this verse's text and citation in a clippings document"
+              className={ROW}
+              onClick={() => {
+                playSound("open");
+                setPickingClips(true);
+              }}
+            >
+              Clip verse
+            </button>
+          )}
+        </div>
+        <div
+          className="mt-1 flex items-center gap-1.5 border-t border-rule px-3 pt-1.5"
+          style={rowI(12)}
+        >
           <StylePalette
             onPick={(styleId) => {
+              playSound("complete");
               setHighlight(book, chapter, verse, styleId);
               onClose();
             }}
           />
         </div>
         {verseSets.length > 0 && (
-          <div className="mt-1 border-t border-rule pt-1">
-            {verseSets.map((s) => (
+          <div className="fx-stagger mt-1 border-t border-rule pt-1" style={rowI(13)}>
+            {verseSets.map((s, i) => (
               <button
                 key={s.id}
                 type="button"
                 title={`Remove this verse's mark from ${s.name}; the set stays`}
                 className={ROW}
+                style={rowI(i)}
                 onClick={() => {
                   removeVerseFromSet(s.id, book, chapter, verse);
+                  playSound("complete");
                   onClose();
                 }}
               >
@@ -621,25 +734,27 @@ export function WordContextMenu({
       style={style}
       className={`${FRAME} flex min-w-64`}
     >
-      <div className="min-w-0 flex-1 border-r border-rule py-1">
-        <p className={HEAD}>
+      <div className="fx-stagger min-w-0 flex-1 border-r border-rule py-1">
+        <p className={HEAD} style={rowI(0)}>
           <span className={word.lemma ? (first?.startsWith("H") ? "lang-hebrew" : "lang-greek") : ""}>
             {word.text}
           </span>
           <span className="ml-2 normal-case">{reference}</span>
         </p>
-        {info.map(([label, value]) => (
-          <p key={label} className="px-3 py-0.5 text-[0.72rem] text-muted">
+        {info.map(([label, value], i) => (
+          <p key={label} className="px-3 py-0.5 text-[0.72rem] text-muted" style={rowI(i + 1)}>
             <span className="font-semibold text-ink">{label}:</span> {value}
           </p>
         ))}
-        {word.strongs.map((id) => (
+        {word.strongs.map((id, i) => (
           <button
             key={id}
             type="button"
             title={`Open the lexicon at ${id}`}
             className={`${ROW} text-sapphire`}
+            style={rowI(info.length + i + 1)}
             onClick={() => {
+              playSound("navigate");
               dispatch({ type: "openLexicon", id: id.toUpperCase() });
               onClose();
             }}
@@ -649,13 +764,15 @@ export function WordContextMenu({
           </button>
         ))}
       </div>
-      <div className="w-40 shrink-0 py-1">
-        <p className={HEAD}>Actions</p>
+      <div className="fx-stagger w-40 shrink-0 py-1">
+        <p className={HEAD} style={rowI(0)}>Actions</p>
         {first && (
           <button
             type="button"
             className={ROW}
+            style={rowI(1)}
             onClick={() => {
+              playSound("navigate");
               dispatch({ type: "openWordStudy", strongsId: first, paneId });
               onClose();
             }}
@@ -667,7 +784,9 @@ export function WordContextMenu({
           <button
             type="button"
             className={ROW}
+            style={rowI(2)}
             onClick={() => {
+              playSound("navigate");
               dispatch({ type: "openSearch", q: word.text, paneId });
               onClose();
             }}
@@ -724,6 +843,7 @@ export function SelectionMenu({
 
   const copy = () => {
     void copyPassage([{ number: verse, text }], reference);
+    playSound("complete");
     onClose();
   };
 
@@ -739,6 +859,7 @@ export function SelectionMenu({
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+    playSound("complete");
     onClose();
   };
 
@@ -760,11 +881,12 @@ export function SelectionMenu({
     window.addEventListener("afterprint", done, { once: true });
     window.setTimeout(done, 60_000);
     window.print();
+    playSound("complete");
     onClose();
   };
 
   const TOOL =
-    "px-1.5 py-0.5 text-[0.72rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+    "fx-press px-1.5 py-0.5 text-[0.72rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
   /* The editor drops the toolbar's mousedown guard: the textarea takes
    * focus, and the native selection may collapse; the anchor verse was
@@ -772,6 +894,7 @@ export function SelectionMenu({
   if (writingNote) {
     return (
       <div
+        key="note"
         ref={ref}
         role="menu"
         aria-label="Selection note"
@@ -789,6 +912,7 @@ export function SelectionMenu({
   if (pickingClips) {
     return (
       <div
+        key="clips"
         ref={ref}
         role="menu"
         aria-label="Clip the selection"
@@ -800,7 +924,10 @@ export function SelectionMenu({
           item={{ text, citation: reference, sourceRef: { book, chapter, verse } }}
           newTitle={`Clippings from ${bookName}`}
           heading="Clip the selection into"
-          onDone={onClose}
+          onDone={() => {
+            playSound("complete");
+            onClose();
+          }}
         />
       </div>
     );
@@ -808,46 +935,68 @@ export function SelectionMenu({
 
   return (
     <div
+      key="tools"
       ref={ref}
       role="menu"
       aria-label="Selection actions"
       style={style}
       // A press on the toolbar keeps the text selection it answers.
       onMouseDown={(e) => e.preventDefault()}
-      className={`${FRAME} flex items-center gap-1 px-2 py-1`}
+      className={`${FRAME} fx-stagger flex items-center gap-1 px-2 py-1`}
     >
-      <button type="button" className={TOOL} onClick={copy}>
+      <button type="button" className={TOOL} style={rowI(0)} onClick={copy}>
         Copy
       </button>
-      <button type="button" className={TOOL} onClick={() => setWritingNote(true)}>
+      <button
+        type="button"
+        className={TOOL}
+        style={rowI(1)}
+        onClick={() => {
+          playSound("open");
+          setWritingNote(true);
+        }}
+      >
         Note
       </button>
-      <button type="button" className={TOOL} onClick={() => setPickingClips(true)}>
+      <button
+        type="button"
+        className={TOOL}
+        style={rowI(2)}
+        onClick={() => {
+          playSound("open");
+          setPickingClips(true);
+        }}
+      >
         Clip
       </button>
       <button
         type="button"
         className={TOOL}
+        style={rowI(3)}
         onClick={() => {
+          playSound("navigate");
           dispatch({ type: "openSearch", q: text, paneId });
           onClose();
         }}
       >
         Search
       </button>
-      <button type="button" className={TOOL} onClick={exportCard}>
+      <button type="button" className={TOOL} style={rowI(4)} onClick={exportCard}>
         Export card
       </button>
-      <button type="button" className={TOOL} onClick={printSelection}>
+      <button type="button" className={TOOL} style={rowI(5)} onClick={printSelection}>
         Print
       </button>
-      <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-rule" />
-      <StylePalette
-        onPick={(styleId) => {
-          setHighlight(book, chapter, verse, styleId);
-          onClose();
-        }}
-      />
+      <span aria-hidden="true" className="mx-0.5 h-4 w-px bg-rule" style={rowI(6)} />
+      <span className="flex items-center" style={rowI(7)}>
+        <StylePalette
+          onPick={(styleId) => {
+            playSound("complete");
+            setHighlight(book, chapter, verse, styleId);
+            onClose();
+          }}
+        />
+      </span>
     </div>
   );
 }

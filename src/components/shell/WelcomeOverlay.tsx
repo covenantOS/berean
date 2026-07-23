@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { markOnboarded, seedStarterDocuments } from "@/lib/onboarding";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import { LAYOUT_PRESETS, PREFERRED_TRANSLATION_KEY, type PresetId } from "./workspace-state";
 
@@ -23,6 +24,11 @@ interface ShelfTranslation {
  * re-opens the flow through berean:welcome for a second device owner or a
  * fresh look; seeding skips collections that already hold work, so the
  * choices apply honestly over existing data.
+ *
+ * The room wears the study's own light: the stained-glass wash drifts behind
+ * a glass card under the leaded-window mark, the steps crossfade, and the
+ * task cards cascade in. The bells answer the threshold: opening rises,
+ * backing up falls, and finishing completes.
  */
 export default function WelcomeOverlay() {
   const { firstRun, dispatch } = useWorkspace();
@@ -42,6 +48,7 @@ export default function WelcomeOverlay() {
 
   useEffect(() => {
     if (!open) return;
+    playSound("open");
     setTranslation(window.localStorage.getItem(PREFERRED_TRANSLATION_KEY) ?? "kjv");
     fetch("/api/translations")
       .then((res) => (res.ok ? res.json() : { translations: [] }))
@@ -60,6 +67,7 @@ export default function WelcomeOverlay() {
       if (translation === "kjv") window.localStorage.removeItem(PREFERRED_TRANSLATION_KEY);
       else window.localStorage.setItem(PREFERRED_TRANSLATION_KEY, translation);
     }
+    playSound("complete");
     markOnboarded();
     seedStarterDocuments();
     dispatch({ type: "applyPreset", preset });
@@ -71,12 +79,20 @@ export default function WelcomeOverlay() {
       role="dialog"
       aria-modal="true"
       aria-label="Welcome to Berean"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-paper px-4 text-ink"
+      className="fx-fade fixed inset-0 z-50 flex items-center justify-center bg-paper px-4 text-ink"
     >
-      <div className="w-full max-w-md rounded-[4px] border border-rule bg-surface p-8">
+      {/* The first-run room keeps the study's light (globals .stained-ambient). */}
+      <div className="stained-ambient" aria-hidden="true" />
+      <div className="glass fx-rise w-full max-w-md rounded-[4px] p-8 shadow-lg">
+        <span className="leaded-mark mb-4" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </span>
         <p className="small-caps text-xs font-semibold text-amber">Welcome to Berean</p>
         {step === 1 ? (
-          <>
+          <div key="translation" className="fx-fade">
             <h2 className="font-editorial mt-1 text-xl font-semibold">Choose your translation</h2>
             <p className="mt-1 text-sm text-muted">
               New passages open in this text. Change it anytime in Settings.
@@ -98,32 +114,36 @@ export default function WelcomeOverlay() {
               <button
                 type="button"
                 onClick={() => finish("reading", false)}
-                className="text-sm text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press text-sm text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Open the book and go
               </button>
               <button
                 type="button"
-                onClick={() => setStep(2)}
-                className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+                onClick={() => {
+                  playSound("navigate");
+                  setStep(2);
+                }}
+                className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
               >
                 Continue
               </button>
             </div>
-          </>
+          </div>
         ) : (
-          <>
+          <div key="task" className="fx-fade">
             <h2 className="font-editorial mt-1 text-xl font-semibold">What brings you here?</h2>
             <p className="mt-1 text-sm text-muted">
               Pick a task and the workspace builds its layout around an open passage.
             </p>
-            <div className="mt-4 grid gap-2">
-              {LAYOUT_PRESETS.map((p) => (
+            <div className="fx-stagger mt-4 grid gap-2">
+              {LAYOUT_PRESETS.map((p, i) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => finish(p.id, true)}
-                  className="rounded-[4px] border border-rule bg-paper px-3 py-2 text-left hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  style={{ "--i": i } as CSSProperties}
+                  className="glass glass-hover fx-press rounded-[4px] px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="block text-sm font-medium">{p.name}</span>
                   <span className="block text-xs text-muted">{p.blurb}</span>
@@ -133,14 +153,17 @@ export default function WelcomeOverlay() {
             <div className="mt-6 flex items-center justify-between gap-3">
               <button
                 type="button"
-                onClick={() => setStep(1)}
-                className="text-sm text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                onClick={() => {
+                  playSound("close");
+                  setStep(1);
+                }}
+                className="fx-press text-sm text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Back
               </button>
               <p className="text-xs text-muted">No account, no tour. Your work stays on this device.</p>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

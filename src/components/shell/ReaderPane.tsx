@@ -35,6 +35,7 @@ import {
   type VerseHighlight,
 } from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 import { baseStrongsIds } from "@/lib/strongs";
 import { verseCardSvg } from "@/lib/verseCard";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
@@ -632,7 +633,10 @@ export default function ReaderPane({
 
   const go = (dir: -1 | 1) => {
     const next = adjacentChapter(book, chapter, dir);
-    if (next) dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
+    if (next) {
+      playSound("navigate");
+      dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
+    }
   };
 
   /* The recording wins where both exist: a narrator beats synthesis. The
@@ -738,6 +742,7 @@ export default function ReaderPane({
       const next = adjacentChapter(book, chapter, e.key === "ArrowLeft" ? -1 : 1);
       if (!next) return;
       e.preventDefault();
+      playSound("navigate");
       dispatch({ type: "openRef", book: next.book.slug, chapter: next.chapter, paneId });
     };
     window.addEventListener("keydown", onKey);
@@ -752,7 +757,7 @@ export default function ReaderPane({
     const p = pericopeByVerse.get(verse);
     if (!p) return null;
     return (
-      <span className="pericope-heading">
+      <span className="pericope-heading fx-rise">
         {p.heading}
         {p.parallels && <span className="pericope-parallels">({p.parallels})</span>}
       </span>
@@ -1076,8 +1081,12 @@ export default function ReaderPane({
   const verseClass = (v: number) => {
     const mark = markByVerse.get(v);
     const filter = filterByVerse.get(v);
+    /* The motion-safe transition lets the state channels (selection, highlight
+     * tint, filter underline, ref-hover, read-aloud) crossfade instead of
+     * snapping; under reduced motion they settle instantly, as before. */
     return [
       "verse-target",
+      "motion-safe:transition-[background-color,box-shadow]",
       mark ? styleClass(mark) : "",
       filter ? `vf-${filter.color}` : "",
       notesByVerse.has(v) ? "has-note" : "",
@@ -1104,7 +1113,10 @@ export default function ReaderPane({
 
   const stripNode =
     selVerse !== null && ready ? (
+      /* Keyed by the target so the strip rises afresh under each newly
+       * selected verse; the strip's own reset effect covers the rest. */
       <ContextStrip
+        key={`${book}:${chapter}:${selVerse}`}
         paneId={paneId}
         book={book}
         chapter={chapter}
@@ -1319,7 +1331,7 @@ export default function ReaderPane({
   }
 
   const toggleBtn = (on: boolean) =>
-    `border px-1.5 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+    `fx-press border px-1.5 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
       on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
     }`;
 
@@ -1384,7 +1396,7 @@ export default function ReaderPane({
    * chapter arrows keep paging without leaving. */
   if (reading) {
     return (
-      <div className="reader-surface fixed inset-0 z-40 flex flex-col" style={scaleStyle}>
+      <div className="reader-surface fx-fade fixed inset-0 z-40 flex flex-col" style={scaleStyle}>
         <header className="flex h-9 shrink-0 items-center border-b border-rule px-6 font-[family-name:var(--font-interface)]">
           <div className="flex flex-1 items-center gap-0.5">
             <button
@@ -1393,7 +1405,7 @@ export default function ReaderPane({
               aria-label="Previous chapter"
               disabled={!adjacentChapter(book, chapter, -1)}
               onClick={() => go(-1)}
-              className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               ‹
             </button>
@@ -1403,7 +1415,7 @@ export default function ReaderPane({
               aria-label="Next chapter"
               disabled={!adjacentChapter(book, chapter, 1)}
               onClick={() => go(1)}
-              className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               ›
             </button>
@@ -1437,8 +1449,11 @@ export default function ReaderPane({
             title="Back to the passage this pane showed"
             aria-label="Back"
             disabled={!canBack}
-            onClick={() => dispatch({ type: "navigateBack", paneId })}
-            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("navigate");
+              dispatch({ type: "navigateBack", paneId });
+            }}
+            className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ←
           </button>
@@ -1447,8 +1462,11 @@ export default function ReaderPane({
             title="Forward to the passage this pane came back from"
             aria-label="Forward"
             disabled={!canForward}
-            onClick={() => dispatch({ type: "navigateForward", paneId })}
-            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("navigate");
+              dispatch({ type: "navigateForward", paneId });
+            }}
+            className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             →
           </button>
@@ -1458,7 +1476,7 @@ export default function ReaderPane({
             aria-label="Previous chapter"
             disabled={!adjacentChapter(book, chapter, -1)}
             onClick={() => go(-1)}
-            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ‹
           </button>
@@ -1468,7 +1486,7 @@ export default function ReaderPane({
             aria-label="Next chapter"
             disabled={!adjacentChapter(book, chapter, 1)}
             onClick={() => go(1)}
-            className="px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1.5 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ›
           </button>
@@ -1505,7 +1523,7 @@ export default function ReaderPane({
               aria-label="Smaller text"
               disabled={scaleStep <= 1}
               onClick={() => stepScale(-1)}
-              className="border border-rule px-1.5 py-0.5 text-[0.6rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule px-1.5 py-0.5 text-[0.6rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               A−
             </button>
@@ -1515,7 +1533,7 @@ export default function ReaderPane({
               aria-label="Larger text"
               disabled={scaleStep >= 5}
               onClick={() => stepScale(1)}
-              className="border-y border-r border-rule px-1.5 py-0.5 text-[0.75rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border-y border-r border-rule px-1.5 py-0.5 text-[0.75rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               A+
             </button>
@@ -1636,12 +1654,11 @@ export default function ReaderPane({
             </button>
           )}
           {ready && ready.hasOriginal && (
-            <div className="flex border border-rule" role="group" aria-label="Text or original">
+            <div className="seg" role="group" aria-label="Text or original">
               <button
                 type="button"
                 aria-pressed={view === "text"}
                 onClick={() => setView("text")}
-                className={toggleBtn(view === "text") + " border-0"}
               >
                 {ready.translation}
               </button>
@@ -1650,7 +1667,6 @@ export default function ReaderPane({
                 aria-pressed={view === "original"}
                 title={ready.lang === "hebrew" ? "The Hebrew text (TAHOT)" : "The Greek text (TAGNT)"}
                 onClick={() => setView("original")}
-                className={toggleBtn(view === "original") + " border-0"}
               >
                 Original
               </button>
@@ -1673,7 +1689,7 @@ export default function ReaderPane({
         /* The locator: the chapter's scroll progress as a rail, pericope
          * starts as ticks that jump to their passage, and the pericope at the
          * reading position named at the right edge. */
-        <div className="flex h-6 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
+        <div className="fx-fade flex h-6 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
           {ready.pericopes.length > 0 && (
             <span className="flex items-center" role="group" aria-label="Pericope navigation">
               <button
@@ -1682,7 +1698,7 @@ export default function ReaderPane({
                 aria-label="Previous pericope"
                 disabled={!canPrevPericope}
                 onClick={() => stepPericope(-1)}
-                className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 ‹
               </button>
@@ -1692,7 +1708,7 @@ export default function ReaderPane({
                 aria-label="Next pericope"
                 disabled={!canNextPericope}
                 onClick={() => stepPericope(1)}
-                className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 ›
               </button>
@@ -1720,7 +1736,8 @@ export default function ReaderPane({
             })}
           </div>
           <span
-            className="small-caps max-w-44 truncate text-[0.6rem] text-muted"
+            key={locator.current}
+            className="small-caps fx-fade max-w-44 truncate text-[0.6rem] text-muted"
             title={
               currentPericope
                 ? `${currentPericope.heading}${currentPericope.parallels ? ` (${currentPericope.parallels})` : ""}`
@@ -1732,7 +1749,7 @@ export default function ReaderPane({
         </div>
       )}
       {find.open && (
-        <div className="flex h-8 shrink-0 items-center gap-1.5 border-b border-rule px-4">
+        <div className="fx-fade flex h-8 shrink-0 items-center gap-1.5 border-b border-rule px-4">
           <input
             autoFocus
             type="text"
@@ -1759,7 +1776,7 @@ export default function ReaderPane({
             aria-label="Previous match"
             disabled={findMatches.length === 0}
             onClick={() => stepFind(-1)}
-            className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ‹
           </button>
@@ -1769,7 +1786,7 @@ export default function ReaderPane({
             aria-label="Next match"
             disabled={findMatches.length === 0}
             onClick={() => stepFind(1)}
-            className="px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1 text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ›
           </button>
@@ -1778,7 +1795,7 @@ export default function ReaderPane({
             title="Close find"
             aria-label="Close find"
             onClick={closeFind}
-            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ×
           </button>
@@ -1787,14 +1804,14 @@ export default function ReaderPane({
       {listen !== "idle" && ready && (
         /* The listen bar: pause, speed, and stop for whichever source is
          * playing, with the recording's provenance or the fallback named. */
-        <div className="flex h-8 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
+        <div className="fx-fade flex h-8 shrink-0 items-center gap-2 border-b border-rule px-4 font-[family-name:var(--font-interface)]">
           <span className="small-caps text-[0.68rem] text-muted">Listen</span>
           <button
             type="button"
             title={listenPaused ? "Resume" : "Pause"}
             aria-label={listenPaused ? "Resume" : "Pause"}
             onClick={toggleListenPause}
-            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             {listenPaused ? "▶" : "❚❚"}
           </button>
@@ -1835,7 +1852,7 @@ export default function ReaderPane({
             title="Stop"
             aria-label="Stop"
             onClick={stopAudio}
-            className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ×
           </button>
@@ -1843,7 +1860,11 @@ export default function ReaderPane({
       )}
       <div ref={scrollRef} onScroll={onScroll} className="min-h-0 flex-1 overflow-y-auto">
         {insightsOn && <InsightsRail paneId={paneId} book={book} chapter={chapter} />}
-        {body}
+        {/* Keyed by the target so a retargeted chapter crossfades in; the
+         * scroll container and the rail stay mounted above it. */}
+        <div key={`${book}:${chapter}:${ready?.translationId ?? ""}`} className="fx-fade">
+          {body}
+        </div>
       </div>
       {menus}
     </div>
@@ -1875,7 +1896,7 @@ function VerseNum({
 }
 
 const STRIP_BTN =
-  "text-[0.72rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press text-[0.72rem] text-ink hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 /**
  * The context strip: inline beneath the selected verse, never modal. Note,
@@ -1976,8 +1997,8 @@ function ContextStrip({
   };
 
   return (
-    <div dir="ltr" className="mx-auto max-w-prose px-6">
-      <div className="my-1 border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)]">
+    <div dir="ltr" className="fx-rise mx-auto max-w-prose px-6">
+      <div className="glass my-1 px-3 py-2 font-[family-name:var(--font-interface)]">
         <div className="flex items-center justify-between">
           <p className="small-caps text-xs font-semibold text-amber">{reference}</p>
           <button
