@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import {
@@ -30,13 +31,39 @@ import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-h
 import { playSound } from "@/lib/sound";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
-import { WorkflowsSection } from "./WorkflowPane";
-import { CanvasesSection } from "./CanvasPane";
-import { DiagramsSection } from "./DiagramPane";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { phoneViewport } from "./viewport";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
+
+/** A rail section's loading state: the leaded window, quiet, while the
+ *  section's code arrives. */
+function SectionLoading() {
+  return (
+    <div className="flex justify-center py-3" role="status" aria-label="Loading">
+      <span className="leaded-mark fx-pulse" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </span>
+    </div>
+  );
+}
+
+/* The Documents rail's sections ride in their pane's chunk: each arrives
+ * the first time the rail asks for it, the leaded mark standing in while
+ * the code loads. The pane files keep owning them, so the section and its
+ * pane never drift apart. */
+const WorkflowsSection = dynamic(() => import("./WorkflowPane").then((m) => m.WorkflowsSection), {
+  loading: SectionLoading,
+});
+const CanvasesSection = dynamic(() => import("./CanvasPane").then((m) => m.CanvasesSection), {
+  loading: SectionLoading,
+});
+const DiagramsSection = dynamic(() => import("./DiagramPane").then((m) => m.DiagramsSection), {
+  loading: SectionLoading,
+});
 
 const MODE_TITLES: Record<RailMode, string> = {
   read: "Canon",

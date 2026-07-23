@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import {
   useEffect,
   useRef,
@@ -40,53 +41,75 @@ import {
 } from "./workspace-state";
 import ReaderPane from "./ReaderPane";
 import SearchPane from "./SearchPane";
-import DocSearchPane from "./DocSearchPane";
-import BooksSearchPane from "./BooksSearchPane";
-import AllSearchPane from "./AllSearchPane";
-import ToolTabBody from "./ToolTabBody";
-import PassageGuide from "./PassageGuide";
-import CustomGuidePane from "./CustomGuidePane";
-import GuideEditorPane from "./GuideEditorPane";
-import WorkflowPane from "./WorkflowPane";
-import WorkflowEditorPane from "./WorkflowEditorPane";
-import WordStudyGuide from "./WordStudyGuide";
-import ExegeticalGuide from "./ExegeticalGuide";
-import TopicGuide from "./TopicGuide";
-import ListDocPane from "./ListDocPane";
-import CanvasPane from "./CanvasPane";
-import DiagramPane from "./DiagramPane";
-import DeskPane from "./DeskPane";
-import ManuscriptPane from "./ManuscriptPane";
-import PersonalBookPane from "./PersonalBookPane";
-import PulpitPane from "./PulpitPane";
-import ProjectPane from "./ProjectPane";
-import ChapelPane from "./ChapelPane";
-import ServicePane from "./ServicePane";
-import AlmanacPane from "./AlmanacPane";
-import Factbook from "./Factbook";
-import FamilyMapPane from "./FamilyMapPane";
-import LibraryPane from "./LibraryPane";
-import MultiviewPane from "./MultiviewPane";
-import TextCompare from "./TextCompare";
-import ConcordancePane from "./ConcordancePane";
-import AtlasPane from "./AtlasPane";
-import TimelinePane from "./TimelinePane";
-import MemoryPane from "./MemoryPane";
-import JournalPane from "./JournalPane";
-import PrayersPane from "./PrayersPane";
-import PlansPane from "./PlansPane";
-import NotesPane from "./NotesPane";
-import TopicsPane from "./TopicsPane";
-import SettingsPane from "./SettingsPane";
 import LauncherPane from "./LauncherPane";
-import DashboardPane from "./DashboardPane";
-import ToolsPane from "./ToolsPane";
-import BookExplorerPane from "./BookExplorerPane";
-import HarmonyPane from "./HarmonyPane";
-import WisdomExplorerPane from "./WisdomExplorerPane";
-import MediaPane from "./MediaPane";
-import SermonStarterPane from "./SermonStarterPane";
+import ToolTabBody from "./ToolTabBody";
 import { LinkIcon, SplitHorizontalIcon, SplitVerticalIcon } from "./icons";
+
+/** The pane body's loading state: the leaded window at a quiet pulse, the
+ *  same mark the shell wears while the session restores. */
+function PaneLoading() {
+  return (
+    <div className="flex h-full items-center justify-center" role="status" aria-label="Loading">
+      <span className="leaded-mark fx-pulse" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </span>
+    </div>
+  );
+}
+
+/* Every pane body travels in its own chunk and arrives the first time its
+ * tab opens; the leaded mark stands in the pane while the code loads, and a
+ * restored session fetches the chunks for its open tabs in parallel. The
+ * reader, the concordance search, and the new-tab launcher stay eager: they
+ * answer nearly every session. The dock tools stay eager through the right
+ * dock, which imports them for its own tray. */
+const DocSearchPane = dynamic(() => import("./DocSearchPane"), { loading: PaneLoading });
+const BooksSearchPane = dynamic(() => import("./BooksSearchPane"), { loading: PaneLoading });
+const AllSearchPane = dynamic(() => import("./AllSearchPane"), { loading: PaneLoading });
+const PassageGuide = dynamic(() => import("./PassageGuide"), { loading: PaneLoading });
+const CustomGuidePane = dynamic(() => import("./CustomGuidePane"), { loading: PaneLoading });
+const GuideEditorPane = dynamic(() => import("./GuideEditorPane"), { loading: PaneLoading });
+const WorkflowPane = dynamic(() => import("./WorkflowPane"), { loading: PaneLoading });
+const WorkflowEditorPane = dynamic(() => import("./WorkflowEditorPane"), { loading: PaneLoading });
+const WordStudyGuide = dynamic(() => import("./WordStudyGuide"), { loading: PaneLoading });
+const ExegeticalGuide = dynamic(() => import("./ExegeticalGuide"), { loading: PaneLoading });
+const TopicGuide = dynamic(() => import("./TopicGuide"), { loading: PaneLoading });
+const SermonStarterPane = dynamic(() => import("./SermonStarterPane"), { loading: PaneLoading });
+const ListDocPane = dynamic(() => import("./ListDocPane"), { loading: PaneLoading });
+const CanvasPane = dynamic(() => import("./CanvasPane"), { loading: PaneLoading });
+const DiagramPane = dynamic(() => import("./DiagramPane"), { loading: PaneLoading });
+const DeskPane = dynamic(() => import("./DeskPane"), { loading: PaneLoading });
+const ManuscriptPane = dynamic(() => import("./ManuscriptPane"), { loading: PaneLoading });
+const PersonalBookPane = dynamic(() => import("./PersonalBookPane"), { loading: PaneLoading });
+const PulpitPane = dynamic(() => import("./PulpitPane"), { loading: PaneLoading });
+const ProjectPane = dynamic(() => import("./ProjectPane"), { loading: PaneLoading });
+const ChapelPane = dynamic(() => import("./ChapelPane"), { loading: PaneLoading });
+const ServicePane = dynamic(() => import("./ServicePane"), { loading: PaneLoading });
+const AlmanacPane = dynamic(() => import("./AlmanacPane"), { loading: PaneLoading });
+const Factbook = dynamic(() => import("./Factbook"), { loading: PaneLoading });
+const FamilyMapPane = dynamic(() => import("./FamilyMapPane"), { loading: PaneLoading });
+const LibraryPane = dynamic(() => import("./LibraryPane"), { loading: PaneLoading });
+const MultiviewPane = dynamic(() => import("./MultiviewPane"), { loading: PaneLoading });
+const TextCompare = dynamic(() => import("./TextCompare"), { loading: PaneLoading });
+const ConcordancePane = dynamic(() => import("./ConcordancePane"), { loading: PaneLoading });
+const AtlasPane = dynamic(() => import("./AtlasPane"), { loading: PaneLoading });
+const TimelinePane = dynamic(() => import("./TimelinePane"), { loading: PaneLoading });
+const MemoryPane = dynamic(() => import("./MemoryPane"), { loading: PaneLoading });
+const JournalPane = dynamic(() => import("./JournalPane"), { loading: PaneLoading });
+const PrayersPane = dynamic(() => import("./PrayersPane"), { loading: PaneLoading });
+const PlansPane = dynamic(() => import("./PlansPane"), { loading: PaneLoading });
+const NotesPane = dynamic(() => import("./NotesPane"), { loading: PaneLoading });
+const TopicsPane = dynamic(() => import("./TopicsPane"), { loading: PaneLoading });
+const SettingsPane = dynamic(() => import("./SettingsPane"), { loading: PaneLoading });
+const DashboardPane = dynamic(() => import("./DashboardPane"), { loading: PaneLoading });
+const ToolsPane = dynamic(() => import("./ToolsPane"), { loading: PaneLoading });
+const BookExplorerPane = dynamic(() => import("./BookExplorerPane"), { loading: PaneLoading });
+const HarmonyPane = dynamic(() => import("./HarmonyPane"), { loading: PaneLoading });
+const WisdomExplorerPane = dynamic(() => import("./WisdomExplorerPane"), { loading: PaneLoading });
+const MediaPane = dynamic(() => import("./MediaPane"), { loading: PaneLoading });
 
 /**
  * The center pane grid: renders the split tree recursively. Leaves are
@@ -406,34 +429,19 @@ function Pane({ leaf }: { leaf: LeafNode }) {
   const isActive = state.activePaneId === leaf.id;
   const panes = countLeaves(state.root);
   const activeTab = leaf.tabs.find((t) => t.id === leaf.activeTabId) ?? null;
-  /* The strip's live labels: a rename written in any pane re-renders the
-   * strip, and tabLabel reads the new name. */
-  useCollectionWrites(TITLE_SOURCES);
 
-  /* Drop indicators: an insertion index on the strip, a tint or split
-   * preview on the body. Both reset on drop, dragleave, and any dragend. */
-  const [insertAt, setInsertAt] = useState<number | null>(null);
+  /* The body's drop preview: a tint or a split edge, reset on drop,
+   * dragleave, and any dragend. The strip's insertion index lives with the
+   * strip, which carries its own subscriptions. */
   const [bodyHint, setBodyHint] = useState<"body" | "left" | "right" | "top" | "bottom" | null>(
     null
   );
-  const stripDepth = useRef(0);
   const bodyDepth = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
   useDragEndReset(() => {
-    setInsertAt(null);
     setBodyHint(null);
-    stripDepth.current = 0;
     bodyDepth.current = 0;
   });
-
-  /* The insertion index under the pointer; strip background means append. */
-  const stripIndexFrom = (e: ReactDragEvent): number => {
-    const el = (e.target as HTMLElement).closest("[data-tab-index]");
-    if (!(el instanceof HTMLElement)) return leaf.tabs.length;
-    const i = Number(el.dataset.tabIndex);
-    const r = el.getBoundingClientRect();
-    return e.clientX > r.left + r.width / 2 ? i + 1 : i;
-  };
 
   /* Edge zones open a split. A dragged pane tab may free a slot, so the
    * zones stay open at MAX_PANES for pane drags; the reducer decides. */
@@ -460,116 +468,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           isActive ? "shadow-[inset_0_2px_0_var(--stained-amber)]" : ""
         }`}
       >
-        <div
-          role="tablist"
-          aria-label="Pane tabs"
-          className="flex min-w-0 flex-1 items-stretch overflow-x-auto"
-          onDragEnter={(e) => {
-            if (!hasGridPayload(e)) return;
-            e.preventDefault();
-            stripDepth.current += 1;
-            setInsertAt(stripIndexFrom(e));
-          }}
-          onDragOver={(e) => {
-            if (!hasGridPayload(e)) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-            setInsertAt(stripIndexFrom(e));
-          }}
-          onDragLeave={() => {
-            stripDepth.current = Math.max(0, stripDepth.current - 1);
-            if (stripDepth.current === 0) setInsertAt(null);
-          }}
-          onDrop={(e) => {
-            if (!hasGridPayload(e)) return;
-            e.preventDefault();
-            const index = stripIndexFrom(e);
-            stripDepth.current = 0;
-            setInsertAt(null);
-            dispatchDrop(e, { kind: "strip", paneId: leaf.id, index }, dispatch, state.lexiconId);
-            /* A dropped tab walks to its new place; anything else opens here,
-             * and the switchboard chimes that openTab itself. */
-            if (e.dataTransfer.types.includes(DND.paneTab)) playSound("navigate");
-          }}
-        >
-          {leaf.tabs.map((tab, i) => {
-            const tabActive = tab.id === leaf.activeTabId;
-            const label = tabLabel(tab);
-            return (
-              <div
-                key={tab.id}
-                role="tab"
-                aria-selected={tabActive}
-                tabIndex={0}
-                data-tab-index={i}
-                draggable
-                onDragStart={(e) => {
-                  const tool = dockTabForTab(tab);
-                  startModuleDrag(
-                    e,
-                    DND.paneTab,
-                    { paneId: leaf.id, tabId: tab.id },
-                    label,
-                    tool ? { [DND.paneToolTab]: { paneId: leaf.id, tabId: tab.id } } : {}
-                  );
-                }}
-                onClick={() => {
-                  if (!tabActive) playSound("navigate");
-                  dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    if (!tabActive) playSound("navigate");
-                    dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
-                  }
-                }}
-                className={`group relative flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap transition-colors select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                  tabActive
-                    ? "bg-paper font-medium text-ink shadow-[inset_0_2px_0_var(--stained-sapphire)]"
-                    : "text-muted hover:bg-paper hover:text-ink"
-                }`}
-              >
-                {insertAt === i && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-y-1 left-0 w-0.5 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
-                  />
-                )}
-                <span>{label}</span>
-                <button
-                  type="button"
-                  aria-label={`Close ${label}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dispatch({ type: "closeTab", paneId: leaf.id, tabId: tab.id });
-                  }}
-                  className={`fx-press px-0.5 text-[0.85rem] leading-none hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                    tabActive ? "text-muted" : "text-transparent group-hover:text-muted"
-                  }`}
-                >
-                  ×
-                </button>
-              </div>
-            );
-          })}
-          {insertAt !== null && insertAt >= leaf.tabs.length && leaf.tabs.length > 0 && (
-            <span
-              aria-hidden="true"
-              className="my-1 w-0.5 shrink-0 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
-            />
-          )}
-          <button
-            type="button"
-            title="New tab"
-            onClick={() => {
-              dispatch({ type: "newTab", paneId: leaf.id });
-            }}
-            className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-          >
-            +
-          </button>
-        </div>
+        <TabStrip leaf={leaf} />
         <div className="flex shrink-0 items-center gap-0.5 border-l border-rule px-1">
           <LinkSetBadge paneId={leaf.id} linkSet={leaf.linkSet} />
           <button
@@ -900,6 +799,151 @@ function Pane({ leaf }: { leaf: LeafNode }) {
         )}
       </div>
     </section>
+  );
+}
+
+/**
+ * The pane's tab strip: the tabs, their live labels, the new-tab button, and
+ * the strip's own drop target. The strip subscribes to the title collections
+ * so a rename written in any pane lands here without a reopen; the
+ * subscription lives in the strip so the write re-renders these labels and
+ * leaves the pane body (a reader and its verses) out of it.
+ */
+function TabStrip({ leaf }: { leaf: LeafNode }) {
+  const { state, dispatch } = useWorkspace();
+  /* The live labels: a rename written in any pane re-renders the strip, and
+   * tabLabel reads the new name. */
+  useCollectionWrites(TITLE_SOURCES);
+
+  /* The insertion indicator: an index on the strip, reset on drop,
+   * dragleave, and any dragend. Strip background means append. */
+  const [insertAt, setInsertAt] = useState<number | null>(null);
+  const stripDepth = useRef(0);
+  useDragEndReset(() => {
+    setInsertAt(null);
+    stripDepth.current = 0;
+  });
+
+  /* The insertion index under the pointer; strip background means append. */
+  const stripIndexFrom = (e: ReactDragEvent): number => {
+    const el = (e.target as HTMLElement).closest("[data-tab-index]");
+    if (!(el instanceof HTMLElement)) return leaf.tabs.length;
+    const i = Number(el.dataset.tabIndex);
+    const r = el.getBoundingClientRect();
+    return e.clientX > r.left + r.width / 2 ? i + 1 : i;
+  };
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Pane tabs"
+      className="flex min-w-0 flex-1 items-stretch overflow-x-auto"
+      onDragEnter={(e) => {
+        if (!hasGridPayload(e)) return;
+        e.preventDefault();
+        stripDepth.current += 1;
+        setInsertAt(stripIndexFrom(e));
+      }}
+      onDragOver={(e) => {
+        if (!hasGridPayload(e)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setInsertAt(stripIndexFrom(e));
+      }}
+      onDragLeave={() => {
+        stripDepth.current = Math.max(0, stripDepth.current - 1);
+        if (stripDepth.current === 0) setInsertAt(null);
+      }}
+      onDrop={(e) => {
+        if (!hasGridPayload(e)) return;
+        e.preventDefault();
+        const index = stripIndexFrom(e);
+        stripDepth.current = 0;
+        setInsertAt(null);
+        dispatchDrop(e, { kind: "strip", paneId: leaf.id, index }, dispatch, state.lexiconId);
+        /* A dropped tab walks to its new place; anything else opens here,
+         * and the switchboard chimes that openTab itself. */
+        if (e.dataTransfer.types.includes(DND.paneTab)) playSound("navigate");
+      }}
+    >
+      {leaf.tabs.map((tab, i) => {
+        const tabActive = tab.id === leaf.activeTabId;
+        const label = tabLabel(tab);
+        return (
+          <div
+            key={tab.id}
+            role="tab"
+            aria-selected={tabActive}
+            tabIndex={0}
+            data-tab-index={i}
+            draggable
+            onDragStart={(e) => {
+              const tool = dockTabForTab(tab);
+              startModuleDrag(
+                e,
+                DND.paneTab,
+                { paneId: leaf.id, tabId: tab.id },
+                label,
+                tool ? { [DND.paneToolTab]: { paneId: leaf.id, tabId: tab.id } } : {}
+              );
+            }}
+            onClick={() => {
+              if (!tabActive) playSound("navigate");
+              dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (!tabActive) playSound("navigate");
+                dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
+              }
+            }}
+            className={`group relative flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap transition-colors select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+              tabActive
+                ? "bg-paper font-medium text-ink shadow-[inset_0_2px_0_var(--stained-sapphire)]"
+                : "text-muted hover:bg-paper hover:text-ink"
+            }`}
+          >
+            {insertAt === i && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-1 left-0 w-0.5 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
+              />
+            )}
+            <span>{label}</span>
+            <button
+              type="button"
+              aria-label={`Close ${label}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch({ type: "closeTab", paneId: leaf.id, tabId: tab.id });
+              }}
+              className={`fx-press px-0.5 text-[0.85rem] leading-none hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                tabActive ? "text-muted" : "text-transparent group-hover:text-muted"
+              }`}
+            >
+              ×
+            </button>
+          </div>
+        );
+      })}
+      {insertAt !== null && insertAt >= leaf.tabs.length && leaf.tabs.length > 0 && (
+        <span
+          aria-hidden="true"
+          className="my-1 w-0.5 shrink-0 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
+        />
+      )}
+      <button
+        type="button"
+        title="New tab"
+        onClick={() => {
+          dispatch({ type: "newTab", paneId: leaf.id });
+        }}
+        className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      >
+        +
+      </button>
+    </div>
   );
 }
 
