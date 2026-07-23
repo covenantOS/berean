@@ -26,6 +26,16 @@ interface RelatedTopic {
   title: string;
 }
 
+interface AlignedTwin extends RelatedTopic {
+  kind: "entry" | "section";
+  section?: string;
+  canonical: string;
+}
+
+interface AlsoAligned extends RelatedTopic {
+  canonical: string;
+}
+
 interface TopicGuideEntity {
   id: string;
   name: string;
@@ -53,7 +63,9 @@ interface TopicGuidePayload {
   sections: TopicGuideNode[];
   related: RelatedTopic[];
   relatedUnresolved: string[];
-  otherWork: RelatedTopic | null;
+  canonical: string | null;
+  twin: AlignedTwin | null;
+  also: AlsoAligned[];
   entities: TopicGuideEntity[];
   confessions: TopicGuideConfession[];
 }
@@ -72,9 +84,11 @@ function capitalize(title: string): string {
  * The Topic Guide pane: one entry of Nave's or Torrey's as a report, pinned
  * at open time. Key Passages walks the entry's section tree with verse
  * chips that open the reader; Related Topics opens the entry's
- * cross-references as new topic guides; People and Places opens the
- * factbook for the entities the title exactly matches. Sections with
- * nothing to say stay out of the report.
+ * cross-references as new topic guides and shows the aligned topic in the
+ * other work under its canonical name (data/topics/alignment.json, entry
+ * for entry, or the covering Nave section when Nave merges what Torrey
+ * splits); People and Places opens the factbook for the entities the title
+ * exactly matches. Sections with nothing to say stay out of the report.
  */
 export default function TopicGuide({
   work,
@@ -158,6 +172,11 @@ export default function TopicGuide({
         <p className="mt-0.5 text-[0.68rem] text-muted">
           {r.workLabel} · {r.refs.toLocaleString()} {r.refs === 1 ? "reference" : "references"}
         </p>
+        {r.canonical && r.canonical !== r.title && (
+          <p className="mt-0.5 text-[0.68rem] text-muted">
+            canonical topic: <span className="capitalize">{r.canonical}</span>
+          </p>
+        )}
         <p className="no-print mt-1">
           <PrintButton />
         </p>
@@ -169,8 +188,8 @@ export default function TopicGuide({
         </GuideSection>
       )}
 
-      {(r.related.length > 0 || r.otherWork) && (
-        <GuideSection stagger={2} title="Related Topics" hint="cross-references inside the topical works">
+      {(r.related.length > 0 || r.twin || r.also.length > 0) && (
+        <GuideSection stagger={2} title="Related Topics" hint="cross-references inside the works, and the aligned topic in the other work">
           <ul className="space-y-1.5">
             {r.related.map((t) => (
               <li key={`${t.work}:${t.id}`}>
@@ -184,22 +203,54 @@ export default function TopicGuide({
                 </button>
               </li>
             ))}
-            {r.otherWork && (
+            {r.twin && (
               <li>
                 <button
                   type="button"
-                  title={`Open the topic guide in ${r.otherWork.work === "naves" ? "Nave's" : "Torrey's"}`}
-                  onClick={() => openTopic(r.otherWork!)}
+                  title={`Open the aligned topic in ${r.twin.work === "naves" ? "Nave's" : "Torrey's"}`}
+                  onClick={() => openTopic(r.twin!)}
                   className="text-xs font-medium capitalize text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
-                  {r.otherWork.title}
+                  {r.twin.title}
                 </button>{" "}
                 <span className="text-xs text-muted">
-                  in {r.otherWork.work === "naves" ? "Nave's" : "Torrey's"}
+                  in {r.twin.work === "naves" ? "Nave's" : "Torrey's"}
+                  {r.twin.kind === "section" ? `, section "${r.twin.section}"` : ""}
+                  {r.twin.canonical !== r.title ? (
+                    <>
+                      {" "}· canonical: <span className="capitalize">{r.twin.canonical}</span>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </span>
               </li>
             )}
           </ul>
+          {r.also.length > 0 && (
+            <>
+              <p className="mt-2 text-[0.68rem] text-muted">
+                Torrey&apos;s entries this topic covers as sections:
+              </p>
+              <ul className="mt-1 space-y-1.5">
+                {r.also.map((t) => (
+                  <li key={`${t.work}:${t.id}`}>
+                    <button
+                      type="button"
+                      title={`Open the topic guide for ${capitalize(t.title)}`}
+                      onClick={() => openTopic(t)}
+                      className="text-xs font-medium capitalize text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    >
+                      {t.title}
+                    </button>{" "}
+                    <span className="text-xs text-muted">
+                      · canonical: <span className="capitalize">{t.canonical}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           {r.relatedUnresolved.length > 0 && (
             <p className="mt-2 text-[0.68rem] text-muted">
               Also cross-referenced: {r.relatedUnresolved.join("; ")}.

@@ -117,6 +117,95 @@ export function countRefs(topic: Topic): number {
   return walk(topic.children);
 }
 
+/**
+ * The canonical topic alignment between the two works, built by
+ * scripts/build-topics-alignment.mjs into data/topics/alignment.json. A row
+ * pairs one Nave entry with one Torrey entry that carry the same concept:
+ * kind "entry" pairs two whole entries under one canonical name; kind
+ * "section" pairs a Torrey entry with the named section of the Nave entry
+ * that covers it (Nave merges what Torrey splits, e.g. Torrey's "death of
+ * saints" against the OF THE RIGHTEOUS section of Nave's "Death").
+ */
+export type AlignmentKind = "entry" | "section";
+
+export interface AlignmentRow {
+  canonical: string;
+  kind: AlignmentKind;
+  naves: string;
+  torreys: string;
+  section?: string;
+}
+
+interface AlignmentFile {
+  generated: string;
+  note: string;
+  rows: AlignmentRow[];
+}
+
+let alignmentCache: AlignmentFile | null = null;
+
+async function loadAlignment(): Promise<AlignmentFile | null> {
+  if (alignmentCache) return alignmentCache;
+  try {
+    alignmentCache = JSON.parse(
+      await fs.readFile(path.join(process.cwd(), "data", "topics", "alignment.json"), "utf8")
+    ) as AlignmentFile;
+    return alignmentCache;
+  } catch {
+    return null;
+  }
+}
+
+export interface TopicAlignment {
+  /** The canonical name of the viewed topic, when it sits in a row. */
+  canonical: string | null;
+  /** The aligned entry in the other work, with how the row relates. */
+  twin: {
+    work: TopicWork;
+    id: string;
+    title: string;
+    kind: AlignmentKind;
+    section?: string;
+    canonical: string;
+  } | null;
+  /** Torrey entries this Nave entry covers as sections (Nave-side view). */
+  also: { work: TopicWork; id: string; title: string; canonical: string }[];
+}
+
+/** The alignment for one topic: its twin in the other work, plus the other
+ * work's narrower entries that this entry covers (section rows). */
+export async function getTopicAlignment(work: TopicWork, id: string): Promise<TopicAlignment> {
+  const empty: TopicAlignment = { canonical: null, twin: null, also: [] };
+  const file = await loadAlignment();
+  if (!file) return empty;
+  const mine = file.rows.filter((r) => r[work] === id);
+  if (mine.length === 0) return empty;
+  const other: TopicWork = work === "naves" ? "torreys" : "naves";
+  const entryRow = mine.find((r) => r.kind === "entry");
+  const rowForTwin = work === "torreys" ? mine[0] : entryRow;
+  let twin: TopicAlignment["twin"] = null;
+  if (rowForTwin) {
+    const twinTopic = await getTopic(other, rowForTwin[other]);
+    if (twinTopic) {
+      twin = {
+        work: other,
+        id: twinTopic.id,
+        title: twinTopic.title,
+        kind: rowForTwin.kind,
+        ...(rowForTwin.kind === "section" ? { section: rowForTwin.section } : {}),
+        canonical: rowForTwin.canonical,
+      };
+    }
+  }
+  const sectionRows = (work === "naves" ? mine : []).filter((r) => r.kind === "section");
+  const also: TopicAlignment["also"] = [];
+  for (const r of sectionRows.slice(0, 10)) {
+    const t = await getTopic(other, r[other]);
+    if (t) also.push({ work: other, id: t.id, title: t.title, canonical: r.canonical });
+  }
+  return { canonical: (entryRow ?? mine[0]).canonical, twin, also };
+}
+
 /** Reverse index: topics touching a verse, for the reader apparatus. */
 export async function getVerseTopics(
   book: Book,

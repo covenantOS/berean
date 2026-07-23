@@ -5,6 +5,7 @@ import {
   countRefs,
   formatTopicRef,
   getTopic,
+  getTopicAlignment,
   getTopicByTitle,
   isTopicWork,
   TOPIC_WORKS,
@@ -15,11 +16,14 @@ import {
  * The Topic Guide: one entry of Nave's or Torrey's composed into a report.
  * Key Passages is the entry's own section tree with its verse lists; Related
  * Topics resolves the entry's "See X" cross-references back to real topics
- * in the same work, plus the same-titled entry in the other work when one
- * exists; People and Places joins the entry's title against the TIPNR
- * entity index on an exact name or alias match, the only join the shipped
- * data honestly supports. The topical works carry no definition prose, so
- * no overview section is fabricated.
+ * in the same work, plus the aligned topic in the other work from the
+ * canonical alignment (data/topics/alignment.json: one canonical name for
+ * the same concept in both works, entry for entry, or the named section of
+ * the broader Nave entry when Nave merges what Torrey splits); People and
+ * Places joins the entry's title against the TIPNR entity index on an exact
+ * name or alias match, the only join the shipped data honestly supports.
+ * The topical works carry no definition prose, so no overview section is
+ * fabricated.
  */
 
 /** References listed per section node; the remainder is counted. */
@@ -102,10 +106,10 @@ export async function GET(req: NextRequest) {
     .map((r) => ({ work: workParam, id: r.topic!.id, title: r.topic!.title }));
   const relatedUnresolved = resolved.filter((r) => !r.topic).map((r) => r.title);
 
-  // (c) The same-titled entry in the other work, when it exists.
-  const otherWorkId = workParam === "naves" ? "torreys" : "naves";
-  const other = await getTopicByTitle(otherWorkId, topic.title);
-  const otherWork = other ? { work: otherWorkId, id: other.id, title: other.title } : null;
+  // (c) The aligned topic in the other work under one canonical name
+  // (src/lib/topics.ts getTopicAlignment), plus, for a merged Nave entry,
+  // the narrower Torrey entries it covers as sections.
+  const alignment = await getTopicAlignment(workParam, id);
 
   // (d) People and Places: exact name or alias matches in the entity index.
   // A looser match would invent joins the data does not record.
@@ -140,7 +144,9 @@ export async function GET(req: NextRequest) {
     sections,
     related,
     relatedUnresolved,
-    otherWork,
+    canonical: alignment.canonical,
+    twin: alignment.twin,
+    also: alignment.also,
     entities,
     confessions,
   });
