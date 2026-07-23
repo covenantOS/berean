@@ -34,7 +34,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "A root entity id is required." }, { status: 400 });
   }
   const depth = (key: string): number => {
-    const n = Number(params.get(key));
+    const raw = params.get(key);
+    // An absent or empty bound means the default two generations;
+    // Number(null) is 0, so the param must be tested before conversion.
+    if (raw === null || raw.trim() === "") return 2;
+    const n = Number(raw);
     if (!Number.isFinite(n)) return 2;
     return Math.min(Math.max(0, Math.floor(n)), FAMILY_MAP_MAX_DEPTH);
   };
