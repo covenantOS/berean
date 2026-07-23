@@ -17,10 +17,12 @@ Railway.
   answers 200 even while the data shelf is cold-loading, so the host will
   not kill a healthy container during warm-up.
 - **Memory.** Run the 2GB plan. The shelf caches parsed JSON at module
-  scope; a fully warmed shelf holds roughly 500MB, and the image sets
-  `NODE_OPTIONS=--max-old-space-size=1536` to match a 2GB container. A 1GB
-  plan works for a demo with slower first reads per work; lower the ceiling
-  to 768 in the Dockerfile if you choose it.
+  scope; a fully warmed shelf holds roughly 500MB, and the books-search
+  indexes (commentary plus the Spurgeon archive) add about 650MB more once
+  the first books search runs (measured stable at 778MB process RSS). The
+  image sets `NODE_OPTIONS=--max-old-space-size=1536` to match a 2GB
+  container. A 1GB plan works for a demo with slower first reads per work;
+  lower the ceiling to 768 in the Dockerfile if you choose it.
 - **ANTHROPIC_API_KEY (optional).** Set it in the host's environment to
   enable the Scribe and semantic search. Without it the app runs fully and
   those surfaces say so honestly.
