@@ -88,7 +88,7 @@ export default async function ChapterPage({
   })();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div className="fx-pane-enter mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <nav className="mb-6 flex items-center justify-between text-sm">
         <span className="text-muted">
           <Link href="/workspace" className="text-sapphire no-underline hover:underline">
@@ -104,7 +104,7 @@ export default async function ChapterPage({
           {prev && (
             <Link
               href={`/read/${prev.book.slug}/${prev.chapter}${keepQuery}`}
-              className="rounded-[4px] border border-rule bg-surface px-3 py-1 text-ink no-underline hover:bg-paper"
+              className="glass glass-hover fx-press rounded-[4px] px-3 py-1 text-ink no-underline"
               rel="prev"
             >
               ← {prev.book.slug === slug ? prev.chapter : prev.book.name}
@@ -113,7 +113,7 @@ export default async function ChapterPage({
           {next && (
             <Link
               href={`/read/${next.book.slug}/${next.chapter}${keepQuery}`}
-              className="rounded-[4px] border border-rule bg-surface px-3 py-1 text-ink no-underline hover:bg-paper"
+              className="glass glass-hover fx-press rounded-[4px] px-3 py-1 text-ink no-underline"
               rel="next"
             >
               {next.book.slug === slug ? next.chapter : next.book.name} →

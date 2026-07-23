@@ -35,6 +35,7 @@ import {
   type VerseHighlight,
 } from "@/lib/highlights";
 import { useCollection } from "@/lib/hooks";
+import { SPEECH_TAKEN_EVENT } from "@/lib/pronounce";
 import { playSound } from "@/lib/sound";
 import { baseStrongsIds } from "@/lib/strongs";
 import { verseCardSvg } from "@/lib/verseCard";
@@ -405,6 +406,15 @@ export default function ReaderPane({
   useEffect(() => {
     setSpeechOk("speechSynthesis" in window);
   }, []);
+
+  /* One voice at a time: a pronunciation elsewhere takes the speech
+   * channel and names the moment on SPEECH_TAKEN_EVENT; the read-aloud
+   * retires exactly as Stop would retire it. */
+  useEffect(() => {
+    const retire = () => stopAudio();
+    window.addEventListener(SPEECH_TAKEN_EVENT, retire);
+    return () => window.removeEventListener(SPEECH_TAKEN_EVENT, retire);
+  }, [stopAudio]);
 
   // A retarget, a translation swap, or the pane's close stops the audio.
   useEffect(() => stopAudio, [book, chapter, translation, stopAudio]);

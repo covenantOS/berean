@@ -11,7 +11,7 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 
 export default function SourcesPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="fx-pane-enter mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <h1 className="font-editorial mb-1 text-2xl font-bold">Sources &amp; Rights</h1>
       <p className="mb-8 max-w-2xl text-sm text-muted">
         Every text Berean presents carries a documented source and license.
@@ -24,7 +24,7 @@ export default function SourcesPage() {
         {RIGHTS_REGISTRY.map((r) => {
           const status = STATUS_LABEL[r.status];
           return (
-            <section key={r.id} className="rounded-[4px] border border-rule bg-surface p-5">
+            <section key={r.id} className="glass rounded-[4px] p-5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="font-editorial text-lg font-bold">{r.title}</h2>
                 <span

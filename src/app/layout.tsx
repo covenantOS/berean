@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={garamond.variable}>
       <body className="min-h-screen flex flex-col">
-        <header className="border-b border-rule bg-surface">
+        <header className="glass border-x-0 border-t-0">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
             <Link href="/workspace" className="flex items-center gap-3 no-underline">
               <LeadedMark />
@@ -68,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-[4px] px-2.5 py-1.5 text-sm font-medium text-ink no-underline hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="fx-press rounded-[4px] px-2.5 py-1.5 text-sm font-medium text-ink no-underline hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   {item.label}
                 </Link>
@@ -79,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
         <main className="flex-1">{children}</main>
         <PwaRegister />
-        <footer className="border-t border-rule bg-surface">
+        <footer className="glass border-x-0 border-b-0">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-muted sm:px-6">
             <span>
               Scripture text: King James Version (public domain) ·{" "}

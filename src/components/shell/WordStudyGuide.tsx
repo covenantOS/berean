@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import { listDocuments, type WordItem } from "@/lib/documents";
+import PronounceButton from "./PronounceButton";
 import { useWorkspace } from "./WorkspaceContext";
 import GuideSection from "./GuideSection";
 import PrintButton from "./PrintButton";
@@ -131,6 +132,12 @@ export default function WordStudyGuide({ strongsId }: { strongsId: string }) {
         <h2 className="mt-0.5 flex flex-wrap items-baseline gap-3">
           <span className={`${langClass} text-xl`}>{e.lemma ?? s.id}</span>
           {e.xlit && <span className="font-editorial text-lg text-muted">{e.xlit}</span>}
+          <PronounceButton
+            lemma={e.lemma}
+            xlit={e.xlit}
+            lang={s.id.startsWith("H") ? "he" : "el"}
+            className="no-print"
+          />
           <span className="text-xs font-semibold text-sapphire">{s.id}</span>
           <button
             type="button"

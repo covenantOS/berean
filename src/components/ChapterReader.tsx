@@ -498,8 +498,10 @@ export default function ChapterReader({
                 onClick={toggleWords}
                 aria-pressed={wordsOn}
                 title="Rest on a word and the Greek or Hebrew beneath it surfaces"
-                className={`rounded-[4px] border border-rule px-2 py-1 text-xs ${
-                  wordsOn ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
+                className={`fx-press rounded-[4px] border px-2 py-1 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  wordsOn
+                    ? "border-sapphire text-sapphire"
+                    : "border-rule text-muted hover:text-ink"
                 }`}
               >
                 Original words
@@ -510,8 +512,10 @@ export default function ChapterReader({
                 onClick={toggleOrig}
                 aria-pressed={origOn}
                 title={lang === "hebrew" ? "Read the Hebrew text (TAHOT)" : "Read the Greek text (TAGNT)"}
-                className={`rounded-[4px] border border-rule px-2 py-1 text-xs ${
-                  origOn ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
+                className={`fx-press rounded-[4px] border px-2 py-1 text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  origOn
+                    ? "border-sapphire text-sapphire"
+                    : "border-rule text-muted hover:text-ink"
                 }`}
               >
                 {lang === "hebrew" ? "עברית" : "Ἑλληνικά"} text
@@ -519,7 +523,7 @@ export default function ChapterReader({
             )}
             {showOriginal && (
               <div
-                className="flex gap-1 rounded-[4px] border border-rule p-0.5 text-xs"
+                className="flex items-center gap-3 rounded-[4px] border border-rule px-2 py-1 text-xs"
                 role="group"
                 aria-label="Interlinear line"
               >
@@ -529,24 +533,19 @@ export default function ChapterReader({
                     ["xlit", "Translit."],
                   ] as ["gloss" | "xlit", string][]
                 ).map(([key, label]) => (
-                  <button
-                    key={key}
-                    onClick={() => toggleInterlinear(key)}
-                    aria-pressed={interlinear[key]}
-                    className={`rounded-[3px] px-2 py-1 ${
-                      interlinear[key] ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    {label}
-                  </button>
+                  <label key={key} className="switch">
+                    <input
+                      type="checkbox"
+                      checked={interlinear[key]}
+                      onChange={() => toggleInterlinear(key)}
+                    />
+                    <span className="switch-track" aria-hidden="true" />
+                    <span>{label}</span>
+                  </label>
                 ))}
               </div>
             )}
-            <div
-              className="flex gap-1 rounded-[4px] border border-rule p-0.5 text-xs"
-              role="group"
-              aria-label="Reading mode"
-            >
+            <div className="seg" role="group" aria-label="Reading mode">
               {(
                 [
                   ["paper", "Paper"],
@@ -558,9 +557,6 @@ export default function ChapterReader({
                   key={m}
                   onClick={() => changeMode(m)}
                   aria-pressed={mode === m}
-                  className={`rounded-[3px] px-2 py-1 ${
-                    mode === m ? "bg-sapphire text-white" : "opacity-70 hover:opacity-100"
-                  }`}
                 >
                   {label}
                 </button>
@@ -570,7 +566,7 @@ export default function ChapterReader({
         </div>
 
         {audio && (
-          <div className="no-print mb-6 rounded-[4px] border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)]">
+          <div className="no-print glass mb-6 rounded-[4px] px-3 py-2 font-[family-name:var(--font-interface)]">
             <div className="flex flex-wrap items-center gap-3">
               <span className="small-caps text-[0.68rem] text-muted">Listen</span>
               <audio
@@ -600,7 +596,7 @@ export default function ChapterReader({
         )}
 
         {parallelNote && (
-          <p className="no-print mb-4 rounded-[4px] border border-rule bg-surface px-3 py-2 font-[family-name:var(--font-interface)] text-xs text-muted">
+          <p className="no-print glass mb-4 rounded-[4px] px-3 py-2 font-[family-name:var(--font-interface)] text-xs text-muted">
             {parallelNote}
           </p>
         )}
@@ -737,7 +733,7 @@ export default function ChapterReader({
       </article>
 
       <aside className="no-print">
-        <div className="sticky top-6 rounded-[4px] border border-rule bg-surface">
+        <div className="glass sticky top-6 rounded-[4px]">
           <div
             className="flex border-b border-rule text-xs font-medium"
             role="tablist"
@@ -887,7 +883,7 @@ function MarginPanel(props: {
             <button
               onClick={submitNote}
               disabled={!draft.trim()}
-              className="rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-paper disabled:opacity-40"
+              className="fx-press rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-paper disabled:opacity-40"
             >
               {editingId ? "Update note" : "Save note"}
             </button>
@@ -895,7 +891,7 @@ function MarginPanel(props: {
             {editingId && (
               <button
                 onClick={() => removeNote(editingId)}
-                className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium text-ruby"
+                className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium text-ruby"
               >
                 Delete
               </button>
@@ -903,7 +899,7 @@ function MarginPanel(props: {
             <button
               onClick={exportCard}
               title="Download this verse as a printable card (SVG)"
-              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
+              className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
             >
               Export card
             </button>
@@ -911,14 +907,14 @@ function MarginPanel(props: {
               <button
                 onClick={shareCard}
                 title="Send this verse's card through your device's share sheet, as an SVG file"
-                className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
+                className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
               >
                 Share card
               </button>
             )}
             <button
               onClick={cancel}
-              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
+              className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium"
             >
               Cancel
             </button>

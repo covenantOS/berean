@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
+import PronounceButton from "./PronounceButton";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface TyndaleVariant {
@@ -102,6 +103,13 @@ export default function LexiconDock({
           {word.text}
         </span>
         {word.xlit && <span className="text-xs text-muted">{word.xlit}</span>}
+        {word.lemma && (
+          <PronounceButton
+            lemma={word.lemma}
+            xlit={word.xlit}
+            lang={word.strongs[0]?.startsWith("H") ? "he" : word.strongs[0] ? "el" : null}
+          />
+        )}
         <span className="ml-auto text-xs text-muted">
           {getBook(word.book)?.name ?? word.book} {word.chapter}:{word.verse}
         </span>
@@ -268,6 +276,11 @@ export default function LexiconDock({
         <p className="flex items-baseline gap-2">
           <span className={`${langClass} text-lg`}>{e.lemma}</span>
           {e.xlit && <span className="text-xs text-muted">{e.xlit}</span>}
+          <PronounceButton
+            lemma={e.lemma}
+            xlit={e.xlit}
+            lang={e.id.startsWith("H") ? "he" : "el"}
+          />
           <span className="ml-auto text-xs font-semibold text-sapphire">{e.id}</span>
         </p>
         {e.pron && <p className="mt-0.5 text-xs italic text-muted">{e.pron}</p>}

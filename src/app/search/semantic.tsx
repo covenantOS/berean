@@ -80,14 +80,14 @@ export default function SemanticMode() {
         <button
           type="submit"
           disabled={state === "working"}
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90 disabled:opacity-50"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90 disabled:opacity-50"
         >
           {state === "working" ? "Searching…" : "Search"}
         </button>
       </form>
 
       {state === "error" && (
-        <p className="rounded-[4px] border border-rule bg-surface p-4 text-sm text-muted">
+        <p className="glass rounded-[4px] p-4 text-sm text-muted">
           {error}
         </p>
       )}

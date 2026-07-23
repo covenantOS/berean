@@ -32,7 +32,7 @@ export default async function SearchPage({
   const query = (q ?? "").trim();
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="fx-pane-enter mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <h1 className="font-editorial mb-1 text-2xl font-bold">Concordance</h1>
       <p className="mb-6 text-sm text-muted">
         Search every word of the canon. Results open the passage at the verse.
@@ -131,14 +131,14 @@ async function EnglishMode({ query, t }: { query: string; t?: string }) {
         </select>
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
         >
           Search
         </button>
       </form>
 
       {queryError && (
-        <p className="mb-8 rounded-[4px] border border-rule bg-surface px-4 py-3 text-sm">
+        <p className="glass mb-8 rounded-[4px] px-4 py-3 text-sm">
           {queryError}
         </p>
       )}
@@ -263,13 +263,13 @@ async function OriginalMode({
           />
           <button
             type="submit"
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-paper hover:opacity-90"
           >
             Search
           </button>
         </div>
 
-        <details className="mt-3 rounded-[4px] border border-rule bg-surface p-4" open={Object.keys(filters).length > 0}>
+        <details className="glass mt-3 rounded-[4px] p-4" open={Object.keys(filters).length > 0}>
           <summary className="small-caps cursor-pointer text-sm text-muted">
             Narrow by parsing
           </summary>
@@ -291,7 +291,7 @@ async function OriginalMode({
       </form>
 
       {queryError && (
-        <p className="mb-8 rounded-[4px] border border-rule bg-surface px-4 py-3 text-sm">
+        <p className="glass mb-8 rounded-[4px] px-4 py-3 text-sm">
           {queryError}
         </p>
       )}

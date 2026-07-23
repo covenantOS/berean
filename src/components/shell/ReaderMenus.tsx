@@ -13,6 +13,7 @@ import {
 } from "@/lib/highlights";
 import { takeUp } from "@/lib/memory";
 import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginalia";
+import { pronounceLemma, useSpeechAvailable } from "@/lib/pronounce";
 import { playSound } from "@/lib/sound";
 import { useCollection } from "@/lib/hooks";
 import { verseCardSvg } from "@/lib/verseCard";
@@ -708,7 +709,9 @@ export function WordContextMenu({
   onClose: () => void;
 }) {
   const { dispatch } = useWorkspace();
-  const { ref, style } = useFloatingMenu(x, y, onClose);
+  const speechOk = useSpeechAvailable();
+  /* The Pronounce row arms after mount; re-measure when it lands. */
+  const { ref, style } = useFloatingMenu(x, y, onClose, { deps: [speechOk] });
   const first = word.strongs[0];
   const reference = `${bookName} ${word.chapter}:${word.verse}`;
 
@@ -772,11 +775,29 @@ export function WordContextMenu({
             Word study {first}
           </button>
         )}
+        {speechOk && (word.lemma || word.xlit) && (
+          <button
+            type="button"
+            title="Hear the lemma spoken aloud"
+            className={ROW}
+            style={rowI(2)}
+            onClick={() => {
+              pronounceLemma({
+                lemma: word.lemma,
+                xlit: word.xlit,
+                lang: first?.startsWith("H") ? "he" : first ? "el" : null,
+              });
+              onClose();
+            }}
+          >
+            Pronounce
+          </button>
+        )}
         {!word.lemma && (
           <button
             type="button"
             className={ROW}
-            style={rowI(2)}
+            style={rowI(3)}
             onClick={() => {
               dispatch({ type: "openSearch", q: word.text, paneId });
               onClose();

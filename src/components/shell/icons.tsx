@@ -153,6 +153,17 @@ export function LinkIcon() {
   );
 }
 
+/* Pronunciation: a small horn sounding, beside lemmas and transliterations. */
+export function SpeakerIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="square" aria-hidden="true">
+      <path d="M2 5.2v3.6h2.4l3.1 2.7V2.5L4.4 5.2H2z" />
+      <path d="M9.3 5.4c.9 1 .9 2.2 0 3.2" />
+      <path d="M11.2 3.9c1.6 1.8 1.6 4.4 0 6.2" />
+    </svg>
+  );
+}
+
 /* Right dock tabs. */
 
 export function CommentaryIcon() {
