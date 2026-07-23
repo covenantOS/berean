@@ -10,6 +10,7 @@ import {
   saveNote,
   type MarginNote,
 } from "@/lib/marginalia";
+import { playSound } from "@/lib/sound";
 import PrintButton from "@/components/shell/PrintButton";
 
 /** Today's date as YYYY-MM-DD, in the reader's own zone. */
@@ -56,6 +57,7 @@ export default function JournalPane() {
     e.preventDefault();
     if (!draft.trim() || !date) return;
     saveNote({ id: editingId ?? undefined, text: draft.trim(), date });
+    playSound("complete");
     setDraft("");
     setDate(today());
     setEditingId(null);
@@ -92,7 +94,7 @@ export default function JournalPane() {
 
       <form
         onSubmit={save}
-        className="no-print rounded-[4px] border border-rule bg-surface p-4"
+        className="no-print glass rounded-[4px] p-4"
       >
         <div className="mb-2 flex items-center gap-2">
           <input
@@ -109,6 +111,7 @@ export default function JournalPane() {
                 setDraft("");
                 setDate(today());
                 setEditingId(null);
+                playSound("close");
               }}
               className="text-xs text-muted hover:text-ink"
             >
@@ -127,7 +130,7 @@ export default function JournalPane() {
         <button
           type="submit"
           disabled={!draft.trim()}
-          className="mt-2 rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
+          className="fx-press mt-2 rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
         >
           {editingId ? "Update the entry" : "Write it down"}
         </button>
@@ -141,9 +144,13 @@ export default function JournalPane() {
             <h3 className="small-caps mb-2 border-b border-rule pb-1 text-sm text-muted">
               {dayLabel(day.date)}
             </h3>
-            <ul className="space-y-3">
-              {day.entries.map((n) => (
-                <li key={n.id} className="rounded-[4px] border border-rule bg-surface p-4">
+            <ul className="fx-stagger space-y-3">
+              {day.entries.map((n, i) => (
+                <li
+                  key={n.id}
+                  className="glass glass-hover rounded-[4px] p-4"
+                  style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+                >
                   <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">{n.text}</p>
                   <div className="no-print mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                     {isAnchored(n) && (

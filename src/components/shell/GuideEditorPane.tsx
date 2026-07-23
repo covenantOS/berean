@@ -10,6 +10,7 @@ import {
   type GuideSectionKey,
 } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 
 /**
  * The Guide Editor: the compose surface for custom guides. The list names
@@ -58,7 +59,8 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
       });
   }, [guideId]);
 
-  const startNew = () =>
+  const startNew = () => {
+    playSound("open");
     setDraft({
       id: null,
       name: "",
@@ -66,10 +68,12 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
       on: GUIDE_SECTIONS.map((s) => s.key),
       commentaryCollection: undefined,
     });
+  };
 
   const startEdit = (id: string) => {
     const g = guides.get(id);
-    if (g)
+    if (g) {
+      playSound("open");
       setDraft({
         id: g.id,
         name: g.name,
@@ -77,6 +81,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
         on: [...g.sections],
         commentaryCollection: g.commentaryCollection,
       });
+    }
   };
 
   const toggle = (key: GuideSectionKey) => {
@@ -102,6 +107,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
     if (!draft) return;
     const sections = draft.order.filter((k) => draft.on.includes(k));
     if (!saveGuide(draft.id, draft.name, sections, draft.commentaryCollection)) return;
+    playSound("complete");
     setDraft(null);
   };
 
@@ -126,20 +132,27 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             className="w-72 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
           />
-          <ul className="space-y-1">
+          <ul className="fx-stagger space-y-1">
             {draft.order.map((key, i) => {
               const checked = draft.on.includes(key);
               const title = SECTION_TITLES.get(key) ?? key;
               return (
-                <li key={key} className="flex items-center gap-2">
-                  <label className="flex min-w-0 flex-1 items-center gap-2 text-xs text-ink">
+                <li
+                  key={key}
+                  className="flex items-center gap-2"
+                  style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+                >
+                  <label className="switch min-w-0 flex-1 text-xs text-ink">
                     <input
                       type="checkbox"
                       checked={checked}
-                      onChange={() => toggle(key)}
-                      className="accent-[var(--stained-sapphire)]"
+                      onChange={() => {
+                        toggle(key);
+                        playSound(checked ? "toggle-off" : "toggle-on");
+                      }}
                     />
-                    {title}
+                    <span className="switch-track" aria-hidden="true" />
+                    <span className="truncate">{title}</span>
                   </label>
                   <button
                     type="button"
@@ -147,7 +160,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
                     onClick={() => move(key, -1)}
                     title="Move up the guide"
                     aria-label={`Move ${title} up the guide`}
-                    className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                   >
                     ▲
                   </button>
@@ -157,7 +170,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
                     onClick={() => move(key, 1)}
                     title="Move down the guide"
                     aria-label={`Move ${title} down the guide`}
-                    className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                   >
                     ▼
                   </button>
@@ -201,13 +214,16 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
               type="button"
               onClick={save}
               disabled={!draft.name.trim() || draft.on.length === 0}
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {draft.id ? "Save guide" : "Create guide"}
             </button>
             <button
               type="button"
-              onClick={() => setDraft(null)}
+              onClick={() => {
+                playSound("close");
+                setDraft(null);
+              }}
               className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Cancel
@@ -267,7 +283,7 @@ export default function GuideEditorPane({ guideId }: { guideId: string | null })
         <button
           type="button"
           onClick={startNew}
-          className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           New guide
         </button>

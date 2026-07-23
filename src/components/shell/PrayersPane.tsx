@@ -21,6 +21,7 @@ import {
   restoreRequest,
   updateRequest,
 } from "@/lib/prayers";
+import { playSound } from "@/lib/sound";
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number, verse?: number) {
@@ -62,7 +63,7 @@ export default function PrayersPane() {
 
       <form
         onSubmit={addList}
-        className="no-print flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-4"
+        className="no-print glass flex flex-wrap items-center gap-2 rounded-[4px] p-4"
       >
         <input
           value={listTitle}
@@ -73,20 +74,21 @@ export default function PrayersPane() {
         />
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
           Begin a list
         </button>
       </form>
 
       {due.length > 0 && (
-        <section className="rounded-[4px] border border-rule bg-surface p-5">
+        <section className="glass rounded-[4px] p-5">
           <h3 className="small-caps mb-3 text-sm text-muted">Appointed today</h3>
-          <ul className="space-y-2">
-            {due.map(({ list, request }) => (
+          <ul className="fx-stagger space-y-2">
+            {due.map(({ list, request }, i) => (
               <li
                 key={request.id}
                 className="flex items-center justify-between gap-3 rounded-[4px] border border-rule bg-paper px-4 py-2.5 text-sm"
+                style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
               >
                 <div className="min-w-0">
                   <span className="font-medium">{request.title}</span>
@@ -95,8 +97,11 @@ export default function PrayersPane() {
                   </span>
                 </div>
                 <button
-                  onClick={() => markPrayed(list.id, request.id)}
-                  className="no-print shrink-0 rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
+                  onClick={() => {
+                    markPrayed(list.id, request.id);
+                    playSound("complete");
+                  }}
+                  className="no-print fx-press shrink-0 rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
                 >
                   Pray now
                 </button>
@@ -220,7 +225,7 @@ function ListCard({ list }: { list: PrayerList }) {
 
       <form
         onSubmit={submit}
-        className="no-print mb-4 grid gap-2 rounded-[4px] border border-rule bg-surface p-4 sm:grid-cols-2"
+        className="no-print glass mb-4 grid gap-2 rounded-[4px] p-4 sm:grid-cols-2"
       >
         <input
           value={form.title}
@@ -270,7 +275,7 @@ function ListCard({ list }: { list: PrayerList }) {
         <div className="flex gap-2 sm:col-span-2">
           <button
             type="submit"
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
           >
             {editingId ? "Save request" : "Carry this request"}
           </button>
@@ -280,8 +285,9 @@ function ListCard({ list }: { list: PrayerList }) {
               onClick={() => {
                 setEditingId(null);
                 setForm(EMPTY_FORM);
+                playSound("close");
               }}
-              className="rounded-[4px] border border-rule px-4 py-2 text-sm hover:bg-paper"
+              className="fx-press rounded-[4px] border border-rule px-4 py-2 text-sm hover:bg-paper"
             >
               Set aside the edit
             </button>
@@ -292,9 +298,9 @@ function ListCard({ list }: { list: PrayerList }) {
       {active.length === 0 ? (
         <p className="text-sm text-muted">No requests carried here yet.</p>
       ) : (
-        <ul className="space-y-2">
-          {active.map((r) => (
-            <RequestRow key={r.id} list={list} request={r} onEdit={() => startEdit(r)} />
+        <ul className="fx-stagger space-y-2">
+          {active.map((r, i) => (
+            <RequestRow key={r.id} list={list} request={r} index={i} onEdit={() => startEdit(r)} />
           ))}
         </ul>
       )}
@@ -306,7 +312,10 @@ function ListCard({ list }: { list: PrayerList }) {
           <button
             type="button"
             aria-expanded={showAnswered}
-            onClick={() => setShowAnswered((v) => !v)}
+            onClick={() => {
+              playSound(showAnswered ? "close" : "open");
+              setShowAnswered((v) => !v);
+            }}
             className="no-print cursor-pointer text-xs text-muted"
           >
             {answered.length} answered request{answered.length === 1 ? "" : "s"}
@@ -345,10 +354,13 @@ function ListCard({ list }: { list: PrayerList }) {
 function RequestRow({
   list,
   request,
+  index,
   onEdit,
 }: {
   list: PrayerList;
   request: PrayerRequest;
+  /** Position in the active list, for the stagger cascade. */
+  index: number;
   onEdit: () => void;
 }) {
   const [answering, setAnswering] = useState(false);
@@ -361,7 +373,10 @@ function RequestRow({
     : "not yet prayed";
 
   return (
-    <li className="rounded-[4px] border border-rule bg-surface px-4 py-3 text-sm">
+    <li
+      className="glass glass-hover rounded-[4px] px-4 py-3 text-sm"
+      style={{ "--i": Math.min(index, 8) } as React.CSSProperties}
+    >
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <span className={`font-medium ${due ? "text-ink" : "text-muted"}`}>{request.title}</span>
@@ -386,27 +401,33 @@ function RequestRow({
         </div>
         <div className="no-print flex shrink-0 gap-2">
           <button
-            onClick={() => markPrayed(list.id, request.id)}
-            className="rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-paper"
+            onClick={() => {
+              markPrayed(list.id, request.id);
+              playSound("complete");
+            }}
+            className="fx-press rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-paper"
           >
             Pray now
           </button>
           <button
             onClick={onEdit}
-            className="rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
+            className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
           >
             Edit
           </button>
           <button
-            onClick={() => setAnswering((v) => !v)}
-            className="rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
+            onClick={() => {
+              playSound(answering ? "close" : "open");
+              setAnswering((v) => !v);
+            }}
+            className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
           >
             Answered
           </button>
           <button
             onClick={() => removeRequest(list.id, request.id)}
             aria-label={`Remove ${request.title}`}
-            className="rounded-[4px] border border-rule px-2 py-1.5 text-xs text-ruby hover:bg-paper"
+            className="fx-press rounded-[4px] border border-rule px-2 py-1.5 text-xs text-ruby hover:bg-paper"
           >
             ✕
           </button>
@@ -418,8 +439,9 @@ function RequestRow({
           onSubmit={(e) => {
             e.preventDefault();
             markAnswered(list.id, request.id, note.trim() || undefined);
+            playSound("complete");
           }}
-          className="no-print mt-2 flex gap-2"
+          className="no-print fx-fade mt-2 flex gap-2"
         >
           <input
             autoFocus

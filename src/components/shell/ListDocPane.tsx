@@ -17,6 +17,7 @@ import { useRecord } from "@/lib/hooks";
 import { copyReferences } from "@/lib/powerLookup";
 import { buildWordFind, puzzleWords, type WordFind } from "@/lib/puzzle";
 import { getRights } from "@/lib/rights";
+import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -56,6 +57,7 @@ export default function ListDocPane({ docId }: { docId: string }) {
       .map((it) => ({ book: it.book, chapter: it.chapter, from: it.verse }));
     void copyReferences(refs).then((ok) => {
       if (!ok) return;
+      playSound("complete");
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     });
@@ -75,6 +77,7 @@ export default function ListDocPane({ docId }: { docId: string }) {
       .join("");
     void copyStyled(text, html).then((ok) => {
       if (!ok) return;
+      playSound("complete");
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     });
@@ -90,6 +93,7 @@ export default function ListDocPane({ docId }: { docId: string }) {
     navigator.clipboard
       ?.writeText(text)
       .then(() => {
+        playSound("complete");
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1500);
       })
@@ -106,6 +110,7 @@ export default function ListDocPane({ docId }: { docId: string }) {
     const next = buildWordFind(puzzleWords(entries));
     setPuzzle(next);
     setPuzzleFailed(next === null);
+    playSound(next === null ? "error" : "open");
   };
 
   if (puzzle) {
@@ -181,16 +186,16 @@ export default function ListDocPane({ docId }: { docId: string }) {
           )}
           {doc.kind === "bibliography" && doc.items.length > 0 && (
             <>
-              <span className="no-print ml-3 inline-flex items-center gap-1.5" role="group" aria-label="Citation style">
+              <span className="no-print seg ml-3" role="group" aria-label="Citation style">
                 {BIB_STYLES.map((s) => (
                   <button
                     key={s.key}
                     type="button"
                     aria-pressed={bibStyle === s.key}
-                    onClick={() => setBibStyle(s.key)}
-                    className={`text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                      bibStyle === s.key ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
-                    }`}
+                    onClick={() => {
+                      setBibStyle(s.key);
+                      playSound("navigate");
+                    }}
                   >
                     {s.label}
                   </button>
@@ -279,7 +284,7 @@ function RowButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="px-1 leading-none hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+      className="fx-press px-1 leading-none hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
     >
       {glyph}
     </button>
@@ -405,7 +410,7 @@ function NoteLine({ note, onSave }: { note?: string; onSave: (note: string) => v
         if (e.key === "Enter") commit();
         if (e.key === "Escape") setEditing(false);
       }}
-      className="mt-0.5 block w-full border border-rule bg-paper px-2 py-1 text-[0.72rem] focus:outline focus:outline-2 focus:outline-sapphire"
+      className="fx-fade mt-0.5 block w-full border border-rule bg-paper px-2 py-1 text-[0.72rem] focus:outline focus:outline-2 focus:outline-sapphire"
     />
   );
 }
@@ -438,14 +443,20 @@ function PuzzleView({
           <PrintButton className="ml-3" />
           <button
             type="button"
-            onClick={onRegenerate}
+            onClick={() => {
+              playSound("navigate");
+              onRegenerate();
+            }}
             className="ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             New puzzle
           </button>
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              playSound("close");
+              onClose();
+            }}
             className="ml-3 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Back to the list

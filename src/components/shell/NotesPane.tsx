@@ -12,6 +12,7 @@ import {
   type MarginNote,
   type NoteFacets,
 } from "@/lib/marginalia";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 const NO_FACETS: NoteFacets = { notebook: null, book: null, anchor: null, date: null, scope: null };
@@ -159,7 +160,10 @@ export default function NotesPane() {
           {active && (
             <button
               type="button"
-              onClick={() => setFacets(NO_FACETS)}
+              onClick={() => {
+                setFacets(NO_FACETS);
+                playSound("close");
+              }}
               className="text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Clear the filter
@@ -176,9 +180,13 @@ export default function NotesPane() {
             No note answers this filter.
           </p>
         ) : (
-          <ul className="mx-auto max-w-prose px-6 py-2">
-            {shown.map((n) => (
-              <li key={n.id} className="border-b border-rule/60">
+          <ul className="fx-stagger mx-auto max-w-prose px-6 py-2">
+            {shown.map((n, i) => (
+              <li
+                key={n.id}
+                className="border-b border-rule/60"
+                style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+              >
                 <button
                   type="button"
                   onClick={() => open(n)}
@@ -187,7 +195,7 @@ export default function NotesPane() {
                       ? `Open ${getBook(n.book)?.name ?? n.book} ${n.chapter}:${n.verse}`
                       : "Open this entry in the journal"
                   }
-                  className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="small-caps text-sm font-medium text-sapphire">
                     {isAnchored(n)
@@ -238,7 +246,10 @@ function FacetRow({
       <button
         type="button"
         aria-pressed={active}
-        onClick={onToggle}
+        onClick={() => {
+          playSound(active ? "toggle-off" : "toggle-on");
+          onToggle();
+        }}
         className={`min-w-0 flex-1 truncate text-left text-[0.8rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
           active ? "font-semibold text-sapphire" : "text-ink"
         }`}

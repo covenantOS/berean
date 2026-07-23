@@ -16,6 +16,7 @@ import {
   type MemoryPassage,
   type MemoryReview,
 } from "@/lib/memory";
+import { playSound } from "@/lib/sound";
 
 /**
  * The Memory pane: the spaced-review trainer as a workspace tab, moved
@@ -52,6 +53,9 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
   const grade = (result: MemoryReview["result"]) => {
     if (!drill) return;
     recordReview(drill.id, result);
+    /* A held passage rings the completion figure; the others carry the
+     * sitting forward to the next due passage with a single note. */
+    playSound(result === "held" ? "complete" : "navigate");
     const next = due.find((p) => p.id !== drill.id);
     setDrillId(next?.id ?? null);
   };
@@ -75,7 +79,7 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
 
       <form
         onSubmit={add}
-        className="flex flex-wrap items-center gap-2 rounded-[4px] border border-rule bg-surface p-4"
+        className="glass flex flex-wrap items-center gap-2 rounded-[4px] p-4"
       >
         <select
           value={book}
@@ -120,7 +124,7 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
         />
         <button
           type="submit"
-          className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
           Take it up
         </button>
@@ -129,11 +133,15 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
       {due.length > 0 && (
         <section>
           <h3 className="small-caps mb-2 text-sm text-muted">Due for review</h3>
-          <ul className="space-y-3">
-            {due.map((p) => {
+          <ul className="fx-stagger space-y-3">
+            {due.map((p, i) => {
               const b = getBook(p.book);
               return (
-                <li key={p.id} className="rounded-[4px] border border-rule bg-surface p-4">
+                <li
+                  key={p.id}
+                  className="glass glass-hover rounded-[4px] p-4"
+                  style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+                >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <button
                       type="button"
@@ -145,20 +153,29 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
                     </button>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => setDrillId(p.id)}
-                        className="rounded-[4px] border border-sapphire px-3 py-1.5 text-xs font-medium text-sapphire hover:bg-paper"
+                        onClick={() => {
+                          playSound("open");
+                          setDrillId(p.id);
+                        }}
+                        className="fx-press rounded-[4px] border border-sapphire px-3 py-1.5 text-xs font-medium text-sapphire hover:bg-paper"
                       >
                         Drill
                       </button>
                       <button
-                        onClick={() => recordReview(p.id, "held")}
-                        className="rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-paper"
+                        onClick={() => {
+                          recordReview(p.id, "held");
+                          playSound("complete");
+                        }}
+                        className="fx-press rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-paper"
                       >
                         It held
                       </button>
                       <button
-                        onClick={() => recordReview(p.id, "shaky")}
-                        className="rounded-[4px] border border-amber px-3 py-1.5 text-xs font-medium text-amber hover:bg-paper"
+                        onClick={() => {
+                          recordReview(p.id, "shaky");
+                          playSound("navigate");
+                        }}
+                        className="fx-press rounded-[4px] border border-amber px-3 py-1.5 text-xs font-medium text-amber hover:bg-paper"
                       >
                         Still shaky
                       </button>
@@ -181,13 +198,14 @@ export default function MemoryPane({ passageId }: { passageId?: string }) {
         ) : held.length === 0 ? (
           <p className="text-sm text-muted">Everything is due above.</p>
         ) : (
-          <ul className="space-y-2">
-            {held.map((p) => {
+          <ul className="fx-stagger space-y-2">
+            {held.map((p, i) => {
               const b = getBook(p.book);
               return (
                 <li
                   key={p.id}
-                  className="flex items-center justify-between gap-3 rounded-[4px] border border-rule bg-surface px-4 py-2.5 text-sm"
+                  className="glass glass-hover flex items-center justify-between gap-3 rounded-[4px] px-4 py-2.5 text-sm"
+                  style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
                 >
                   <div>
                     <button
@@ -300,7 +318,13 @@ function Drill({
     <div className="mx-auto max-w-3xl">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-editorial text-xl font-bold">{reference}</h2>
-        <button onClick={onClose} className="text-xs text-muted hover:text-ink">
+        <button
+          onClick={() => {
+            playSound("close");
+            onClose();
+          }}
+          className="text-xs text-muted hover:text-ink"
+        >
           Back to the list
         </button>
       </div>
@@ -311,8 +335,11 @@ function Drill({
             key={m.key}
             role="tab"
             aria-selected={mode === m.key}
-            onClick={() => setMode(m.key)}
-            className={`rounded-[4px] border px-3 py-1.5 text-xs font-medium ${
+            onClick={() => {
+              setMode(m.key);
+              playSound("navigate");
+            }}
+            className={`fx-press rounded-[4px] border px-3 py-1.5 text-xs font-medium ${
               mode === m.key
                 ? "border-ink bg-ink text-white"
                 : "border-rule bg-surface text-ink hover:bg-paper"
@@ -323,7 +350,7 @@ function Drill({
         ))}
       </div>
 
-      <div className="mb-6 rounded-[4px] border border-rule bg-surface p-5">
+      <div className="glass mb-6 rounded-[4px] p-5">
         {failed ? (
           <p className="text-sm text-muted">The text could not be read. Open the passage in the reader instead.</p>
         ) : verses === null ? (
@@ -331,7 +358,12 @@ function Drill({
         ) : mode === "recall" && !revealed ? (
           <RecallPrompt />
         ) : (
-          <div className="font-editorial space-y-2 text-base leading-relaxed">
+          /* Keyed on mode and reveal so the text crossfades when the drill
+           * changes what it asks; the turned words live on the drill. */
+          <div
+            key={`${mode}-${revealed}`}
+            className="font-editorial fx-fade space-y-2 text-base leading-relaxed"
+          >
             {verses.map((v, vi) => {
               const words = v.text.split(/\s+/).filter(Boolean);
               return (
@@ -370,7 +402,10 @@ function Drill({
         {verses !== null && !failed && (
           <div className="mt-4">
             <button
-              onClick={() => setRevealed((r) => !r)}
+              onClick={() => {
+                playSound(revealed ? "toggle-off" : "toggle-on");
+                setRevealed((r) => !r);
+              }}
               className="text-xs text-sapphire hover:underline"
             >
               {revealed ? "Hide the text" : mode === "recall" ? "Set the text beside you" : "Reveal the text"}
@@ -383,19 +418,19 @@ function Drill({
         <span className="small-caps mr-1 text-xs text-muted">How did it go?</span>
         <button
           onClick={() => onGrade("again")}
-          className="rounded-[4px] border border-ruby px-3 py-1.5 text-xs font-medium text-ruby hover:bg-surface"
+          className="fx-press rounded-[4px] border border-ruby px-3 py-1.5 text-xs font-medium text-ruby hover:bg-surface"
         >
           Begin again
         </button>
         <button
           onClick={() => onGrade("shaky")}
-          className="rounded-[4px] border border-amber px-3 py-1.5 text-xs font-medium text-amber hover:bg-surface"
+          className="fx-press rounded-[4px] border border-amber px-3 py-1.5 text-xs font-medium text-amber hover:bg-surface"
         >
           Still shaky
         </button>
         <button
           onClick={() => onGrade("held")}
-          className="rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
+          className="fx-press rounded-[4px] border border-emerald px-3 py-1.5 text-xs font-medium text-emerald hover:bg-surface"
         >
           It held
         </button>
@@ -407,7 +442,7 @@ function Drill({
 /** Full recall: the text stays hidden while the reader writes or recites. */
 function RecallPrompt() {
   return (
-    <div>
+    <div className="fx-fade">
       <p className="mb-3 text-sm text-muted">
         Write it out or recite it aloud, then set the text beside you and grade yourself honestly.
       </p>

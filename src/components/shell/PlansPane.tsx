@@ -20,6 +20,7 @@ import {
   toggleDay,
 } from "@/lib/plans";
 import { personalbooks } from "@/lib/personalbooks";
+import { playSound } from "@/lib/sound";
 import { todayISO } from "@/lib/almanac";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -53,9 +54,9 @@ export default function PlansPane() {
       </header>
 
       {rows.length > 0 && (
-        <section className="space-y-4">
+        <section className="fx-stagger space-y-4">
           <h3 className="small-caps text-sm text-muted">Your plans</h3>
-          {rows.map((plan) => {
+          {rows.map((plan, planIndex) => {
             const gen = generatorFor(plan);
             if (!gen) return null;
             const day = Math.min(currentDay(plan), gen.days);
@@ -65,7 +66,11 @@ export default function PlansPane() {
             const progress = planProgress(plan, gen);
             const behind = isBehind(plan, gen) && progress.done < progress.total;
             return (
-              <div key={plan.id} className="rounded-[4px] border border-rule bg-surface p-5">
+              <div
+                key={plan.id}
+                className="glass rounded-[4px] p-5"
+                style={{ "--i": Math.min(planIndex + 1, 8) } as React.CSSProperties}
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <h4 className="font-editorial text-lg font-bold">{gen.name}</h4>
@@ -80,14 +85,19 @@ export default function PlansPane() {
                       <button
                         onClick={() => adjustPlan(plan)}
                         title="Redistribute the unread remainder over the days that remain, starting today"
-                        className="rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium text-sapphire hover:bg-paper"
+                        className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium text-sapphire hover:bg-paper"
                       >
                         Catch up
                       </button>
                     )}
                     <button
-                      onClick={() => toggleDay(plan, day)}
-                      className={`rounded-[4px] border px-3 py-1.5 text-xs font-medium ${
+                      onClick={() => {
+                        toggleDay(plan, day);
+                        /* Marking the day read rings the completion figure;
+                         * unmarking answers with the off figure. */
+                        playSound(done ? "toggle-off" : "complete");
+                      }}
+                      className={`fx-press rounded-[4px] border px-3 py-1.5 text-xs font-medium ${
                         done ? "border-emerald text-emerald" : "border-rule hover:bg-paper"
                       }`}
                     >
@@ -95,7 +105,7 @@ export default function PlansPane() {
                     </button>
                     <button
                       onClick={() => plans.remove(plan.id)}
-                      className="rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
+                      className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
                     >
                       Lay aside
                     </button>
@@ -110,8 +120,14 @@ export default function PlansPane() {
                   aria-label={`${gen.name} progress`}
                 >
                   <div
-                    className="h-full bg-emerald"
-                    style={{ width: `${(progress.done / progress.total) * 100}%` }}
+                    className="h-full transition-[width]"
+                    style={{
+                      width: `${(progress.done / progress.total) * 100}%`,
+                      /* The stained idiom: light filling the bar sapphire to
+                       * amber, the switch's own wash. */
+                      background:
+                        "linear-gradient(100deg, color-mix(in srgb, var(--stained-sapphire) 70%, transparent), color-mix(in srgb, var(--stained-amber) 70%, transparent))",
+                    }}
                   />
                 </div>
                 <p className="small-caps mt-1 text-xs text-muted">
@@ -169,11 +185,12 @@ export default function PlansPane() {
 
       <section>
         <h3 className="small-caps mb-2 text-sm text-muted">Begin a plan</h3>
-        <ul className="space-y-3">
-          {GENERATORS.map((g) => (
+        <ul className="fx-stagger space-y-3">
+          {GENERATORS.map((g, i) => (
             <li
               key={g.key}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-[4px] border border-rule bg-surface p-4"
+              className="glass glass-hover flex flex-wrap items-center justify-between gap-3 rounded-[4px] p-4"
+              style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
             >
               <div>
                 <p className="font-editorial text-lg font-bold">{g.name}</p>
@@ -185,7 +202,7 @@ export default function PlansPane() {
                 onClick={() =>
                   plans.create({ generatorKey: g.key, startDate: todayISO(), completedDays: [] })
                 }
-                className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+                className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
               >
                 Begin today
               </button>
@@ -270,7 +287,7 @@ function CustomPlanForm() {
   return (
     <section>
       <h3 className="small-caps mb-2 text-sm text-muted">Build a plan</h3>
-      <form onSubmit={begin} className="space-y-3 rounded-[4px] border border-rule bg-surface p-4">
+      <form onSubmit={begin} className="glass space-y-3 rounded-[4px] p-4">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -402,7 +419,7 @@ function CustomPlanForm() {
           <button
             type="submit"
             disabled={source === "book" && (!division || division.sessions.length === 0)}
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             Begin plan
           </button>

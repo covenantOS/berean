@@ -20,6 +20,7 @@ import {
   type WorkflowDefinition,
   type WorkflowRun,
 } from "@/lib/workflows";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 /**
@@ -60,7 +61,7 @@ function handoff(run: WorkflowRun, action: WorkflowActionKind) {
 }
 
 const BUTTON =
-  "border border-rule bg-paper px-3 py-1.5 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press border border-rule bg-paper px-3 py-1.5 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 export default function WorkflowPane({ runId }: { runId: string }) {
   const run = useRecord(runs, runId);
@@ -83,6 +84,7 @@ export default function WorkflowPane({ runId }: { runId: string }) {
 
   const saveCapture = () => {
     if (!captureNote(run, note)) return;
+    playSound("complete");
     setNote("");
     setSavedAt(run.currentStep);
   };
@@ -105,19 +107,28 @@ export default function WorkflowPane({ runId }: { runId: string }) {
           className="mt-2 h-1 w-full bg-rule"
         >
           <div
-            className="h-full bg-sapphire transition-[width]"
-            style={{ width: `${(done / def.steps.length) * 100}%` }}
+            className="h-full transition-[width]"
+            style={{
+              width: `${(done / def.steps.length) * 100}%`,
+              /* The honest fraction in the stained idiom: light filling the
+               * bar sapphire to amber, the switch's own wash. */
+              background:
+                "linear-gradient(100deg, color-mix(in srgb, var(--stained-sapphire) 70%, transparent), color-mix(in srgb, var(--stained-amber) 70%, transparent))",
+            }}
           />
         </div>
       </header>
 
       {/* The steps, with the finished ones marked; a step revisits freely. */}
-      <ol className="space-y-0.5">
+      <ol className="fx-stagger space-y-0.5">
         {def.steps.map((s, i) => (
-          <li key={i}>
+          <li key={i} style={{ "--i": Math.min(i, 8) } as React.CSSProperties}>
             <button
               type="button"
-              onClick={() => goToStep(run.id, i)}
+              onClick={() => {
+                goToStep(run.id, i);
+                playSound("navigate");
+              }}
               aria-current={i === run.currentStep ? "step" : undefined}
               className={`flex w-full items-baseline gap-2 px-2 py-1 text-left text-[0.8rem] hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                 i === run.currentStep ? "font-medium text-ink" : "text-muted"
@@ -132,13 +143,20 @@ export default function WorkflowPane({ runId }: { runId: string }) {
         ))}
       </ol>
 
-      <section aria-label={`Step ${run.currentStep + 1}: ${step.title}`} className="space-y-3 border border-rule bg-paper p-4">
+      <section aria-label={`Step ${run.currentStep + 1}: ${step.title}`} className="glass space-y-3 rounded-[4px] p-4">
         <h3 className="font-editorial text-base font-semibold">
           Step {run.currentStep + 1}: {step.title}
         </h3>
         <p className="text-[0.85rem] leading-relaxed text-ink">{step.prompt}</p>
         {action && (
-          <button type="button" onClick={() => handoff(run, action)} className={BUTTON}>
+          <button
+            type="button"
+            onClick={() => {
+              playSound("open");
+              handoff(run, action);
+            }}
+            className={BUTTON}
+          >
             {ACTION_LABELS[action]}
           </button>
         )}
@@ -172,7 +190,10 @@ export default function WorkflowPane({ runId }: { runId: string }) {
       <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={() => goToStep(run.id, run.currentStep - 1)}
+          onClick={() => {
+            goToStep(run.id, run.currentStep - 1);
+            playSound("navigate");
+          }}
           disabled={run.currentStep === 0}
           className={BUTTON}
         >
@@ -180,7 +201,10 @@ export default function WorkflowPane({ runId }: { runId: string }) {
         </button>
         <button
           type="button"
-          onClick={() => completeStep(run.id, run.currentStep)}
+          onClick={() => {
+            completeStep(run.id, run.currentStep);
+            playSound("complete");
+          }}
           disabled={complete}
           className={BUTTON}
         >
@@ -188,7 +212,10 @@ export default function WorkflowPane({ runId }: { runId: string }) {
         </button>
         <button
           type="button"
-          onClick={() => goToStep(run.id, run.currentStep + 1)}
+          onClick={() => {
+            goToStep(run.id, run.currentStep + 1);
+            playSound("navigate");
+          }}
           disabled={run.currentStep >= def.steps.length - 1}
           className={BUTTON}
         >
@@ -197,7 +224,7 @@ export default function WorkflowPane({ runId }: { runId: string }) {
       </div>
 
       {complete && (
-        <p className="border-t border-rule pt-3 text-[0.8rem] leading-relaxed text-muted">
+        <p className="fx-fade border-t border-rule pt-3 text-[0.8rem] leading-relaxed text-muted">
           The study is complete. Its notes remain filed under {runNotebook(run)} in the Documents
           rail.
         </p>
@@ -237,10 +264,12 @@ function StartRow({
     const raw = subject.trim();
     if (!validateSubject(def.subject, raw)) {
       setRejected(true);
+      playSound("error");
       return;
     }
     const run = startRun(def.id, raw);
     if (!run) return;
+    playSound("open");
     setRejected(false);
     setSubject("");
     dispatch({ type: "openWorkflow", runId: run.id, title: `${def.name}: ${run.subject}` });
@@ -323,6 +352,7 @@ export function WorkflowsSection() {
 
   const openRun = (run: WorkflowRun) => {
     const def = workflowFor(run.workflowId);
+    playSound("open");
     dispatch({
       type: "openWorkflow",
       runId: run.id,
@@ -344,15 +374,21 @@ export function WorkflowsSection() {
             key={w.id}
             def={w}
             custom
-            onEdit={() => dispatch({ type: "openWorkflowEditor", workflowId: w.id })}
+            onEdit={() => {
+              playSound("open");
+              dispatch({ type: "openWorkflowEditor", workflowId: w.id });
+            }}
             onDelete={() => customWorkflows.remove(w.id)}
           />
         ))}
       </ul>
       <button
         type="button"
-        onClick={() => dispatch({ type: "openWorkflowEditor" })}
-        className="mx-3 mt-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        onClick={() => {
+          playSound("open");
+          dispatch({ type: "openWorkflowEditor" });
+        }}
+        className="fx-press mx-3 mt-1 border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         Compose a workflow
       </button>

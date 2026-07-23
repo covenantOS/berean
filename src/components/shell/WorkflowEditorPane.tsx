@@ -9,6 +9,7 @@ import {
   type WorkflowSubjectKind,
 } from "@/lib/workflows";
 import { useCollection } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 
 /**
  * The Workflow Editor: the compose surface for custom workflows, the Guide
@@ -87,12 +88,17 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
     if (w) setDraft(toDraft(w.id, w));
   }, [workflowId]);
 
-  const startNew = () =>
+  const startNew = () => {
+    playSound("open");
     setDraft({ id: null, name: "", description: "", subject: "passage", steps: [newStep()] });
+  };
 
   const startEdit = (id: string) => {
     const w = customWorkflows.get(id);
-    if (w) setDraft(toDraft(w.id, w));
+    if (w) {
+      playSound("open");
+      setDraft(toDraft(w.id, w));
+    }
   };
 
   const setStep = (key: string, patch: Partial<DraftStep>) => {
@@ -149,6 +155,7 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
       })
     )
       return;
+    playSound("complete");
     setDraft(null);
   };
 
@@ -197,9 +204,13 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
             className={`w-full max-w-xl ${INPUT}`}
           />
 
-          <ol className="space-y-2">
+          <ol className="fx-stagger space-y-2">
             {draft.steps.map((s, i) => (
-              <li key={s.key} className="space-y-1.5 border border-rule bg-paper p-3">
+              <li
+                key={s.key}
+                className="glass space-y-1.5 rounded-[4px] p-3"
+                style={{ "--i": Math.min(i, 8) } as React.CSSProperties}
+              >
                 <div className="flex items-center gap-2">
                   <span className="w-4 shrink-0 text-[0.68rem] text-muted">{i + 1}.</span>
                   <input
@@ -215,7 +226,7 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
                     onClick={() => move(s.key, -1)}
                     title="Move up the workflow"
                     aria-label={`Move step ${i + 1} up the workflow`}
-                    className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                   >
                     ▲
                   </button>
@@ -225,7 +236,7 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
                     onClick={() => move(s.key, 1)}
                     title="Move down the workflow"
                     aria-label={`Move step ${i + 1} down the workflow`}
-                    className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                   >
                     ▼
                   </button>
@@ -264,14 +275,17 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
                       </option>
                     ))}
                   </select>
-                  <label className="flex items-center gap-1.5 text-[0.68rem] text-muted">
+                  <label className="switch text-[0.68rem] text-muted">
                     <input
                       type="checkbox"
                       checked={s.capture === true}
-                      onChange={(e) => setStep(s.key, { capture: e.target.checked || undefined })}
-                      className="accent-[var(--stained-sapphire)]"
+                      onChange={(e) => {
+                        setStep(s.key, { capture: e.target.checked || undefined });
+                        playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                      }}
                     />
-                    Invites a note
+                    <span className="switch-track" aria-hidden="true" />
+                    <span>Invites a note</span>
                   </label>
                 </div>
               </li>
@@ -280,7 +294,7 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
           <button
             type="button"
             onClick={() => draft && setDraft({ ...draft, steps: [...draft.steps, newStep()] })}
-            className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Add a step
           </button>
@@ -290,13 +304,16 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
               type="button"
               onClick={save}
               disabled={invalid !== null}
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {draft.id ? "Save workflow" : "Create workflow"}
             </button>
             <button
               type="button"
-              onClick={() => setDraft(null)}
+              onClick={() => {
+                playSound("close");
+                setDraft(null);
+              }}
               className="px-2 py-1 text-xs text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Cancel
@@ -367,7 +384,7 @@ export default function WorkflowEditorPane({ workflowId }: { workflowId: string 
         <button
           type="button"
           onClick={startNew}
-          className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           New workflow
         </button>
