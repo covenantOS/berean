@@ -10,6 +10,7 @@ import {
   type CardEntry,
 } from "@/lib/cardHistory";
 import { canShareCard, shareCard } from "@/lib/shareCard";
+import { playSound } from "@/lib/sound";
 import {
   verseCardSvg,
   type VerseCardSize,
@@ -125,14 +126,17 @@ export default function MediaPane({
         const verses = data.passages[0]?.verses ?? [];
         if (verses.length === 0) {
           setCompose({ status: "error", message: "That verse is not in this text." });
+          playSound("error");
           return;
         }
         setCompose({
           status: "ready",
           card: { ...ref, text: verses.map((v) => v.text).join(" ") },
         });
+        playSound("complete");
       } catch {
         setCompose({ status: "error", message: "The passage could not be read." });
+        playSound("error");
       }
     },
     []
@@ -148,6 +152,7 @@ export default function MediaPane({
       setPicker({ book: slug, bookName, chapter: ch, verses: data.verses });
     } catch {
       setCompose({ status: "error", message: "The chapter could not be read." });
+      playSound("error");
     }
   }, []);
 
@@ -173,6 +178,7 @@ export default function MediaPane({
         status: "error",
         message: "Type a reference the canon knows, like John 3:16 or Psalm 23:1-3.",
       });
+      playSound("error");
       return;
     }
     setRefInput(formatPassageRef(parsed));
@@ -221,6 +227,7 @@ export default function MediaPane({
     if (!ready || !svg) return;
     downloadSvg(svg, cardFilename(ready));
     recordCard({ ...ready, size, theme, reference: showRef, translation: showTag });
+    playSound("complete");
   };
 
   /** The device's share sheet takes the card as an SVG file; a sheet that
@@ -230,6 +237,7 @@ export default function MediaPane({
     const outcome = await shareCard(svg, cardFilename(ready), reference);
     if (outcome === "shared") {
       recordCard({ ...ready, size, theme, reference: showRef, translation: showTag });
+      playSound("complete");
     } else if (outcome === "failed") {
       download();
     }
@@ -254,6 +262,7 @@ export default function MediaPane({
         text: e.text,
       },
     });
+    playSound("navigate");
   };
 
   /** A history row downloaded again, exactly as it was composed. */
@@ -265,12 +274,8 @@ export default function MediaPane({
       translation: e.translation,
     });
     downloadSvg(again, cardFilename(e));
+    playSound("complete");
   };
-
-  const toggle = (on: boolean) =>
-    `border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-      on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-    }`;
 
   return (
     <div className="mx-auto max-w-prose space-y-4">
@@ -302,18 +307,19 @@ export default function MediaPane({
       </form>
 
       {picker && (
-        <section>
+        <section className="fx-fade">
           <p className="small-caps text-[0.68rem] text-muted">
             {picker.bookName} {picker.chapter} · choose a verse
           </p>
-          <p className="mt-1.5 flex flex-wrap gap-1">
-            {picker.verses.map((v) => (
+          <p className="fx-stagger mt-1.5 flex flex-wrap gap-1">
+            {picker.verses.map((v, i) => (
               <button
                 key={v.verse}
                 type="button"
                 title={v.text}
                 onClick={() => pickVerse(v.verse)}
-                className="border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
+                className="fx-press border border-rule bg-paper px-1.5 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 {v.verse}
               </button>
@@ -329,52 +335,68 @@ export default function MediaPane({
         <section className="space-y-3">
           <div className="space-y-1.5">
             <p className="small-caps text-[0.68rem] text-muted">Frame</p>
-            <p className="flex flex-wrap items-center gap-1.5">
-              {SIZES.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  title={s.hint}
-                  aria-pressed={size === s.id}
-                  onClick={() => setSize(s.id)}
-                  className={toggle(size === s.id)}
-                >
-                  {s.label}
-                </button>
-              ))}
+            <p>
+              <span className="seg flex-wrap" role="group" aria-label="Frame size">
+                {SIZES.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    title={s.hint}
+                    aria-pressed={size === s.id}
+                    onClick={() => {
+                      setSize(s.id);
+                      playSound("navigate");
+                    }}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </span>
             </p>
             <p className="small-caps text-[0.68rem] text-muted">Light</p>
-            <p className="flex flex-wrap items-center gap-1.5">
-              {THEMES.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  aria-pressed={theme === t.id}
-                  onClick={() => setTheme(t.id)}
-                  className={toggle(theme === t.id)}
-                >
-                  {t.label}
-                </button>
-              ))}
+            <p>
+              <span className="seg" role="group" aria-label="Card light">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    aria-pressed={theme === t.id}
+                    onClick={() => {
+                      setTheme(t.id);
+                      playSound("navigate");
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </span>
             </p>
             <p className="small-caps text-[0.68rem] text-muted">Furniture</p>
-            <p className="flex flex-wrap items-center gap-1.5">
-              <button
-                type="button"
-                aria-pressed={showRef}
-                onClick={() => setShowRef(!showRef)}
-                className={toggle(showRef)}
-              >
-                Reference
-              </button>
-              <button
-                type="button"
-                aria-pressed={showTag}
-                onClick={() => setShowTag(!showTag)}
-                className={toggle(showTag)}
-              >
-                Translation tag
-              </button>
+            <p className="flex flex-wrap items-center gap-4">
+              <label className="switch text-[0.68rem] text-muted">
+                <input
+                  type="checkbox"
+                  checked={showRef}
+                  onChange={(e) => {
+                    setShowRef(e.target.checked);
+                    playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                  }}
+                />
+                <span className="switch-track" aria-hidden="true" />
+                <span>Reference</span>
+              </label>
+              <label className="switch text-[0.68rem] text-muted">
+                <input
+                  type="checkbox"
+                  checked={showTag}
+                  onChange={(e) => {
+                    setShowTag(e.target.checked);
+                    playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                  }}
+                />
+                <span className="switch-track" aria-hidden="true" />
+                <span>Translation tag</span>
+              </label>
             </p>
           </div>
 
@@ -411,9 +433,13 @@ export default function MediaPane({
           <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
             Recent cards
           </p>
-          <ul className="mt-2 space-y-1.5">
-            {history.map((e) => (
-              <li key={`${e.book}-${e.chapter}-${e.from}-${e.to}-${e.size}-${e.theme}-${e.at}`} className="flex items-baseline gap-2">
+          <ul className="fx-stagger mt-2 space-y-1.5">
+            {history.map((e, i) => (
+              <li
+                key={`${e.book}-${e.chapter}-${e.from}-${e.to}-${e.size}-${e.theme}-${e.at}`}
+                style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
+                className="flex items-baseline gap-2"
+              >
                 <button
                   type="button"
                   title="Restore this card in the composer"

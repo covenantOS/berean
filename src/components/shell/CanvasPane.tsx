@@ -28,6 +28,7 @@ import {
 } from "@/lib/canvas";
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 /**
@@ -72,7 +73,7 @@ type Drag =
     };
 
 const TOOL_BUTTON =
-  "border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 export default function CanvasPane({ canvasId }: { canvasId: string }) {
   const { dispatch } = useWorkspace();
@@ -219,6 +220,7 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
     const parsed = parsePassageRef(refInput);
     if (!parsed) {
       setPassageError("Give a reference like John 3:16-18.");
+      playSound("error");
       return;
     }
     const from = parsed.from ?? 1;
@@ -233,6 +235,7 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
       const verses = data?.passages[0]?.verses ?? [];
       if (verses.length === 0) {
         setPassageError("The text did not answer that reference.");
+        playSound("error");
         return;
       }
       const reference = formatPassageRef(parsed);
@@ -245,8 +248,10 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
         chapter: parsed.chapter,
       });
       setRefInput("");
+      playSound("complete");
     } catch {
       setPassageError("The passage could not be fetched.");
+      playSound("error");
     } finally {
       setPassageBusy(false);
     }
@@ -260,6 +265,7 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
     a.download = `${doc.name.replace(/[^\w-]+/g, "-").toLowerCase()}-canvas.svg`;
     a.click();
     URL.revokeObjectURL(a.href);
+    playSound("complete");
   };
 
   /* The view during a gesture: the dragged item wears its live offset so
@@ -365,8 +371,10 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
           aria-pressed={connectMode}
           title="Connect mode: click two items to join them with a line"
           onClick={() => {
-            setConnectMode((m) => !m);
+            const next = !connectMode;
+            setConnectMode(next);
             setPendingFrom(null);
+            playSound(next ? "toggle-on" : "toggle-off");
           }}
           className={`${TOOL_BUTTON} ${connectMode ? "border-sapphire text-sapphire" : ""}`}
         >
@@ -437,8 +445,10 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
                         onClick={() => {
                           removeItem(canvasId, it.id);
                           setSelectedConnector(null);
+                          playSound("close");
                         }}
-                        className="flex h-4 w-4 items-center justify-center rounded-full border border-rule bg-paper text-[0.6rem] leading-none text-muted hover:text-ruby"
+                        className="fx-scale flex h-4 w-4 items-center justify-center rounded-full border border-rule bg-paper text-[0.6rem] leading-none text-muted hover:text-ruby"
+                        style={{ "--fx-origin": "50% 50%" } as React.CSSProperties}
                       >
                         ×
                       </button>
@@ -463,7 +473,10 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
                 setEditing(null);
               }}
               onCancelEdit={() => setEditing(null)}
-              onRemove={() => removeItem(canvasId, item.id)}
+              onRemove={() => {
+                removeItem(canvasId, item.id);
+                playSound("close");
+              }}
               onOpenPassage={(book, chapter) => dispatch({ type: "openRef", book, chapter })}
             />
           ))}
@@ -597,6 +610,7 @@ export function CanvasesSection() {
   const openNew = () => {
     const c = createCanvas("Untitled canvas");
     dispatch({ type: "openCanvasDoc", canvasId: c.id, title: c.name });
+    playSound("navigate");
   };
 
   const commitRename = () => {

@@ -18,6 +18,7 @@ import {
 } from "@/lib/diagram";
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 import PrintButton from "./PrintButton";
 import { useWorkspace } from "./WorkspaceContext";
 
@@ -40,7 +41,7 @@ import { useWorkspace } from "./WorkspaceContext";
 const CHIP_MIME = "application/x-berean-diagram-chip";
 
 const CONTROL_BUTTON =
-  "border border-rule bg-paper px-1.5 py-0.5 text-[0.66rem] leading-none text-muted hover:border-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press border border-rule bg-paper px-1.5 py-0.5 text-[0.66rem] leading-none text-muted hover:border-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 export default function DiagramPane({ diagramId }: { diagramId: string }) {
   const { dispatch } = useWorkspace();
@@ -192,7 +193,11 @@ export default function DiagramPane({ diagramId }: { diagramId: string }) {
                         chip={chip}
                         doc={doc}
                         selected={selected === chip.id}
-                        onClick={() => setSelected(selected === chip.id ? null : chip.id)}
+                        onClick={() => {
+                          const opening = selected !== chip.id;
+                          setSelected(opening ? chip.id : null);
+                          playSound(opening ? "open" : "close");
+                        }}
                         onDragStart={(e) => {
                           e.dataTransfer.setData(CHIP_MIME, chip.id);
                           e.dataTransfer.effectAllowed = "move";
@@ -212,12 +217,19 @@ export default function DiagramPane({ diagramId }: { diagramId: string }) {
               <LabelTray
                 key={selected}
                 chip={chipsById.get(selected)!}
-                onLabel={(label) => setChipLabel(diagramId, selected, label)}
+                onLabel={(label) => {
+                  setChipLabel(diagramId, selected, label);
+                  playSound(label ? "toggle-on" : "toggle-off");
+                }}
                 onBreak={() => {
                   breakLine(diagramId, line.id, selected);
                   setSelected(null);
+                  playSound("close");
                 }}
-                onClose={() => setSelected(null)}
+                onClose={() => {
+                  setSelected(null);
+                  playSound("close");
+                }}
               />
             )}
           </div>
@@ -267,7 +279,7 @@ function ChipView({
           onClick();
         }
       }}
-      className={`flex cursor-grab select-none flex-col items-center rounded-[3px] border bg-paper px-1.5 py-1 ${
+      className={`fx-press flex cursor-grab select-none flex-col items-center rounded-[3px] border bg-paper px-1.5 py-1 ${
         selected ? "border-sapphire" : "border-rule"
       } focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire`}
     >
@@ -295,7 +307,7 @@ function LabelTray({
   onClose: () => void;
 }) {
   return (
-    <div className="no-print mt-1 flex flex-wrap items-center gap-1 rounded-[3px] border border-rule bg-surface px-2 py-1.5">
+    <div className="glass fx-rise no-print mt-1 flex flex-wrap items-center gap-1 rounded-[3px] px-2 py-1.5">
       <span className="small-caps mr-1 text-[0.62rem] font-semibold text-muted">
         Label “{chip.text}”
       </span>
@@ -358,6 +370,7 @@ export function DiagramsSection() {
     const parsed = parsePassageRef(refInput);
     if (!parsed) {
       setError("Give a reference like John 3:16-18.");
+      playSound("error");
       return;
     }
     const from = parsed.from ?? 1;
@@ -381,10 +394,12 @@ export function DiagramsSection() {
         | { error: string };
       if (!res.ok || "error" in data) {
         setError("error" in data ? data.error : "The text did not answer that reference.");
+        playSound("error");
         return;
       }
       if (data.words.length === 0) {
         setError("The text did not answer that reference.");
+        playSound("error");
         return;
       }
       const chips: DiagramChip[] = data.words.map((w) => ({
@@ -420,8 +435,10 @@ export function DiagramsSection() {
       });
       setRefInput("");
       dispatch({ type: "openDiagram", diagramId: doc.id, title: doc.name });
+      playSound("complete");
     } catch {
       setError("The passage could not be fetched.");
+      playSound("error");
     } finally {
       setBusy(false);
     }

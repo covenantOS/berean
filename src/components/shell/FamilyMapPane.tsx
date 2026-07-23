@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface MapNode {
@@ -222,7 +223,7 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
         aria-label={`Fewer generations ${label}`}
         disabled={value <= 0}
         onClick={() => set(value - 1)}
-        className="border border-rule bg-paper px-1.5 py-0.5 text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="fx-press border border-rule bg-paper px-1.5 py-0.5 text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         −
       </button>
@@ -232,7 +233,7 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
         aria-label={`More generations ${label}`}
         disabled={value >= MAX_DEPTH}
         onClick={() => set(value + 1)}
-        className="border border-rule bg-paper px-1.5 py-0.5 text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="fx-press border border-rule bg-paper px-1.5 py-0.5 text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         +
       </button>
@@ -258,7 +259,7 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
         <p className="text-xs text-muted">No such person in the factbook.</p>
       )}
       {load.status === "ready" && layout && (
-        <div className="relative" style={{ width: layout.width, height: layout.height }}>
+        <div className="fx-fade relative" style={{ width: layout.width, height: layout.height }}>
           <svg
             className="absolute inset-0"
             width={layout.width}
@@ -285,7 +286,7 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
               ? "border-dashed border-rule bg-paper text-muted"
               : isRoot
                 ? "border-amber bg-surface text-ink"
-                : "border-rule bg-surface text-ink";
+                : "glass glass-hover text-ink";
             return (
               <div
                 key={i}
@@ -297,13 +298,14 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
                   <div className={`${cell} ${look} relative`}>
                     <button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
                         dispatch({
                           type: "openFactbook",
                           entityId: p.node.id!,
                           title: p.node.name,
-                        })
-                      }
+                        });
+                        playSound("navigate");
+                      }}
                       className="w-full truncate text-[0.72rem] font-semibold leading-tight hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       {p.node.name}
@@ -311,7 +313,10 @@ export default function FamilyMapPane({ entityId }: { entityId: string }) {
                     {!p.node.repeated && !isRoot && (
                       <button
                         type="button"
-                        onClick={() => setRoot({ id: p.node.id! })}
+                        onClick={() => {
+                          setRoot({ id: p.node.id! });
+                          playSound("navigate");
+                        }}
                         className="text-[0.58rem] uppercase tracking-wide text-muted hover:text-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         root here

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { playSound } from "@/lib/sound";
 
 /**
  * The interactive atlas map. Land and projection arrive precomputed from the
@@ -56,26 +57,30 @@ export default function AtlasMap({
           aria-label="Find a place on the atlas"
           className="w-full max-w-xs rounded-[4px] border border-rule bg-surface px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
         />
-        <label className="flex items-center gap-2 text-sm text-muted">
+        <label className="switch text-sm text-muted">
           <input
             type="checkbox"
             checked={showAll}
-            onChange={(e) => setShowAll(e.target.checked)}
-            className="accent-[var(--stained-sapphire)]"
+            onChange={(e) => {
+              setShowAll(e.target.checked);
+              playSound(e.target.checked ? "toggle-on" : "toggle-off");
+            }}
           />
-          All {points.length.toLocaleString()} places (labels off)
+          <span className="switch-track" aria-hidden="true" />
+          <span>All {points.length.toLocaleString()} places (labels off)</span>
         </label>
       </div>
 
       {matches.length > 0 && (
-        <ul className="mb-3 flex flex-wrap gap-1.5">
-          {matches.map((m) => (
-            <li key={m.id}>
+        <ul className="fx-stagger mb-3 flex flex-wrap gap-1.5">
+          {matches.map((m, i) => (
+            <li key={m.id} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
               <a
                 href={`/workspace?tab=factbook:${m.id}`}
                 onMouseEnter={() => setHoverId(m.id)}
                 onMouseLeave={() => setHoverId(null)}
-                className="inline-block rounded-[3px] border border-rule bg-surface px-1.5 py-0.5 text-xs text-sapphire no-underline hover:border-sapphire"
+                onClick={() => playSound("navigate")}
+                className="glass glass-hover fx-press inline-block rounded-[3px] px-1.5 py-0.5 text-xs text-sapphire no-underline"
               >
                 {m.name}
               </a>
@@ -100,7 +105,14 @@ export default function AtlasMap({
           const active = p.id === activeId;
           const matched = matchIds.has(p.id);
           return (
-            <a key={p.id} href={`/workspace?tab=factbook:${p.id}`} aria-label={p.name}>
+            <a
+              key={p.id}
+              href={`/workspace?tab=factbook:${p.id}`}
+              aria-label={p.name}
+              onClick={() => playSound("navigate")}
+              onFocus={() => setHoverId(p.id)}
+              onBlur={() => setHoverId(null)}
+            >
               <circle
                 cx={p.x}
                 cy={p.y}

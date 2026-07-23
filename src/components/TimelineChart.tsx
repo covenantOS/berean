@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { playSound } from "@/lib/sound";
 
 /**
  * The interactive chronology chart. Eras and events arrive fully computed
@@ -102,6 +103,7 @@ export default function TimelineChart({
 
   function select(id: string) {
     setSelectedId(id);
+    playSound("navigate");
   }
 
   return (
@@ -117,12 +119,12 @@ export default function TimelineChart({
       </div>
 
       {matches.length > 0 && (
-        <ul className="mb-4 flex flex-wrap gap-1.5">
-          {matches.map((m) => (
-            <li key={m.id}>
+        <ul className="fx-stagger mb-4 flex flex-wrap gap-1.5">
+          {matches.map((m, i) => (
+            <li key={m.id} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
               <button
                 onClick={() => select(m.id)}
-                className="inline-block rounded-[3px] border border-rule bg-surface px-1.5 py-0.5 text-xs text-sapphire hover:border-sapphire"
+                className="glass glass-hover fx-press inline-block rounded-[3px] px-1.5 py-0.5 text-xs text-sapphire"
               >
                 {m.label} <span className="text-muted">{m.yearsLabel}</span>
               </button>
@@ -134,7 +136,7 @@ export default function TimelineChart({
       {selected && (
         <div
           ref={detailRef}
-          className="mb-6 rounded-[4px] border border-rule bg-surface p-5 text-sm"
+          className="glass fx-fade mb-6 rounded-[4px] p-5 text-sm"
         >
           <p className="font-editorial text-lg font-bold">{selected.label}</p>
           <p className="small-caps mb-2 text-xs text-muted">{selected.yearsLabel}</p>

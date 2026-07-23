@@ -29,6 +29,7 @@ import {
 import { NT_NAMES, OT_NAMES, type NameOfGod } from "@/lib/namesOfGod";
 import { REIGN_TABLES } from "@/lib/reigns";
 import { APPOINTED_OBSERVANCES, LEVITICAL_OFFERINGS, type Sacrifice } from "@/lib/sacrifices";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 type ToolSection =
@@ -75,39 +76,42 @@ const SECTIONS: { id: ToolSection; label: string }[] = [
  */
 export default function ToolsPane({ paneId }: { paneId: string }) {
   const [section, setSection] = useState<ToolSection>("measures");
-  const toggle = (on: boolean) =>
-    `border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-      on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-    }`;
 
   return (
     <div className="mx-auto max-w-prose space-y-4">
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Tools</p>
-        <p className="mt-1 flex flex-wrap items-center gap-1.5">
-          {SECTIONS.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              className={toggle(section === s.id)}
-              onClick={() => setSection(s.id)}
-            >
-              {s.label}
-            </button>
-          ))}
+        <p className="mt-1">
+          <span className="seg flex-wrap" role="group" aria-label="Tool">
+            {SECTIONS.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                aria-pressed={section === s.id}
+                onClick={() => {
+                  setSection(s.id);
+                  playSound("navigate");
+                }}
+              >
+                {s.label}
+              </button>
+            ))}
+          </span>
         </p>
       </header>
-      {section === "measures" && <MeasuresTool paneId={paneId} />}
-      {section === "alphabets" && <AlphabetsTool />}
-      {section === "numerals" && <NumeralsTool />}
-      {section === "transliteration" && <TransliterationTool />}
-      {section === "cantillations" && <CantillationsTool />}
-      {section === "names" && <NamesTool paneId={paneId} />}
-      {section === "reigns" && <ReignsTool paneId={paneId} />}
-      {section === "sacrifices" && <SacrificesTool paneId={paneId} />}
-      {section === "family" && <FamilyMapsTool paneId={paneId} />}
-      {section === "commandments" && <CommandmentsTool paneId={paneId} />}
-      {section === "goliath" && <GoliathTool paneId={paneId} />}
+      <div key={section} className="fx-fade">
+        {section === "measures" && <MeasuresTool paneId={paneId} />}
+        {section === "alphabets" && <AlphabetsTool />}
+        {section === "numerals" && <NumeralsTool />}
+        {section === "transliteration" && <TransliterationTool />}
+        {section === "cantillations" && <CantillationsTool />}
+        {section === "names" && <NamesTool paneId={paneId} />}
+        {section === "reigns" && <ReignsTool paneId={paneId} />}
+        {section === "sacrifices" && <SacrificesTool paneId={paneId} />}
+        {section === "family" && <FamilyMapsTool paneId={paneId} />}
+        {section === "commandments" && <CommandmentsTool paneId={paneId} />}
+        {section === "goliath" && <GoliathTool paneId={paneId} />}
+      </div>
     </div>
   );
 }
@@ -148,19 +152,22 @@ function MeasuresTool({ paneId }: { paneId: string }) {
 
   return (
     <section className="space-y-3">
-      <div className="flex flex-wrap items-center gap-1.5">
-        {(Object.keys(MEASURE_KIND_LABELS) as MeasureKind[]).map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => pickKind(k)}
-            className={`border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-              kind === k ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-            }`}
-          >
-            {MEASURE_KIND_LABELS[k]}
-          </button>
-        ))}
+      <div>
+        <span className="seg flex-wrap" role="group" aria-label="Measure kind">
+          {(Object.keys(MEASURE_KIND_LABELS) as MeasureKind[]).map((k) => (
+            <button
+              key={k}
+              type="button"
+              aria-pressed={kind === k}
+              onClick={() => {
+                pickKind(k);
+                playSound("navigate");
+              }}
+            >
+              {MEASURE_KIND_LABELS[k]}
+            </button>
+          ))}
+        </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -311,32 +318,37 @@ function AlphabetsTool() {
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center gap-1.5">
-        {(["hebrew", "greek"] as const).map((l) => (
-          <button
-            key={l}
-            type="button"
-            onClick={() => {
-              setLang(l);
-              setCard(null);
-            }}
-            className={`border px-2 py-0.5 text-[0.68rem] capitalize focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-              lang === l ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-            }`}
-          >
-            {l}
-          </button>
-        ))}
+        <span className="seg" role="group" aria-label="Alphabet">
+          {(["hebrew", "greek"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              aria-pressed={lang === l}
+              onClick={() => {
+                setLang(l);
+                setCard(null);
+                playSound("navigate");
+              }}
+              className="capitalize"
+            >
+              {l}
+            </button>
+          ))}
+        </span>
         <button
           type="button"
-          onClick={() => deal(letters)}
-          className="ml-1 border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            deal(letters);
+            playSound("open");
+          }}
+          className="fx-press ml-1 border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           {card ? "Next letter" : "Quiz me"}
         </button>
       </div>
 
       {card && (
-        <div className="border border-rule bg-paper px-3 py-2">
+        <div key={card.name} className="fx-rise border border-rule bg-paper px-3 py-2">
           <p className="font-editorial text-2xl">{card.glyph}</p>
           {revealed ? (
             <p className="mt-1 text-[0.78rem] text-ink">
@@ -472,21 +484,22 @@ function TransliterationTool() {
 
   return (
     <section className="space-y-3">
-      <div className="flex flex-wrap items-center gap-1.5">
-        {options.map((o) => (
-          <button
-            key={o.id}
-            type="button"
-            onClick={() => setDirection(o.id)}
-            className={`border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-              direction === o.id
-                ? "border-sapphire text-sapphire"
-                : "border-rule text-muted hover:text-ink"
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
+      <div>
+        <span className="seg flex-wrap" role="group" aria-label="Conversion direction">
+          {options.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              aria-pressed={direction === o.id}
+              onClick={() => {
+                setDirection(o.id);
+                playSound("navigate");
+              }}
+            >
+              {o.label}
+            </button>
+          ))}
+        </span>
       </div>
       <textarea
         value={input}
@@ -615,19 +628,22 @@ function ReignsTool({ paneId }: { paneId: string }) {
   const table = REIGN_TABLES.find((t) => t.id === tableId) ?? REIGN_TABLES[0];
   return (
     <section className="space-y-3">
-      <div className="flex flex-wrap items-center gap-1.5">
-        {REIGN_TABLES.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTableId(t.id)}
-            className={`border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-              table.id === t.id ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div>
+        <span className="seg flex-wrap" role="group" aria-label="Reign table">
+          {REIGN_TABLES.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              aria-pressed={table.id === t.id}
+              onClick={() => {
+                setTableId(t.id);
+                playSound("navigate");
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </span>
       </div>
 
       <table className="w-full border-y border-rule text-[0.78rem]">
@@ -780,8 +796,10 @@ function FamilyMapsTool({ paneId }: { paneId: string }) {
     };
   }, [q]);
 
-  const openMap = (id: string, name: string) =>
+  const openMap = (id: string, name: string) => {
     dispatch({ type: "openFamilyMap", entityId: id, title: name, paneId });
+    playSound("navigate");
+  };
 
   return (
     <section className="space-y-3">
@@ -796,7 +814,7 @@ function FamilyMapsTool({ paneId }: { paneId: string }) {
             key={s.id}
             type="button"
             onClick={() => openMap(s.id, s.label)}
-            className="border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             {s.label}
           </button>
@@ -811,9 +829,9 @@ function FamilyMapsTool({ paneId }: { paneId: string }) {
         className={`${INPUT} w-full`}
       />
       {hits.length > 0 && (
-        <ul className="divide-y divide-rule border-y border-rule">
-          {hits.map((h) => (
-            <li key={h.id}>
+        <ul className="fx-stagger divide-y divide-rule border-y border-rule">
+          {hits.map((h, i) => (
+            <li key={h.id} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
               <button
                 type="button"
                 onClick={() => openMap(h.id, h.name)}
@@ -917,15 +935,21 @@ function GoliathTool({ paneId }: { paneId: string }) {
       <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
-          onClick={() => dispatch({ type: "openTextCompare", book: "2-samuel", chapter: 21, paneId })}
-          className="border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            dispatch({ type: "openTextCompare", book: "2-samuel", chapter: 21, paneId });
+            playSound("navigate");
+          }}
+          className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           2 Samuel 21 in Text Compare
         </button>
         <button
           type="button"
-          onClick={() => dispatch({ type: "openTextCompare", book: "1-chronicles", chapter: 20, paneId })}
-          className="border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            dispatch({ type: "openTextCompare", book: "1-chronicles", chapter: 20, paneId });
+            playSound("navigate");
+          }}
+          className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           1 Chronicles 20 in Text Compare
         </button>

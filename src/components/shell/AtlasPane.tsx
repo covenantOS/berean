@@ -55,7 +55,7 @@ export default function AtlasPane({ place }: { place?: string }) {
   const majorCount = map.points.filter((p) => p.major).length;
 
   return (
-    <div className="space-y-4">
+    <div className="fx-fade space-y-4">
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Atlas</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">The biblical world</h2>

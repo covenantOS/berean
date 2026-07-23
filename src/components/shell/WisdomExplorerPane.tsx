@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { PsalmExplorerEntry, PsalmGenre, ProverbSectionEntry } from "@/lib/wisdommeta";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 type View = "number" | "genre" | "author" | "length";
@@ -36,11 +37,6 @@ type LoadState =
   | { status: "missing" }
   | { status: "psalms"; payload: PsalmsPayload }
   | { status: "proverbs"; sections: ProverbSectionEntry[] };
-
-const toggle = (on: boolean) =>
-  `border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-    on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-  }`;
 
 /**
  * The Psalms and Proverbs explorers. The Psalter reads as a genre-colored
@@ -122,28 +118,39 @@ export default function WisdomExplorerPane({
           {book === "psalms" ? "The Psalms" : "Proverbs"}
         </h2>
         <p className="mt-1 flex flex-wrap items-center gap-1.5">
-          <button
-            type="button"
-            className={toggle(book === "psalms")}
-            onClick={() => dispatch({ type: "setWisdomBook", paneId, tabId, book: "psalms" })}
-          >
-            Psalms
-          </button>
-          <button
-            type="button"
-            className={toggle(book === "proverbs")}
-            onClick={() => dispatch({ type: "setWisdomBook", paneId, tabId, book: "proverbs" })}
-          >
-            Proverbs
-          </button>
+          <span className="seg" role="group" aria-label="Book">
+            <button
+              type="button"
+              aria-pressed={book === "psalms"}
+              onClick={() => {
+                dispatch({ type: "setWisdomBook", paneId, tabId, book: "psalms" });
+                playSound("navigate");
+              }}
+            >
+              Psalms
+            </button>
+            <button
+              type="button"
+              aria-pressed={book === "proverbs"}
+              onClick={() => {
+                dispatch({ type: "setWisdomBook", paneId, tabId, book: "proverbs" });
+                playSound("navigate");
+              }}
+            >
+              Proverbs
+            </button>
+          </span>
           {load.status === "psalms" && (
-            <span className="ml-2 inline-flex gap-1.5">
+            <span className="seg ml-2" role="group" aria-label="Arrange the psalms">
               {VIEWS.map((v) => (
                 <button
                   key={v.id}
                   type="button"
-                  className={toggle(view === v.id)}
-                  onClick={() => setView(v.id)}
+                  aria-pressed={view === v.id}
+                  onClick={() => {
+                    setView(v.id);
+                    playSound("navigate");
+                  }}
                 >
                   {v.label}
                 </button>
@@ -189,14 +196,18 @@ export default function WisdomExplorerPane({
                 {group.label} · {group.psalms.length} {group.psalms.length === 1 ? "psalm" : "psalms"}
               </div>
             )}
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-2">
-              {group.psalms.map((p) => (
+            <div className="fx-stagger grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-2">
+              {group.psalms.map((p, i) => (
                 <button
                   key={p.psalm}
                   type="button"
-                  onClick={() => dispatch({ type: "openRef", book: "psalms", chapter: p.psalm })}
+                  onClick={() => {
+                    dispatch({ type: "openRef", book: "psalms", chapter: p.psalm });
+                    playSound("navigate");
+                  }}
+                  style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
                   title={`Psalm ${p.psalm}: ${load.payload.genres.find((g) => g.id === p.genre)?.label ?? p.genre} · ${p.author} · ${p.verses} vv · ${p.words} words`}
-                  className="border border-rule bg-surface text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="glass glass-hover text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span
                     aria-hidden="true"
@@ -225,14 +236,15 @@ export default function WisdomExplorerPane({
             The seven collections, bounded by the book's own superscriptions · counts from the
             KJV text
           </p>
-          <ul className="divide-y divide-rule/50 border border-rule bg-surface">
-            {load.sections.map((s) => (
-              <li key={s.id}>
+          <ul className="glass fx-stagger divide-y divide-rule/50">
+            {load.sections.map((s, i) => (
+              <li key={s.id} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
                 <button
                   type="button"
-                  onClick={() =>
-                    dispatch({ type: "openRef", book: "proverbs", chapter: s.fromChapter })
-                  }
+                  onClick={() => {
+                    dispatch({ type: "openRef", book: "proverbs", chapter: s.fromChapter });
+                    playSound("navigate");
+                  }}
                   className="flex w-full items-baseline gap-3 px-3 py-2 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="min-w-0 flex-1">

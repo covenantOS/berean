@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { BookExplorerEntry, BookGenre } from "@/lib/bookmeta";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 type View = "order" | "author" | "genre" | "size" | "date";
@@ -152,11 +153,6 @@ export default function BookExplorerPane() {
   const totalWords = load.books.reduce((n, b) => n + b.words, 0);
   const totalVerses = load.books.reduce((n, b) => n + b.verses, 0);
 
-  const toggle = (on: boolean) =>
-    `border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-      on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-    }`;
-
   return (
     <div className="space-y-4">
       <header className="border-b border-rule pb-2">
@@ -166,17 +162,22 @@ export default function BookExplorerPane() {
           {totalVerses.toLocaleString()} verses · {totalWords.toLocaleString()} words (KJV) ·
           authorship as traditionally received · composition dates approximate
         </p>
-        <p className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          {VIEWS.map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              className={toggle(view === v.id)}
-              onClick={() => setView(v.id)}
-            >
-              {v.label}
-            </button>
-          ))}
+        <p className="mt-1.5">
+          <span className="seg flex-wrap" role="group" aria-label="Arrange the books">
+            {VIEWS.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                aria-pressed={view === v.id}
+                onClick={() => {
+                  setView(v.id);
+                  playSound("navigate");
+                }}
+              >
+                {v.label}
+              </button>
+            ))}
+          </span>
         </p>
         <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
           {GENRE_ORDER.map((genre) => (
@@ -199,16 +200,27 @@ export default function BookExplorerPane() {
               {group.label} · {group.books.length} {group.books.length === 1 ? "book" : "books"}
             </div>
           )}
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-2">
-            {group.books.map((b) => (
+          <div className="fx-stagger grid grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-2">
+            {group.books.map((b, i) => (
               <BookCard
                 key={b.slug}
                 book={b}
+                stagger={Math.min(i, 12)}
                 showDate={view === "date"}
                 open={openSlug === b.slug}
-                onToggle={() => setOpenSlug(openSlug === b.slug ? null : b.slug)}
-                onRead={() => dispatch({ type: "openRef", book: b.slug, chapter: 1 })}
-                onConcordance={() => dispatch({ type: "openConcordance", book: b.slug })}
+                onToggle={() => {
+                  const opening = openSlug !== b.slug;
+                  setOpenSlug(opening ? b.slug : null);
+                  playSound(opening ? "open" : "close");
+                }}
+                onRead={() => {
+                  dispatch({ type: "openRef", book: b.slug, chapter: 1 });
+                  playSound("navigate");
+                }}
+                onConcordance={() => {
+                  dispatch({ type: "openConcordance", book: b.slug });
+                  playSound("navigate");
+                }}
               />
             ))}
           </div>
@@ -220,6 +232,7 @@ export default function BookExplorerPane() {
 
 function BookCard({
   book,
+  stagger,
   showDate,
   open,
   onToggle,
@@ -227,6 +240,8 @@ function BookCard({
   onConcordance,
 }: {
   book: BookExplorerEntry;
+  /** The card's place in the entrance cascade, capped so long groups do not trail. */
+  stagger: number;
   /** The date view leads with the composition range; the rest lead with size. */
   showDate: boolean;
   open: boolean;
@@ -235,7 +250,7 @@ function BookCard({
   onConcordance: () => void;
 }) {
   return (
-    <div className="border border-rule bg-surface">
+    <div className="glass glass-hover" style={{ "--i": stagger } as React.CSSProperties}>
       <span
         aria-hidden="true"
         className="block h-[3px]"
@@ -256,7 +271,7 @@ function BookCard({
         </span>
       </button>
       {open && (
-        <div className="border-t border-rule px-2 py-1.5">
+        <div className="fx-fade border-t border-rule px-2 py-1.5">
           <p className="text-[0.68rem] leading-relaxed text-ink">{book.about}</p>
           <dl className="mt-1 space-y-0.5 text-[0.62rem] text-muted">
             <div className="flex justify-between gap-2">
@@ -283,14 +298,14 @@ function BookCard({
             <button
               type="button"
               onClick={onRead}
-              className="border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Read
             </button>
             <button
               type="button"
               onClick={onConcordance}
-              className="border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-0.5 text-[0.68rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Concordance
             </button>

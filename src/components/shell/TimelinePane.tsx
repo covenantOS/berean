@@ -52,7 +52,7 @@ export default function TimelinePane({ event }: { event?: string }) {
   const { chart } = load;
 
   return (
-    <div className="space-y-4">
+    <div className="fx-fade space-y-4">
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Timeline</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">

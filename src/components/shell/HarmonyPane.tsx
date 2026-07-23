@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { GOSPEL_SLUGS, getBook, resolveBookName } from "@/lib/canon";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 
 interface IndexPericope {
@@ -53,7 +54,7 @@ type ReportLoad =
   | { status: "ready"; report: Report };
 
 const CTRL =
-  "border border-rule bg-paper px-1.5 py-0.5 text-xs text-ink hover:border-sapphire disabled:opacity-40 disabled:hover:border-rule focus:border-sapphire focus:outline-none";
+  "fx-press border border-rule bg-paper px-1.5 py-0.5 text-xs text-ink hover:border-sapphire disabled:opacity-40 disabled:hover:border-rule focus:border-sapphire focus:outline-none";
 
 /** The index badges: each gospel's short mark, anchor first by canon order. */
 const GOSPEL_MARKS: Record<string, string> = {
@@ -179,7 +180,11 @@ export default function HarmonyPane({
               title="Previous pericope"
               aria-label="Previous pericope"
               disabled={!neighbors.prev}
-              onClick={() => neighbors.prev && openPericope(ready.anchor.book, neighbors.prev)}
+              onClick={() => {
+                if (!neighbors.prev) return;
+                openPericope(ready.anchor.book, neighbors.prev);
+                playSound("navigate");
+              }}
               className={CTRL}
             >
               ‹
@@ -189,7 +194,11 @@ export default function HarmonyPane({
               title="Next pericope"
               aria-label="Next pericope"
               disabled={!neighbors.next}
-              onClick={() => neighbors.next && openPericope(ready.anchor.book, neighbors.next)}
+              onClick={() => {
+                if (!neighbors.next) return;
+                openPericope(ready.anchor.book, neighbors.next);
+                playSound("navigate");
+              }}
               className={CTRL}
             >
               ›
@@ -197,7 +206,14 @@ export default function HarmonyPane({
             <span className="small-caps text-[0.68rem] font-semibold text-muted">
               {ready.anchor.bookName} {ready.anchor.chapter}:{ready.anchor.verse}
             </span>
-            <button type="button" onClick={clearPin} className={`${CTRL} ml-auto`}>
+            <button
+              type="button"
+              onClick={() => {
+                clearPin();
+                playSound("close");
+              }}
+              className={`${CTRL} ml-auto`}
+            >
               All pericopes
             </button>
           </p>
@@ -242,7 +258,7 @@ export default function HarmonyPane({
          * across the accounts, so the columns read as parallel texts rather
          * than aligned rows. */
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="grid grid-cols-4 divide-x divide-rule">
+          <div className="fx-fade grid grid-cols-4 divide-x divide-rule">
             {GOSPEL_SLUGS.map((slug) => {
               const acc = accountByGospel.get(slug);
               return (
@@ -334,12 +350,18 @@ export default function HarmonyPane({
                   <div className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
                     {b.name} · {b.pericopes.length} passages
                   </div>
-                  <ul className="divide-y divide-rule/50 border border-rule bg-surface">
-                    {b.pericopes.map((p) => (
-                      <li key={`${p.chapter}:${p.verse}`}>
+                  <ul className="glass fx-stagger divide-y divide-rule/50">
+                    {b.pericopes.map((p, i) => (
+                      <li
+                        key={`${p.chapter}:${p.verse}`}
+                        style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
+                      >
                         <button
                           type="button"
-                          onClick={() => openPericope(b.slug, p)}
+                          onClick={() => {
+                            openPericope(b.slug, p);
+                            playSound("open");
+                          }}
                           className="flex w-full items-baseline gap-2 px-3 py-1.5 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                         >
                           <span className="small-caps w-12 shrink-0 text-[0.62rem] font-semibold text-sapphire">
