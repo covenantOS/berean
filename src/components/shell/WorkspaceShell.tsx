@@ -50,7 +50,9 @@ function ShellFrame() {
   }
 
   return (
-    <div className="workspace-shell flex h-dvh flex-col overflow-hidden bg-paper text-ink">
+    <div className="workspace-shell relative isolate flex h-dvh flex-col overflow-hidden bg-paper text-ink">
+      {/* The stained-glass ambient wash, behind the chrome (globals.css). */}
+      <div className="stained-ambient" aria-hidden="true" />
       <div className="ws-main flex min-h-0 flex-1">
         <IconRail />
         {state.sidebarOpen && <Sidebar />}

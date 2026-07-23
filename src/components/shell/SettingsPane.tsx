@@ -31,8 +31,10 @@ import {
   type HighlightStyle,
 } from "@/lib/highlights";
 import { CONFESSIONS, deleteProfile, profiles, saveProfile } from "@/lib/settings";
+import { playSound } from "@/lib/sound";
 import { deleteGraph, exportGraph, importGraph } from "@/lib/store";
 import AccountSection from "./AccountSection";
+import SoundToggle from "./SoundToggle";
 import SyncSection from "./SyncSection";
 import { STORAGE_KEY } from "./workspace-state";
 
@@ -103,6 +105,16 @@ export default function SettingsPane() {
       <SyncSection />
 
       <section className="rounded-[4px] border border-rule bg-surface p-5">
+        <h3 className="small-caps mb-3 text-sm text-muted">Sound: the study&apos;s small bells</h3>
+        <SoundToggle />
+        <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
+          The chimes are synthesized on this device; nothing is recorded, loaded, or sent
+          anywhere. They stay quiet, sound only on your gestures, and honor the loudness you
+          set here, per device.
+        </p>
+      </section>
+
+      <section className="rounded-[4px] border border-rule bg-surface p-5">
         <h3 className="small-caps mb-3 text-sm text-muted">Your standards — what the Scribe may know</h3>
         <div className="grid gap-3">
           <label className="text-sm">
@@ -139,13 +151,16 @@ export default function SettingsPane() {
               className="w-full rounded-[4px] border border-rule bg-paper px-3 py-2 text-sm"
             />
           </label>
-          <label className="flex items-start gap-2 text-sm">
+          <label className="switch items-start gap-2 text-sm">
             <input
               type="checkbox"
               checked={profile?.scribeMayReadNotes ?? false}
-              onChange={(e) => saveProfile({ scribeMayReadNotes: e.target.checked })}
-              className="mt-0.5"
+              onChange={(e) => {
+                saveProfile({ scribeMayReadNotes: e.target.checked });
+                playSound(e.target.checked ? "toggle-on" : "toggle-off");
+              }}
             />
+            <span className="switch-track mt-0.5" aria-hidden="true" />
             <span>
               The Scribe may read my working notes on a passage when preparing its brief for that
               passage. <span className="text-muted">Off by default; briefs then use only the chapter text and this tab.</span>
