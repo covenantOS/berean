@@ -128,7 +128,7 @@ export default function DocSearchPane({ q }: { q: string }) {
             Nothing of yours answers to “{q}”.
           </p>
         ) : (
-          <div className="mx-auto max-w-prose px-6 py-4">
+          <div className="fx-fade mx-auto max-w-prose px-6 py-4">
             <p className="mb-3 text-xs text-muted">
               {total.toLocaleString()} {total === 1 ? "record answers" : "records answer"} across
               your notes, highlights, manuscripts, lists, personal books, print books, and
@@ -151,7 +151,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                             type="button"
                             onClick={() => dispatch({ type: "openJournal" })}
                             title="Open this entry in the journal"
-                            className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                            className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                           >
                             <span className="small-caps text-sm font-medium text-sapphire">
                               Journal
@@ -175,7 +175,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                           type="button"
                           onClick={() => openNote(n)}
                           title={`Open ${reference}`}
-                          className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                          className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                         >
                           <span className="small-caps text-sm font-medium text-sapphire">
                             {reference}
@@ -202,7 +202,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                         type="button"
                         onClick={() => openHighlight(h.row.highlight)}
                         title={`Open ${h.row.reference}`}
-                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.row.reference}
@@ -237,7 +237,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                           })
                         }
                         title={`Open ${h.doc.title || "Untitled"} for editing`}
-                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.doc.title || "Untitled"}
@@ -268,7 +268,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                           dispatch({ type: "openListDoc", docId: h.doc.id, title: h.doc.title })
                         }
                         title={`Open ${h.doc.title || "Untitled list"}`}
-                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.doc.title || "Untitled list"}
@@ -303,7 +303,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                           })
                         }
                         title={`Open ${h.book.title}`}
-                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.book.title}
@@ -357,7 +357,7 @@ export default function DocSearchPane({ q }: { q: string }) {
                         type="button"
                         onClick={() => dispatch({ type: "openPrayers" })}
                         title={`Open the ${h.list.title} list in the prayers pane`}
-                        className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                       >
                         <span className="small-caps text-sm font-medium text-sapphire">
                           {h.request.title}

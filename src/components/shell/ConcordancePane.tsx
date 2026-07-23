@@ -118,10 +118,6 @@ export default function ConcordancePane({
   }
 
   const lemmaLabel = report.lang === "hebrew" ? "Hebrew lemmas" : "Greek lemmas";
-  const toggleBtn = (on: boolean) =>
-    `border px-2 py-0.5 text-[0.68rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-      on ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
-    }`;
 
   return (
     <div className="mx-auto max-w-prose space-y-4">
@@ -144,16 +140,14 @@ export default function ConcordancePane({
           </select>
         </h2>
         <p className="mt-1 flex flex-wrap items-center gap-1.5 text-[0.68rem]">
-          <button type="button" className={toggleBtn(mode === "words")} onClick={() => setMode("words")}>
-            English words
-          </button>
-          <button
-            type="button"
-            className={toggleBtn(mode === "lemmas")}
-            onClick={() => setMode("lemmas")}
-          >
-            {lemmaLabel}
-          </button>
+          <span className="seg" role="group" aria-label="Concordance mode">
+            <button type="button" aria-pressed={mode === "words"} onClick={() => setMode("words")}>
+              English words
+            </button>
+            <button type="button" aria-pressed={mode === "lemmas"} onClick={() => setMode("lemmas")}>
+              {lemmaLabel}
+            </button>
+          </span>
           <span className="ml-1 text-muted">
             {entries.length.toLocaleString()} {entries.length === 1 ? "entry" : "entries"} ·{" "}
             {report.tokens.toLocaleString()} tokens
@@ -290,7 +284,7 @@ function ConcordanceRow({
         </span>
       </button>
       {expanded && (
-        <div className="space-y-1 pb-2 pl-3">
+        <div className="fx-fade space-y-1 pb-2 pl-3">
           {shown.map(([c, v]) => (
             <p key={`${c}:${v}`} className="text-[0.78rem] leading-relaxed">
               <button

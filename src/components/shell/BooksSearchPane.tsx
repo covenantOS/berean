@@ -138,16 +138,14 @@ export default function BooksSearchPane({ q }: { q: string }) {
           “{q}”
           <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">Books</span>
         </h2>
-        <span className="no-print ml-4 flex items-center gap-2" role="group" aria-label="Field scope">
+        <span className="seg no-print ml-4" role="group" aria-label="Field scope">
           {FIELDS.map((f) => (
             <button
               key={f.id}
               type="button"
               title={f.title}
+              aria-pressed={field === f.id}
               onClick={() => setField(f.id)}
-              className={`text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                field === f.id ? "font-semibold text-sapphire underline" : "text-muted hover:text-ink"
-              }`}
             >
               {f.label}
             </button>
@@ -173,7 +171,7 @@ export default function BooksSearchPane({ q }: { q: string }) {
           )}
           {server.status === "invalid" && <p className="py-4 text-xs text-muted">{server.message}</p>}
           {server.status === "ready" && (
-            <>
+            <div className="fx-fade">
               <section className="mb-5">
                 <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
                   Commentary shelf
@@ -193,7 +191,7 @@ export default function BooksSearchPane({ q }: { q: string }) {
                           type="button"
                           onClick={() => openCommentary(h)}
                           title={`Open the commentary wall at ${h.bookName} ${h.chapter}${h.verses ? `:${h.verses}` : ""}`}
-                          className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                          className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                         >
                           <span className="small-caps text-sm font-medium text-sapphire">
                             {h.bookName} {h.chapter}
@@ -232,7 +230,7 @@ export default function BooksSearchPane({ q }: { q: string }) {
                           type="button"
                           onClick={() => openTopic(h)}
                           title={`Open ${h.title} in the topic guide`}
-                          className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                          className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                         >
                           <span className="small-caps text-sm font-medium text-sapphire">
                             {h.title}
@@ -255,10 +253,10 @@ export default function BooksSearchPane({ q }: { q: string }) {
                   </p>
                 )}
               </section>
-            </>
+            </div>
           )}
           {personalHits.length > 0 && (
-            <section className="mb-5">
+            <section className="fx-fade mb-5">
               <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
                 Personal books · {personalHits.length}
               </p>
@@ -269,7 +267,7 @@ export default function BooksSearchPane({ q }: { q: string }) {
                       type="button"
                       onClick={() => openBook(h.book)}
                       title={`Open ${h.book.title}`}
-                      className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       <span className="small-caps text-sm font-medium text-sapphire">
                         {h.book.title}

@@ -50,16 +50,14 @@ export default function SearchChart({
   return (
     <div>
       {onKindChange && (
-        <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1" role="group" aria-label="Chart type">
+        <div className="seg mb-2" role="group" aria-label="Chart type">
           {CHART_KINDS.map((k) => (
             <button
               key={k.key}
               type="button"
               aria-pressed={kind === k.key}
               onClick={() => onKindChange(k.key)}
-              className={`small-caps text-[0.66rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-                kind === k.key ? "font-semibold text-sapphire underline" : "text-muted hover:text-ink"
-              }`}
+              className="small-caps"
             >
               {k.label}
             </button>
@@ -68,14 +66,20 @@ export default function SearchChart({
       )}
       {total === 0 ? (
         <p className="py-6 text-center text-xs text-muted">Nothing to graph.</p>
-      ) : kind === "bar" ? (
-        <BarChart series={series} onSelect={onSelect} />
-      ) : kind === "column" ? (
-        <ColumnChart series={series} onSelect={onSelect} />
-      ) : kind === "line" || kind === "area" ? (
-        <LineChart series={series} area={kind === "area"} onSelect={onSelect} />
       ) : (
-        <PieChart series={series} donut={kind === "donut"} onSelect={onSelect} />
+        /* The kind names its own graph; keying the wrapper lets a kind swap
+         * draw the new graph in rather than snapping. */
+        <div key={kind} className="fx-rise">
+          {kind === "bar" ? (
+            <BarChart series={series} onSelect={onSelect} />
+          ) : kind === "column" ? (
+            <ColumnChart series={series} onSelect={onSelect} />
+          ) : kind === "line" || kind === "area" ? (
+            <LineChart series={series} area={kind === "area"} onSelect={onSelect} />
+          ) : (
+            <PieChart series={series} donut={kind === "donut"} onSelect={onSelect} />
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 import { getBook } from "@/lib/canon";
 import {
   activeCollection,
@@ -321,7 +321,7 @@ export default function LibraryPane() {
                 setAppliedId(null);
               }}
               title="Load this collection's rules into the facets to edit them"
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Edit
             </button>
@@ -332,7 +332,7 @@ export default function LibraryPane() {
                 setAppliedId(null);
               }}
               title="Delete this collection; a wall it scoped answers the whole shelf again"
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Delete
             </button>
@@ -341,7 +341,7 @@ export default function LibraryPane() {
                 type="button"
                 onClick={() => setActiveCollection(null)}
                 title="Let the commentary wall answer from the whole shelf again"
-                className="border border-sapphire bg-paper px-2 py-1 text-xs text-sapphire hover:border-ruby hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-sapphire bg-paper px-2 py-1 text-xs text-sapphire hover:border-ruby hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Scopes the commentary wall
               </button>
@@ -350,7 +350,7 @@ export default function LibraryPane() {
                 type="button"
                 onClick={() => setActiveCollection(applied.id)}
                 title="The commentary wall and guides answer from this collection"
-                className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Scope the commentary wall
               </button>
@@ -362,7 +362,7 @@ export default function LibraryPane() {
             type="button"
             onClick={() => setDraft({ id: null, name: "" })}
             title="Save the current facet filter as a named collection"
-            className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Save filters as a collection
           </button>
@@ -383,7 +383,7 @@ export default function LibraryPane() {
               type="button"
               onClick={saveDraft}
               disabled={!draft.name.trim()}
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {draft.id ? "Save changes" : "Save collection"}
             </button>
@@ -407,10 +407,11 @@ export default function LibraryPane() {
       {rows.length === 0 ? (
         <p className="text-xs text-muted">No catalog entry matches these filters.</p>
       ) : (
-        <ul className="space-y-4">
-          {rows.map((r) => (
+        <ul className="fx-stagger space-y-4">
+          {rows.map((r, i) => (
             <CatalogEntry
               key={r.id}
+              index={i}
               entry={r}
               meta={metaById.get(r.id)}
               priorityWork={COMMENTARY_WALL.find((w) => w.rightsId === r.id)?.workId ?? null}
@@ -501,7 +502,7 @@ function PersonalBooksSection() {
       </div>
 
       {importing && (
-        <form onSubmit={submit} className="mt-2 space-y-2 border border-rule bg-surface p-3">
+        <form onSubmit={submit} className="glass mt-2 space-y-2 p-3">
           <div className="flex flex-wrap gap-2">
             <input
               value={title}
@@ -521,7 +522,7 @@ function PersonalBooksSection() {
               autoComplete="off"
               className="w-44 border border-rule bg-paper px-2 py-1 text-xs text-ink placeholder:text-muted focus:border-sapphire focus:outline-none"
             />
-            <label className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire">
+            <label className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire">
               Choose .md or .txt
               <input
                 type="file"
@@ -543,7 +544,7 @@ function PersonalBooksSection() {
             <button
               type="submit"
               disabled={!body.trim()}
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               Import
             </button>
@@ -563,9 +564,13 @@ function PersonalBooksSection() {
       )}
 
       {books.length > 0 && (
-        <ul className="mt-2 space-y-1">
-          {books.map((b) => (
-            <li key={b.id} className="flex items-center gap-2 border border-rule bg-surface px-3 py-2">
+        <ul className="fx-stagger mt-2 space-y-1">
+          {books.map((b, i) => (
+            <li
+              key={b.id}
+              className="glass glass-hover flex items-center gap-2 px-3 py-2"
+              style={{ "--i": Math.min(i, 6) } as CSSProperties}
+            >
               <button
                 type="button"
                 onClick={() =>
@@ -590,7 +595,7 @@ function PersonalBooksSection() {
                 onClick={() => personalbooks.remove(b.id)}
                 title={`Delete ${b.title}`}
                 aria-label={`Delete ${b.title}`}
-                className="border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Delete
               </button>
@@ -664,7 +669,7 @@ function PrintBooksSection() {
       </div>
 
       {editing !== null && (
-        <form onSubmit={submit} className="mt-2 space-y-2 border border-rule bg-surface p-3">
+        <form onSubmit={submit} className="glass mt-2 space-y-2 p-3">
           <div className="flex flex-wrap gap-2">
             <input
               value={title}
@@ -717,7 +722,7 @@ function PrintBooksSection() {
             <button
               type="submit"
               disabled={!title.trim()}
-              className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               {editing === "new" ? "Register" : "Save changes"}
             </button>
@@ -737,9 +742,13 @@ function PrintBooksSection() {
       )}
 
       {books.length > 0 && (
-        <ul className="mt-2 space-y-1">
-          {books.map((b) => (
-            <li key={b.id} className="flex items-center gap-2 border border-rule bg-surface px-3 py-2">
+        <ul className="fx-stagger mt-2 space-y-1">
+          {books.map((b, i) => (
+            <li
+              key={b.id}
+              className="glass glass-hover flex items-center gap-2 px-3 py-2"
+              style={{ "--i": Math.min(i, 6) } as CSSProperties}
+            >
               <div className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium text-ink">{b.title}</span>
                 <span className="block text-[0.68rem] text-muted">
@@ -752,7 +761,7 @@ function PrintBooksSection() {
                 type="button"
                 onClick={() => begin(b)}
                 title={`Edit ${b.title}`}
-                className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Edit
               </button>
@@ -761,7 +770,7 @@ function PrintBooksSection() {
                 onClick={() => printbooks.remove(b.id)}
                 title={`Delete ${b.title}`}
                 aria-label={`Delete ${b.title}`}
-                className="border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ruby hover:border-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Delete
               </button>
@@ -810,6 +819,7 @@ function CatalogEntry({
   priorityIndex,
   canOpen,
   onOpen,
+  index,
 }: {
   entry: RightsEntry;
   meta: LibraryMeta | undefined;
@@ -817,13 +827,18 @@ function CatalogEntry({
   priorityIndex: string[];
   canOpen: boolean;
   onOpen: () => void;
+  /** Its order in the filtered list, for the cascade's --i clock. */
+  index: number;
 }) {
   const rating = meta?.rating ?? null;
   const tags = meta?.tags ?? [];
   const position = priorityWork ? priorityIndex.indexOf(priorityWork) : -1;
 
   return (
-    <li className="border border-rule bg-surface p-3">
+    <li
+      className="glass glass-hover p-3"
+      style={{ "--i": Math.min(index, 8) } as CSSProperties}
+    >
       <div className="flex items-baseline gap-2">
         <p className="min-w-0 flex-1 text-sm font-medium text-ink">{r.title}</p>
         <Stars rating={rating} onRate={(n) => setRating(r.id, n)} />
@@ -860,7 +875,7 @@ function CatalogEntry({
           <button
             type="button"
             onClick={onOpen}
-            className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Open
           </button>
@@ -875,7 +890,7 @@ function CatalogEntry({
               onClick={() => moveCommentaryWork(priorityWork, -1)}
               title="Move up the commentary wall"
               aria-label={`Move ${r.title} up the commentary wall`}
-              className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               ▲
             </button>
@@ -885,7 +900,7 @@ function CatalogEntry({
               onClick={() => moveCommentaryWork(priorityWork, 1)}
               title="Move down the commentary wall"
               aria-label={`Move ${r.title} down the commentary wall`}
-              className="border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="fx-press border border-rule bg-paper px-1 leading-none text-ink hover:border-sapphire disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               ▼
             </button>
@@ -924,12 +939,15 @@ function CiteButton({ resourceId }: { resourceId: string }) {
         type="button"
         aria-expanded={picking}
         onClick={() => setPicking((v) => !v)}
-        className="border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="fx-press border border-rule bg-paper px-2 py-1 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         Add to bibliography
       </button>
       {picking && (
-        <span className="absolute left-0 top-full z-10 mt-1 block w-56 border border-rule bg-surface shadow-sm">
+        <span
+          className="glass fx-scale absolute left-0 top-full z-10 mt-1 block w-56"
+          style={{ "--fx-origin": "0 0" } as CSSProperties}
+        >
           <span className="small-caps block px-3 pt-2 pb-1 text-[0.62rem] text-muted">
             Cite this work in
           </span>

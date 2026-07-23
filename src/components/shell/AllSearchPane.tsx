@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { getBook } from "@/lib/canon";
 import { documents, listDocuments, listKindLabel } from "@/lib/documents";
 import { resultCount, searchDocs, type DocResults, type HighlightRow } from "@/lib/docsearch";
@@ -252,14 +252,18 @@ function ScriptureGroup({
       )}
       {shown.length > 0 && (
         <>
-          <ul>
-            {shown.map((h) => (
-              <li key={`${h.book}-${h.chapter}-${h.verse}`} className="border-b border-rule/60">
+          <ul className="fx-stagger">
+            {shown.map((h, i) => (
+              <li
+                key={`${h.book}-${h.chapter}-${h.verse}`}
+                className="border-b border-rule/60"
+                style={{ "--i": i } as CSSProperties}
+              >
                 <button
                   type="button"
                   onClick={() => onOpenVerse(h)}
                   title={`Open ${h.bookName} ${h.chapter}:${h.verse}`}
-                  className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="small-caps text-sm font-medium text-sapphire">
                     {h.bookName} {h.chapter}:{h.verse}
@@ -338,14 +342,14 @@ function BooksGroup({ q, state }: { q: string; state: BooksState }) {
       )}
       {shown.length > 0 && (
         <>
-          <ul>
-            {shown.map((r) => (
-              <li key={r.key} className="border-b border-rule/60">
+          <ul className="fx-stagger">
+            {shown.map((r, i) => (
+              <li key={r.key} className="border-b border-rule/60" style={{ "--i": i } as CSSProperties}>
                 <button
                   type="button"
                   onClick={r.open}
                   title={r.title}
-                  className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="small-caps text-sm font-medium text-sapphire">
                     {r.heading}
@@ -507,8 +511,8 @@ function DocumentsGroup({
         <p className="py-4 text-xs text-muted">Nothing of yours answers to “{q}”.</p>
       ) : (
         <>
-          <ul>
-            {shown.map((r) => {
+          <ul className="fx-stagger">
+            {shown.map((r, i) => {
               const inner = (
                 <>
                   <span className="small-caps text-sm font-medium text-sapphire">
@@ -523,13 +527,13 @@ function DocumentsGroup({
                 </>
               );
               return (
-                <li key={r.key} className="border-b border-rule/60">
+                <li key={r.key} className="border-b border-rule/60" style={{ "--i": i } as CSSProperties}>
                   {r.open ? (
                     <button
                       type="button"
                       onClick={r.open}
                       title={r.title}
-                      className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       {inner}
                     </button>

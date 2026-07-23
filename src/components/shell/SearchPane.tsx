@@ -11,6 +11,7 @@ import {
   type FilterDef,
 } from "@/lib/morphfilters";
 import { recordSearch, toggleFavorite, useSearchSaves } from "@/lib/search-history";
+import { playSound } from "@/lib/sound";
 import { createVisualFilter } from "@/lib/visualfilters";
 import { translationShelf } from "./ReaderPane";
 import SearchChart, { type ChartKind, type ChartSlice } from "./SearchChart";
@@ -127,7 +128,7 @@ const SEARCH_MODES: { key: SearchMode; label: string; title: string }[] = [
 function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; paneId: string; tabId: string }) {
   const { dispatch } = useWorkspace();
   return (
-    <span className="no-print ml-3 flex items-center gap-2" role="group" aria-label="Search mode">
+    <span className="seg no-print ml-3" role="group" aria-label="Search mode">
       {SEARCH_MODES.map((m) => (
         <button
           key={m.key}
@@ -138,9 +139,6 @@ function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; p
             if (m.key === mode) return;
             dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(q, m.key) });
           }}
-          className={`text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
-            mode === m.key ? "font-semibold text-sapphire" : "text-muted hover:text-ink"
-          }`}
         >
           {m.label}
         </button>
@@ -184,6 +182,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
    * form passes "original", so its query goes to the morph engine. */
   const runGenerated = (generated: string, mode: SearchMode = "bible") => {
     recordSearch(generated, mode);
+    playSound("navigate");
     dispatch({ type: "openSearch", q: generated, mode });
   };
 
@@ -294,7 +293,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
         <PrintButton className="ml-3" />
       </header>
       {showSyntax && (
-        <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+        <div className="fx-fade no-print shrink-0 border-b border-rule px-4 py-2">
           <dl className="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-0.5 text-[0.72rem]">
             {SYNTAX_HINTS.map((h) => (
               <div key={h.example} className="contents">
@@ -311,7 +310,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
       )}
       {showTemplates && <TemplatesPanel onRun={runGenerated} />}
       {namingFilter && load.status === "ready" && (
-        <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
+        <div className="fx-fade no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
           <label htmlFor="vf-name" className="text-[0.72rem] text-muted">
             Filter name
           </label>
@@ -345,7 +344,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
             type="button"
             onClick={saveFilter}
             disabled={!filterName.trim()}
-            className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Save filter
           </button>
@@ -402,7 +401,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
           </p>
         )}
         {load.status === "ready" && load.total > 0 && (
-          <>
+          <div key={view} className="fx-fade">
             {view === "verses" && <VersesView hits={load.hits} total={load.total} />}
             {view === "aligned" && <AlignedView hits={load.hits} total={load.total} />}
             {view === "grid" && <GridView hits={load.hits} total={load.total} />}
@@ -412,7 +411,7 @@ function BiblePane({ q, paneId, tabId }: PaneProps) {
             {view === "chart" && (
               <ChartView key={q} books={books} truncated={truncated} listed={load.hits.length} />
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -434,7 +433,7 @@ function VersesView({ hits, total }: { hits: Hit[]; total: number }) {
             <button
               type="button"
               onClick={() => openRef(h.book, h.chapter, h.verse)}
-              className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
             >
               <span className="small-caps text-sm font-medium text-sapphire">
                 {h.bookName} {h.chapter}:{h.verse}
@@ -764,7 +763,7 @@ function termOf(input: string): string {
 const TPL_INPUT =
   "border border-rule bg-paper px-2 py-1 text-[0.8rem] text-ink focus:outline focus:outline-2 focus:outline-sapphire";
 const TPL_RUN =
-  "border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink no-underline hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
+  "fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink no-underline hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 
 /**
  * The templates strip: a small set of forms for the questions the precise
@@ -776,7 +775,7 @@ const TPL_RUN =
  */
 function TemplatesPanel({ onRun }: { onRun: (q: string, mode?: SearchMode) => void }) {
   return (
-    <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+    <div className="fx-fade no-print shrink-0 border-b border-rule px-4 py-2">
       <p className="pb-1 text-[0.72rem] text-muted">
         Fill a form and the query writes itself; it runs as an ordinary search and enters the
         rail&apos;s history.
@@ -1034,6 +1033,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
     const query = String(new FormData(e.currentTarget).get("mq") ?? "").trim();
     if (!query) return;
     recordSearch(query, "original");
+    playSound("navigate");
     dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(query, "original") });
   };
 
@@ -1177,13 +1177,13 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
         />
         <button
           type="submit"
-          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Search
         </button>
       </form>
       {showFilters && (
-        <div className="no-print shrink-0 border-b border-rule px-4 py-2">
+        <div className="fx-fade no-print shrink-0 border-b border-rule px-4 py-2">
           <p className="small-caps pb-1 text-[0.62rem] font-semibold text-muted">
             Greek (New Testament)
           </p>
@@ -1203,7 +1203,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
         </div>
       )}
       {namingFilter && load.status === "ready" && (
-        <div className="no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
+        <div className="fx-fade no-print flex shrink-0 flex-wrap items-center gap-2 border-b border-rule px-4 py-2">
           <label htmlFor="vf-name-orig" className="text-[0.72rem] text-muted">
             Filter name
           </label>
@@ -1237,7 +1237,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
             type="button"
             onClick={saveFilter}
             disabled={!filterName.trim()}
-            className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             Save filter
           </button>
@@ -1299,7 +1299,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
           </p>
         )}
         {load.status === "ready" && load.total > 0 && (
-          <>
+          <div key={view} className="fx-fade">
             {view === "verses" && (
               <OriginalVersesView hits={load.hits} total={load.total} verses={load.verses} />
             )}
@@ -1316,7 +1316,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
                 listed={verseHits.length}
               />
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -1479,6 +1479,7 @@ function SemanticPane({ q, paneId, tabId }: PaneProps) {
     const concept = String(new FormData(e.currentTarget).get("sq") ?? "").trim();
     if (concept.length < 3) return;
     recordSearch(concept, "semantic");
+    playSound("navigate");
     setAppliedScope(scope);
     if (concept.toLowerCase() !== q.trim().toLowerCase()) {
       dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(concept, "semantic") });
@@ -1553,7 +1554,7 @@ function SemanticPane({ q, paneId, tabId }: PaneProps) {
         </select>
         <button
           type="submit"
-          className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Search
         </button>
@@ -1572,7 +1573,7 @@ function SemanticPane({ q, paneId, tabId }: PaneProps) {
             <p className="border border-rule bg-surface p-4 text-xs text-muted">{load.message}</p>
           )}
           {load.status === "ready" && (
-            <>
+            <div className="fx-fade">
               <p className="small-caps mb-4 border-b border-rule pb-2 text-xs text-muted">
                 {load.hits.length} verified {load.hits.length === 1 ? "passage" : "passages"}
               </p>
@@ -1585,7 +1586,7 @@ function SemanticPane({ q, paneId, tabId }: PaneProps) {
                     <button
                       type="button"
                       onClick={() => openRef(h.book, h.chapter, h.from)}
-                      className="block w-full py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                      className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                     >
                       <span className="small-caps text-sm font-medium text-sapphire">
                         {h.ref}
@@ -1615,7 +1616,7 @@ function SemanticPane({ q, paneId, tabId }: PaneProps) {
                   .
                 </p>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
