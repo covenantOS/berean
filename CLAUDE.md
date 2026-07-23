@@ -95,11 +95,21 @@ sources print beyond the canon stay in their display strings and sit out of
 the index, recorded in data/confessions/_meta.json. Platform decisions in ADR
 0002 (Cloudflare, desktop/mobile/web, local-first sync). The reader's Shelf
 tab is now a commentary wall: Matthew Henry complete and concise, Calvin,
-JFB, Clarke, and Barnes (NT) ship as per-book JSON under
+JFB, Clarke, Barnes (NT), Wesley, Spurgeon's Treasury of David, the
+Scofield 1917 notes, Aquinas's Catena Aurea, the People's New Testament,
+Burkitt, and Darby's Synopsis of the Books of the Bible (thirteen works)
+ship as per-book JSON under
 `data/commentary/<work>/`, each with a build script, a vendored source with
-PROVENANCE.md, and a shipped rights entry; Gill, Poole, the Pulpit
+PROVENANCE.md, and a shipped rights entry; Gill, Bullinger's Companion
+Bible notes, Poole, the Pulpit
 Commentary, Ellicott, and the Geneva notes are registered as planned pending
-clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter texts (need verified datasets;
+clean digitizations. The Spurgeon sermon archive (all 3,597 New Park Street
+and Metropolitan Tabernacle Pulpit sermons, 1855-1917, from The Spurgeon
+Library at Midwestern) ships as `data/sermons/index.json` plus per-sermon
+reader files under `data/sermons/texts/` (scripts/build-sermons.mjs,
+data/_sources/spurgeon-sermons/PROVENANCE.md); the Passage Guide's Sermons
+section answers the sermons on the chapter and opens the sermon reader (the
+sermon tab kind). Not yet built: database and identity (open decisions; data is device-local), psalter texts (need verified datasets;
 registered as planned in rights), and all Covenant OS integration (contracts first). The ADR 0002 sync server half shipped:
 Postgres schema (db/migrations), SyncStore drivers and push/pull routes (src/lib/sync-server.ts, src/app/api/sync),
 and the HttpTransport behind a config flag. The auth wave shipped: better-auth magic-link and anonymous

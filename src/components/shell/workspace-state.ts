@@ -591,6 +591,20 @@ export interface ConfessionTab {
   title?: string;
 }
 
+/**
+ * The sermon reader: one Spurgeon sermon (src/lib/sermons.ts) open for
+ * reading, the way a Passage Guide sermon row hands off the full text.
+ * One reader rides per pane; a new sermon retargets it.
+ */
+export interface SermonTab {
+  id: string;
+  type: "sermon";
+  /** The sermon's slug in the archive. */
+  sermon: string;
+  /** The sermon's title captured at open time, for the tab strip. */
+  title?: string;
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -640,7 +654,8 @@ export type Tab =
   | HarmonyTab
   | WisdomExplorerTab
   | MediaTab
-  | ConfessionTab;
+  | ConfessionTab
+  | SermonTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -950,6 +965,15 @@ export function confessionTab(doc?: string, section?: string, title?: string): C
   };
 }
 
+export function sermonTab(sermon: string, title?: string): SermonTab {
+  return {
+    id: newId("tab"),
+    type: "sermon",
+    sermon,
+    ...(title ? { title } : {}),
+  };
+}
+
 /**
  * A media pin holds water at a book and a chapter inside it; the verse rides
  * optional. The verse's real bound is the chapter's length, which the
@@ -1205,6 +1229,9 @@ export function singletonKey(tab: Tab): string | null {
       /* One reader tab per document per pane; the corpus browser is the
        * empty key. */
       return `${tab.type}:${tab.doc ?? ""}`;
+    case "sermon":
+      /* One sermon reader per pane; a new sermon retargets it. */
+      return tab.type;
     case "guideeditor":
       return `${tab.type}:${tab.guideId ?? ""}`;
     case "workfloweditor":
@@ -1256,6 +1283,10 @@ function absorbSingleton(existing: Tab, incoming: Tab): Tab {
           ? { section: undefined }
           : {}),
     };
+  }
+  if (existing.type === "sermon" && incoming.type === "sermon") {
+    /* The reader retargets to the incoming sermon and starts at the top. */
+    return { ...existing, sermon: incoming.sermon, title: incoming.title };
   }
   return existing;
 }
@@ -1505,6 +1536,7 @@ export type WorkspaceAction =
   | { type: "openBookExplorer"; paneId?: string }
   | { type: "openHarmony"; book?: string; chapter?: number; verse?: number; paneId?: string }
   | { type: "openConfession"; doc?: string; section?: string; title?: string; paneId?: string }
+  | { type: "openSermon"; slug: string; title?: string; paneId?: string }
   | {
       type: "setHarmonyRef";
       paneId: string;
@@ -2435,6 +2467,36 @@ export function workspaceReducer(
           ? action.title.trim().slice(0, 80)
           : undefined;
       const tab = confessionTab(doc, section, title);
+      const existing = findSingleton(leaf, tab);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            activeTabId: existing.id,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? absorbSingleton(t, tab) : t)),
+          })),
+        };
+      }
+      return landTab(state, paneId, tab);
+    }
+
+    case "openSermon": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The slug holds water only as a well-formed archive slug; a slug the
+      // corpus lacks loads anyway and the pane says so, the confession rule.
+      if (typeof action.slug !== "string" || !/^[a-z0-9-]+$/.test(action.slug)) return state;
+      const title =
+        typeof action.title === "string" && action.title.trim()
+          ? action.title.trim().slice(0, 120)
+          : undefined;
+      // One sermon reader per pane; a new sermon retargets the tab already
+      // there, reopening the same one focuses it.
+      const tab = sermonTab(action.slug, title);
       const existing = findSingleton(leaf, tab);
       if (existing) {
         return {
@@ -3708,6 +3770,16 @@ function sanitizeNode(node: unknown): PaneNode | null {
         const ref =
           typeof t.book === "string" ? mediaRef(t.book, t.chapter, t.verse) : null;
         tabs.push({ id: t.id, type: "media", ...(ref ?? {}) });
+        continue;
+      }
+      if (t.type === "sermon" && typeof t.id === "string") {
+        // The slug must be well formed; a malformed tab drops, and an
+        // unanswered slug loads anyway with the pane saying the archive
+        // lacks it, the confession rule.
+        if (typeof t.sermon !== "string" || !/^[a-z0-9-]+$/.test(t.sermon)) continue;
+        const title =
+          typeof t.title === "string" && t.title.trim() ? t.title : undefined;
+        tabs.push({ id: t.id, type: "sermon", sermon: t.sermon, ...(title ? { title } : {}) });
         continue;
       }
       if (t.type === "launcher" && typeof t.id === "string") {

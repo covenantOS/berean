@@ -10,6 +10,7 @@ import { getQuotesInChapter, getQuotedByChapter, type OtntRef } from "@/lib/otnt
 import { getPericopes } from "@/lib/pericopes";
 import { findRefs } from "@/lib/refs";
 import { questionSetFor } from "@/lib/studyquestions";
+import { getChapterSermons } from "@/lib/sermons";
 import { getChapterTopics } from "@/lib/topics";
 import { formatEventYears, formatRef, listTimelineEvents } from "@/lib/timeline";
 import { getTaggedChapter, STOP_STRONGS } from "@/lib/tagged";
@@ -76,7 +77,7 @@ export async function GET(req: NextRequest) {
   }
 
   const isGospel = (GOSPEL_SLUGS as readonly string[]).includes(book.slug);
-  const [wall, crossRefs, entities, topics, events, tagged, quotes, quotedBy, pericopes, confessional] =
+  const [wall, crossRefs, entities, topics, events, tagged, quotes, quotedBy, pericopes, confessional, sermonHits] =
     await Promise.all([
       getChapterCommentary(book.slug, chapter),
       getChapterCrossRefs(book.slug, chapter),
@@ -88,6 +89,7 @@ export async function GET(req: NextRequest) {
       getQuotedByChapter(book.slug, chapter),
       isGospel ? getPericopes(book.slug, chapter) : Promise.resolve([]),
       getChapterCitations(book.slug, chapter),
+      getChapterSermons(book.slug, chapter),
     ]);
 
   // (a) The commentary wall: section counts and the first excerpt per work.
@@ -366,6 +368,18 @@ export async function GET(req: NextRequest) {
     };
   });
 
+  // (k) Sermons: the Spurgeon archive's sermons preached on a text in this
+  // chapter (src/lib/sermons.ts), oldest first; empty when the archive has
+  // none on the chapter, so the section hides.
+  const sermons = sermonHits.slice(0, 16).map((s) => ({
+    slug: s.slug,
+    title: s.title,
+    number: s.number,
+    year: s.year,
+    ref: s.ref,
+    volume: s.volume,
+  }));
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -384,5 +398,7 @@ export async function GET(req: NextRequest) {
     gospelParallels,
     questions,
     confessions,
+    sermons,
+    sermonsTotal: sermonHits.length,
   });
 }

@@ -265,6 +265,27 @@ export const COMMENTARY_WORKS: CommentaryWork[] = [
       type: "new-testament",
     },
   },
+  {
+    id: "darby",
+    label: "J. N. Darby, Synopsis of the Books of the Bible",
+    rightsId: "darby",
+    /* Synopsis of the Books of the Bible, five volumes (London: G.
+     * Morrish, 1857-1862); the work first appeared in French in Darby's
+     * journal Etudes sur la Parole. Darby (1800-1882), a former Church
+     * of Ireland curate, led the Brethren movement gathered at Plymouth,
+     * and the Synopsis carried dispensational premillennialism across
+     * the English-speaking church. Darby wrote prose chapter by chapter,
+     * never verse by verse, so every section rides at chapter level.
+     * (The work's own preface; Schaff-Herzog.) */
+    meta: {
+      author: "John Nelson Darby",
+      years: "1857–1862",
+      from: 1857,
+      era: "19th century",
+      tradition: "Plymouth Brethren",
+      type: "whole-bible",
+    },
+  },
 ];
 
 interface RawCommentaryBook {

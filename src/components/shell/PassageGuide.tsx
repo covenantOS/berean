@@ -97,6 +97,17 @@ interface GuideConfession {
   citations: number;
 }
 
+interface GuideSermon {
+  slug: string;
+  title: string;
+  /** Canonical sermon number where the archive records one. */
+  number: string | null;
+  year: number | null;
+  /** The appointed text as printed. */
+  ref: string | null;
+  volume: string | null;
+}
+
 interface GuideTimelineEvent {
   id: string;
   label: string;
@@ -139,6 +150,9 @@ interface GuidePayload {
   parallels: GuideParallel[];
   gospelParallels: GuideGospelParallel[];
   confessions: GuideConfession[];
+  sermons: GuideSermon[];
+  /** The archive's full count for the chapter when the payload caps the rows. */
+  sermonsTotal: number;
 }
 
 type LoadState =
@@ -509,6 +523,37 @@ export default function PassageGuide({
                   {c.title ? `${c.title} · ` : ""}
                   {c.refs.join(", ")}
                   {c.moreRefs > 0 ? `, and ${c.moreRefs} more` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </GuideSection>
+      ) : null,
+
+    sermons:
+      g.sermons.length > 0 ? (
+        <GuideSection
+          title="Sermons"
+          hint={`Spurgeon's sermons on a text in this chapter${
+            g.sermonsTotal > g.sermons.length
+              ? ` · first ${g.sermons.length} of ${g.sermonsTotal}`
+              : ""
+          }`}
+        >          <ul className="space-y-1.5">
+            {g.sermons.map((s) => (
+              <li key={s.slug} className="flex items-baseline gap-2">
+                <button
+                  type="button"
+                  title={`Open "${s.title}" in the sermon reader`}
+                  onClick={() => dispatch({ type: "openSermon", slug: s.slug, title: s.title })}
+                  className="min-w-0 flex-1 truncate text-left text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {s.title}
+                </button>
+                <span className="shrink-0 text-[0.68rem] text-muted">
+                  {[s.year, s.ref, s.number ? `No. ${s.number}` : null]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </span>
               </li>
             ))}

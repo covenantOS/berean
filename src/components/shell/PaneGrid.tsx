@@ -85,6 +85,7 @@ const DeskPane = dynamic(() => import("./DeskPane"), { loading: PaneLoading });
 const ManuscriptPane = dynamic(() => import("./ManuscriptPane"), { loading: PaneLoading });
 const PersonalBookPane = dynamic(() => import("./PersonalBookPane"), { loading: PaneLoading });
 const ConfessionsPane = dynamic(() => import("./ConfessionsPane"), { loading: PaneLoading });
+const SermonsPane = dynamic(() => import("./SermonsPane"), { loading: PaneLoading });
 const PulpitPane = dynamic(() => import("./PulpitPane"), { loading: PaneLoading });
 const ProjectPane = dynamic(() => import("./ProjectPane"), { loading: PaneLoading });
 const ChapelPane = dynamic(() => import("./ChapelPane"), { loading: PaneLoading });
@@ -231,6 +232,7 @@ function tabLabel(tab: Tab): string {
     return tab.session !== undefined ? `${title} · Session ${tab.session}` : title;
   }
   if (tab.type === "confession") return tab.title ?? "Confessions";
+  if (tab.type === "sermon") return tab.title ?? "Sermon";
   if (tab.type === "pulpit") return "Pulpit";
   if (tab.type === "project") return tab.title;
   if (tab.type === "chapel") return "Chapel";
@@ -650,6 +652,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                 doc={activeTab.doc}
                 section={activeTab.section}
               />
+            </div>
+          ) : activeTab.type === "sermon" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <SermonsPane paneId={leaf.id} tabId={activeTab.id} slug={activeTab.sermon} />
             </div>
           ) : activeTab.type === "pulpit" ? (
             <div className="h-full overflow-y-auto p-4">

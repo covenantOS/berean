@@ -355,6 +355,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "darby",
+    title: "J. N. Darby, Synopsis of the Books of the Bible",
+    kind: "commentary",
+    rightsHolder: "Public domain",
+    license: "Public domain (five volumes, London: G. Morrish, 1857-1862; Darby died 1882)",
+    source: "https://stempublishing.com/authors/darby/synopsis/ (STEM Publishing's digitization, no copyright notice on any page)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "Darby's chapter-by-chapter synopsis across all 66 books, stored per-book as JSON under data/commentary/darby. The CrossWire 'Darby' SWORD module is Darby's Bible translation, not the Synopsis, so the text rides on STEM Publishing's per-chapter HTML digitization (a faithful transcription of the public-domain work with no copyright notice and no editorial apparatus). Darby wrote prose at chapter level, so every section ships with an empty verses label; sections spanning several chapters duplicate into each with the printed scope title prefixed (142 ranges into 470 chapters); whole-book Summary and Conclusion essays ride with chapter 1 of the shortest books; the preface and the five corpus introductions ship as intro sections (Genesis, Isaiah, Hosea, Matthew, Romans). Raw pages kept out of git; provenance in data/_sources/darby/PROVENANCE.md; normalized by scripts/build-commentary-darby.mjs.",
+    status: "shipped",
+  },
+  {
     id: "gill",
     title: "John Gill, Exposition of the Entire Bible",
     kind: "commentary",
@@ -365,6 +378,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     allowedUses: [],
     notes:
       "Confessional shelf priority. Registered as planned; the text ships only once a verified, openly licensed digitization is vendored. Rechecked 2026-07-23: the Internet Sacred Text Archive transcription is served behind a bot wall and carries a non-commercial reuse condition, e-Sword module conversions are unlicensed, and no CCEL, CrossWire, or Project Gutenberg edition exists. Still no shippable digitization.",
+    status: "planned",
+  },
+  {
+    id: "bullinger",
+    title: "E. W. Bullinger, The Companion Bible Notes",
+    kind: "commentary",
+    rightsHolder: "Public domain",
+    license: "Public domain (six parts, 1909-1922; Bullinger died 1913)",
+    source: "To be sourced: no clean machine-readable digitization found yet (no CrossWire SWORD module exists; only image scans and unlicensed conversions)",
+    sourceRetrieved: "—",
+    allowedUses: [],
+    notes:
+      "Registered as planned; the notes ship only once a verified, openly licensed digitization is vendored. The Companion Bible appeared in six parts, 1909-1922, finished after Bullinger's death (1913) by his associates, so the work itself is public domain. Rechecked 2026-07-23: CrossWire does not host a Companion Bible module (it sits on the wiki's Module Requests list, not the repository); archive.org holds image scans of the printed volumes whose two-column margin-note layout defeats verse-keyed OCR extraction; theWord and e-Sword conversions of the notes are unlicensed; SwordSearcher ships the notes commercially. Still no shippable digitization.",
     status: "planned",
   },
   {
@@ -654,6 +680,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
       "The Second London Confession (composed 1677, adopted 1689): the epistle to the reader, thirty-two chapters with 495 numbered proofs (1,272 references parsed and validated against the canon), the appendix, and the subscription statement, from CCEL's public-domain digitization. CCEL's modern BCF Assistant editorial material (M. T. Smith 1994-1999, with Waldron, Nichols, and Renihan content) is copyrighted and excluded; the mangled subscriber name table is omitted and recorded. Two proofs print verses the canon lacks (Acts 12:29-30, Luke 13:36, documented errors in the original printing): their display strings stay as printed, the verses sit out of the index, and data/confessions/_meta.json records them. Vendored source at data/_sources/confessions/bcf.txt (see PROVENANCE.md); built by scripts/build-confessions.mjs. Ships in the confessions reader, the Passage Guide's Confessional Documents section, and the Topic Guide's confessional join.",
+    status: "shipped",
+  },
+  {
+    id: "spurgeon-sermons",
+    title: "C. H. Spurgeon, the sermon archive (New Park Street Pulpit and Metropolitan Tabernacle Pulpit)",
+    kind: "dataset",
+    rightsHolder: "Public domain",
+    license: "Public domain (sermons published 1855-1917; Spurgeon died 1892)",
+    source: "The Spurgeon Library at Midwestern Baptist Theological Seminary, https://www.spurgeon.org/resource-library/sermons/, harvested through the site's public WPGraphQL endpoint",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "All 3,597 sermons of the New Park Street Pulpit and Metropolitan Tabernacle Pulpit (63 volumes, 1855-1917) with the Library's metadata: title, year, appointed-text reference, collection volume, facsimile PDF URL, and the site's scripture-chapter taxonomy, whose book slugs match the canon exactly. The transcription is faithful to the printed text with no editorial apparatus. Canonical sermon numbers ship where the Library records one, backfilled from the printed publication block where the record carries it (469 sermons; combined issues like '39-40' kept, polluted values dropped and logged); 77 records carry no chapter tag and stay out of the Passage Guide; 17 stubs ship without body text and point to the facsimile PDF. Stored as data/sermons/index.json plus per-sermon reader files under data/sermons/texts. Raw GraphQL pages kept out of git; provenance in data/_sources/spurgeon-sermons/PROVENANCE.md; built by scripts/build-sermons.mjs. Ships in the Passage Guide's Sermons section and the sermon reader.",
     status: "shipped",
   },
   {

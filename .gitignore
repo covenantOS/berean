@@ -18,6 +18,10 @@ data/_sources/scofield/*.zip
 data/_sources/catena/*.zip
 data/_sources/pnt/*.zip
 data/_sources/burkitt/*.zip
+data/_sources/darby/html/
+
+# Raw Spurgeon sermon GraphQL pages (~140MB); reproducible from data/_sources/spurgeon-sermons/PROVENANCE.md
+data/_sources/spurgeon-sermons/graphql/
 
 # Raw LXX sources (~3MB); reproducible from each PROVENANCE.md
 data/_sources/brenton/*.zip
