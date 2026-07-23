@@ -1,0 +1,49 @@
+{
+  "generated": "2026-07-23T14:14:07.750Z",
+  "id": "chalcedon",
+  "title": "The Definition of Chalcedon",
+  "subtitle": "The symbol of the fourth ecumenical council",
+  "years": "451",
+  "kind": "creed",
+  "frontMatter": [],
+  "backMatter": [],
+  "sections": [
+    {
+      "id": "s1",
+      "label": "Section 1",
+      "title": "",
+      "paragraphs": [
+        "We, then, following the holy Fathers, all with one consent, teach men to confess one and the same Son, our Lord Jesus Christ, the same perfect in Godhead and also perfect in manhood; truly God and truly man, of a reasonable soul and body; consubstantial with the Father according to the Godhead, and consubstantial with us according to the Manhood; in all things like unto us, without sin;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "s2",
+      "label": "Section 2",
+      "title": "",
+      "paragraphs": [
+        "begotten before all ages of the Father according to the Godhead, and in these latter days, for us and for our salvation, born of the Virgin Mary, the Mother of God, according to the Manhood;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "s3",
+      "label": "Section 3",
+      "title": "",
+      "paragraphs": [
+        "one and the same Christ, Son, Lord, Only-begotten, to be acknowledged in two natures, inconfusedly, unchangeably, indivisibly, inseparably; the distinction of natures being by no means taken away by the union, but rather the property of each nature being preserved, and concurring in one Person and one Subsistence, not parted or divided into two persons,"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "s4",
+      "label": "Section 4",
+      "title": "",
+      "paragraphs": [
+        "but one and the same Son, and only begotten, God the Word, the Lord Jesus Christ, as the prophets from the beginning have declared concerning him, and the Lord Jesus Christ himself has taught us, and the Creed of the holy Fathers has handed down to us."
+      ],
+      "proofs": []
+    }
+  ],
+  "blurb": "The fourth ecumenical council's definition of the one Christ in two natures, 451."
+}

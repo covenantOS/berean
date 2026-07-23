@@ -84,6 +84,19 @@ interface GuideTopic {
   verses: number;
 }
 
+interface GuideConfession {
+  work: string;
+  workLabel: string;
+  kind: "creed" | "catechism" | "confession";
+  sectionId: string;
+  label: string;
+  title: string;
+  /** Display labels of the article's references inside this chapter, capped. */
+  refs: string[];
+  moreRefs: number;
+  citations: number;
+}
+
 interface GuideTimelineEvent {
   id: string;
   label: string;
@@ -125,6 +138,7 @@ interface GuidePayload {
   compareVersions: { base: string; rows: GuideCompareRow[] } | null;
   parallels: GuideParallel[];
   gospelParallels: GuideGospelParallel[];
+  confessions: GuideConfession[];
 }
 
 type LoadState =
@@ -464,6 +478,41 @@ export default function PassageGuide({
               </div>
             )}
           </div>
+        </GuideSection>
+      ) : null,
+
+    confessions:
+      g.confessions.length > 0 ? (
+        <GuideSection
+          title="Confessional Documents"
+          hint="catechism and confession articles citing this chapter"
+        >
+          <ul className="space-y-1.5">
+            {g.confessions.map((c) => (
+              <li key={`${c.work}:${c.sectionId}`} className="flex items-baseline gap-2">
+                <button
+                  type="button"
+                  title={`Open ${c.title || c.label} in ${c.workLabel}`}
+                  onClick={() =>
+                    dispatch({
+                      type: "openConfession",
+                      doc: c.work,
+                      section: c.sectionId,
+                      title: c.workLabel,
+                    })
+                  }
+                  className="shrink-0 text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {c.workLabel} {c.label}
+                </button>
+                <span className="min-w-0 flex-1 truncate text-xs text-muted">
+                  {c.title ? `${c.title} · ` : ""}
+                  {c.refs.join(", ")}
+                  {c.moreRefs > 0 ? `, and ${c.moreRefs} more` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
         </GuideSection>
       ) : null,
 

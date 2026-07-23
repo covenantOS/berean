@@ -1,0 +1,112 @@
+{
+  "generated": "2026-07-23T14:14:07.750Z",
+  "id": "apostles-creed",
+  "title": "The Apostles' Creed",
+  "subtitle": "The received form",
+  "years": "2nd-8th century",
+  "kind": "creed",
+  "frontMatter": [],
+  "backMatter": [],
+  "sections": [
+    {
+      "id": "a1",
+      "label": "Article 1",
+      "title": "",
+      "paragraphs": [
+        "I believe in God the Father Almighty; Maker of heaven and earth."
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a2",
+      "label": "Article 2",
+      "title": "",
+      "paragraphs": [
+        "And in Jesus Christ his only Son our Lord; who was conceived by the Holy Ghost, born of the Virgin Mary;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a3",
+      "label": "Article 3",
+      "title": "",
+      "paragraphs": [
+        "suffered under Pontius Pilate, was crucified, dead, and buried; he descended into hell;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a4",
+      "label": "Article 4",
+      "title": "",
+      "paragraphs": [
+        "the third day he rose from the dead;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a5",
+      "label": "Article 5",
+      "title": "",
+      "paragraphs": [
+        "he ascended into heaven; and sitteth at the right hand of God the Father Almighty;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a6",
+      "label": "Article 6",
+      "title": "",
+      "paragraphs": [
+        "from thence he shall come to judge the quick and the dead."
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a7",
+      "label": "Article 7",
+      "title": "",
+      "paragraphs": [
+        "I believe in the Holy Ghost;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a8",
+      "label": "Article 8",
+      "title": "",
+      "paragraphs": [
+        "the holy catholic Church; the communion of saints;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a9",
+      "label": "Article 9",
+      "title": "",
+      "paragraphs": [
+        "the forgiveness of sins;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a10",
+      "label": "Article 10",
+      "title": "",
+      "paragraphs": [
+        "the resurrection of the body;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a11",
+      "label": "Article 11",
+      "title": "",
+      "paragraphs": [
+        "and the life everlasting. Amen."
+      ],
+      "proofs": []
+    }
+  ],
+  "blurb": "The baptismal creed of the Western church, received in this form by the eighth century."
+}

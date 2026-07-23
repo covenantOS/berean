@@ -1,0 +1,5161 @@
+{
+  "generated": "2026-07-23T14:14:07.750Z",
+  "id": "wsc",
+  "title": "The Westminster Shorter Catechism",
+  "subtitle": "With the Assembly's proof texts",
+  "years": "1647",
+  "kind": "catechism",
+  "frontMatter": [],
+  "backMatter": [],
+  "sections": [
+    {
+      "id": "q1",
+      "label": "Question 1",
+      "title": "What is the chief end of man?",
+      "paragraphs": [
+        "Man's chief end is to glorify God,[a] and to enjoy him for ever.[b]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 10:31, Romans 11:36",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 10,
+              "from": 31,
+              "to": 31
+            },
+            {
+              "slug": "romans",
+              "chapter": 11,
+              "from": 36,
+              "to": 36
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 73:25-28",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 73,
+              "from": 25,
+              "to": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "label": "Question 2",
+      "title": "What rule hath God given to direct us how we may glorify and enjoy him?",
+      "paragraphs": [
+        "The Word of God, which is contained in the Scriptures of the Old and New Testaments, [a] is the only rule to direct us how we may glorify and enjoy him.[b]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "2 Timothy 3:16, Ephesians 2:20",
+          "refs": [
+            {
+              "slug": "2-timothy",
+              "chapter": 3,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 2,
+              "from": 20,
+              "to": 20
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 John 1:3-4",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 1,
+              "from": 3,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "label": "Question 3",
+      "title": "What do the Scriptures principally teach?",
+      "paragraphs": [
+        "The Scriptures principally teach what man is to believe concerning God, and what duty God requires of man[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "2 Timothy 1:13, 2 Timothy 3:16",
+          "refs": [
+            {
+              "slug": "2-timothy",
+              "chapter": 1,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "2-timothy",
+              "chapter": 3,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "label": "Question 4",
+      "title": "What is God?",
+      "paragraphs": [
+        "God is a Spirit[a], infinite[b], eternal[c], and unchangeable[d] in his being[e], wisdom[f], power[g], holiness[h], justice, goodness, and truth[i]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "John 4:24",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 4,
+              "from": 24,
+              "to": 24
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Job 11:7-9",
+          "refs": [
+            {
+              "slug": "job",
+              "chapter": 11,
+              "from": 7,
+              "to": 9
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Psalm 90:2",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 90,
+              "from": 2,
+              "to": 2
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "James 1:17",
+          "refs": [
+            {
+              "slug": "james",
+              "chapter": 1,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Exodus 3:14",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 3,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "f",
+          "raw": "Psalm 147:5",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 147,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        },
+        {
+          "mark": "g",
+          "raw": "Revelation 4:8",
+          "refs": [
+            {
+              "slug": "revelation",
+              "chapter": 4,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "h",
+          "raw": "Revelation 15:4",
+          "refs": [
+            {
+              "slug": "revelation",
+              "chapter": 15,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "i",
+          "raw": "Exodus 34:6-7",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 34,
+              "from": 6,
+              "to": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "label": "Question 5",
+      "title": "Are there more Gods than one?",
+      "paragraphs": [
+        "There is but one only, the living and true God[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 6:4, Jeremiah 10:10",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 6,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "jeremiah",
+              "chapter": 10,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "label": "Question 6",
+      "title": "How many persons are there in the Godhead?",
+      "paragraphs": [
+        "There are three persons in the Godhead; the Father, the Son, and the Holy Ghost; and these three are one God, the same in substance, equal in power and glory.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 John 5:7, Matthew 28:19",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 5,
+              "from": 7,
+              "to": 7
+            },
+            {
+              "slug": "matthew",
+              "chapter": 28,
+              "from": 19,
+              "to": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "label": "Question 7",
+      "title": "What are the decrees of God?",
+      "paragraphs": [
+        "The decrees of God are, his eternal purpose, according to the counsel of his will, whereby, for his own glory, he hath foreordained whatsoever comes to pass [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 1:4, Romans 9:22-23",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 1,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "romans",
+              "chapter": 9,
+              "from": 22,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "label": "Question 8",
+      "title": "How doth God execute his decrees?",
+      "paragraphs": [
+        "God executeth his decrees in the works of creation and providence."
+      ],
+      "proofs": []
+    },
+    {
+      "id": "q9",
+      "label": "Question 9",
+      "title": "What is the work of creation?",
+      "paragraphs": [
+        "The work of creation is, God's making all things of nothing, by the word of his power, in the space of six days, and all very good.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 1, Hebrews 11:3",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 1
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 11,
+              "from": 3,
+              "to": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "label": "Question 10",
+      "title": "How did God create man?",
+      "paragraphs": [
+        "God created man male and female, after his own image, in knowledge, righteousness, and holiness, with dominion over the creatures[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 1:26-28, Colossians 3:10, Ephesians 4:24",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 1,
+              "from": 26,
+              "to": 28
+            },
+            {
+              "slug": "colossians",
+              "chapter": 3,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 4,
+              "from": 24,
+              "to": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "label": "Question 11",
+      "title": "What are God's works of providence?",
+      "paragraphs": [
+        "God's works of providence are, his most holy[a], wise[b], and powerful preserving[c] and governing all his creatures, and all their actions[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Psalm 145:17",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 145,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 104:24, Isaiah 28:29",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 104,
+              "from": 24,
+              "to": 24
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 28,
+              "from": 29,
+              "to": 29
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Hebrews 1:3",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 1,
+              "from": 3,
+              "to": 3
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Psalm 103:19, Matthew 10:29-31",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 103,
+              "from": 19,
+              "to": 19
+            },
+            {
+              "slug": "matthew",
+              "chapter": 10,
+              "from": 29,
+              "to": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "label": "Question 12",
+      "title": "What special act of providence did God exercise toward man in the estate wherein he was created?",
+      "paragraphs": [
+        "When God had created man, he entered into a covenant of life with him, upon condition of perfect obedience; forbidding him to eat of the tree of the knowledge of good and evil, upon pain of death.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Galatians 3:12, Genesis 2:17",
+          "refs": [
+            {
+              "slug": "galatians",
+              "chapter": 3,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "genesis",
+              "chapter": 2,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "label": "Question 13",
+      "title": "Did our first parents continue in the estate wherein they were created?",
+      "paragraphs": [
+        "Our first parents, being left to the freedom of their own will, fell from the estate wherein they were created, by sinning against God[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 3:6-8, Genesis 3:13, Ecclesiastes 7:29",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 6,
+              "to": 8
+            },
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "ecclesiastes",
+              "chapter": 7,
+              "from": 29,
+              "to": 29
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "label": "Question 14",
+      "title": "What is sin?",
+      "paragraphs": [
+        "Sin is any want of conformity unto, or transgression of, the law of God [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 John 3:4",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 3,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "label": "Question 15",
+      "title": "What was the sin whereby our first parents fell from the estate wherein they were created?",
+      "paragraphs": [
+        "The sin whereby our first parents fell from the estate wherein they were created, was their eating the forbidden fruit[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 3:6, Genesis 3:12",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 6,
+              "to": 6
+            },
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 12,
+              "to": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "label": "Question 16",
+      "title": "Did all mankind fall in Adam's first transgression?",
+      "paragraphs": [
+        "The covenant being made with Adam, not only for himself, but for his posterity; all mankind, descending from him by ordinary generation, sinned in him, and fell with him, in his first transgression[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 2:16-17, Romans 5:12, 1 Corinthians 15:21-22",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 2,
+              "from": 16,
+              "to": 17
+            },
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 15,
+              "from": 21,
+              "to": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "label": "Question 17",
+      "title": "Into what estate did the fall bring mankind?",
+      "paragraphs": [
+        "The fall brought mankind into an estate of sin and misery[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 5:12",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 12,
+              "to": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "label": "Question 18",
+      "title": "Wherein consists the sinfulness of that estate whereinto man fell?",
+      "paragraphs": [
+        "The sinfulness of that estate whereinto man fell, consists in the guilt of Adam's first sin, the want of original righteousness, and the corruption of his whole nature, which is commonly called original sin; together with all actual transgressions which proceed from it[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 5:12, Romans 5:19, Romans 5:10-20, Ephesians 2:1-3, James 1:14-15, Matthew 15:19",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 19,
+              "to": 19
+            },
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 10,
+              "to": 20
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 2,
+              "from": 1,
+              "to": 3
+            },
+            {
+              "slug": "james",
+              "chapter": 1,
+              "from": 14,
+              "to": 15
+            },
+            {
+              "slug": "matthew",
+              "chapter": 15,
+              "from": 19,
+              "to": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "label": "Question 19",
+      "title": "What is the misery of that estate whereinto man fell?",
+      "paragraphs": [
+        "All mankind by their fall lost communion with God[a], are under his wrath and curse[b], and so made liable to all miseries in this life, to death itself, and to the pains of hell for ever[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 3:8, Genesis 3:10, Genesis 3:24",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "genesis",
+              "chapter": 3,
+              "from": 24,
+              "to": 24
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Ephesians 2:2-3, Galatians 3:10",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 2,
+              "from": 2,
+              "to": 3
+            },
+            {
+              "slug": "galatians",
+              "chapter": 3,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Lamentations 3:39, Romans 6:23, Matthew 25:41, Matthew 25:46",
+          "refs": [
+            {
+              "slug": "lamentations",
+              "chapter": 3,
+              "from": 39,
+              "to": 39
+            },
+            {
+              "slug": "romans",
+              "chapter": 6,
+              "from": 23,
+              "to": 23
+            },
+            {
+              "slug": "matthew",
+              "chapter": 25,
+              "from": 41,
+              "to": 41
+            },
+            {
+              "slug": "matthew",
+              "chapter": 25,
+              "from": 46,
+              "to": 46
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "label": "Question 20",
+      "title": "Did God leave all mankind to perish in the estate of sin and misery?",
+      "paragraphs": [
+        "God having, out of his mere good pleasure, from all eternity, elected some to everlasting life[a] did enter into a covenant of grace, to deliver them out of the estate of sin and misery, and to bring them into an estate of salvation by a Redeemer[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 1:4",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 1,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Romans 3:20-22, Galatians 3:21-22",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 3,
+              "from": 20,
+              "to": 22
+            },
+            {
+              "slug": "galatians",
+              "chapter": 3,
+              "from": 21,
+              "to": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "label": "Question 21",
+      "title": "Who is the Redeemer of God's elect?",
+      "paragraphs": [
+        "The only Redeemer of God's elect is the Lord Jesus Christ[a], who, being the eternal Son of God, became man[b] and so was, and continueth to be, God and man in two distinct natures, and one person, forever[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Timothy 2:5-6",
+          "refs": [
+            {
+              "slug": "1-timothy",
+              "chapter": 2,
+              "from": 5,
+              "to": 6
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "John 1:14, Galatians 4:4",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 1,
+              "from": 14,
+              "to": 14
+            },
+            {
+              "slug": "galatians",
+              "chapter": 4,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Romans 9:5, Luke 1:35, Colossians 2:9, Hebrews 7:24-25",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 9,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 35,
+              "to": 35
+            },
+            {
+              "slug": "colossians",
+              "chapter": 2,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 7,
+              "from": 24,
+              "to": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "label": "Question 22",
+      "title": "How did Christ, being the Son of God, become man?",
+      "paragraphs": [
+        "Christ, the Son of God, became man, by taking to himself a true body[a], and a reasonable soul[b], being conceived by the power of the Holy Ghost, in the womb of the virgin Mary, and born of her[c] yet without sin[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Hebrews 2:14, Hebrews 2:16, Hebrews 10:5",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 2,
+              "from": 14,
+              "to": 14
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 2,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 10,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Matthew 26:38",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 26,
+              "from": 38,
+              "to": 38
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Luke 1:27, Luke 1:31, Luke 1:35, Luke 1:42, Galatians 4:4",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 27,
+              "to": 27
+            },
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 31,
+              "to": 31
+            },
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 35,
+              "to": 35
+            },
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 42,
+              "to": 42
+            },
+            {
+              "slug": "galatians",
+              "chapter": 4,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Hebrews 4:15, Hebrews 7:26",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 4,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 7,
+              "from": 26,
+              "to": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q23",
+      "label": "Question 23",
+      "title": "What offices doth Christ execute as our Redeemer?",
+      "paragraphs": [
+        "Christ, as our Redeemer, executeth the offices of a prophet, of a priest, and of a king, both in his estate of humiliation and exaltation[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 3:21-22, Hebrews 12:25, 2 Corinthians 13:3, Hebrews 5:5-7, Hebrews 7:25, Psalm 2:6, Isaiah 9:6-7, Matthew 21:5, Psalm 2:8-11",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 3,
+              "from": 21,
+              "to": 22
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 12,
+              "from": 25,
+              "to": 25
+            },
+            {
+              "slug": "2-corinthians",
+              "chapter": 13,
+              "from": 3,
+              "to": 3
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 5,
+              "from": 5,
+              "to": 7
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 7,
+              "from": 25,
+              "to": 25
+            },
+            {
+              "slug": "psalms",
+              "chapter": 2,
+              "from": 6,
+              "to": 6
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 9,
+              "from": 6,
+              "to": 7
+            },
+            {
+              "slug": "matthew",
+              "chapter": 21,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "psalms",
+              "chapter": 2,
+              "from": 8,
+              "to": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q24",
+      "label": "Question 24",
+      "title": "How doth Christ execute the office of a prophet?",
+      "paragraphs": [
+        "Christ executeth the office of a prophet, in revealing to us, by his Word and Spirit the will of God for our salvation[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "John 1:18, 1 Peter 1:10-12, John 15:15, John 20:31",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 1,
+              "from": 18,
+              "to": 18
+            },
+            {
+              "slug": "1-peter",
+              "chapter": 1,
+              "from": 10,
+              "to": 12
+            },
+            {
+              "slug": "john",
+              "chapter": 15,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "john",
+              "chapter": 20,
+              "from": 31,
+              "to": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q25",
+      "label": "Question 25",
+      "title": "How doth Christ execute the office of a priest?",
+      "paragraphs": [
+        "Christ executeth the office of a priest, in his once offering up of himself a sacrifice to satisfy divine justice[a], and reconcile us to God[b]; and in making continual intercession for us[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Hebrews 9:14, Hebrews 9:28",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 9,
+              "from": 14,
+              "to": 14
+            },
+            {
+              "slug": "hebrews",
+              "chapter": 9,
+              "from": 28,
+              "to": 28
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Hebrews 2:17",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 2,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Hebrews 7:24-25",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 7,
+              "from": 24,
+              "to": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q26",
+      "label": "Question 26",
+      "title": "How doth Christ execute the office of a king?",
+      "paragraphs": [
+        "Christ executeth the office of a king, in subduing us to himself[a], in ruling[b] and defending us[c], and in restraining and conquering all his and our enemies [d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 15:14-16",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 15,
+              "from": 14,
+              "to": 16
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Isaiah 33:22",
+          "refs": [
+            {
+              "slug": "isaiah",
+              "chapter": 33,
+              "from": 22,
+              "to": 22
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Isaiah 32:1-2",
+          "refs": [
+            {
+              "slug": "isaiah",
+              "chapter": 32,
+              "from": 1,
+              "to": 2
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "1 Corinthians 15:25, Psalm 110",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 15,
+              "from": 25,
+              "to": 25
+            },
+            {
+              "slug": "psalms",
+              "chapter": 110
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q27",
+      "label": "Question 27",
+      "title": "Wherein did Christ's humiliation consist?",
+      "paragraphs": [
+        "Christ's humiliation consisted in his being born, and that in a low condition [a], made under the law[b], undergoing the miseries of this life[c], the wrath of God[d], and the cursed death of the cross[e]; in being buried[f], and continuing under the power of death for a time.[g]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Luke 2:7",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 2,
+              "from": 7,
+              "to": 7
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Galatians 4:4",
+          "refs": [
+            {
+              "slug": "galatians",
+              "chapter": 4,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Hebrews 12:2-3, Isaiah 53:2-3",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 12,
+              "from": 2,
+              "to": 3
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 53,
+              "from": 2,
+              "to": 3
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Luke 22:44, Matthew 27:46",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 22,
+              "from": 44,
+              "to": 44
+            },
+            {
+              "slug": "matthew",
+              "chapter": 27,
+              "from": 46,
+              "to": 46
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Philippians 2:8",
+          "refs": [
+            {
+              "slug": "philippians",
+              "chapter": 2,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "f",
+          "raw": "1 Corinthians 15:3-4",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 15,
+              "from": 3,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "g",
+          "raw": "Acts 2:24-27, Acts 2:31",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 24,
+              "to": 27
+            },
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 31,
+              "to": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q28",
+      "label": "Question 28",
+      "title": "Wherein consisteth Christ's exaltation?",
+      "paragraphs": [
+        "Christ's exaltation consisteth in his rising again from the dead on the third day[a], in ascending up into heaven[b], in sitting at the right hand of God the Father[c], and in coming to judge the world at the last day[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 15:4",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 15,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Mark 16:19",
+          "refs": [
+            {
+              "slug": "mark",
+              "chapter": 16,
+              "from": 19,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Ephesians 1:20",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 1,
+              "from": 20,
+              "to": 20
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Acts 1:11, Acts 17:31",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 1,
+              "from": 11,
+              "to": 11
+            },
+            {
+              "slug": "acts",
+              "chapter": 17,
+              "from": 31,
+              "to": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q29",
+      "label": "Question 29",
+      "title": "How are we made partakers of the redemption purchased by Christ?",
+      "paragraphs": [
+        "We are made partakers of the redemption purchased by Christ, by the effectual application of it to us[a] by his Holy Spirit[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "John 1:11-12",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 1,
+              "from": 11,
+              "to": 12
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Titus 3:5-6",
+          "refs": [
+            {
+              "slug": "titus",
+              "chapter": 3,
+              "from": 5,
+              "to": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q30",
+      "label": "Question 30",
+      "title": "How doth the Spirit apply to us the redemption purchased by Christ?",
+      "paragraphs": [
+        "The Spirit applieth to us the redemption purchased by Christ, by working faith in us[a], and thereby uniting us to Christ in our effectual calling[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 1:13-14, John 6:37, John 6:39, Ephesians 2:8",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 1,
+              "from": 13,
+              "to": 14
+            },
+            {
+              "slug": "john",
+              "chapter": 6,
+              "from": 37,
+              "to": 37
+            },
+            {
+              "slug": "john",
+              "chapter": 6,
+              "from": 39,
+              "to": 39
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 2,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Ephesians 3:17, 1 Corinthians 1:9",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 3,
+              "from": 17,
+              "to": 17
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 1,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q31",
+      "label": "Question 31",
+      "title": "What is effectual calling?",
+      "paragraphs": [
+        "Effectual calling is the work of God's Spirit[a], whereby, convincing us of our sin and misery[b], enlightening our minds in the knowledge of Christ[c], and renewing our wills[d], he doth persuade and enable us to embrace Jesus Christ, freely offered to us in the gospel[e]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "2 Timothy 1:9, 2 Thessalonians 2:13-14",
+          "refs": [
+            {
+              "slug": "2-timothy",
+              "chapter": 1,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "2-thessalonians",
+              "chapter": 2,
+              "from": 13,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Acts 2:37",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 37,
+              "to": 37
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Acts 26:18",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 26,
+              "from": 18,
+              "to": 18
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Ezekiel 36:26-27",
+          "refs": [
+            {
+              "slug": "ezekiel",
+              "chapter": 36,
+              "from": 26,
+              "to": 27
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "John 6:44-45, Philippians 2:13",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 6,
+              "from": 44,
+              "to": 45
+            },
+            {
+              "slug": "philippians",
+              "chapter": 2,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q32",
+      "label": "Question 32",
+      "title": "What benefits do they that are effectually called partake of in this life?",
+      "paragraphs": [
+        "They that are effectually called do in this life partake of justification[a], adoption[b], and sanctification, and the several benefits which in this life do either accompany or flow from them[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 8:30",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 8,
+              "from": 30,
+              "to": 30
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Ephesians 1:5",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 1,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "1 Corinthians 1:26, 1 Corinthians 1:30",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 1,
+              "from": 26,
+              "to": 26
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 1,
+              "from": 30,
+              "to": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q33",
+      "label": "Question 33",
+      "title": "What is justification?",
+      "paragraphs": [
+        "Justification is an act of God's free grace, wherein he pardoneth all our sins[a], and accepteth us as righteous in his sight[b], only for the righteousness of Christ imputed to us[c], and received by faith alone[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 3:24-25, Romans 4:6-8",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 3,
+              "from": 24,
+              "to": 25
+            },
+            {
+              "slug": "romans",
+              "chapter": 4,
+              "from": 6,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "2 Corinthians 5:19, 2 Corinthians 5:21",
+          "refs": [
+            {
+              "slug": "2-corinthians",
+              "chapter": 5,
+              "from": 19,
+              "to": 19
+            },
+            {
+              "slug": "2-corinthians",
+              "chapter": 5,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Romans 5:17-19",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 17,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Galatians 2:16, Philippians 3:9",
+          "refs": [
+            {
+              "slug": "galatians",
+              "chapter": 2,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "philippians",
+              "chapter": 3,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q34",
+      "label": "Question 34",
+      "title": "What is adoption?",
+      "paragraphs": [
+        "Adoption is an act of God's free grace[a], whereby we are received into the number, and have a right to all the privileges, of the sons of God[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 John 3:1",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 3,
+              "from": 1,
+              "to": 1
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "John 1:12, Romans 8:17",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 1,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "romans",
+              "chapter": 8,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q35",
+      "label": "Question 35",
+      "title": "What is sanctification?",
+      "paragraphs": [
+        "Sanctification is the work of God's free grace[a], whereby we are renewed in the whole man after the image of God[b], and are enabled more and more to die unto sin, and live unto righteousness[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "2 Thessalonians 2:13",
+          "refs": [
+            {
+              "slug": "2-thessalonians",
+              "chapter": 2,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Ephesians 4:23-24",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 4,
+              "from": 23,
+              "to": 24
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Romans 6:4, Romans 6:6",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 6,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "romans",
+              "chapter": 6,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q36",
+      "label": "Question 36",
+      "title": "What are the benefits which in this life do accompany or flow from justification, adoption, and sanctification?",
+      "paragraphs": [
+        "The benefits which in this life do accompany or flow from justification, adoption, and sanctification, are, assurance of God's love, peace of conscience[a], joy in the Holy Ghost[b], increase of grace[c], and perseverance therein to the end[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 5:1-2, Romans 5:5",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 1,
+              "to": 2
+            },
+            {
+              "slug": "romans",
+              "chapter": 5,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Romans 14:17",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 14,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Proverbs 4:18",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 4,
+              "from": 18,
+              "to": 18
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "1 John 5:13, 1 Peter 1:5",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 5,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "1-peter",
+              "chapter": 1,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q37",
+      "label": "Question 37",
+      "title": "What benefits do believers receive from Christ at death?",
+      "paragraphs": [
+        "The souls of believers are at their death made perfect in holiness[a], and do immediately pass into glory[b]; and their bodies, being still united to Christ[c], do rest in their graves[d] till the resurrection[e]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Hebrews 12:23",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 12,
+              "from": 23,
+              "to": 23
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "2 Corinthians 5:1, 2 Corinthians 5:6, 2 Corinthians 5:8, Philippians 1:23, Luke 23:43",
+          "refs": [
+            {
+              "slug": "2-corinthians",
+              "chapter": 5,
+              "from": 1,
+              "to": 1
+            },
+            {
+              "slug": "2-corinthians",
+              "chapter": 5,
+              "from": 6,
+              "to": 6
+            },
+            {
+              "slug": "2-corinthians",
+              "chapter": 5,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "philippians",
+              "chapter": 1,
+              "from": 23,
+              "to": 23
+            },
+            {
+              "slug": "luke",
+              "chapter": 23,
+              "from": 43,
+              "to": 43
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "1 Thessalonians 4:14",
+          "refs": [
+            {
+              "slug": "1-thessalonians",
+              "chapter": 4,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Isaiah 57:2",
+          "refs": [
+            {
+              "slug": "isaiah",
+              "chapter": 57,
+              "from": 2,
+              "to": 2
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Job 19:26-27",
+          "refs": [
+            {
+              "slug": "job",
+              "chapter": 19,
+              "from": 26,
+              "to": 27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q38",
+      "label": "Question 38",
+      "title": "What benefits do believers receive from Christ at the resurrection?",
+      "paragraphs": [
+        "At the resurrection, believers being raised up in glory[a], shall be openly acknowledged and acquitted in the day of judgment[b], and made perfectly blessed in the full enjoying of God[c] to all eternity[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 15:43",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 15,
+              "from": 43,
+              "to": 43
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Matthew 25:33, Matthew 10:32",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 25,
+              "from": 33,
+              "to": 33
+            },
+            {
+              "slug": "matthew",
+              "chapter": 10,
+              "from": 32,
+              "to": 32
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "1 John 3:2, 1 Corinthians 13:12",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 3,
+              "from": 2,
+              "to": 2
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 13,
+              "from": 12,
+              "to": 12
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "1 Thessalonians 4:17-18",
+          "refs": [
+            {
+              "slug": "1-thessalonians",
+              "chapter": 4,
+              "from": 17,
+              "to": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q39",
+      "label": "Question 39",
+      "title": "What is the duty which God requireth of man?",
+      "paragraphs": [
+        "The duty which God requireth of man, is obedience to his revealed will [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Micah 6:8, 1 Samuel 15:22",
+          "refs": [
+            {
+              "slug": "micah",
+              "chapter": 6,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "1-samuel",
+              "chapter": 15,
+              "from": 22,
+              "to": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q40",
+      "label": "Question 40",
+      "title": "What did God at first reveal to man for the rule of his obedience?",
+      "paragraphs": [
+        "The rule which God at first revealed to man for his obedience, was the moral law[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Romans 2:14-15, Romans 10:5",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 2,
+              "from": 14,
+              "to": 15
+            },
+            {
+              "slug": "romans",
+              "chapter": 10,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q41",
+      "label": "Question 41",
+      "title": "Wherein is the moral law summarily comprehended?",
+      "paragraphs": [
+        "The moral law is summarily comprehended in the ten commandments[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 10:4",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 10,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q42",
+      "label": "Question 42",
+      "title": "What is the sum of the ten commandments?",
+      "paragraphs": [
+        "The sum of the ten commandments is, To love the Lord our God with all our heart, with all our soul, with all our strength, and with all our mind; and our neighbour as ourselves[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 22:37-40",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 22,
+              "from": 37,
+              "to": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q43",
+      "label": "Question 43",
+      "title": "What is the preface to the ten commandments?",
+      "paragraphs": [
+        "The preface to the ten commandments is in these words, I am the Lord thy God, which have brought thee out of the land of Egypt, out of the house of bondage. [a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:2",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 2,
+              "to": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q44",
+      "label": "Question 44",
+      "title": "What doth the preface to the ten commandments teach us?",
+      "paragraphs": [
+        "The preface to the ten commandments teacheth us, That because God is the Lord, and our God, and Redeemer, therefore we are bound to keep all his commandments [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Luke 1:74-75, 1 Peter 1:14-19",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 1,
+              "from": 74,
+              "to": 75
+            },
+            {
+              "slug": "1-peter",
+              "chapter": 1,
+              "from": 14,
+              "to": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q45",
+      "label": "Question 45",
+      "title": "Which is the first commandment?",
+      "paragraphs": [
+        "The first commandment is, Thou shalt have no other gods before me.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:3",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 3,
+              "to": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q46",
+      "label": "Question 46",
+      "title": "What is required in the first commandment?",
+      "paragraphs": [
+        "The first commandment requireth us to know and acknowledge God to be the only true God, and our God[a]; and to worship and glorify him accordingly[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Chronicles 28:9, Deuteronomy 26:17",
+          "refs": [
+            {
+              "slug": "1-chronicles",
+              "chapter": 28,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "deuteronomy",
+              "chapter": 26,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Matthew 4:10, Psalm 29:2",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 4,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "psalms",
+              "chapter": 29,
+              "from": 2,
+              "to": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q47",
+      "label": "Question 47",
+      "title": "What is forbidden in the first commandment?",
+      "paragraphs": [
+        "The first commandment forbiddeth the denying[a], or not worshipping and glorifying the true God as God[b], and our God[c]; and the giving of that worship and glory to any other, which is due to him alone[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Psalm 14:1",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 14,
+              "from": 1,
+              "to": 1
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Romans 1:21",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 1,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Psalm 81:10-11",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 81,
+              "from": 10,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Romans 1:25-26",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 1,
+              "from": 25,
+              "to": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q48",
+      "label": "Question 48",
+      "title": "What are we specially taught by these words, 'before me', in the first commandment?",
+      "paragraphs": [
+        "These words, before me, in the first commandment teach us, that God, who seeth all things, taketh notice of, and is much displeased with, the sin of having any other God[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ezekiel 8:5-18",
+          "refs": [
+            {
+              "slug": "ezekiel",
+              "chapter": 8,
+              "from": 5,
+              "to": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q49",
+      "label": "Question 49",
+      "title": "Which is the second commandment?",
+      "paragraphs": [
+        "The second commandment is, Thou shalt not make unto thee any graven image, or any likeness of anything that is in heaven above, or that is in the earth beneath, or that is in the water under the earth: thou shalt not bow down thy self to them, nor serve them: for I the Lord thy God am a jealous God, visiting the iniquity of the fathers upon the children unto the third and fourth generation of them that hate me; and showing mercy unto thousands of them that love me, and keep my commandments.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:4, Exodus 20:6",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q50",
+      "label": "Question 50",
+      "title": "What is required in the second commandment?",
+      "paragraphs": [
+        "The second commandment requireth the receiving, observing, and keeping pure and entire, all such religious worship and ordinances as God hath appointed in his Word[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 32:46, Matthew 28:20, Acts 2:42",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 32,
+              "from": 46,
+              "to": 46
+            },
+            {
+              "slug": "matthew",
+              "chapter": 28,
+              "from": 20,
+              "to": 20
+            },
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 42,
+              "to": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q51",
+      "label": "Question 51",
+      "title": "What is forbidden in the second commandment?",
+      "paragraphs": [
+        "The second commandment forbiddeth the worshipping of God by images[a], or any other way not appointed in his Word[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 4:15-19, Exodus 32:5, Exodus 32:8",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 4,
+              "from": 15,
+              "to": 19
+            },
+            {
+              "slug": "exodus",
+              "chapter": 32,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "exodus",
+              "chapter": 32,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Deuteronomy 12:31-32",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 12,
+              "from": 31,
+              "to": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q52",
+      "label": "Question 52",
+      "title": "What are the reasons annexed to the second commandment?",
+      "paragraphs": [
+        "The reasons annexed to the second commandment are, God's sovereignty over us [a], his propriety in us[b], and the zeal he hath to his own worship[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Psalm 95:2-3, Psalm 95:6",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 95,
+              "from": 2,
+              "to": 3
+            },
+            {
+              "slug": "psalms",
+              "chapter": 95,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 45:11",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 45,
+              "from": 11,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Exodus 34:14",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 34,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q53",
+      "label": "Question 53",
+      "title": "Which is the third commandment?",
+      "paragraphs": [
+        "The third commandment is, Thou shalt not take the name of the Lord thy God in vain; for the Lord will not hold him guiltless that taketh his name in vain. [a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:7",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 7,
+              "to": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q54",
+      "label": "Question 54",
+      "title": "What is required in the third commandment?",
+      "paragraphs": [
+        "The third commandment requireth the holy and reverend use of God's names[a], titles [b], attributes[c], ordinances[d], Word[e], and works[f]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:9, Deuteronomy 28:58",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "deuteronomy",
+              "chapter": 28,
+              "from": 58,
+              "to": 58
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 68:4",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 68,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Revelation 15:3-4",
+          "refs": [
+            {
+              "slug": "revelation",
+              "chapter": 15,
+              "from": 3,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Malachi 1:11, Malachi 1:14",
+          "refs": [
+            {
+              "slug": "malachi",
+              "chapter": 1,
+              "from": 11,
+              "to": 11
+            },
+            {
+              "slug": "malachi",
+              "chapter": 1,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Psalm 138:1-2",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 138,
+              "from": 1,
+              "to": 2
+            }
+          ]
+        },
+        {
+          "mark": "f",
+          "raw": "Job 36:24",
+          "refs": [
+            {
+              "slug": "job",
+              "chapter": 36,
+              "from": 24,
+              "to": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q55",
+      "label": "Question 55",
+      "title": "What is forbidden in the third commandment?",
+      "paragraphs": [
+        "The third commandment forbiddeth all profaning or abusing of anything whereby God maketh himself known[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Malachi 1:6-7, Malachi 1:12, Malachi 2:2, Malachi 3:14",
+          "refs": [
+            {
+              "slug": "malachi",
+              "chapter": 1,
+              "from": 6,
+              "to": 7
+            },
+            {
+              "slug": "malachi",
+              "chapter": 1,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "malachi",
+              "chapter": 2,
+              "from": 2,
+              "to": 2
+            },
+            {
+              "slug": "malachi",
+              "chapter": 3,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q56",
+      "label": "Question 56",
+      "title": "What is the reason annexed to the third commandment?",
+      "paragraphs": [
+        "The reason annexed to the third commandment is, that however the breakers of this commandment may escape punishment from men, yet the Lord our God will not suffer them to escape his righteous judgment[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Samuel 2:12, 1 Samuel 2:17, 1 Samuel 2:22, 1 Samuel 2:29, 1 Samuel 3:13, Deuteronomy 28:58-59",
+          "refs": [
+            {
+              "slug": "1-samuel",
+              "chapter": 2,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "1-samuel",
+              "chapter": 2,
+              "from": 17,
+              "to": 17
+            },
+            {
+              "slug": "1-samuel",
+              "chapter": 2,
+              "from": 22,
+              "to": 22
+            },
+            {
+              "slug": "1-samuel",
+              "chapter": 2,
+              "from": 29,
+              "to": 29
+            },
+            {
+              "slug": "1-samuel",
+              "chapter": 3,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "deuteronomy",
+              "chapter": 28,
+              "from": 58,
+              "to": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q57",
+      "label": "Question 57",
+      "title": "Which is the fourth commandment?",
+      "paragraphs": [
+        "The fourth commandment is, Remember the sabbath day, to keep it holy. Six days shalt thou labor, and do all thy work; but the seventh day is the sabbath of the Lord thy God: in it thou shalt not do any work, thou, nor thy son, nor thy daughter, thy manservant, nor thy maidservant, nor thy cattle, nor thy stranger that is within thy gates. For in six days the Lord made heaven and earth, the sea, and all that in them is, and rested the seventh day: wherefore the Lord blessed the sabbath day, and hallowed it.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:8-11",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 8,
+              "to": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q58",
+      "label": "Question 58",
+      "title": "What is required in the fourth commandment?",
+      "paragraphs": [
+        "The fourth commandment requireth the keeping holy to God such set times as he hath appointed in his Word; expressly one whole day in seven, to be a holy sabbath to himself[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 5:12-14",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 5,
+              "from": 12,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q59",
+      "label": "Question 59",
+      "title": "Which day of the seven hath God appointed to be the weekly sabbath?",
+      "paragraphs": [
+        "From the beginning of the world to the resurrection of Christ, God appointed the seventh day of the week to be the weekly sabbath; and the first day of the week ever since, to continue to the end of the world, which is the Christian sabbath[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 2:2-3, 1 Corinthians 16:1-2, Acts 20:7",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 2,
+              "from": 2,
+              "to": 3
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 16,
+              "from": 1,
+              "to": 2
+            },
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 7,
+              "to": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q60",
+      "label": "Question 60",
+      "title": "How is the sabbath to be sanctified?",
+      "paragraphs": [
+        "The sabbath is to be sanctified by a holy resting all that day[a], even from such worldly employments and recreations as are lawful on other days[b]; and spending the whole time in the public and private exercises of God's worship[c], except so much as is to be taken up in the works of necessity and mercy[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:8, Exodus 20:10, Exodus 16:25-28",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "exodus",
+              "chapter": 16,
+              "from": 25,
+              "to": 28
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Nehemiah 13:15-19, Nehemiah 13:21-22",
+          "refs": [
+            {
+              "slug": "nehemiah",
+              "chapter": 13,
+              "from": 15,
+              "to": 19
+            },
+            {
+              "slug": "nehemiah",
+              "chapter": 13,
+              "from": 21,
+              "to": 22
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Luke 4:16, Acts 20:7, Psalm 92, Isaiah 66:23",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 4,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 7,
+              "to": 7
+            },
+            {
+              "slug": "psalms",
+              "chapter": 92
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 66,
+              "from": 23,
+              "to": 23
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Matthew 12:1-13",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 12,
+              "from": 1,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q61",
+      "label": "Question 61",
+      "title": "What is forbidden in the fourth commandment?",
+      "paragraphs": [
+        "The fourth commandment forbiddeth the omission or careless performance of the duties required[a], and the profaning the day by idleness[b], or doing that which is in itself sinful[c], or by unnecessary thoughts, words, or works, about our worldly employments or recreations[d]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ezekiel 22:26, Amos 8:5, Malachi 1:13",
+          "refs": [
+            {
+              "slug": "ezekiel",
+              "chapter": 22,
+              "from": 26,
+              "to": 26
+            },
+            {
+              "slug": "amos",
+              "chapter": 8,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "malachi",
+              "chapter": 1,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Acts 20:7, Acts 20:9",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 7,
+              "to": 7
+            },
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Ezekiel 23:38",
+          "refs": [
+            {
+              "slug": "ezekiel",
+              "chapter": 23,
+              "from": 38,
+              "to": 38
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Jeremiah 17:24-26, Isaiah 58:13",
+          "refs": [
+            {
+              "slug": "jeremiah",
+              "chapter": 17,
+              "from": 24,
+              "to": 26
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 58,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q62",
+      "label": "Question 62",
+      "title": "What are the reasons annexed to the fourth commandment?",
+      "paragraphs": [
+        "The reasons annexed to the fourth commandment are, God's allowing us six days of the week for our own employments[a], his challenging a special propriety in the seventh, his own example, and his blessing the sabbath day[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:9",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Exodus 20:11",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 11,
+              "to": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q63",
+      "label": "Question 63",
+      "title": "Which is the fifth commandment?",
+      "paragraphs": [
+        "The fifth commandment is, Honour thy father and thy mother; that thy days may be long upon the land which the Lord thy God giveth thee.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:12",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 12,
+              "to": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q64",
+      "label": "Question 64",
+      "title": "What is required in the fifth commandment?",
+      "paragraphs": [
+        "The fifth commandment requireth the preserving the honor, and performing the duties, belonging to everyone in their several places and relations, as superiors,[a] inferiors[b], or equals[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 5:21",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 5,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 Peter 2:17",
+          "refs": [
+            {
+              "slug": "1-peter",
+              "chapter": 2,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Romans 12:10",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 12,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q65",
+      "label": "Question 65",
+      "title": "What is forbidden in the fifth commandment?",
+      "paragraphs": [
+        "The fifth commandment forbiddeth the neglecting of, or doing anything against, the honor and duty which belongeth to everyone in their several places and relations [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 15:4-6, Ezekiel 34:2-4, Romans 13:8",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 15,
+              "from": 4,
+              "to": 6
+            },
+            {
+              "slug": "ezekiel",
+              "chapter": 34,
+              "from": 2,
+              "to": 4
+            },
+            {
+              "slug": "romans",
+              "chapter": 13,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q66",
+      "label": "Question 66",
+      "title": "What is the reason annexed to the fifth commandment?",
+      "paragraphs": [
+        "The reason annexed to the fifth commandment is, a promise of long life and prosperity (as far as it shall serve for God's glory and their own good) to all such as keep this commandment[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Deuteronomy 5:16, Ephesians 6:2-3",
+          "refs": [
+            {
+              "slug": "deuteronomy",
+              "chapter": 5,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 6,
+              "from": 2,
+              "to": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q67",
+      "label": "Question 67",
+      "title": "Which is the sixth commandment?",
+      "paragraphs": [
+        "The sixth commandment is, Thou shalt not kill.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:13",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q68",
+      "label": "Question 68",
+      "title": "What is required in the sixth commandment?",
+      "paragraphs": [
+        "The sixth commandment requireth all lawful endeavors to preserve our own life,[a] and the life of others[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 5:28-29",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 5,
+              "from": 28,
+              "to": 29
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 Kings 18:4",
+          "refs": [
+            {
+              "slug": "1-kings",
+              "chapter": 18,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q69",
+      "label": "Question 69",
+      "title": "What is forbidden in the sixth commandment?",
+      "paragraphs": [
+        "The sixth commandment forbiddeth the taking away of our own life, or the life of our neighbour, unjustly, or whatsoever tendeth thereunto[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 16:28, Genesis 9:6",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 16,
+              "from": 28,
+              "to": 28
+            },
+            {
+              "slug": "genesis",
+              "chapter": 9,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q70",
+      "label": "Question 70",
+      "title": "Which is the seventh commandment?",
+      "paragraphs": [
+        "The seventh commandment is, Thou shalt not commit adultery.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:14",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q71",
+      "label": "Question 71",
+      "title": "What is required in the seventh commandment?",
+      "paragraphs": [
+        "The seventh commandment requireth the preservation of our own and our neighbour's chastity, in heart, speech, and behavior[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 7:2-3, 1 Corinthians 7:5, 1 Corinthians 7:34, 1 Corinthians 7:36, 1 Peter 3:2",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 7,
+              "from": 2,
+              "to": 3
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 7,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 7,
+              "from": 34,
+              "to": 34
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 7,
+              "from": 36,
+              "to": 36
+            },
+            {
+              "slug": "1-peter",
+              "chapter": 3,
+              "from": 2,
+              "to": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q72",
+      "label": "Question 72",
+      "title": "What is forbidden in the seventh commandment?",
+      "paragraphs": [
+        "The seventh commandment forbiddeth all unchaste thoughts, words, and actions [a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 15:19, Matthew 5:28, Ephesians 5:3-4",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 15,
+              "from": 19,
+              "to": 19
+            },
+            {
+              "slug": "matthew",
+              "chapter": 5,
+              "from": 28,
+              "to": 28
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 5,
+              "from": 3,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q73",
+      "label": "Question 73",
+      "title": "Which is the eighth commandment?",
+      "paragraphs": [
+        "The eighth commandment is, Thou shalt not steal.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:15",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 15,
+              "to": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q74",
+      "label": "Question 74",
+      "title": "What is required in the eighth commandment?",
+      "paragraphs": [
+        "The eighth commandment requireth the lawful procuring and furthering the wealth and outward estate of ourselves and others[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 30:30, 1 Timothy 5:8, Leviticus 25:35, Deuteronomy 22:1-5, Exodus 23:4-5, Genesis 47:14, Genesis 47:20",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 30,
+              "from": 30,
+              "to": 30
+            },
+            {
+              "slug": "1-timothy",
+              "chapter": 5,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "leviticus",
+              "chapter": 25,
+              "from": 35,
+              "to": 35
+            },
+            {
+              "slug": "deuteronomy",
+              "chapter": 22,
+              "from": 1,
+              "to": 5
+            },
+            {
+              "slug": "exodus",
+              "chapter": 23,
+              "from": 4,
+              "to": 5
+            },
+            {
+              "slug": "genesis",
+              "chapter": 47,
+              "from": 14,
+              "to": 14
+            },
+            {
+              "slug": "genesis",
+              "chapter": 47,
+              "from": 20,
+              "to": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q75",
+      "label": "Question 75",
+      "title": "What is forbidden in the eighth commandment?",
+      "paragraphs": [
+        "The eighth commandment forbiddeth whatsoever doth, or may, unjustly hinder our own, or our neighbour's, wealth or outward estate[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Proverbs 21:17, Proverbs 23:20-21, Proverbs 28:19, Ephesians 4:28",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 21,
+              "from": 17,
+              "to": 17
+            },
+            {
+              "slug": "proverbs",
+              "chapter": 23,
+              "from": 20,
+              "to": 21
+            },
+            {
+              "slug": "proverbs",
+              "chapter": 28,
+              "from": 19,
+              "to": 19
+            },
+            {
+              "slug": "ephesians",
+              "chapter": 4,
+              "from": 28,
+              "to": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q76",
+      "label": "Question 76",
+      "title": "Which is the ninth commandment?",
+      "paragraphs": [
+        "The ninth commandment is, Thou shalt not bear false witness against thy neighbour. [a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:16",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q77",
+      "label": "Question 77",
+      "title": "What is required in the ninth commandment?",
+      "paragraphs": [
+        "The ninth commandment requireth the maintaining and promoting of truth between man and man[a], and of our own and our neighbour's good name[b], especially in witness bearing[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Zechariah 8:16",
+          "refs": [
+            {
+              "slug": "zechariah",
+              "chapter": 8,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "3 John 1:12",
+          "refs": [
+            {
+              "slug": "3-john",
+              "chapter": 1,
+              "from": 12,
+              "to": 12
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Proverbs 14:5, Proverbs 14:25",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 14,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "proverbs",
+              "chapter": 14,
+              "from": 25,
+              "to": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q78",
+      "label": "Question 78",
+      "title": "What is forbidden in the ninth commandment?",
+      "paragraphs": [
+        "The ninth commandment forbiddeth whatsoever is prejudicial to truth, or injurious to our own, or our neighbour's, good name[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Samuel 17:28, Leviticus 19:16, Psalm 15:3",
+          "refs": [
+            {
+              "slug": "1-samuel",
+              "chapter": 17,
+              "from": 28,
+              "to": 28
+            },
+            {
+              "slug": "leviticus",
+              "chapter": 19,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "psalms",
+              "chapter": 15,
+              "from": 3,
+              "to": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q79",
+      "label": "Question 79",
+      "title": "Which is the tenth commandment?",
+      "paragraphs": [
+        "The tenth commandment is, Thou shalt not covet thy neighbour's house, thou shalt not covet thy neighbour's wife, nor his manservant, nor his maidservant, nor his ox, nor his ass, nor anything that is thy neighbour's.[a]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Exodus 20:17",
+          "refs": [
+            {
+              "slug": "exodus",
+              "chapter": 20,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q80",
+      "label": "Question 80",
+      "title": "What is required in the tenth commandment?",
+      "paragraphs": [
+        "The tenth commandment requireth full contentment with our own condition[a], with a right and charitable frame of spirit toward our neighbour, and all that is his[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Hebrews 13:5, 1 Timothy 6:6",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 13,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "1-timothy",
+              "chapter": 6,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Job 31:29, Romans 12:15, 1 Timothy 1:5, 1 Corinthians 13:4-7",
+          "refs": [
+            {
+              "slug": "job",
+              "chapter": 31,
+              "from": 29,
+              "to": 29
+            },
+            {
+              "slug": "romans",
+              "chapter": 12,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "1-timothy",
+              "chapter": 1,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 13,
+              "from": 4,
+              "to": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q81",
+      "label": "Question 81",
+      "title": "What is forbidden in the tenth commandment?",
+      "paragraphs": [
+        "The tenth commandment forbiddeth all discontentment with our own estate[a], envying or grieving at the good of our neighbour[b], and all inordinate motions and affections to anything that is his[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Kings 21:4, Esther 5:13, 1 Corinthians 10:10",
+          "refs": [
+            {
+              "slug": "1-kings",
+              "chapter": 21,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "esther",
+              "chapter": 5,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 10,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Galatians 5:26, James 3:14, James 3:16",
+          "refs": [
+            {
+              "slug": "galatians",
+              "chapter": 5,
+              "from": 26,
+              "to": 26
+            },
+            {
+              "slug": "james",
+              "chapter": 3,
+              "from": 14,
+              "to": 14
+            },
+            {
+              "slug": "james",
+              "chapter": 3,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Romans 7:7-8, Romans 13:9, Deuteronomy 5:21",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 7,
+              "from": 7,
+              "to": 8
+            },
+            {
+              "slug": "romans",
+              "chapter": 13,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "deuteronomy",
+              "chapter": 5,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q82",
+      "label": "Question 82",
+      "title": "Is any man able perfectly to keep the commandments of God?",
+      "paragraphs": [
+        "No mere man, since the fall, is able in this life perfectly to keep the commandments of God,[a] but doth daily break them in thought, word, and deed[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ecclesiastes 7:20, 1 John 1:8, 1 John 1:10, Galatians 5:17",
+          "refs": [
+            {
+              "slug": "ecclesiastes",
+              "chapter": 7,
+              "from": 20,
+              "to": 20
+            },
+            {
+              "slug": "1-john",
+              "chapter": 1,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "1-john",
+              "chapter": 1,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "galatians",
+              "chapter": 5,
+              "from": 17,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Genesis 6:5, Genesis 8:21, Romans 3:9-31, Romans 3:23, James 3:2-13",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 6,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "genesis",
+              "chapter": 8,
+              "from": 21,
+              "to": 21
+            },
+            {
+              "slug": "romans",
+              "chapter": 3,
+              "from": 9,
+              "to": 31
+            },
+            {
+              "slug": "romans",
+              "chapter": 3,
+              "from": 23,
+              "to": 23
+            },
+            {
+              "slug": "james",
+              "chapter": 3,
+              "from": 2,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q83",
+      "label": "Question 83",
+      "title": "Are all transgressions of the law equally heinous?",
+      "paragraphs": [
+        "Some sins in themselves, and by reason of several aggravations, are more heinous in the sight of God than others[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ezekiel 8:6, Ezekiel 8:13, Ezekiel 8:15, 1 John 5:16, Psalm 78:17, Psalm 78:32, Psalm 78:56",
+          "refs": [
+            {
+              "slug": "ezekiel",
+              "chapter": 8,
+              "from": 6,
+              "to": 6
+            },
+            {
+              "slug": "ezekiel",
+              "chapter": 8,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "ezekiel",
+              "chapter": 8,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "1-john",
+              "chapter": 5,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "psalms",
+              "chapter": 78,
+              "from": 17,
+              "to": 17
+            },
+            {
+              "slug": "psalms",
+              "chapter": 78,
+              "from": 32,
+              "to": 32
+            },
+            {
+              "slug": "psalms",
+              "chapter": 78,
+              "from": 56,
+              "to": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q84",
+      "label": "Question 84",
+      "title": "What doth every sin deserve?",
+      "paragraphs": [
+        "Every sin deserveth God's wrath and curse, both in this life, and that which is to come[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Ephesians 5:6, Galatians 3:10, Lamentations 3:39, Matthew 25:41",
+          "refs": [
+            {
+              "slug": "ephesians",
+              "chapter": 5,
+              "from": 6,
+              "to": 6
+            },
+            {
+              "slug": "galatians",
+              "chapter": 3,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "lamentations",
+              "chapter": 3,
+              "from": 39,
+              "to": 39
+            },
+            {
+              "slug": "matthew",
+              "chapter": 25,
+              "from": 41,
+              "to": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q85",
+      "label": "Question 85",
+      "title": "What doth God require of us, that we may escape his wrath and curse, due to us for sin?",
+      "paragraphs": [
+        "To escape the wrath and curse of God, due to us for sin, God requireth of us faith in Jesus Christ, repentance unto life[a], with the diligent use of all the outward means whereby Christ communicateth to us the benefits of redemption [b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 20:21",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Proverbs 2:1-5, Proverbs 8:33-36, Isaiah 55:3",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 2,
+              "from": 1,
+              "to": 5
+            },
+            {
+              "slug": "proverbs",
+              "chapter": 8,
+              "from": 33,
+              "to": 36
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 55,
+              "from": 3,
+              "to": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q86",
+      "label": "Question 86",
+      "title": "What is faith in Jesus Christ?",
+      "paragraphs": [
+        "Faith in Jesus Christ is a saving grace[a], whereby we receive and rest upon him alone for salvation, as he is offered to us in the gospel[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Hebrews 10:39",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 10,
+              "from": 39,
+              "to": 39
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "John 1:12, Isaiah 26:3-4, Philippians 3:9, Galatians 2:16",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 1,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 26,
+              "from": 3,
+              "to": 4
+            },
+            {
+              "slug": "philippians",
+              "chapter": 3,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "galatians",
+              "chapter": 2,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q87",
+      "label": "Question 87",
+      "title": "What is repentance unto life?",
+      "paragraphs": [
+        "Repentance unto life is a saving grace[a], whereby a sinner, out of a true sense of his sin[b], and apprehension of the mercy of God in Christ[c], doth, with grief and hatred of his sin, turn from it unto God[d], with full purpose of, and endeavour after, new obedience[e]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 11:18",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 11,
+              "from": 18,
+              "to": 18
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Acts 2:37-38",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 37,
+              "to": 38
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Joel 2:12, Jeremiah 3:22",
+          "refs": [
+            {
+              "slug": "joel",
+              "chapter": 2,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "jeremiah",
+              "chapter": 3,
+              "from": 22,
+              "to": 22
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Jeremiah 31:18-19, Ezekiel 36:31",
+          "refs": [
+            {
+              "slug": "jeremiah",
+              "chapter": 31,
+              "from": 18,
+              "to": 19
+            },
+            {
+              "slug": "ezekiel",
+              "chapter": 36,
+              "from": 31,
+              "to": 31
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "2 Corinthians 7:11, Isaiah 1:16-17",
+          "refs": [
+            {
+              "slug": "2-corinthians",
+              "chapter": 7,
+              "from": 11,
+              "to": 11
+            },
+            {
+              "slug": "isaiah",
+              "chapter": 1,
+              "from": 16,
+              "to": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q88",
+      "label": "Question 88",
+      "title": "What are the outward and ordinary means whereby Christ communicateth to us the benefits of redemption?",
+      "paragraphs": [
+        "The outward and ordinary means whereby Christ communicateth to us the benefits of redemption are, his ordinances, especially the Word, sacraments, and prayer; all which are made effectual to the elect for salvation[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 28:19-20, Acts 2:42, Acts 2:46-47",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 28,
+              "from": 19,
+              "to": 20
+            },
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 42,
+              "to": 42
+            },
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 46,
+              "to": 47
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q89",
+      "label": "Question 89",
+      "title": "How is the Word made effectual to salvation?",
+      "paragraphs": [
+        "The Spirit of God maketh the reading, but especially the preaching of the Word, an effectual means of convincing and converting sinners, and of building them up in holiness and comfort, through faith, unto salvation[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Nehemiah 8:8, 1 Corinthians 14:24-25, Acts 26:18, Psalm 19:8, Acts 20:32, Romans 15:4, 2 Timothy 3:15-17, Romans 10:13-17, Romans 1:16",
+          "refs": [
+            {
+              "slug": "nehemiah",
+              "chapter": 8,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 14,
+              "from": 24,
+              "to": 25
+            },
+            {
+              "slug": "acts",
+              "chapter": 26,
+              "from": 18,
+              "to": 18
+            },
+            {
+              "slug": "psalms",
+              "chapter": 19,
+              "from": 8,
+              "to": 8
+            },
+            {
+              "slug": "acts",
+              "chapter": 20,
+              "from": 32,
+              "to": 32
+            },
+            {
+              "slug": "romans",
+              "chapter": 15,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "2-timothy",
+              "chapter": 3,
+              "from": 15,
+              "to": 17
+            },
+            {
+              "slug": "romans",
+              "chapter": 10,
+              "from": 13,
+              "to": 17
+            },
+            {
+              "slug": "romans",
+              "chapter": 1,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q90",
+      "label": "Question 90",
+      "title": "How is the Word to be read and heard, that it may become effectual to salvation?",
+      "paragraphs": [
+        "That the Word may become effectual to salvation, we must attend thereunto with diligence[a], preparation[b], and prayer[c]; receive it with faith and love[d], lay it up in our hearts[e], and practice it in our lives[f]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Proverbs 8:34",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 8,
+              "from": 34,
+              "to": 34
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 Peter 2:1-2",
+          "refs": [
+            {
+              "slug": "1-peter",
+              "chapter": 2,
+              "from": 1,
+              "to": 2
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Psalm 119:18",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 119,
+              "from": 18,
+              "to": 18
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Hebrews 4:2, 2 Thessalonians 2:10",
+          "refs": [
+            {
+              "slug": "hebrews",
+              "chapter": 4,
+              "from": 2,
+              "to": 2
+            },
+            {
+              "slug": "2-thessalonians",
+              "chapter": 2,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Psalm 119:11",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 119,
+              "from": 11,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "f",
+          "raw": "Luke 8:15, James 1:25",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 8,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "james",
+              "chapter": 1,
+              "from": 25,
+              "to": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q91",
+      "label": "Question 91",
+      "title": "How do the sacraments become effectual means of salvation?",
+      "paragraphs": [
+        "The sacraments become effectual means of salvation, not from any virtue in them, or in him that doth administer them; but only by the blessing of Christ,[a] and the working of his Spirit in them that by faith receive them[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Peter 3:12, Matthew 3:11, 1 Corinthians 3:6-7",
+          "refs": [
+            {
+              "slug": "1-peter",
+              "chapter": 3,
+              "from": 12,
+              "to": 12
+            },
+            {
+              "slug": "matthew",
+              "chapter": 3,
+              "from": 11,
+              "to": 11
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 3,
+              "from": 6,
+              "to": 7
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 Corinthians 12:13",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 12,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q92",
+      "label": "Question 92",
+      "title": "What is a sacrament?",
+      "paragraphs": [
+        "A sacrament is an holy ordinance instituted by Christ; wherein, by sensible signs, Christ, and the benefits of the new covenant, are represented, sealed, and applied to believers[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Genesis 17:7, Genesis 17:10, Exodus 12, 1 Corinthians 11:23, 1 Corinthians 11:26",
+          "refs": [
+            {
+              "slug": "genesis",
+              "chapter": 17,
+              "from": 7,
+              "to": 7
+            },
+            {
+              "slug": "genesis",
+              "chapter": 17,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "exodus",
+              "chapter": 12
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 11,
+              "from": 23,
+              "to": 23
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 11,
+              "from": 26,
+              "to": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q93",
+      "label": "Question 93",
+      "title": "Which are the sacraments of the New Testament?",
+      "paragraphs": [
+        "The sacraments of the New Testament are, Baptism[a], and the Lord's Supper [b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 28:19",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 28,
+              "from": 19,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Matthew 26:26-28",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 26,
+              "from": 26,
+              "to": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q94",
+      "label": "Question 94",
+      "title": "What is Baptism?",
+      "paragraphs": [
+        "Baptism is a sacrament, wherein the washing with water in the name of the Father, and of the Son, and of the Holy Ghost[a], doth signify and seal our ingrafting into Christ, and partaking of the benefits of the covenant of grace, and our engagement to be the Lord's[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 28:19",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 28,
+              "from": 19,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Romans 6:4, Galatians 3:27",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 6,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "galatians",
+              "chapter": 3,
+              "from": 27,
+              "to": 27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q95",
+      "label": "Question 95",
+      "title": "To whom is Baptism to be administered?",
+      "paragraphs": [
+        "Baptism is not to be administered to any that are out of the visible church, till they profess their faith in Christ, and obedience to him[a]; but the infants of such as are members of the visible church are to be baptized[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Acts 8:36-37, Acts 2:38",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 8,
+              "from": 36,
+              "to": 37
+            },
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 38,
+              "to": 38
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Acts 2:38-39, Genesis 17:10, Colossians 2:11-12, 1 Corinthians 7:14",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 2,
+              "from": 38,
+              "to": 39
+            },
+            {
+              "slug": "genesis",
+              "chapter": 17,
+              "from": 10,
+              "to": 10
+            },
+            {
+              "slug": "colossians",
+              "chapter": 2,
+              "from": 11,
+              "to": 12
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 7,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q96",
+      "label": "Question 96",
+      "title": "What is the Lord's Supper?",
+      "paragraphs": [
+        "The Lord's Supper is a sacrament, wherein, by giving and receiving bread and wine, according to Christ's appointment, his death is showed forth; and the worthy receivers are, not after a corporal and carnal manner, but by faith, made partakers of his body and blood, with all his benefits, to their spiritual nourishment, and growth in grace[a]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 11:23-26, 1 Corinthians 10:16",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 11,
+              "from": 23,
+              "to": 26
+            },
+            {
+              "slug": "1-corinthians",
+              "chapter": 10,
+              "from": 16,
+              "to": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q97",
+      "label": "Question 97",
+      "title": "What is required for the worthy receiving of the Lord's Supper?",
+      "paragraphs": [
+        "It is required of them that would worthily partake of the Lord's Supper, that they examine themselves of their knowledge to discern the Lord's body[a], of their faith to feed upon him[b], of their repentance[c], love[d], and new obedience[e]; lest, coming unworthily, they eat and drink judgment to themselves[e]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 Corinthians 11:28-29",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 11,
+              "from": 28,
+              "to": 29
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "2 Corinthians 13:5",
+          "refs": [
+            {
+              "slug": "2-corinthians",
+              "chapter": 13,
+              "from": 5,
+              "to": 5
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "1 Corinthians 11:31",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 11,
+              "from": 31,
+              "to": 31
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "1 Corinthians 10:16-17",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 10,
+              "from": 16,
+              "to": 17
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "1 Corinthians 5:7-8",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 5,
+              "from": 7,
+              "to": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q98",
+      "label": "Question 98",
+      "title": "What is prayer?",
+      "paragraphs": [
+        "Prayer is an offering up of our desires unto God[a], for things agreeable to his will[b], in the name of Christ[c], with confession of our sins[d], and thankful acknowledgement of his mercies.[e]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Psalm 62:8",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 62,
+              "from": 8,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "1 John 5:14",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 5,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "John 16:23",
+          "refs": [
+            {
+              "slug": "john",
+              "chapter": 16,
+              "from": 23,
+              "to": 23
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "Psalm 32:5-6, Daniel 9:4",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 32,
+              "from": 5,
+              "to": 6
+            },
+            {
+              "slug": "daniel",
+              "chapter": 9,
+              "from": 4,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Philippians 4:6",
+          "refs": [
+            {
+              "slug": "philippians",
+              "chapter": 4,
+              "from": 6,
+              "to": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q99",
+      "label": "Question 99",
+      "title": "What rule hath God given for our direction in prayer?",
+      "paragraphs": [
+        "The whole Word of God is of use to direct us in prayer[a]; but the special rule of direction is that form of prayer which Christ taught his disciples, commonly called The Lord's Prayer.[b]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "1 John 5:14",
+          "refs": [
+            {
+              "slug": "1-john",
+              "chapter": 5,
+              "from": 14,
+              "to": 14
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Matthew 6:9-13, Luke 11:2-4",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 9,
+              "to": 13
+            },
+            {
+              "slug": "luke",
+              "chapter": 11,
+              "from": 2,
+              "to": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q100",
+      "label": "Question 100",
+      "title": "What doth the preface of the Lord's Prayer teach us?",
+      "paragraphs": [
+        "The preface of the Lord's Prayer, which is, Our Father which art in heaven[a], teacheth us to draw near to God with all holy reverence[a] and confidence, as children to a father, able and ready to help us[b]; and that we should pray with and for others[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:9",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Romans 8:15, Luke 11:13",
+          "refs": [
+            {
+              "slug": "romans",
+              "chapter": 8,
+              "from": 15,
+              "to": 15
+            },
+            {
+              "slug": "luke",
+              "chapter": 11,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Acts 12:5, 1 Timothy 2:1-2",
+          "refs": [
+            {
+              "slug": "acts",
+              "chapter": 12,
+              "from": 5,
+              "to": 5
+            },
+            {
+              "slug": "1-timothy",
+              "chapter": 2,
+              "from": 1,
+              "to": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q101",
+      "label": "Question 101",
+      "title": "What do we pray for in the first petition?",
+      "paragraphs": [
+        "In the first petition, which is, Hallowed be thy name[a], we pray, that God would enable us, and others, to glorify him in all that whereby he maketh himself known[b]; and that he would dispose all things to his own glory[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:9",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 9,
+              "to": 9
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 67:2-3",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 67,
+              "from": 2,
+              "to": 3
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Psalm 83",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 83
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q102",
+      "label": "Question 102",
+      "title": "What do we pray for in the second petition?",
+      "paragraphs": [
+        "In the second petition, which is, Thy kingdom come,[a] we pray, that Satan's kingdom may be destroyed[b]; and that the kingdom of grace may be advanced[c], ourselves and others brought into it, and kept in it[d]; and that the kingdom of glory may be hastened[e]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:10",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 68:1, Psalm 68:18",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 68,
+              "from": 1,
+              "to": 1
+            },
+            {
+              "slug": "psalms",
+              "chapter": 68,
+              "from": 18,
+              "to": 18
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Revelation 12:10-11",
+          "refs": [
+            {
+              "slug": "revelation",
+              "chapter": 12,
+              "from": 10,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "2 Thessalonians 3:1, Romans 10:1, John 17:9, John 17:20",
+          "refs": [
+            {
+              "slug": "2-thessalonians",
+              "chapter": 3,
+              "from": 1,
+              "to": 1
+            },
+            {
+              "slug": "romans",
+              "chapter": 10,
+              "from": 1,
+              "to": 1
+            },
+            {
+              "slug": "john",
+              "chapter": 17,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "john",
+              "chapter": 17,
+              "from": 20,
+              "to": 20
+            }
+          ]
+        },
+        {
+          "mark": "e",
+          "raw": "Revelation 22:20",
+          "refs": [
+            {
+              "slug": "revelation",
+              "chapter": 22,
+              "from": 20,
+              "to": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q103",
+      "label": "Question 103",
+      "title": "What do we pray for in the third petition?",
+      "paragraphs": [
+        "In the third petition, which is, Thy will be done in earth, as it is in heaven,[a] we pray, that God, by his grace, would make us able and willing to know, obey, and submit to his will in all things[b], as the angels do in heaven[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:10",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 10,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 67, Psalm 119:36, Matthew 26:39, 2 Samuel 15:25, Job 1:21",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 67
+            },
+            {
+              "slug": "psalms",
+              "chapter": 119,
+              "from": 36,
+              "to": 36
+            },
+            {
+              "slug": "matthew",
+              "chapter": 26,
+              "from": 39,
+              "to": 39
+            },
+            {
+              "slug": "2-samuel",
+              "chapter": 15,
+              "from": 25,
+              "to": 25
+            },
+            {
+              "slug": "job",
+              "chapter": 1,
+              "from": 21,
+              "to": 21
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Psalm 103:20-21",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 103,
+              "from": 20,
+              "to": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q104",
+      "label": "Question 104",
+      "title": "What do we pray for in the fourth petition?",
+      "paragraphs": [
+        "In the fourth petition, which is, Give us this day our daily bread,[a] we pray that of God's free gift we may receive a competent portion of the good things of this life, and enjoy his blessing with them[b]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:11",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 11,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Proverbs 30:8-9, Genesis 28:20, 1 Timothy 4:4-5",
+          "refs": [
+            {
+              "slug": "proverbs",
+              "chapter": 30,
+              "from": 8,
+              "to": 9
+            },
+            {
+              "slug": "genesis",
+              "chapter": 28,
+              "from": 20,
+              "to": 20
+            },
+            {
+              "slug": "1-timothy",
+              "chapter": 4,
+              "from": 4,
+              "to": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q105",
+      "label": "Question 105",
+      "title": "What do we pray for in the fifth petition?",
+      "paragraphs": [
+        "In the fifth petition, which is, And forgive us our debts, as we forgive our debtors,[a] we pray that God, for Christ's sake, would freely pardon all our sins [b]; which we are the rather encouraged to ask, because by his grace we are enabled from the heart to forgive others[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:11",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 11,
+              "to": 11
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 51:1-2, Psalm 51:7, Psalm 51:9, Daniel 9:17-19",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 51,
+              "from": 1,
+              "to": 2
+            },
+            {
+              "slug": "psalms",
+              "chapter": 51,
+              "from": 7,
+              "to": 7
+            },
+            {
+              "slug": "psalms",
+              "chapter": 51,
+              "from": 9,
+              "to": 9
+            },
+            {
+              "slug": "daniel",
+              "chapter": 9,
+              "from": 17,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "Luke 11:4, Matthew 18:35",
+          "refs": [
+            {
+              "slug": "luke",
+              "chapter": 11,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "matthew",
+              "chapter": 18,
+              "from": 35,
+              "to": 35
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q106",
+      "label": "Question 106",
+      "title": "What do we pray for in the sixth petition?",
+      "paragraphs": [
+        "In the sixth petition, which is, And lead us not into temptation, but deliver us from evil,[a] we pray, that God would either keep us from being tempted to sin [b], or support and deliver us when we are tempted[c]."
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:13",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Psalm 19:13, Matthew 26:41",
+          "refs": [
+            {
+              "slug": "psalms",
+              "chapter": 19,
+              "from": 13,
+              "to": 13
+            },
+            {
+              "slug": "matthew",
+              "chapter": 26,
+              "from": 41,
+              "to": 41
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "2 Corinthians 12:7-8",
+          "refs": [
+            {
+              "slug": "2-corinthians",
+              "chapter": 12,
+              "from": 7,
+              "to": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q107",
+      "label": "Question 107",
+      "title": "What doth the conclusion of the Lord's Prayer teach us?",
+      "paragraphs": [
+        "The conclusion of the Lord's Prayer, which is, For thine is the kingdom, and the power, and the glory, for ever, Amen.[a] teacheth us to take our encouragement in prayer from God only[b], and in our prayers to praise him, ascribing kingdom, power, and glory to him[c]; and, in testimony of our desire, and assurance to be heard, we say, Amen.[d]"
+      ],
+      "proofs": [
+        {
+          "mark": "a",
+          "raw": "Matthew 6:13",
+          "refs": [
+            {
+              "slug": "matthew",
+              "chapter": 6,
+              "from": 13,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "b",
+          "raw": "Daniel 9:4, Daniel 9:7-9, Daniel 9:16-19",
+          "refs": [
+            {
+              "slug": "daniel",
+              "chapter": 9,
+              "from": 4,
+              "to": 4
+            },
+            {
+              "slug": "daniel",
+              "chapter": 9,
+              "from": 7,
+              "to": 9
+            },
+            {
+              "slug": "daniel",
+              "chapter": 9,
+              "from": 16,
+              "to": 19
+            }
+          ]
+        },
+        {
+          "mark": "c",
+          "raw": "1 Chronicles 29:10-13",
+          "refs": [
+            {
+              "slug": "1-chronicles",
+              "chapter": 29,
+              "from": 10,
+              "to": 13
+            }
+          ]
+        },
+        {
+          "mark": "d",
+          "raw": "1 Corinthians 14:16, Revelation 22:20-21",
+          "refs": [
+            {
+              "slug": "1-corinthians",
+              "chapter": 14,
+              "from": 16,
+              "to": 16
+            },
+            {
+              "slug": "revelation",
+              "chapter": 22,
+              "from": 20,
+              "to": 21
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

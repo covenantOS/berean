@@ -34,6 +34,16 @@ interface TopicGuideEntity {
   brief: string;
 }
 
+interface TopicGuideConfession {
+  work: string;
+  workLabel: string;
+  sectionId: string;
+  label: string;
+  title: string;
+  /** How many of this topic's passages the article's proofs also cite. */
+  shared: number;
+}
+
 interface TopicGuidePayload {
   work: "naves" | "torreys";
   workLabel: string;
@@ -45,6 +55,7 @@ interface TopicGuidePayload {
   relatedUnresolved: string[];
   otherWork: RelatedTopic | null;
   entities: TopicGuideEntity[];
+  confessions: TopicGuideConfession[];
 }
 
 type LoadState =
@@ -220,8 +231,42 @@ export default function TopicGuide({
         </GuideSection>
       )}
 
+      {r.confessions.length > 0 && (
+        <GuideSection
+          stagger={4}
+          title="Confessional Documents"
+          hint="articles whose proof texts cite passages this topic lists"
+        >
+          <ul className="space-y-1.5">
+            {r.confessions.map((c) => (
+              <li key={`${c.work}:${c.sectionId}`}>
+                <button
+                  type="button"
+                  title={`Open ${c.title || c.label} in ${c.workLabel}`}
+                  onClick={() =>
+                    dispatch({
+                      type: "openConfession",
+                      doc: c.work,
+                      section: c.sectionId,
+                      title: c.workLabel,
+                    })
+                  }
+                  className="text-xs font-medium text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  {c.workLabel} {c.label}
+                </button>{" "}
+                <span className="text-xs text-muted">
+                  {c.title ? `${c.title} · ` : ""}
+                  {c.shared} shared {c.shared === 1 ? "passage" : "passages"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </GuideSection>
+      )}
+
       <p
-        style={{ "--i": 4 } as CSSProperties}
+        style={{ "--i": 5 } as CSSProperties}
         className="border-t border-rule pt-2 text-[0.68rem] text-muted"
       >
         {r.workLabel}, a public-domain work, digitized by CCEL and distributed

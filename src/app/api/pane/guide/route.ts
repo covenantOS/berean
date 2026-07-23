@@ -3,6 +3,7 @@ import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
 import { getChapter, type Verse } from "@/lib/bible";
 import { getBookMeta } from "@/lib/bookmeta";
 import { getChapterCommentary } from "@/lib/commentary";
+import { formatConfessionRef, getChapterCitations } from "@/lib/confessions";
 import { getChapterCrossRefs } from "@/lib/crossrefs";
 import { getChapterEntities, type EntityKind } from "@/lib/entities";
 import { getQuotesInChapter, getQuotedByChapter, type OtntRef } from "@/lib/otnt";
@@ -75,7 +76,7 @@ export async function GET(req: NextRequest) {
   }
 
   const isGospel = (GOSPEL_SLUGS as readonly string[]).includes(book.slug);
-  const [wall, crossRefs, entities, topics, events, tagged, quotes, quotedBy, pericopes] =
+  const [wall, crossRefs, entities, topics, events, tagged, quotes, quotedBy, pericopes, confessional] =
     await Promise.all([
       getChapterCommentary(book.slug, chapter),
       getChapterCrossRefs(book.slug, chapter),
@@ -86,6 +87,7 @@ export async function GET(req: NextRequest) {
       getQuotesInChapter(book.slug, chapter),
       getQuotedByChapter(book.slug, chapter),
       isGospel ? getPericopes(book.slug, chapter) : Promise.resolve([]),
+      getChapterCitations(book.slug, chapter),
     ]);
 
   // (a) The commentary wall: section counts and the first excerpt per work.
@@ -340,6 +342,30 @@ export async function GET(req: NextRequest) {
   const meta = getBookMeta(book.slug);
   const questions = meta ? questionSetFor(meta.genre) : null;
 
+  // (j) Confessional Documents: the catechism questions and confession
+  // chapters whose proof texts cite this chapter (src/lib/confessions.ts),
+  // each with the references it makes inside the chapter, deduped and
+  // trimmed for display. The ecumenical creeds carry no proof apparatus,
+  // so they never answer; empty when no article cites the chapter.
+  const confessions = confessional.slice(0, 16).map((c) => {
+    const labels: string[] = [];
+    for (const ref of c.refs) {
+      const label = formatConfessionRef(ref);
+      if (!labels.includes(label)) labels.push(label);
+    }
+    return {
+      work: c.work,
+      workLabel: c.workLabel,
+      kind: c.kind,
+      sectionId: c.sectionId,
+      label: c.label,
+      title: c.title,
+      refs: labels.slice(0, 4),
+      moreRefs: Math.max(0, labels.length - 4),
+      citations: c.refs.length,
+    };
+  });
+
   return NextResponse.json({
     book: book.slug,
     bookName: book.name,
@@ -357,5 +383,6 @@ export async function GET(req: NextRequest) {
     parallels,
     gospelParallels,
     questions,
+    confessions,
   });
 }

@@ -573,6 +573,24 @@ export interface SermonStarterTab {
   chapter: number;
 }
 
+/**
+ * The confessions reader: one of the historic creeds and confessions
+ * (src/lib/confessions.ts) open for reading, with its proof texts linked
+ * into the reader. The doc pins the document; the section pin lands the
+ * scroll on one article, the way a guide row hands off a catechism
+ * question. A tab with no doc is the corpus browser.
+ */
+export interface ConfessionTab {
+  id: string;
+  type: "confession";
+  /** Document id (wsc, lbc1689, ...); absent opens the corpus browser. */
+  doc?: string;
+  /** Section id inside the document (q14, ch6); absent opens at the top. */
+  section?: string;
+  /** The work's short label captured at open time, for the tab strip. */
+  title?: string;
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -621,7 +639,8 @@ export type Tab =
   | BookExplorerTab
   | HarmonyTab
   | WisdomExplorerTab
-  | MediaTab;
+  | MediaTab
+  | ConfessionTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -921,6 +940,16 @@ export function wisdomExplorerTab(book: "psalms" | "proverbs" = "psalms"): Wisdo
   return { id: newId("tab"), type: "wisdomexplorer", book };
 }
 
+export function confessionTab(doc?: string, section?: string, title?: string): ConfessionTab {
+  return {
+    id: newId("tab"),
+    type: "confession",
+    ...(doc ? { doc } : {}),
+    ...(section ? { section } : {}),
+    ...(title ? { title } : {}),
+  };
+}
+
 /**
  * A media pin holds water at a book and a chapter inside it; the verse rides
  * optional. The verse's real bound is the chapter's length, which the
@@ -1172,6 +1201,10 @@ export function singletonKey(tab: Tab): string | null {
       return tab.type;
     case "wisdomexplorer":
       return `${tab.type}:${tab.book}`;
+    case "confession":
+      /* One reader tab per document per pane; the corpus browser is the
+       * empty key. */
+      return `${tab.type}:${tab.doc ?? ""}`;
     case "guideeditor":
       return `${tab.type}:${tab.guideId ?? ""}`;
     case "workfloweditor":
@@ -1210,6 +1243,18 @@ function absorbSingleton(existing: Tab, incoming: Tab): Tab {
       book: incoming.book,
       chapter: incoming.chapter as number,
       ...(incoming.verse !== undefined ? { verse: incoming.verse } : {}),
+    };
+  }
+  if (existing.type === "confession" && incoming.type === "confession") {
+    /* The tab keeps its document; a new section pin retargets it, and a
+     * bare reopen leaves the scroll where it stands. */
+    return {
+      ...existing,
+      ...(incoming.section !== undefined
+        ? { section: incoming.section }
+        : incoming.doc !== undefined
+          ? { section: undefined }
+          : {}),
     };
   }
   return existing;
@@ -1459,6 +1504,7 @@ export type WorkspaceAction =
   | { type: "openTools"; paneId?: string }
   | { type: "openBookExplorer"; paneId?: string }
   | { type: "openHarmony"; book?: string; chapter?: number; verse?: number; paneId?: string }
+  | { type: "openConfession"; doc?: string; section?: string; title?: string; paneId?: string }
   | {
       type: "setHarmonyRef";
       paneId: string;
@@ -2349,6 +2395,46 @@ export function workspaceReducer(
       // pericope retargets the tab already there; reopening bare focuses
       // it as it stands.
       const tab = harmonyTab(ref ?? undefined);
+      const existing = findSingleton(leaf, tab);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            activeTabId: existing.id,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? absorbSingleton(t, tab) : t)),
+          })),
+        };
+      }
+      return landTab(state, paneId, tab);
+    }
+
+    case "openConfession": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The pins hold water only as well-formed ids; an id that answers to
+      // no document loads anyway and the pane says the corpus lacks it,
+      // the manuscript's rule. A section pin without a doc pins nothing.
+      const doc =
+        typeof action.doc === "string" && /^[a-z0-9-]+$/.test(action.doc)
+          ? action.doc
+          : undefined;
+      const section =
+        doc !== undefined &&
+        typeof action.section === "string" &&
+        /^[a-z0-9-]+$/.test(action.section)
+          ? action.section
+          : undefined;
+      // One reader tab per document per pane; reopening with a section
+      // retargets the tab already there, reopening bare focuses it.
+      const title =
+        doc !== undefined && typeof action.title === "string" && action.title.trim()
+          ? action.title.trim().slice(0, 80)
+          : undefined;
+      const tab = confessionTab(doc, section, title);
       const existing = findSingleton(leaf, tab);
       if (existing) {
         return {
@@ -3592,6 +3678,28 @@ function sanitizeNode(node: unknown): PaneNode | null {
         // A malformed book reads as the Psalter rather than failing the load.
         const book = t.book === "proverbs" ? "proverbs" : "psalms";
         tabs.push({ id: t.id, type: "wisdomexplorer", book });
+        continue;
+      }
+      if (t.type === "confession" && typeof t.id === "string") {
+        // The pins are optional; a malformed one drops, and an unanswered
+        // document loads anyway with the pane saying the corpus lacks it.
+        const doc =
+          typeof t.doc === "string" && /^[a-z0-9-]+$/.test(t.doc) ? t.doc : undefined;
+        const section =
+          doc !== undefined && typeof t.section === "string" && /^[a-z0-9-]+$/.test(t.section)
+            ? t.section
+            : undefined;
+        const title =
+          doc !== undefined && typeof t.title === "string" && t.title.trim()
+            ? t.title
+            : undefined;
+        tabs.push({
+          id: t.id,
+          type: "confession",
+          ...(doc ? { doc } : {}),
+          ...(section ? { section } : {}),
+          ...(title ? { title } : {}),
+        });
         continue;
       }
       if (t.type === "media" && typeof t.id === "string") {

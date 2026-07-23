@@ -1,0 +1,131 @@
+{
+  "generated": "2026-07-23T14:14:07.750Z",
+  "id": "nicene-creed",
+  "title": "The Nicene Creed",
+  "subtitle": "The creed of Nicaea (325) as received at Constantinople (381)",
+  "years": "325/381",
+  "kind": "creed",
+  "frontMatter": [],
+  "backMatter": [
+    {
+      "heading": "The creed of the 318 fathers at Nicaea, 325",
+      "paragraphs": [
+        "We believe in one God, the Father Almighty, Maker of all things visible and invisible;",
+        "And in one Lord Jesus Christ, the Son of God, begotten of the Father, the only-begotten; that is, of the substance of the Father, God of God, Light of Light, very God of very God, begotten, not made, being of one substance with the Father; by whom all things were made, both in heaven and on earth; who for us men, and for our salvation, came down and was incarnate, and was made man; he suffered, and the third day he rose again, ascended into heaven; from thence he shall come to judge the quick and the dead.",
+        "And in the Holy Ghost.",
+        "But those who say, There was a time when he was not, and, He was not before he was begotten, or, He was made of nothing, or of another substance or essence, saying that the Son of God is effluent or variable, these the Catholic and Apostolic Church anathematizes."
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "a1",
+      "label": "Article 1",
+      "title": "",
+      "paragraphs": [
+        "We believe in one God, the Father Almighty, Maker of heaven and earth, and of all things visible and invisible;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a2",
+      "label": "Article 2",
+      "title": "",
+      "paragraphs": [
+        "And in one Lord Jesus Christ, the only-begotten Son of God, begotten of the Father before all worlds, Light of Light, very God of very God, begotten, not made, being of one substance with the Father; by whom all things were made;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a3",
+      "label": "Article 3",
+      "title": "",
+      "paragraphs": [
+        "who for us men, and for our salvation, came down from heaven, and was incarnate by the Holy Ghost and the Virgin Mary, and was made man;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a4",
+      "label": "Article 4",
+      "title": "",
+      "paragraphs": [
+        "he was crucified for us under Pontius Pilate, and suffered, and was buried;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a5",
+      "label": "Article 5",
+      "title": "",
+      "paragraphs": [
+        "and the third day he rose again, according to the Scriptures;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a6",
+      "label": "Article 6",
+      "title": "",
+      "paragraphs": [
+        "and ascended into heaven, and sitteth on the right hand of the Father;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a7",
+      "label": "Article 7",
+      "title": "",
+      "paragraphs": [
+        "and he shall come again, with glory, to judge the quick and the dead; of whose kingdom there shall be no end;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a8",
+      "label": "Article 8",
+      "title": "",
+      "paragraphs": [
+        "And in the Holy Ghost, the Lord, and Giver of life, who proceedeth from the Father, who with the Father and the Son together is worshiped and glorified, who spake by the Prophets;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a9",
+      "label": "Article 9",
+      "title": "",
+      "paragraphs": [
+        "in one holy Catholic and Apostolic Church;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a10",
+      "label": "Article 10",
+      "title": "",
+      "paragraphs": [
+        "we acknowledge one baptism for the remission of sins;"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a11",
+      "label": "Article 11",
+      "title": "",
+      "paragraphs": [
+        "and we look for the resurrection of the dead,"
+      ],
+      "proofs": []
+    },
+    {
+      "id": "a12",
+      "label": "Article 12",
+      "title": "",
+      "paragraphs": [
+        "and the life of the world to come. Amen."
+      ],
+      "proofs": []
+    }
+  ],
+  "blurb": "The faith confessed at Nicaea in 325 against Arius, received in this enlarged form at Constantinople in 381."
+}

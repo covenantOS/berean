@@ -1,0 +1,46 @@
+{
+  "generated": "2026-07-23T14:14:07.750Z",
+  "documents": {
+    "wsc": {
+      "sections": 107,
+      "proofs": 235,
+      "refs": 447,
+      "wholeChapterRefs": 6,
+      "editorialNotes": 0
+    },
+    "lbc1689": {
+      "sections": 32,
+      "proofs": 495,
+      "refs": 1271,
+      "wholeChapterRefs": 7,
+      "editorialNotes": 10,
+      "openEndedEtc": 8,
+      "marginalRestored": 2
+    },
+    "apostles-creed": {
+      "sections": 11,
+      "proofs": 0,
+      "refs": 0,
+      "wholeChapterRefs": 0,
+      "editorialNotes": 0
+    },
+    "nicene-creed": {
+      "sections": 12,
+      "proofs": 0,
+      "refs": 0,
+      "wholeChapterRefs": 0,
+      "editorialNotes": 0
+    },
+    "chalcedon": {
+      "sections": 4,
+      "proofs": 0,
+      "refs": 0,
+      "wholeChapterRefs": 0,
+      "editorialNotes": 0
+    }
+  },
+  "anomalies": [
+    "lbc1689 ch27 proof 451: printed reference beyond the canon dropped from the index (Act. 12.29.30.)",
+    "lbc1689 ch32 proof 492: printed reference beyond the canon dropped from the index (Mar. 13.35,36,37. Luk. 13.35,36.)"
+  ]
+}

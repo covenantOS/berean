@@ -14,6 +14,7 @@ import {
   canvasDocTab,
   concordanceTab,
   customGuideTab,
+  confessionTab,
   dashboardTab,
   docSearchTab,
   exegeticalTab,
@@ -279,6 +280,12 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           <button type="button" className={ROW} onClick={() => choose(harmonyTab())}>
             Gospel Harmony
             <span className={HINT}>Parallel accounts side by side</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className={ROW} onClick={() => choose(confessionTab())}>
+            Confessions
+            <span className={HINT}>Creeds and catechisms with proof texts</span>
           </button>
         </li>
         <li>

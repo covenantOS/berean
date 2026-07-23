@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCitationsForRefs, type TopicLikeRef } from "@/lib/confessions";
 import { searchEntities } from "@/lib/entities";
 import {
   countRefs,
@@ -61,6 +62,19 @@ function collectSeeTitles(nodes: TopicNode[], into: string[] = []): string[] {
   return into;
 }
 
+/** Every reference in the tree, for the confessional join; capped so a
+ * topic with hundreds of passages keeps the join cheap. */
+function collectRefs(nodes: TopicNode[], into: TopicLikeRef[] = []): TopicLikeRef[] {
+  for (const node of nodes) {
+    for (const r of node.refs) {
+      if (into.length >= 300) return into;
+      into.push({ slug: r.slug, chapter: r.chapter, verse: r.verse, ...(r.verseEnd ? { verseEnd: r.verseEnd } : {}) });
+    }
+    collectRefs(node.children, into);
+  }
+  return into;
+}
+
 export async function GET(req: NextRequest) {
   const params = req.nextUrl.searchParams;
   const workParam = params.get("work") ?? "";
@@ -103,6 +117,20 @@ export async function GET(req: NextRequest) {
     .slice(0, 6)
     .map((e) => ({ id: e.id, name: e.name, kind: e.kind, type: e.type, brief: e.brief }));
 
+  // (e) Confessional Documents: the catechism questions and confession
+  // chapters whose proof texts cite passages this entry lists, ranked by
+  // how many they share (src/lib/confessions.ts). The join is textual, a
+  // shared-passage count, and it is named as such in the pane; the
+  // ecumenical creeds carry no proofs and never answer.
+  const confessions = (await getCitationsForRefs(collectRefs(topic.children), 8)).map((c) => ({
+    work: c.work,
+    workLabel: c.workLabel,
+    sectionId: c.sectionId,
+    label: c.label,
+    title: c.title,
+    shared: c.shared,
+  }));
+
   return NextResponse.json({
     work: workParam,
     workLabel: work.label,
@@ -114,5 +142,6 @@ export async function GET(req: NextRequest) {
     relatedUnresolved,
     otherWork,
     entities,
+    confessions,
   });
 }

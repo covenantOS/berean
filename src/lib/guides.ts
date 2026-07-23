@@ -17,6 +17,7 @@ export const GUIDE_SECTIONS = [
   { key: "commentary", title: "Commentaries" },
   { key: "crossRefs", title: "Cross References" },
   { key: "parallels", title: "Parallel Passages" },
+  { key: "confessions", title: "Confessional Documents" },
   { key: "people", title: "People" },
   { key: "places", title: "Places" },
   { key: "others", title: "Things" },

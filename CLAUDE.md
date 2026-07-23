@@ -24,7 +24,9 @@ Before changing product behavior, read:
 ## Layout
 
 - `data/kjv/` — 66 KJV book JSONs (public domain; provenance in the rights registry)
+- `data/confessions/` — the confessional corpus (creeds, catechism, confession) built by `scripts/build-confessions.mjs`; sources in `data/_sources/confessions/`
 - `src/lib/canon.ts` — canonical book/chapter identifiers (slugs are the passage-reference scheme)
+- `src/lib/confessions.ts` — the corpus loader and the proof-text citation index (module scope, both directions)
 - `src/lib/bible.ts` — text loading, whole-canon search, word study
 - `src/lib/store.ts` — the one knowledge-graph substrate (all collections, export/import/delete; sync envelope per ADR 0002)
 - `src/lib/sync.ts` / `src/lib/sync-server.ts` — sync v1 (ADR 0002): LWW merge and engine client-side, SyncStore drivers server-side; routes at `api/sync/push` and `api/sync/pull`, schema in `db/migrations/0001_sync.sql`
@@ -78,14 +80,26 @@ letterpress SVG card, a print/export aid only. The canon explorer shipped:
 all 66 books by author, genre, size, and composition date in the workspace's
 Canon tab, hand-built metadata with honest attributions and approximate
 dates (src/lib/bookmeta.ts), verse and word statistics computed from the
-KJV text. Platform decisions in ADR
+KJV text. The confessional corpus shipped: the Apostles' Creed, the Nicene
+Creed (325/381), the Definition of Chalcedon, the Westminster Shorter
+Catechism with the Assembly's proof texts, and the 1689 London Baptist
+Confession with its scripture proofs (data/confessions,
+scripts/build-confessions.mjs, src/lib/confessions.ts, provenance in
+data/_sources/confessions/PROVENANCE.md). The Passage Guide's Confessional
+Documents section answers which catechism questions and confession chapters
+cite the chapter; the confessions reader (the confession tab kind) renders
+the documents with their proof texts deep-linked into the reader; the Topic
+Guide joins articles whose proofs share the topic's passages. The creeds
+carry no received proof apparatus and ship without one; two proofs the
+sources print beyond the canon stay in their display strings and sit out of
+the index, recorded in data/confessions/_meta.json. Platform decisions in ADR
 0002 (Cloudflare, desktop/mobile/web, local-first sync). The reader's Shelf
 tab is now a commentary wall: Matthew Henry complete and concise, Calvin,
 JFB, Clarke, and Barnes (NT) ship as per-book JSON under
 `data/commentary/<work>/`, each with a build script, a vendored source with
 PROVENANCE.md, and a shipped rights entry; Gill, Poole, the Pulpit
 Commentary, Ellicott, and the Geneva notes are registered as planned pending
-clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter/catechism texts (need verified datasets;
+clean digitizations. Not yet built: database and identity (open decisions; data is device-local), psalter texts (need verified datasets;
 registered as planned in rights), and all Covenant OS integration (contracts first). The ADR 0002 sync server half shipped:
 Postgres schema (db/migrations), SyncStore drivers and push/pull routes (src/lib/sync-server.ts, src/app/api/sync),
 and the HttpTransport behind a config flag. The auth wave shipped: better-auth magic-link and anonymous
