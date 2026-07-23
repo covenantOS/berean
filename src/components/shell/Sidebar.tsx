@@ -27,6 +27,7 @@ import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
 import { normalize, projects as projectsCollection } from "@/lib/projects";
 import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
+import { playSound } from "@/lib/sound";
 import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace } from "./WorkspaceContext";
 import { WorkflowsSection } from "./WorkflowPane";
@@ -64,7 +65,10 @@ export default function Sidebar() {
    * breakpoint; the desktop sidebar never moves. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && phoneViewport()) dispatch({ type: "toggleSidebar" });
+      if (e.key === "Escape" && phoneViewport()) {
+        playSound("close");
+        dispatch({ type: "toggleSidebar" });
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -83,12 +87,15 @@ export default function Sidebar() {
        *  on it closes the drawer. At desktop it never renders visibly. */}
       <div
         aria-hidden="true"
-        onClick={() => dispatch({ type: "toggleSidebar" })}
+        onClick={() => {
+          playSound("close");
+          dispatch({ type: "toggleSidebar" });
+        }}
         className="ws-scrim"
       />
       <aside
         aria-label={MODE_TITLES[state.railMode]}
-        className="ws-sidebar flex w-[260px] shrink-0 flex-col border-r border-rule bg-surface"
+        className="ws-sidebar glass fx-fade flex w-[260px] shrink-0 flex-col"
       >
       <header className="flex h-9 shrink-0 items-center justify-between border-b border-rule px-3">
         <span className="small-caps text-[0.7rem] font-semibold text-ink">
@@ -97,13 +104,16 @@ export default function Sidebar() {
         <button
           type="button"
           title="Collapse sidebar"
-          onClick={() => dispatch({ type: "toggleSidebar" })}
-          className="px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            playSound("close");
+            dispatch({ type: "toggleSidebar" });
+          }}
+          className="fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           «
         </button>
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div key={state.railMode} className="fx-fade min-h-0 flex-1 overflow-y-auto">
         {state.railMode === "read" && (
           <>
             <CanonTree />
@@ -297,7 +307,7 @@ function AlmanacPanel() {
           type="button"
           onClick={() => dispatch({ type: "openAlmanac" })}
           title="Open the Almanac as a pane"
-          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Open the calendar
         </button>
@@ -415,9 +425,12 @@ function AlmanacPanel() {
                   <span className="shrink-0 text-[0.62rem] text-muted">{list.title}</span>
                   <button
                     type="button"
-                    onClick={() => markPrayed(list.id, request.id)}
+                    onClick={() => {
+                      markPrayed(list.id, request.id);
+                      playSound("complete");
+                    }}
                     title={`Mark "${request.title}" prayed`}
-                    className="shrink-0 border border-emerald px-1.5 py-0.5 text-[0.62rem] text-emerald hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    className="fx-press shrink-0 border border-emerald px-1.5 py-0.5 text-[0.62rem] text-emerald hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                   >
                     Prayed
                   </button>
@@ -521,16 +534,21 @@ function SettingsPanel() {
         Display
       </div>
       <div className="flex items-center justify-between gap-2 px-3 py-[3px]">
-        <span className="text-[0.8rem] text-ink">Candlelight</span>
-        <button
-          type="button"
-          aria-pressed={lit}
-          title={lit ? "Switch to daylight" : "Switch to candlelight"}
-          onClick={() => setCandle(!lit)}
-          className="border border-rule bg-paper px-2 py-0.5 text-[0.72rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
-        >
-          {lit ? "☀ Daylight" : "🕯 Candlelight"}
-        </button>
+        <span id="sidebar-candlelight-label" className="text-[0.8rem] text-ink">
+          Candlelight
+        </span>
+        <label className="switch" title={lit ? "Switch to daylight" : "Switch to candlelight"}>
+          <input
+            type="checkbox"
+            checked={lit}
+            aria-labelledby="sidebar-candlelight-label"
+            onChange={(e) => {
+              setCandle(e.target.checked);
+              playSound(e.target.checked ? "toggle-on" : "toggle-off");
+            }}
+          />
+          <span className="switch-track" aria-hidden="true" />
+        </label>
       </div>
       <label className="block px-3 py-[3px] text-[0.8rem] text-ink">
         <span className="mb-0.5 block">Text size</span>
@@ -636,7 +654,7 @@ function CanonTree() {
           type="button"
           onClick={() => dispatch({ type: "openBookExplorer" })}
           title="Open the canon explorer: the sixty-six books by author, genre, size, and date"
-          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           The canon at a glance
         </button>
@@ -644,7 +662,7 @@ function CanonTree() {
           type="button"
           onClick={() => dispatch({ type: "openHarmony" })}
           title="Open the parallel gospel reader: each pericope with its parallel accounts in columns"
-          className="mt-1 w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press mt-1 w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           The Gospels in parallel
         </button>
@@ -902,7 +920,7 @@ function StudyPanel() {
           type="button"
           onClick={() => dispatch({ type: "openDesk" })}
           title="Open the Writing Desk as a pane"
-          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Open the Writing Desk
         </button>
@@ -912,7 +930,7 @@ function StudyPanel() {
           type="button"
           onClick={() => dispatch({ type: "openPulpit" })}
           title="Open the Pulpit as a pane"
-          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Open the Pulpit
         </button>
@@ -982,7 +1000,7 @@ function LibrarySections() {
           type="button"
           onClick={() => dispatch({ type: "openLibrary" })}
           title="Open the faceted catalog browser as a pane"
-          className="w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="fx-press w-full border border-rule bg-paper px-2 py-1.5 text-[0.8rem] text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           Browse the catalog
         </button>

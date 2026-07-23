@@ -56,11 +56,13 @@ export default function SettingsPane() {
     a.download = `berean-export-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
+    playSound("complete");
   }
 
   async function importFile(file: File) {
     const result = importGraph(await file.text());
     setMessage(result.ok ? "Import complete — your study is restored on this device." : result.error ?? "Import failed.");
+    playSound(result.ok ? "complete" : "error");
   }
 
   function destroyAll() {
@@ -89,8 +91,8 @@ export default function SettingsPane() {
   }
 
   return (
-    <div className="space-y-4">
-      <header className="border-b border-rule pb-2">
+    <div className="fx-stagger space-y-4">
+      <header className="border-b border-rule pb-2" style={{ "--i": 0 } as CSSProperties}>
         <p className="small-caps text-xs font-semibold text-amber">Settings</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">Your work belongs to you</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">
@@ -104,7 +106,7 @@ export default function SettingsPane() {
 
       <SyncSection />
 
-      <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <section className="glass rounded-[4px] p-5" style={{ "--i": 3 } as CSSProperties}>
         <h3 className="small-caps mb-3 text-sm text-muted">Sound: the study&apos;s small bells</h3>
         <SoundToggle />
         <p className="mt-3 border-t border-rule pt-3 text-xs text-muted">
@@ -114,7 +116,7 @@ export default function SettingsPane() {
         </p>
       </section>
 
-      <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <section className="glass rounded-[4px] p-5" style={{ "--i": 4 } as CSSProperties}>
         <h3 className="small-caps mb-3 text-sm text-muted">Your standards — what the Scribe may know</h3>
         <div className="grid gap-3">
           <label className="text-sm">
@@ -169,7 +171,7 @@ export default function SettingsPane() {
           {profile && (
             <button
               onClick={() => deleteProfile()}
-              className="justify-self-start rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
+              className="fx-press justify-self-start rounded-[4px] border border-rule px-3 py-1.5 text-xs text-ruby hover:bg-paper"
             >
               Forget all of this
             </button>
@@ -187,18 +189,18 @@ export default function SettingsPane() {
 
       <ShortcutsSection />
 
-      <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <section className="glass rounded-[4px] p-5" style={{ "--i": 8 } as CSSProperties}>
         <h3 className="small-caps mb-3 text-sm text-muted">Your study — export, restore, delete</h3>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={download}
-            className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90"
           >
             Export everything (.json)
           </button>
           <button
             onClick={() => fileRef.current?.click()}
-            className="rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
+            className="fx-press rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
           >
             Import an export
           </button>
@@ -215,7 +217,7 @@ export default function SettingsPane() {
           />
           <button
             onClick={destroyAll}
-            className="rounded-[4px] border border-ruby/50 px-4 py-2 text-sm font-medium text-ruby hover:bg-paper"
+            className="fx-press rounded-[4px] border border-ruby/50 px-4 py-2 text-sm font-medium text-ruby hover:bg-paper"
           >
             Delete everything on this device
           </button>
@@ -228,7 +230,7 @@ export default function SettingsPane() {
           notes in the repository); no account is required and no telemetry exists.
         </p>
       </section>
-      <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <section className="glass rounded-[4px] p-5" style={{ "--i": 9 } as CSSProperties}>
         <h3 className="small-caps mb-3 text-sm text-muted">Workspace</h3>
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm">
@@ -237,7 +239,7 @@ export default function SettingsPane() {
           </p>
           <button
             onClick={resetWorkspace}
-            className="shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
+            className="fx-press shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
           >
             Reset workspace
           </button>
@@ -247,7 +249,7 @@ export default function SettingsPane() {
           style are each a device-local key, so every device keeps its own.
         </p>
       </section>
-      <section className="rounded-[4px] border border-rule bg-surface p-5">
+      <section className="glass rounded-[4px] p-5" style={{ "--i": 10 } as CSSProperties}>
         <h3 className="small-caps mb-3 text-sm text-muted">Welcome</h3>
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm">
@@ -256,7 +258,7 @@ export default function SettingsPane() {
           </p>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent("berean:welcome"))}
-            className="shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
+            className="fx-press shrink-0 rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper"
           >
             Open the welcome again
           </button>
@@ -289,7 +291,7 @@ function ShortcutsSection() {
     },
   ];
   return (
-    <section className="rounded-[4px] border border-rule bg-surface p-5">
+    <section className="glass rounded-[4px] p-5" style={{ "--i": 7 } as CSSProperties}>
       <h3 className="small-caps mb-3 text-sm text-muted">Keyboard: the chords the workspace answers</h3>
       <ul className="grid gap-2">
         {rows.map((row) => (
@@ -339,6 +341,7 @@ function HighlightStylesSection() {
     if (editing === "new") createStyle(trimmed, color, effect);
     else highlightStyles.update(editing, { name: trimmed, color, effect });
     setEditing(null);
+    playSound("complete");
   };
 
   const remove = (s: HighlightStyle) => {
@@ -351,7 +354,7 @@ function HighlightStylesSection() {
   };
 
   return (
-    <section className="rounded-[4px] border border-rule bg-surface p-5">
+    <section className="glass rounded-[4px] p-5" style={{ "--i": 5 } as CSSProperties}>
       <h3 className="small-caps mb-3 text-sm text-muted">
         Highlight styles: the palette the reader offers
       </h3>
@@ -388,7 +391,7 @@ function HighlightStylesSection() {
               onClick={() => remove(s)}
               title={`Delete ${s.name}`}
               aria-label={`Delete ${s.name}`}
-              className="ml-auto px-1 leading-none text-muted hover:text-ruby"
+              className="fx-press ml-auto px-1 leading-none text-muted hover:text-ruby"
             >
               ×
             </button>
@@ -398,7 +401,7 @@ function HighlightStylesSection() {
       {editing === null ? (
         <button
           onClick={() => begin()}
-          className="mt-3 rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium hover:bg-paper"
+          className="fx-press mt-3 rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium hover:bg-paper"
         >
           New style
         </button>
@@ -442,17 +445,12 @@ function HighlightStylesSection() {
           </div>
           <div className="text-sm">
             <span className="mb-1 block font-medium">Effect</span>
-            <div className="flex flex-wrap gap-2">
+            <div className="seg">
               {HIGHLIGHT_EFFECTS.map((e) => (
                 <button
                   key={e.key}
                   aria-pressed={effect === e.key}
                   onClick={() => setEffect(e.key)}
-                  className={`rounded-[4px] border px-2 py-1 text-xs ${
-                    effect === e.key
-                      ? "border-sapphire text-sapphire"
-                      : "border-rule text-ink hover:border-sapphire"
-                  }`}
                 >
                   {e.label}
                 </button>
@@ -463,13 +461,13 @@ function HighlightStylesSection() {
             <button
               onClick={save}
               disabled={!name.trim()}
-              className="rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40"
+              className="fx-press rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40"
             >
               {editing === "new" ? "Create style" : "Save style"}
             </button>
             <button
               onClick={() => setEditing(null)}
-              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
+              className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
             >
               Cancel
             </button>
@@ -577,6 +575,7 @@ function CopyStylesSection() {
     if (editing === "new") createCopyStyle(fields);
     else copyStyles.update(editing, fields);
     setEditing(null);
+    playSound("complete");
   };
 
   const remove = (s: CopyStyleRecord) => {
@@ -590,7 +589,7 @@ function CopyStylesSection() {
   const active = styles.find((s) => s.id === activeId) ?? styles[0];
 
   return (
-    <section className="rounded-[4px] border border-rule bg-surface p-5">
+    <section className="glass rounded-[4px] p-5" style={{ "--i": 6 } as CSSProperties}>
       <h3 className="small-caps mb-3 text-sm text-muted">
         Copy styles: how copied verses arrange themselves
       </h3>
@@ -631,7 +630,7 @@ function CopyStylesSection() {
               onClick={() => remove(s)}
               title={`Delete ${s.name}`}
               aria-label={`Delete ${s.name}`}
-              className="ml-auto px-1 leading-none text-muted hover:text-ruby"
+              className="fx-press ml-auto px-1 leading-none text-muted hover:text-ruby"
             >
               ×
             </button>
@@ -641,7 +640,7 @@ function CopyStylesSection() {
       {editing === null ? (
         <button
           onClick={() => begin()}
-          className="mt-3 rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium hover:bg-paper"
+          className="fx-press mt-3 rounded-[4px] border border-rule px-3 py-1.5 text-xs font-medium hover:bg-paper"
         >
           New style
         </button>
@@ -662,17 +661,12 @@ function CopyStylesSection() {
           </label>
           <div className="text-sm">
             <span className="mb-1 block font-medium">Reference</span>
-            <div className="flex flex-wrap gap-2">
+            <div className="seg">
               {REFERENCE_POSITIONS.map((p) => (
                 <button
                   key={p.key}
                   aria-pressed={referencePosition === p.key}
                   onClick={() => setReferencePosition(p.key)}
-                  className={`rounded-[4px] border px-2 py-1 text-xs ${
-                    referencePosition === p.key
-                      ? "border-sapphire text-sapphire"
-                      : "border-rule text-ink hover:border-sapphire"
-                  }`}
                 >
                   {p.label}
                 </button>
@@ -680,37 +674,53 @@ function CopyStylesSection() {
             </div>
           </div>
           <div className="grid gap-1.5 text-sm">
-            <label className="flex items-center gap-2">
+            <label className="switch">
               <input
                 type="checkbox"
                 checked={translationTag}
-                onChange={(e) => setTranslationTag(e.target.checked)}
+                onChange={(e) => {
+                  setTranslationTag(e.target.checked);
+                  playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                }}
               />
-              Tag the translation when the copy knows it
+              <span className="switch-track" aria-hidden="true" />
+              <span>Tag the translation when the copy knows it</span>
             </label>
-            <label className="flex items-center gap-2">
+            <label className="switch">
               <input
                 type="checkbox"
                 checked={verseNumbers}
-                onChange={(e) => setVerseNumbers(e.target.checked)}
+                onChange={(e) => {
+                  setVerseNumbers(e.target.checked);
+                  playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                }}
               />
-              Number the verses
+              <span className="switch-track" aria-hidden="true" />
+              <span>Number the verses</span>
             </label>
-            <label className="flex items-center gap-2">
+            <label className="switch">
               <input
                 type="checkbox"
                 checked={versePerLine}
-                onChange={(e) => setVersePerLine(e.target.checked)}
+                onChange={(e) => {
+                  setVersePerLine(e.target.checked);
+                  playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                }}
               />
-              One verse per line
+              <span className="switch-track" aria-hidden="true" />
+              <span>One verse per line</span>
             </label>
-            <label className="flex items-center gap-2">
+            <label className="switch">
               <input
                 type="checkbox"
                 checked={quotationMarks}
-                onChange={(e) => setQuotationMarks(e.target.checked)}
+                onChange={(e) => {
+                  setQuotationMarks(e.target.checked);
+                  playSound(e.target.checked ? "toggle-on" : "toggle-off");
+                }}
               />
-              Quote the text
+              <span className="switch-track" aria-hidden="true" />
+              <span>Quote the text</span>
             </label>
           </div>
           <CopyStylePreview style={draft} />
@@ -718,13 +728,13 @@ function CopyStylesSection() {
             <button
               onClick={save}
               disabled={!name.trim()}
-              className="rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40"
+              className="fx-press rounded-[4px] bg-ink px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-40"
             >
               {editing === "new" ? "Create style" : "Save style"}
             </button>
             <button
               onClick={() => setEditing(null)}
-              className="rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
+              className="fx-press rounded-[4px] border border-rule px-3 py-1.5 text-xs hover:bg-paper"
             >
               Cancel
             </button>

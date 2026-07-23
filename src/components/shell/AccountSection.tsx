@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { authClient } from "@/lib/auth-client";
+import { playSound } from "@/lib/sound";
 import { configuredTransport, deviceNamespace } from "@/lib/sync";
 
 /**
@@ -44,6 +45,8 @@ export default function AccountSection() {
         ? "The link could not be sent. Try again in a moment."
         : `Link sent to ${address}. On a deployment without email configured, the server log holds the link instead.`,
     );
+    // A sent link is a completion; a failed send is the honest low cluster.
+    playSound(error ? "error" : "complete");
   }
 
   async function signOut() {
@@ -57,7 +60,10 @@ export default function AccountSection() {
     setMessage("");
     const { error } = await authClient.signIn.anonymous();
     setBusy(false);
-    if (error) setMessage("An anonymous session could not be started on this deployment.");
+    if (error) {
+      setMessage("An anonymous session could not be started on this deployment.");
+      playSound("error");
+    }
   }
 
   /** The line every state ends with: what identity sync will use. */
@@ -68,7 +74,7 @@ export default function AccountSection() {
   }
 
   return (
-    <section className="rounded-[4px] border border-rule bg-surface p-5">
+    <section className="glass rounded-[4px] p-5" style={{ "--i": 1 } as CSSProperties}>
       <h3 className="small-caps mb-3 text-sm text-muted">Account: one address, every device</h3>
 
       {isPending ? (
@@ -81,7 +87,7 @@ export default function AccountSection() {
           <button
             onClick={signOut}
             disabled={busy}
-            className="justify-self-start rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-40"
+            className="fx-press justify-self-start rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-40"
           >
             Sign out
           </button>
@@ -112,7 +118,7 @@ export default function AccountSection() {
             <button
               onClick={sendLink}
               disabled={busy || !email.trim()}
-              className="rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
+              className="fx-press rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
             >
               Send the link
             </button>
@@ -120,7 +126,7 @@ export default function AccountSection() {
               <button
                 onClick={goAnonymous}
                 disabled={busy}
-                className="rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-40"
+                className="fx-press rounded-[4px] border border-rule px-4 py-2 text-sm font-medium hover:bg-paper disabled:opacity-40"
               >
                 Continue without an account
               </button>

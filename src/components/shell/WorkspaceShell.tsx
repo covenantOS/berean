@@ -39,7 +39,7 @@ function ShellFrame() {
   if (!hydrated) {
     return (
       <div className="workspace-shell flex h-dvh items-center justify-center bg-paper">
-        <span className="leaded-mark" aria-hidden="true">
+        <span className="leaded-mark fx-pulse" aria-hidden="true">
           <span />
           <span />
           <span />
@@ -50,7 +50,7 @@ function ShellFrame() {
   }
 
   return (
-    <div className="workspace-shell relative isolate flex h-dvh flex-col overflow-hidden bg-paper text-ink">
+    <div className="workspace-shell fx-fade relative isolate flex h-dvh flex-col overflow-hidden bg-paper text-ink">
       {/* The stained-glass ambient wash, behind the chrome (globals.css). */}
       <div className="stained-ambient" aria-hidden="true" />
       <div className="ws-main flex min-h-0 flex-1">

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useCollection } from "@/lib/hooks";
+import { playSound } from "@/lib/sound";
 import { LayoutsIcon } from "./icons";
 import { layoutState, layouts, saveLayout, updateLayout, type SavedLayout } from "./layouts";
 import { LAYOUT_PRESETS } from "./workspace-state";
@@ -17,7 +18,10 @@ import { useWorkspace } from "./WorkspaceContext";
  * the same inline idiom the visual filter handoff uses.
  *
  * The menu shares the shell's overlay discipline: dismiss on outside
- * pointerdown or Escape.
+ * pointerdown or Escape. It is a glass tray that scales in from the rail
+ * button, and the bells answer it: rising when it opens, falling when it
+ * leaves, one struck note when a layout moves the workspace, the arpeggio
+ * when a capture finishes.
  */
 export default function LayoutMenu() {
   const { state, dispatch } = useWorkspace();
@@ -31,10 +35,14 @@ export default function LayoutMenu() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        playSound("close");
+        setOpen(false);
+      }
     };
     const onPointer = (e: PointerEvent) => {
       if (rootRef.current && e.target instanceof Node && !rootRef.current.contains(e.target)) {
+        playSound("close");
         setOpen(false);
       }
     };
@@ -50,6 +58,7 @@ export default function LayoutMenu() {
     const trimmed = name.trim();
     if (!trimmed) return;
     saveLayout(trimmed, state);
+    playSound("complete");
     setSaving(false);
     setName("");
   };
@@ -61,10 +70,11 @@ export default function LayoutMenu() {
         title="Layouts: built-in presets and your saved layouts"
         aria-expanded={open}
         onClick={() => {
+          playSound(open ? "close" : "open");
           setOpen((o) => !o);
           setSaving(false);
         }}
-        className="flex h-12 w-full flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="fx-press flex h-12 w-full flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         <LayoutsIcon />
         <span>Layouts</span>
@@ -73,7 +83,8 @@ export default function LayoutMenu() {
         <div
           role="menu"
           aria-label="Layouts"
-          className="absolute bottom-0 left-full z-50 ml-1 w-64 border border-rule bg-surface shadow-lg"
+          className="glass fx-scale absolute bottom-0 left-full z-50 ml-1 w-64 shadow-lg"
+          style={{ "--fx-origin": "0% 100%" } as CSSProperties}
         >
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] text-muted">Built-in</div>
           <ul>
@@ -83,10 +94,11 @@ export default function LayoutMenu() {
                   type="button"
                   title={p.blurb}
                   onClick={() => {
+                    playSound("navigate");
                     dispatch({ type: "applyPreset", preset: p.id });
                     setOpen(false);
                   }}
-                  className="flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.8rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="fx-press flex w-full items-baseline gap-2 px-3 py-1 text-left text-[0.8rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="min-w-0 flex-1 truncate">{p.name}</span>
                   <span className="shrink-0 text-[0.62rem] text-muted">Preset</span>
@@ -124,7 +136,7 @@ export default function LayoutMenu() {
                 type="button"
                 onClick={save}
                 disabled={!name.trim()}
-                className="border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                className="fx-press border border-rule bg-paper px-2 py-1 text-[0.72rem] text-ink hover:border-sapphire disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
               >
                 Save
               </button>
@@ -160,7 +172,11 @@ function SavedLayoutRow({ layout, onRestored }: { layout: SavedLayout; onRestore
 
   const restore = () => {
     const restored = layoutState(layout);
-    if (!restored) return;
+    if (!restored) {
+      playSound("error");
+      return;
+    }
+    playSound("navigate");
     dispatch({ type: "hydrate", state: restored });
     onRestored();
   };
@@ -202,7 +218,7 @@ function SavedLayoutRow({ layout, onRestored }: { layout: SavedLayout; onRestore
         type="button"
         onClick={restore}
         title={`Restore ${layout.name}`}
-        className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="fx-press min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         {layout.name}
       </button>
@@ -219,7 +235,10 @@ function SavedLayoutRow({ layout, onRestored }: { layout: SavedLayout; onRestore
       </button>
       <button
         type="button"
-        onClick={() => updateLayout(layout.id, state)}
+        onClick={() => {
+          updateLayout(layout.id, state);
+          playSound("complete");
+        }}
         title={`Save the current workspace over ${layout.name}`}
         className="shrink-0 px-1 text-[0.62rem] text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
@@ -227,7 +246,10 @@ function SavedLayoutRow({ layout, onRestored }: { layout: SavedLayout; onRestore
       </button>
       <button
         type="button"
-        onClick={() => layouts.remove(layout.id)}
+        onClick={() => {
+          layouts.remove(layout.id);
+          playSound("close");
+        }}
         title="Delete this layout"
         aria-label={`Delete ${layout.name}`}
         className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"

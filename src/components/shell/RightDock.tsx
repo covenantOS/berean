@@ -7,6 +7,7 @@ import {
   type ComponentType,
   type DragEvent as ReactDragEvent,
 } from "react";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, readPayload, startModuleDrag } from "./dnd";
 import { phoneViewport } from "./viewport";
@@ -30,7 +31,9 @@ const ITEM_BY_TAB = new Map(DOCK_ITEMS.map((item) => [item.tab, item]));
  * drag into the grid to open as pane tabs and drag within the tray to
  * reorder; a tool tab dragged back from a pane returns to the tray. The
  * Scribe reorders but never leaves. Commentary, Lexicon, and Cross-refs are
- * live over the passage in focus; the Scribe lands in a later phase.
+ * live over the passage in focus; the Scribe lands in a later phase. Tray
+ * and dock are glass over the ambient wash, tools crossfade as the tab
+ * turns, and the bells mark the dock opening, closing, and switching.
  */
 export default function RightDock() {
   const { state, dispatch } = useWorkspace();
@@ -135,7 +138,10 @@ export default function RightDock() {
   useEffect(() => {
     if (!state.dockOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && phoneViewport()) dispatch({ type: "toggleDock" });
+      if (e.key === "Escape" && phoneViewport()) {
+        playSound("close");
+        dispatch({ type: "toggleDock" });
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -152,7 +158,7 @@ export default function RightDock() {
     return (
       <div
         {...stripHandlers(true)}
-        className={`ws-dock-tray flex w-8 shrink-0 flex-col items-center gap-1 border-l border-rule bg-surface py-2 ${
+        className={`ws-dock-tray glass fx-fade flex w-8 shrink-0 flex-col items-center gap-1 py-2 ${
           returnHint ? "bg-amber/5 outline-2 -outline-offset-2 outline-amber/60" : ""
         }`}
       >
@@ -168,8 +174,11 @@ export default function RightDock() {
             data-dock-index={i}
             draggable
             onDragStart={(e) => dragTrayTab(e, tab, label)}
-            onClick={() => dispatch({ type: "setDockTab", tab })}
-            className="relative p-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("open");
+              dispatch({ type: "setDockTab", tab });
+            }}
+            className="fx-press relative p-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             {insertAt === i && (
               <span aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 bg-amber" />
@@ -190,12 +199,15 @@ export default function RightDock() {
        *  on it closes the drawer. At desktop it never renders visibly. */}
       <div
         aria-hidden="true"
-        onClick={() => dispatch({ type: "toggleDock" })}
+        onClick={() => {
+          playSound("close");
+          dispatch({ type: "toggleDock" });
+        }}
         className="ws-scrim"
       />
       <aside
         aria-label="Tools"
-        className="ws-dock flex w-80 shrink-0 flex-col border-l border-rule bg-surface"
+        className="ws-dock glass fx-fade flex w-80 shrink-0 flex-col"
       >
       <div className="flex h-9 shrink-0 items-stretch border-b border-rule">
         <div
@@ -222,8 +234,11 @@ export default function RightDock() {
                 data-dock-index={i}
                 draggable
                 onDragStart={(e) => dragTrayTab(e, tab, label)}
-                onClick={() => dispatch({ type: "setDockTab", tab })}
-                className={`relative flex-1 border-r border-rule px-1 text-[0.66rem] font-medium tracking-wide uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                onClick={() => {
+                  if (state.dockTab !== tab) playSound("navigate");
+                  dispatch({ type: "setDockTab", tab });
+                }}
+                className={`fx-press relative flex-1 border-r border-rule px-1 text-[0.66rem] font-medium tracking-wide uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                   tabActive
                     ? "bg-paper text-sapphire shadow-[inset_0_2px_0_var(--stained-sapphire)]"
                     : "text-muted hover:bg-paper hover:text-ink"
@@ -243,13 +258,16 @@ export default function RightDock() {
         <button
           type="button"
           title="Collapse dock"
-          onClick={() => dispatch({ type: "toggleDock" })}
-          className="shrink-0 px-2 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            playSound("close");
+            dispatch({ type: "toggleDock" });
+          }}
+          className="fx-press shrink-0 px-2 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           »
         </button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-4">
+      <div key={state.dockTab} className="fx-fade min-h-0 flex-1 overflow-y-auto p-4">
         {state.dockTab === "commentary" && <CommentaryDock />}
         {state.dockTab === "lexicon" && <LexiconDock />}
         {state.dockTab === "crossrefs" && <CrossRefsDock />}

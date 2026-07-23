@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { authClient } from "@/lib/auth-client";
+import { playSound } from "@/lib/sound";
 import {
   configuredTransport,
   deviceNamespace,
@@ -69,11 +70,14 @@ export default function SyncSection() {
       );
       markSynced();
       setPhase({ state: "success", summary });
+      // A finished cycle is the workspace's clearest completion.
+      playSound("complete");
     } catch (err) {
       setPhase({
         state: "error",
         message: err instanceof Error ? err.message : String(err),
       });
+      playSound("error");
     }
   }
 
@@ -87,7 +91,7 @@ export default function SyncSection() {
   }
 
   return (
-    <section className="rounded-[4px] border border-rule bg-surface p-5">
+    <section className="glass rounded-[4px] p-5" style={{ "--i": 2 } as CSSProperties}>
       <h3 className="small-caps mb-3 text-sm text-muted">Sync: one study, every device</h3>
 
       {!enabled ? (
@@ -106,7 +110,7 @@ export default function SyncSection() {
           <button
             onClick={syncNow}
             disabled={phase.state === "running"}
-            className="justify-self-start rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
+            className="fx-press justify-self-start rounded-[4px] bg-ink px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
           >
             {phase.state === "running" ? "Syncing…" : "Sync now"}
           </button>

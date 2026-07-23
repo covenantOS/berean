@@ -41,8 +41,11 @@ export default function StatusBar() {
   }, []);
 
   return (
-    <footer className="ws-status flex h-7 shrink-0 items-center justify-between border-t border-rule bg-surface px-3 text-[0.7rem] text-muted">
-      <span className="small-caps font-semibold text-ink">
+    <footer className="ws-status glass flex h-7 shrink-0 items-center justify-between px-3 text-[0.7rem] text-muted">
+      <span
+        key={book && ref ? `${ref.book}-${ref.chapter}` : "none"}
+        className="fx-fade small-caps font-semibold text-ink"
+      >
         {book && ref ? `${book.name} ${ref.chapter}` : "No passage"}
       </span>
       <span className="flex items-center gap-3">
@@ -57,7 +60,7 @@ export default function StatusBar() {
           |
         </span>
         <span className="flex items-center gap-1.5">
-          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 bg-emerald" />
+          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-emerald" />
           {syncEnabled ? (last ? `Synced ${ago(last)}` : "Sync ready") : "Local only"}
         </span>
       </span>

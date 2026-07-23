@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type Dispatch,
   type DragEvent as ReactDragEvent,
   type PointerEvent as ReactPointerEvent,
@@ -17,6 +18,7 @@ import { useCollectionWrites } from "@/lib/hooks";
 import { liturgies } from "@/lib/liturgy";
 import { memoryPassages } from "@/lib/memory";
 import { personalbooks } from "@/lib/personalbooks";
+import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
 import {
@@ -143,7 +145,7 @@ function SplitView({ split }: { split: SplitNode }) {
         aria-orientation={horizontal ? "vertical" : "horizontal"}
         title="Drag to resize panes"
         onPointerDown={onPointerDown}
-        className={`ws-sep shrink-0 touch-none bg-transparent transition-colors hover:bg-sapphire/40 ${
+        className={`ws-sep shrink-0 touch-none bg-transparent transition hover:bg-sapphire/40 hover:shadow-[0_0_8px_color-mix(in_srgb,var(--stained-sapphire)_45%,transparent)] ${
           horizontal ? "w-1.5 cursor-col-resize" : "h-1.5 cursor-row-resize"
         }`}
       />
@@ -306,11 +308,15 @@ function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | 
     if (!open) return;
     const onPointer = (e: PointerEvent) => {
       if (rootRef.current && e.target instanceof Node && !rootRef.current.contains(e.target)) {
+        playSound("close");
         setOpen(false);
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        playSound("close");
+        setOpen(false);
+      }
     };
     window.addEventListener("pointerdown", onPointer);
     window.addEventListener("keydown", onKey);
@@ -321,6 +327,8 @@ function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | 
   }, [open]);
 
   const choose = (set: LinkSet | null) => {
+    /* Arming a set switches it on; "No link" switches it off. */
+    if (set !== linkSet) playSound(set ? "toggle-on" : "toggle-off");
     dispatch({ type: "setLinkSet", paneId, linkSet: set });
     setOpen(false);
   };
@@ -337,8 +345,11 @@ function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | 
         aria-label={linkSet ? `Link set ${linkSet}` : "Link this pane with others"}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className={`flex h-5 min-w-5 items-center justify-center border px-1 text-[0.62rem] leading-none font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+        onClick={() => {
+          playSound(open ? "close" : "open");
+          setOpen((v) => !v);
+        }}
+        className={`fx-press flex h-5 min-w-5 items-center justify-center border px-1 text-[0.62rem] leading-none font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
           linkSet ? "border-sapphire text-sapphire" : "border-rule text-muted hover:text-ink"
         }`}
       >
@@ -348,7 +359,8 @@ function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | 
         <div
           role="menu"
           aria-label="Link set"
-          className="absolute top-full right-0 z-30 mt-1 w-32 border border-rule bg-surface py-0.5"
+          style={{ "--fx-origin": "100% 0" } as CSSProperties}
+          className="glass fx-scale absolute top-full right-0 z-30 mt-1 w-32 py-0.5"
         >
           {LINK_SETS.map((set) => (
             <button
@@ -439,7 +451,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
       onPointerDown={() => {
         if (!isActive) dispatch({ type: "activatePane", paneId: leaf.id });
       }}
-      className={`ws-pane flex h-full min-h-0 flex-col border bg-surface ${
+      className={`ws-pane fx-pane-enter flex h-full min-h-0 flex-col border bg-surface ${
         isActive ? "border-ink/25" : "border-rule"
       }`}
     >
@@ -475,6 +487,8 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             stripDepth.current = 0;
             setInsertAt(null);
             dispatchDrop(e, { kind: "strip", paneId: leaf.id, index }, dispatch, state.lexiconId);
+            /* A dropped tab walks to its new place; anything else opens here. */
+            playSound(e.dataTransfer.types.includes(DND.paneTab) ? "navigate" : "open");
           }}
         >
           {leaf.tabs.map((tab, i) => {
@@ -498,21 +512,28 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                     tool ? { [DND.paneToolTab]: { paneId: leaf.id, tabId: tab.id } } : {}
                   );
                 }}
-                onClick={() => dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id })}
+                onClick={() => {
+                  if (!tabActive) playSound("navigate");
+                  dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
+                    if (!tabActive) playSound("navigate");
                     dispatch({ type: "activateTab", paneId: leaf.id, tabId: tab.id });
                   }
                 }}
-                className={`group relative flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                className={`group relative flex shrink-0 cursor-pointer items-center gap-1.5 border-r border-rule px-3 text-[0.78rem] whitespace-nowrap transition-colors select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                   tabActive
                     ? "bg-paper font-medium text-ink shadow-[inset_0_2px_0_var(--stained-sapphire)]"
                     : "text-muted hover:bg-paper hover:text-ink"
                 }`}
               >
                 {insertAt === i && (
-                  <span aria-hidden="true" className="absolute inset-y-1 left-0 w-0.5 bg-amber" />
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-1 left-0 w-0.5 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
+                  />
                 )}
                 <span>{label}</span>
                 <button
@@ -520,9 +541,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
                   aria-label={`Close ${label}`}
                   onClick={(e) => {
                     e.stopPropagation();
+                    playSound("close");
                     dispatch({ type: "closeTab", paneId: leaf.id, tabId: tab.id });
                   }}
-                  className={`px-0.5 text-[0.85rem] leading-none hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  className={`fx-press px-0.5 text-[0.85rem] leading-none hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                     tabActive ? "text-muted" : "text-transparent group-hover:text-muted"
                   }`}
                 >
@@ -532,13 +554,19 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             );
           })}
           {insertAt !== null && insertAt >= leaf.tabs.length && leaf.tabs.length > 0 && (
-            <span aria-hidden="true" className="my-1 w-0.5 shrink-0 bg-amber" />
+            <span
+              aria-hidden="true"
+              className="my-1 w-0.5 shrink-0 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
+            />
           )}
           <button
             type="button"
             title="New tab"
-            onClick={() => dispatch({ type: "newTab", paneId: leaf.id })}
-            className="shrink-0 px-2.5 text-[0.95rem] text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("open");
+              dispatch({ type: "newTab", paneId: leaf.id });
+            }}
+            className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             +
           </button>
@@ -549,8 +577,11 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             type="button"
             title="Split right"
             disabled={panes >= MAX_PANES}
-            onClick={() => dispatch({ type: "splitPane", paneId: leaf.id, direction: "horizontal" })}
-            className="p-1 text-muted hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("open");
+              dispatch({ type: "splitPane", paneId: leaf.id, direction: "horizontal" });
+            }}
+            className="fx-press p-1 text-muted transition-colors hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             <SplitHorizontalIcon />
           </button>
@@ -558,8 +589,11 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             type="button"
             title="Split down"
             disabled={panes >= MAX_PANES}
-            onClick={() => dispatch({ type: "splitPane", paneId: leaf.id, direction: "vertical" })}
-            className="p-1 text-muted hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("open");
+              dispatch({ type: "splitPane", paneId: leaf.id, direction: "vertical" });
+            }}
+            className="fx-press p-1 text-muted transition-colors hover:text-ink disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             <SplitVerticalIcon />
           </button>
@@ -567,8 +601,11 @@ function Pane({ leaf }: { leaf: LeafNode }) {
             type="button"
             title="Close pane"
             disabled={panes <= 1}
-            onClick={() => dispatch({ type: "closePane", paneId: leaf.id })}
-            className="px-1 text-[0.85rem] leading-none text-muted hover:text-ruby disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            onClick={() => {
+              playSound("close");
+              dispatch({ type: "closePane", paneId: leaf.id });
+            }}
+            className="fx-press px-1 text-[0.85rem] leading-none text-muted transition-colors hover:text-ruby disabled:opacity-30 disabled:hover:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
           >
             ×
           </button>
@@ -602,8 +639,18 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           bodyDepth.current = 0;
           setBodyHint(null);
           dispatchDrop(e, target, dispatch, state.lexiconId);
+          /* A tab landing in a body walks there; a split or a new module opens. */
+          playSound(
+            target.kind === "body" && e.dataTransfer.types.includes(DND.paneTab)
+              ? "navigate"
+              : "open"
+          );
         }}
       >
+        {/* Tab activation crossfade: keying on the live tab remounts the body
+         * so the incoming view fades in (fx-fade); reader scroll already
+         * resets on chapter change, so nothing is lost on the swap. */}
+        <div key={activeTab?.id ?? "empty"} className="fx-fade h-full min-h-0">
         {activeTab ? (
           activeTab.type === "reader" ? (
             <ReaderPane
@@ -832,16 +879,17 @@ function Pane({ leaf }: { leaf: LeafNode }) {
         ) : (
           <EmptyPane paneId={leaf.id} />
         )}
+        </div>
         {bodyHint === "body" && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-10 border-2 border-amber/60 bg-amber/5"
+            className="pointer-events-none absolute inset-0 z-10 border-2 border-amber/60 bg-amber/5 shadow-[inset_0_0_28px_color-mix(in_srgb,var(--stained-amber)_16%,transparent)]"
           />
         )}
         {bodyHint !== null && bodyHint !== "body" && (
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute z-10 bg-amber/10 ${
+            className={`pointer-events-none absolute z-10 bg-amber/10 shadow-[inset_0_0_24px_color-mix(in_srgb,var(--stained-amber)_20%,transparent)] ${
               bodyHint === "left"
                 ? "inset-y-0 left-0 w-1/4 border-r-2 border-amber/70"
                 : bodyHint === "right"
@@ -866,8 +914,11 @@ function EmptyPane({ paneId }: { paneId: string }) {
       </p>
       <button
         type="button"
-        onClick={() => dispatch({ type: "openRef", book: "genesis", chapter: 1, paneId })}
-        className="border border-rule bg-paper px-3 py-1.5 text-xs text-ink hover:border-sapphire focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        onClick={() => {
+          playSound("open");
+          dispatch({ type: "openRef", book: "genesis", chapter: 1, paneId });
+        }}
+        className="glass glass-hover fx-press px-3 py-1.5 text-xs text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         Open Genesis 1
       </button>

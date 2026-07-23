@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
+import { playSound } from "@/lib/sound";
 import LayoutMenu from "./LayoutMenu";
 import { useWorkspace } from "./WorkspaceContext";
 import type { RailMode } from "./workspace-state";
@@ -29,7 +30,9 @@ const RAIL_ITEMS: { mode: RailMode; label: string; icon: ComponentType }[] = [
 /**
  * The icon rail: one column of modes that drives the sidebar, with the
  * layout presets and the layouts menu at its foot. Clicking the active
- * mode collapses the sidebar, the way an activity bar behaves.
+ * mode collapses the sidebar, the way an activity bar behaves. The rail is
+ * a glass strip over the ambient wash; a pick answers with a single struck
+ * note, a collapse with the falling figure.
  */
 export default function IconRail() {
   const { state, dispatch } = useWorkspace();
@@ -37,7 +40,7 @@ export default function IconRail() {
   return (
     <nav
       aria-label="Workspace modes"
-      className="ws-rail flex w-12 shrink-0 flex-col items-stretch border-r border-rule bg-surface"
+      className="ws-rail glass flex w-12 shrink-0 flex-col items-stretch"
     >
       <div className="ws-rail-modes flex flex-1 flex-col">
         {RAIL_ITEMS.map(({ mode, label, icon: ItemIcon }) => {
@@ -48,14 +51,14 @@ export default function IconRail() {
               type="button"
               title={label}
               aria-pressed={active}
-              onClick={() =>
+              onClick={() => {
+                const collapse = state.railMode === mode && state.sidebarOpen;
+                playSound(collapse ? "close" : "navigate");
                 dispatch(
-                  state.railMode === mode && state.sidebarOpen
-                    ? { type: "toggleSidebar" }
-                    : { type: "setRailMode", mode }
-                )
-              }
-              className={`flex h-12 flex-col items-center justify-center gap-0.5 border-l-2 text-[0.55rem] font-medium tracking-wide uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
+                  collapse ? { type: "toggleSidebar" } : { type: "setRailMode", mode }
+                );
+              }}
+              className={`fx-press flex h-12 flex-col items-center justify-center gap-0.5 border-l-2 text-[0.55rem] font-medium tracking-wide uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire ${
                 active
                   ? "border-sapphire bg-paper text-sapphire"
                   : "border-transparent text-muted hover:bg-paper hover:text-ink"
@@ -71,8 +74,11 @@ export default function IconRail() {
         <button
           type="button"
           title="Preset: Reading — one pane, dock closed"
-          onClick={() => dispatch({ type: "applyPreset", preset: "reading" })}
-          className="flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            playSound("navigate");
+            dispatch({ type: "applyPreset", preset: "reading" });
+          }}
+          className="fx-press flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           <PresetReadingIcon />
           <span>Reading</span>
@@ -80,8 +86,11 @@ export default function IconRail() {
         <button
           type="button"
           title="Preset: Study — two panes side by side, commentary at hand"
-          onClick={() => dispatch({ type: "applyPreset", preset: "study" })}
-          className="flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          onClick={() => {
+            playSound("navigate");
+            dispatch({ type: "applyPreset", preset: "study" });
+          }}
+          className="fx-press flex h-12 flex-col items-center justify-center gap-0.5 text-[0.55rem] font-medium tracking-wide uppercase text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           <PresetStudyIcon />
           <span>Study</span>
