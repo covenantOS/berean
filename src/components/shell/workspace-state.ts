@@ -2489,7 +2489,7 @@ export function workspaceReducer(
       if (!leaf) return state;
       // The slug holds water only as a well-formed archive slug; a slug the
       // corpus lacks loads anyway and the pane says so, the confession rule.
-      if (typeof action.slug !== "string" || !/^[a-z0-9-]+$/.test(action.slug)) return state;
+      if (typeof action.slug !== "string" || !/^[a-z0-9_-]+$/.test(action.slug)) return state;
       const title =
         typeof action.title === "string" && action.title.trim()
           ? action.title.trim().slice(0, 120)
@@ -3776,7 +3776,7 @@ function sanitizeNode(node: unknown): PaneNode | null {
         // The slug must be well formed; a malformed tab drops, and an
         // unanswered slug loads anyway with the pane saying the archive
         // lacks it, the confession rule.
-        if (typeof t.sermon !== "string" || !/^[a-z0-9-]+$/.test(t.sermon)) continue;
+        if (typeof t.sermon !== "string" || !/^[a-z0-9_-]+$/.test(t.sermon)) continue;
         const title =
           typeof t.title === "string" && t.title.trim() ? t.title : undefined;
         tabs.push({ id: t.id, type: "sermon", sermon: t.sermon, ...(title ? { title } : {}) });

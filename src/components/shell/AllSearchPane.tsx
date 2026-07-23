@@ -24,7 +24,8 @@ import { useWorkspaceDispatch } from "./WorkspaceContext";
  * genuinely indexes locally. The Scripture group asks /api/pane/search, so
  * the precise grammar answers there (src/lib/query.ts); the Books group
  * asks /api/pane/books-search, so the same grammar answers over the
- * commentary shelf and the topical works (src/lib/booksearch.ts); the
+ * commentary shelf, the Spurgeon sermon archive, and the topical works
+ * (src/lib/booksearch.ts); the
  * Documents group runs the docs search (src/lib/docsearch.ts) over the
  * device-local collections live, keeping its documented substring
  * matching. Each group lists its first hits and hands off to its dedicated
@@ -61,6 +62,14 @@ interface BookCommentaryHit {
   snippet: string;
 }
 
+interface BookSermonHit {
+  slug: string;
+  title: string;
+  ref: string | null;
+  year: number | null;
+  snippet: string;
+}
+
 interface BookTopicHit {
   work: string;
   workLabel: string;
@@ -77,6 +86,8 @@ type BooksState =
       status: "ready";
       commentary: BookCommentaryHit[];
       commentaryTotal: number;
+      sermons: BookSermonHit[];
+      sermonsTotal: number;
       topics: BookTopicHit[];
       topicsTotal: number;
     };
@@ -120,6 +131,8 @@ export default function AllSearchPane({ q }: { q: string }) {
         const data = (await res.json()) as {
           commentary: BookCommentaryHit[];
           commentaryTotal: number;
+          sermons: BookSermonHit[];
+          sermonsTotal: number;
           topics: BookTopicHit[];
           topicsTotal: number;
           error?: string;
@@ -291,13 +304,14 @@ function ScriptureGroup({
   );
 }
 
-/* ---------- Books: the commentary shelf and topical works, first hits ---------- */
+/* ------- Books: the commentary shelf, sermon archive, and topical works ------- */
 
 function BooksGroup({ q, state }: { q: string; state: BooksState }) {
   const { dispatch } = useWorkspaceDispatch();
-  const total = state.status === "ready" ? state.commentaryTotal + state.topicsTotal : 0;
+  const total =
+    state.status === "ready" ? state.commentaryTotal + state.sermonsTotal + state.topicsTotal : 0;
 
-  /* One flattened row across the two server groups, shelf hits first. */
+  /* One flattened row across the three server groups, shelf hits first. */
   const rows: { key: string; heading: string; sub: string; snippet: string; open: () => void; title: string }[] = [];
   if (state.status === "ready") {
     for (const h of state.commentary) {
@@ -313,6 +327,16 @@ function BooksGroup({ q, state }: { q: string; state: BooksState }) {
           dispatch({ type: "setDockTab", tab: "commentary" });
         },
         title: `Open the commentary wall at ${h.bookName} ${h.chapter}${h.verses ? `:${h.verses}` : ""}`,
+      });
+    }
+    for (const h of state.sermons) {
+      rows.push({
+        key: `s-${h.slug}`,
+        heading: h.title,
+        sub: ["C. H. Spurgeon", h.year, h.ref].filter(Boolean).join(" · "),
+        snippet: h.snippet,
+        open: () => dispatch({ type: "openSermon", slug: h.slug, title: h.title }),
+        title: `Open "${h.title}" in the sermon reader`,
       });
     }
     for (const h of state.topics) {

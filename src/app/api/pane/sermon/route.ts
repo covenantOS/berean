@@ -8,7 +8,7 @@ import { getSermon } from "@/lib/sermons";
  */
 export async function GET(req: NextRequest) {
   const slug = (req.nextUrl.searchParams.get("slug") ?? "").trim();
-  if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+  if (!slug || !/^[a-z0-9_-]+$/.test(slug)) {
     return NextResponse.json({ error: "No such sermon." }, { status: 404 });
   }
   const sermon = await getSermon(slug);

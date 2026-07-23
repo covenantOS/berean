@@ -10,19 +10,23 @@ import { useWorkspaceDispatch } from "./WorkspaceContext";
 /**
  * The Books Search pane: the concordance turned on the library. Where the
  * Docs Search pane reads the device-local collections live, this one asks
- * /api/pane/books-search, which scans the commentary shelf's sections and
- * the topical works' entries server-side (src/lib/booksearch.ts), so the
- * precise grammar answers here the way it does in the Search pane. The
- * field toggle scopes the query where the data carries the distinction:
- * topical entries answer by heading (the title) or body text (the outline
- * labels), and commentary sections carry one prose field, so a
- * heading-scoped query answers from the topical works alone. Personal
- * books merge in on the device with their documented substring matching
- * (src/lib/docsearch.ts), whatever the field. Each hit opens its target: a
- * commentary hit carries the workspace to the passage and selects the
- * section's first verse, so the commentary wall rises on the sections
- * treating it; a topical hit opens its topic guide; a personal book opens
- * its reader. The header handoff runs the same query against the canon.
+ * /api/pane/books-search, which scans the commentary shelf's sections, the
+ * Spurgeon sermon archive, and the topical works' entries server-side
+ * (src/lib/booksearch.ts), so the precise grammar answers here the way it
+ * does in the Search pane. The field toggle scopes the query where the
+ * data carries the distinction: sermons answer by heading (the title,
+ * with the appointed text riding as head matter) or body text (the
+ * quotation and paragraphs), topical entries by heading (the title) or
+ * body text (the outline labels), and commentary sections carry one prose
+ * field, so a heading-scoped query answers from the sermons and topical
+ * works alone. Personal books merge in on the device with their
+ * documented substring matching (src/lib/docsearch.ts), whatever the
+ * field. Each hit opens its target: a commentary hit carries the
+ * workspace to the passage and selects the section's first verse, so the
+ * commentary wall rises on the sections treating it; a sermon hit opens
+ * the sermon reader; a topical hit opens its topic guide; a personal book
+ * opens its reader. The header handoff runs the same query against the
+ * canon.
  */
 
 type Field = "all" | "heading" | "text";
@@ -43,6 +47,15 @@ interface CommentaryHit {
   snippet: string;
 }
 
+interface SermonHit {
+  slug: string;
+  title: string;
+  ref: string | null;
+  year: number | null;
+  field: "heading" | "text";
+  snippet: string;
+}
+
 interface TopicHit {
   work: string;
   workLabel: string;
@@ -60,6 +73,8 @@ type ServerState =
       status: "ready";
       commentary: CommentaryHit[];
       commentaryTotal: number;
+      sermons: SermonHit[];
+      sermonsTotal: number;
       topics: TopicHit[];
       topicsTotal: number;
     };
@@ -81,6 +96,8 @@ export default function BooksSearchPane({ q }: { q: string }) {
         const data = (await res.json()) as {
           commentary: CommentaryHit[];
           commentaryTotal: number;
+          sermons: SermonHit[];
+          sermonsTotal: number;
           topics: TopicHit[];
           topicsTotal: number;
           error?: string;
@@ -125,10 +142,14 @@ export default function BooksSearchPane({ q }: { q: string }) {
   const openTopic = (h: TopicHit) =>
     dispatch({ type: "openTopicGuide", work: h.work, topicId: h.topicId, title: h.title });
 
+  const openSermon = (h: SermonHit) =>
+    dispatch({ type: "openSermon", slug: h.slug, title: h.title });
+
   const openBook = (b: PersonalBook) =>
     dispatch({ type: "openPersonalBook", bookId: b.id, title: b.title });
 
   const commentary = server.status === "ready" ? server.commentary : [];
+  const sermons = server.status === "ready" ? server.sermons : [];
   const topics = server.status === "ready" ? server.topics : [];
 
   return (
@@ -212,6 +233,50 @@ export default function BooksSearchPane({ q }: { q: string }) {
                   <p className="mt-2 text-xs text-muted">
                     The first {commentary.length.toLocaleString()} of{" "}
                     {server.commentaryTotal.toLocaleString()} sections.
+                  </p>
+                )}
+              </section>
+              <section className="mb-5">
+                <p className="small-caps border-b border-rule pb-1 text-xs font-semibold text-muted">
+                  Sermons
+                  {server.sermonsTotal > 0 && <> · {server.sermonsTotal.toLocaleString()}</>}
+                </p>
+                <p className="mt-1 text-[0.68rem] text-muted">
+                  C. H. Spurgeon's sermons: all 3,597 of the New Park Street and Metropolitan
+                  Tabernacle pulpits (1855-1917), public domain.
+                </p>
+                {sermons.length === 0 ? (
+                  <p className="py-3 text-xs text-muted">No sermon answers to “{q}”.</p>
+                ) : (
+                  <ul>
+                    {sermons.map((h) => (
+                      <li key={h.slug} className="border-b border-rule/60">
+                        <button
+                          type="button"
+                          onClick={() => openSermon(h)}
+                          title={`Open "${h.title}" in the sermon reader`}
+                          className="block w-full py-3 text-left hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                        >
+                          <span className="small-caps text-sm font-medium text-sapphire">
+                            {h.title}
+                            <span className="ml-2 text-[0.62rem] font-normal text-muted">
+                              {[h.year, h.ref, h.field === "heading" ? "heading" : "text"]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                          </span>
+                          <span className="mt-0.5 block font-reader text-[0.9rem] leading-relaxed text-ink">
+                            {h.snippet}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {server.sermonsTotal > sermons.length && (
+                  <p className="mt-2 text-xs text-muted">
+                    The first {sermons.length.toLocaleString()} of{" "}
+                    {server.sermonsTotal.toLocaleString()} sermons.
                   </p>
                 )}
               </section>

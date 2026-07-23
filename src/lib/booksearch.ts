@@ -10,34 +10,42 @@ import {
   type ScopeSegment,
 } from "./query";
 import { getRights } from "./rights";
+import { listSermonTexts } from "./sermons";
 import { getTopic, listTopics, TOPIC_WORKS, type TopicNode, type TopicWork } from "./topics";
 
 /**
  * Books Search: the precise grammar turned on the shelf's prose. The
  * concordance answers verse-shaped questions over the canon; this answers
- * article-shaped ones over the shipped library: the six-work commentary
- * shelf (src/lib/commentary.ts), where every section carries its verse
- * range beside its text, and the topical works (src/lib/topics.ts), where
- * an entry's searchable text is its title and its outline labels. A query
- * with no operators takes the case-folded substring path, the same fold
- * the concordance's plain path uses; anything with quotes, boolean,
- * wildcards, NEAR, or WITHIN WORDS parses through src/lib/query.ts and
- * evaluates over each section's words with evalVerse, one article standing
- * in for one verse. Two corners of the grammar stay verse-shaped and do
- * not ship here: WITHIN VERSES asks a cross-article question and answers
- * with a QueryError saying so, and BEFORE/AFTER never existed. The in:
- * scope does compose for the commentary shelf, since sections carry verse
- * ranges: in:romans.8 narrows the shelf to sections treating that passage.
- * The topical works index the whole canon rather than sit at one passage,
- * so scopes do not narrow them. Field scoping ships only where the data
- * carries a genuine field: topical entries answer by heading (the title)
- * or body text (the labels); commentary sections carry one prose field
- * with no heading of their own, so a heading-scoped query answers from the
- * topical works alone. The commentary index builds once at module scope
- * and stays resident, the way the other data libs cache the shelf. It
- * keeps one copy of each section's text; the case fold happens on the
- * scan (one regex per query), not as a lowercased second copy of the
- * shelf, which measured at 124 MB of prose and as much again retained.
+ * article-shaped ones over the shipped library: the commentary shelf
+ * (src/lib/commentary.ts), where every section carries its verse
+ * range beside its text, the Spurgeon sermon archive
+ * (src/lib/sermons.ts), where a sermon's searchable text is its title,
+ * its appointed text as printed, and its full body, and the topical works
+ * (src/lib/topics.ts), where an entry's searchable text is its title and
+ * its outline labels. A query with no operators takes the case-folded
+ * substring path, the same fold the concordance's plain path uses;
+ * anything with quotes, boolean, wildcards, NEAR, or WITHIN WORDS parses
+ * through src/lib/query.ts and evaluates over each article's words with
+ * evalVerse, one article standing in for one verse. Two corners of the
+ * grammar stay verse-shaped and do not ship here: WITHIN VERSES asks a
+ * cross-article question and answers with a QueryError saying so, and
+ * BEFORE/AFTER never existed. The in: scope does compose for the
+ * commentary shelf, since sections carry verse ranges: in:romans.8
+ * narrows the shelf to sections treating that passage. A sermon roams
+ * past its appointed text and a topical entry indexes the whole canon, so
+ * scopes narrow neither the archive nor the topical works. Field scoping
+ * ships only where the data carries a genuine field: topical entries
+ * answer by heading (the title) or body text (the labels), and sermons by
+ * heading (the title, with the appointed text riding as head matter) or
+ * body text (the quotation and paragraphs); commentary sections carry one
+ * prose field with no heading of their own, so a heading-scoped query
+ * answers from the sermons and topical works alone. The commentary and
+ * sermon indexes build once at module scope and stay resident, the way
+ * the other data libs cache the shelf. Each keeps one copy of every
+ * article's text; the case fold happens on the scan (one regex per
+ * query), not as a lowercased second copy of the shelf, which measured at
+ * 124 MB of commentary prose and as much again retained, a cost the 118
+ * MB archive cannot pay twice either.
  */
 
 /** Which prose the query reads: everything, headings, or body text. */
@@ -54,6 +62,18 @@ export interface CommentaryHit {
   snippet: string;
 }
 
+export interface SermonHit {
+  slug: string;
+  title: string;
+  /** The appointed text as printed, where the record carries one. */
+  ref: string | null;
+  year: number | null;
+  /** Which genuine field answered: the head matter (title and appointed
+   * text) or the body. */
+  field: "heading" | "text";
+  snippet: string;
+}
+
 export interface TopicHit {
   work: TopicWork;
   workLabel: string;
@@ -67,6 +87,8 @@ export interface TopicHit {
 export interface BookSearchResults {
   commentary: CommentaryHit[];
   commentaryTotal: number;
+  sermons: SermonHit[];
+  sermonsTotal: number;
   topics: TopicHit[];
   topicsTotal: number;
 }
@@ -156,6 +178,41 @@ function inScopes(scopes: ScopeSegment[], row: SectionRow): boolean {
   });
 }
 
+/* --------------------------- the sermon index --------------------------- */
+
+interface SermonRow {
+  slug: string;
+  title: string;
+  /** The appointed text as printed, riding with the title as the sermon's
+   * head matter; empty where the record carries none. */
+  ref: string;
+  year: number | null;
+  /** The quotation and the paragraphs joined once; the body field. Empty
+   * for the stubs that point to the facsimile. */
+  body: string;
+}
+
+let sermonIndex: Promise<SermonRow[]> | null = null;
+
+function loadSermonIndex(): Promise<SermonRow[]> {
+  if (!sermonIndex) sermonIndex = buildSermonIndex();
+  return sermonIndex;
+}
+
+async function buildSermonIndex(): Promise<SermonRow[]> {
+  /* One retained copy of each sermon's text, the commentary rule: the 118
+   * MB archive pays the fold on the scan, not a lowercased second copy.
+   * The reader records are transient here; only the rows stay resident. */
+  const sermons = await listSermonTexts();
+  return sermons.map((s) => ({
+    slug: s.slug,
+    title: s.title,
+    ref: s.ref ?? "",
+    year: s.year,
+    body: (s.quote ? [s.quote, ...s.paragraphs] : s.paragraphs).join("\n\n"),
+  }));
+}
+
 /* ------------------------------- matching ------------------------------- */
 
 /** A match as its offset and length in the original text; null on a miss. */
@@ -221,7 +278,14 @@ export async function searchBooks(
   field: BookSearchField = "all",
   cap = 200
 ): Promise<BookSearchResults> {
-  const out: BookSearchResults = { commentary: [], commentaryTotal: 0, topics: [], topicsTotal: 0 };
+  const out: BookSearchResults = {
+    commentary: [],
+    commentaryTotal: 0,
+    sermons: [],
+    sermonsTotal: 0,
+    topics: [],
+    topicsTotal: 0,
+  };
   const query = q.trim();
   if (query.length < 2) return out;
 
@@ -260,6 +324,49 @@ export async function searchBooks(
           snippet: snippet(row.text, m.at, m.span),
         });
       }
+    }
+  }
+
+  /* The sermon archive: the title and the appointed text answer as the
+   * heading, the quotation and paragraphs as the body; one row per
+   * sermon, the head matter answering first. */
+  const sermonRows = await loadSermonIndex();
+  for (const row of sermonRows) {
+    let hit: SermonHit | null = null;
+    if (field !== "text") {
+      let m = match(row.title);
+      let source = row.title;
+      if (!m && row.ref) {
+        m = match(row.ref);
+        source = row.ref;
+      }
+      if (m) {
+        hit = {
+          slug: row.slug,
+          title: row.title,
+          ref: row.ref || null,
+          year: row.year,
+          field: "heading",
+          snippet: snippet(source, m.at, m.span),
+        };
+      }
+    }
+    if (!hit && field !== "heading" && row.body) {
+      const m = match(row.body);
+      if (m) {
+        hit = {
+          slug: row.slug,
+          title: row.title,
+          ref: row.ref || null,
+          year: row.year,
+          field: "text",
+          snippet: snippet(row.body, m.at, m.span),
+        };
+      }
+    }
+    if (hit) {
+      out.sermonsTotal++;
+      if (out.sermons.length < cap) out.sermons.push(hit);
     }
   }
 

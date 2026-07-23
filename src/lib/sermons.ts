@@ -92,9 +92,11 @@ export async function getChapterSermons(slug: string, chapter: number): Promise<
 }
 
 /** One sermon's full reader record, or null when the slug is unknown or
- * the archive is not registered as shipped. */
+ * the archive is not registered as shipped. The slug charset is the
+ * harvester's own: lowercase, digits, hyphens, and one underscore-prefixed
+ * record ("05_faith-and-the-witness-upon-which-it-is-founded"). */
 export async function getSermon(slug: string): Promise<SermonText | null> {
-  if (!/^[a-z0-9-]+$/.test(slug)) return null;
+  if (!/^[a-z0-9_-]+$/.test(slug)) return null;
   if (getRights("spurgeon-sermons")?.status !== "shipped") return null;
   try {
     const file = path.join(process.cwd(), "data", "sermons", "texts", `${slug}.json`);
@@ -102,4 +104,24 @@ export async function getSermon(slug: string): Promise<SermonText | null> {
   } catch {
     return null;
   }
+}
+
+/** Every sermon's full reader record in index order, for the books
+ * search's full-text index (src/lib/booksearch.ts), which walks the
+ * archive through here once and keeps its own resident rows. Empty when
+ * the archive is not registered as shipped. */
+export async function listSermonTexts(): Promise<SermonText[]> {
+  const index = await loadIndex();
+  if (!index) return [];
+  const out: SermonText[] = [];
+  /* Batched reads: 3,597 files at once asks more of the file pool than it
+   * has to give. */
+  const BATCH = 100;
+  for (let i = 0; i < index.sermons.length; i += BATCH) {
+    const batch = await Promise.all(
+      index.sermons.slice(i, i + BATCH).map((s) => getSermon(s.slug))
+    );
+    for (const sermon of batch) if (sermon) out.push(sermon);
+  }
+  return out;
 }
