@@ -15,6 +15,9 @@ data/_sources/clarke/*.zip
 data/_sources/wesley/*.zip
 data/_sources/tdavid/*.zip
 data/_sources/scofield/*.zip
+data/_sources/catena/*.zip
+data/_sources/pnt/*.zip
+data/_sources/burkitt/*.zip
 
 # Raw LXX sources (~3MB); reproducible from each PROVENANCE.md
 data/_sources/brenton/*.zip

@@ -11,9 +11,10 @@ export interface CommentarySection {
 /**
  * Bibliographic facts about a work on the shelf: who wrote it, when it first
  * appeared, from which tradition, and what it covers. The shelf runs from
- * 1540 to 1871, so the era facet is honest about what it holds: Reformation
- * through nineteenth century, nothing patristic and nothing contemporary.
- * Sources sit in the comments beside each entry.
+ * 1263 to 1917, and the era facet is honest about what it holds: a
+ * patristic-medieval catena, the Reformation and Post-Reformation
+ * centuries, and the nineteenth and twentieth centuries. Sources sit in
+ * the comments beside each entry.
  */
 export interface CommentaryWorkMeta {
   author: string;
@@ -203,6 +204,65 @@ export const COMMENTARY_WORKS: CommentaryWork[] = [
       era: "20th century",
       tradition: "Dispensational",
       type: "whole-bible",
+    },
+  },
+  {
+    id: "catena",
+    label: "Thomas Aquinas, Catena Aurea",
+    rightsId: "catena",
+    /* The Catena Aurea, Aquinas's chain of patristic comments on the four
+     * Gospels, composed 1262-1267; the Matthew volume was presented to Pope
+     * Urban IV in 1263 (Catholic Encyclopedia). Aquinas compiled the
+     * fathers, and the work's tradition is his own: Roman Catholic. The
+     * English text on the shelf is John Henry Newman's translation (4
+     * vols., Oxford, 1841-1845). Gospels only, so the work is a
+     * selection. */
+    meta: {
+      author: "Thomas Aquinas",
+      years: "1263",
+      from: 1263,
+      era: "Patristic-Medieval",
+      tradition: "Roman Catholic",
+      type: "selective",
+    },
+  },
+  {
+    id: "pnt",
+    label: "B. W. Johnson, People's New Testament",
+    rightsId: "pnt",
+    /* The People's New Testament with Explanatory Notes, two volumes (St.
+     * Louis: Christian Publishing Company, 1889-1891; CCEL title page
+     * shows the 1891 copyright). Barton W. Johnson (1833-1894) studied at
+     * Bethany College under Alexander Campbell, presided over Eureka and
+     * Oskaloosa Colleges, and edited The Evangelist and the St. Louis
+     * Christian-Evangelist: the Restoration Movement's Disciples of
+     * Christ (J. H. Garrison's 1891 biographical sketch). New Testament
+     * only. */
+    meta: {
+      author: "B. W. Johnson",
+      years: "1889–1891",
+      from: 1889,
+      era: "19th century",
+      tradition: "Restoration Movement",
+      type: "new-testament",
+    },
+  },
+  {
+    id: "burkitt",
+    label: "William Burkitt, Expository Notes",
+    rightsId: "burkitt",
+    /* Expository Notes with Practical Observations on the New Testament:
+     * the Gospels in 1700, Acts to Revelation in 1703, the year of his
+     * death. Burkitt (1650-1703) was vicar of Dedham, Essex: Church of
+     * England. New Testament only. (Dictionary of National Biography;
+     * the module's About text.) */
+    meta: {
+      author: "William Burkitt",
+      years: "1700–1703",
+      from: 1700,
+      era: "Post-Reformation",
+      tradition: "Church of England",
+      type: "new-testament",
     },
   },
 ];
