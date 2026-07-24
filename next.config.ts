@@ -11,10 +11,10 @@ const nextConfig: NextConfig = {
     "/**": ["./data/kjv/*.json"],
   },
   async redirects() {
-    // Phase 1 retirement: the home page and the standalone Library page live
-    // in the workspace now. The old URLs keep resolving, permanently.
+    // Phase 1 retirement: the standalone Library page lives in the
+    // workspace now. The old URL keeps resolving, permanently. The root is
+    // the public landing (src/app/page.tsx); the workspace is one click in.
     return [
-      { source: "/", destination: "/workspace", permanent: true },
       { source: "/library", destination: "/workspace?tab=library", permanent: true },
     ];
   },
