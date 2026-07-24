@@ -70,6 +70,16 @@ Railway.
   The first clone and the first Docker build take several minutes; later
   deploys reuse the cached clone.
 
+## The deploy pipeline (how production actually ships)
+
+Production is Cloudflare Containers, deployed from GitHub Actions: a push
+to `main` runs `.github/workflows/deploy.yml`, which builds the Docker
+image on the runner, pushes it to the account's container registry, and
+runs `wrangler deploy` with the Global API Key from the repo's
+CLOUDFLARE_API_KEY / CLOUDFLARE_EMAIL secrets. There is no local Docker
+requirement anywhere; the everyday deploy is `git push`. Manual one-off
+deploys still work from any machine with Docker and wrangler logged in.
+
 ## Render
 
 1. Push the repo to GitHub (github.com/covenantOS/berean).
