@@ -9,6 +9,7 @@
   "name": "berean",
   "main": "worker/index.ts",
   "compatibility_date": "2026-04-13",
+  "routes": ["berean.blue/*", "www.berean.blue/*", "bereanblue.com/*", "www.bereanblue.com/*"],
   "observability": {
     "enabled": true
   },

@@ -12,7 +12,7 @@ const garamond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Berean", template: "%s · Berean" },
+  title: { default: "Berean Blue", template: "%s · Berean Blue" },
   description:
     "Berean — Scripture study and authored knowledge. A study prepared, by Church Posting.",
   // iOS home-screen icon; the Android/install set rides on the manifest.

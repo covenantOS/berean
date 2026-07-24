@@ -47,6 +47,13 @@ export class BereanServer extends Container {
 
 export default {
   async fetch(request: Request, env: BereanEnv): Promise<Response> {
+    // Canonical host: berean.blue. The www subdomain and the bereanblue.com
+    // defensive registration land here permanently.
+    const url = new URL(request.url);
+    if (url.hostname !== "berean.blue" && !url.hostname.endsWith(".workers.dev")) {
+      url.hostname = "berean.blue";
+      return Response.redirect(url.toString(), 308);
+    }
     const container = await getRandom(
       env.BEREAN as Parameters<typeof getRandom>[0],
       4

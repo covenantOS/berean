@@ -81,7 +81,7 @@ export default function WelcomeOverlay() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Welcome to Berean"
+      aria-label="Welcome to Berean Blue"
       className="fx-fade fixed inset-0 z-50 flex items-center justify-center bg-paper px-4 text-ink"
     >
       {/* The first-run room keeps the study's light (globals .stained-ambient). */}
@@ -93,7 +93,7 @@ export default function WelcomeOverlay() {
           <span />
           <span />
         </span>
-        <p className="small-caps text-xs font-semibold text-amber">Welcome to Berean</p>
+        <p className="small-caps text-xs font-semibold text-amber">Welcome to Berean Blue</p>
         {step === 1 ? (
           <div key="translation" className="fx-fade">
             <h2 className="font-editorial mt-1 text-xl font-semibold">Choose your translation</h2>

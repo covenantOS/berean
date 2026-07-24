@@ -20,8 +20,8 @@ const check = (name, ok, detail = "") => {
   console.log(`${ok ? "PASS" : "FAIL"} ${name}${detail ? ` — ${detail}` : ""}`);
 };
 
-const get = async (path) => {
-  const res = await fetch(base + path);
+const get = async (path, opts = {}) => {
+  const res = await fetch(base + path, opts);
   return { status: res.status, body: await res.text() };
 };
 const getJson = async (path) => {
@@ -71,7 +71,11 @@ const morph = await getJson("/api/pane/morph?q=G26");
 check("morph search", morph.status === 200);
 
 const books = await getJson("/api/pane/books-search?q=none%20but%20jesus");
-check("books search sermons", books.status === 200 && books.json?.sermons?.hits?.length > 0);
+check(
+  "books search sermons",
+  books.status === 200 && Array.isArray(books.json?.sermons) && books.json.sermons.length > 0,
+  `${books.json?.sermons?.length ?? 0} sermons`
+);
 
 const factbook = await getJson("/api/pane/factbook?id=H0175");
 check("factbook", factbook.status === 200 && factbook.json?.name);
@@ -79,7 +83,7 @@ check("factbook", factbook.status === 200 && factbook.json?.name);
 const hymn = await getJson("/api/pane/hymns?id=amazing-grace");
 check("hymn", hymn.status === 200 && hymn.json?.verses?.length > 0);
 
-const home = await get("/");
+const home = await get("/", { redirect: "manual" });
 check("home redirects", home.status === 307 || home.status === 308);
 
 const read = await get("/read/john/3");

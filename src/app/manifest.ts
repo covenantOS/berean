@@ -7,8 +7,8 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Berean",
-    short_name: "Berean",
+    name: "Berean Blue",
+    short_name: "Berean Blue",
     description:
       "Scripture study and authored knowledge. A study prepared, by Church Posting.",
     start_url: "/workspace",
