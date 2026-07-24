@@ -94,6 +94,8 @@ interface PaneProps {
   mode?: SearchMode;
   paneId: string;
   tabId: string;
+  /** The original mode's persisted parsing filters. */
+  filters?: Record<string, string>;
 }
 
 /**
@@ -103,8 +105,10 @@ interface PaneProps {
  * meaning. The header's mode switch re-asks the same query of another
  * engine, in place.
  */
-export default function SearchPane({ q, mode = "bible", paneId, tabId }: PaneProps) {
-  if (mode === "original") return <OriginalPane q={q} paneId={paneId} tabId={tabId} />;
+export default function SearchPane({ q, mode = "bible", paneId, tabId, filters }: PaneProps) {
+  if (mode === "original") {
+    return <OriginalPane q={q} paneId={paneId} tabId={tabId} filters={filters} />;
+  }
   if (mode === "semantic") return <SemanticPane q={q} paneId={paneId} tabId={tabId} />;
   return <BiblePane q={q} paneId={paneId} tabId={tabId} />;
 }
@@ -129,14 +133,18 @@ const SEARCH_MODES: { key: SearchMode; label: string; title: string }[] = [
 /** Re-asks the tab's query of another engine, replacing the tab in place. */
 function ModeSwitch({ q, mode, paneId, tabId }: { q: string; mode: SearchMode; paneId: string; tabId: string }) {
   const { dispatch } = useWorkspaceDispatch();
+  /* A parsing-only tab has no query; the other engines answer words, so
+   * they stay out until one is named. */
+  const wordless = !q.trim();
   return (
     <span className="seg no-print ml-3" role="group" aria-label="Search mode">
       {SEARCH_MODES.map((m) => (
         <button
           key={m.key}
           type="button"
-          title={m.title}
+          title={m.key !== mode && wordless ? "This engine answers words; name one first" : m.title}
           aria-pressed={mode === m.key}
+          disabled={m.key !== mode && wordless}
           onClick={() => {
             if (m.key === mode) return;
             dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(q, m.key) });
@@ -1112,6 +1120,7 @@ interface MorphHit {
 }
 
 type MorphLoad =
+  | { status: "idle" }
   | { status: "loading" }
   | { status: "error" }
   | { status: "invalid"; message: string }
@@ -1126,19 +1135,19 @@ type MorphLoad =
     };
 
 /**
- * The original-language mode: the /search page's morph search carried into
- * the workspace. The query takes a lemma, a transliteration, a Strong's
+ * The original-language mode: the retired /search page's morph search
+ * carried into the workspace. The query takes a lemma, a transliteration, a Strong's
  * number, letters in the script, or a semantic domain (domain:33), with
  * in: scoping and the role: and clause: dataset tokens; the "Narrow by
  * parsing" strip adds the Greek and Hebrew morphology filters. One fetch to
  * /api/pane/morph carries the working set; the Verses view keeps the old
  * page's parsing and gloss display, while Aligned, Grid, Analysis, and
  * Chart read the hits as the verse list they group into. A matched word with a plain
- * Strong's number opens its word study. Filter-only searches stay with the
- * /search page: a workspace tab keys on its query, so a question with no
- * query has nothing to persist or re-run.
+ * Strong's number opens its word study. The filters persist on the tab, so
+ * an empty query with filters set stands as a search of its own: the morph
+ * engine answers it as a parsing concordance, and the session restores it.
  */
-function OriginalPane({ q, paneId, tabId }: PaneProps) {
+function OriginalPane({ q, paneId, tabId, filters: tabFilters }: PaneProps) {
   const { dispatch } = useWorkspaceDispatch();
   const [load, setLoad] = useState<MorphLoad>({ status: "loading" });
   const [view, setView] = useState<View>("verses");
@@ -1146,13 +1155,21 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
   const pinned = favorites.some(
     (f) => f.q.toLowerCase() === q.trim().toLowerCase() && (f.mode ?? "bible") === "original"
   );
-  /** The parsing filters; any change re-runs the fetch. */
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  /** The parsing filters, seeded from the tab; any change re-runs the fetch. */
+  const [filters, setFiltersState] = useState<Record<string, string>>(() => tabFilters ?? {});
+  const hasFilters = Object.values(filters).some(Boolean);
   const [showFilters, setShowFilters] = useState(false);
   const [namingFilter, setNamingFilter] = useState(false);
   const [filterName, setFilterName] = useState("");
   const [filterColor, setFilterColor] = useState<HighlightColor>("sapphire");
   const [filterSaved, setFilterSaved] = useState(false);
+
+  /* A filter change persists back to the tab, so the session and a restored
+   * layout re-run the same parsing question. */
+  const setFilters = (next: Record<string, string>) => {
+    setFiltersState(next);
+    dispatch({ type: "setSearchFilters", paneId, tabId, filters: next });
+  };
 
   /* The query form re-asks the question in place: the rail's history
    * records it under "original", and the tab wears the new query. The α/א
@@ -1173,18 +1190,33 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
   const runQuery = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const raw = String(new FormData(e.currentTarget).get("mq") ?? "").trim();
-    if (!raw) return;
+    // With filters set an empty query stands: the morph engine answers it
+    // as a parsing concordance. Without them there is nothing to ask.
+    if (!raw && !hasFilters) return;
     const query =
       script === "off" ? raw : script === "greek" ? translitToGreek(raw) : translitToHebrew(raw);
-    recordSearch(query, "original");
+    if (query) recordSearch(query, "original");
     playSound("navigate");
-    dispatch({ type: "replaceTab", paneId, tabId, tab: searchTab(query, "original") });
+    dispatch({
+      type: "replaceTab",
+      paneId,
+      tabId,
+      tab: searchTab(query, "original", hasFilters ? filters : undefined),
+    });
   };
 
   useEffect(() => {
+    /* A search needs a word or a filter. Clearing the last filter on a
+     * parsing-only tab idles the pane instead of asking the route a
+     * question it must refuse. */
+    if (!q.trim() && !hasFilters) {
+      setLoad({ status: "idle" });
+      return;
+    }
     const controller = new AbortController();
     setLoad({ status: "loading" });
-    const params = new URLSearchParams({ q });
+    const params = new URLSearchParams();
+    if (q.trim()) params.set("q", q);
     for (const [k, v] of Object.entries(filters)) if (v) params.set(k, v);
     fetch(`/api/pane/morph?${params.toString()}`, { signal: controller.signal })
       .then(async (res) => {
@@ -1255,17 +1287,26 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
     <div className="reader-surface flex h-full min-h-0 flex-col" data-print-root>
       <header className="flex h-9 shrink-0 items-center border-b border-rule px-4">
         <h2 className="font-editorial text-[0.95rem] font-semibold tracking-wide">
-          “{q}”
+          {q.trim() ? `“${q}”` : "Parsing only"}
           <span className="small-caps ml-2 text-[0.6rem] font-normal text-muted">
             Original languages
           </span>
         </h2>
         <ModeSwitch q={q} mode="original" paneId={paneId} tabId={tabId} />
+        {/* The pinned list keys on a query; a parsing-only search has none
+          * to pin under, so the pin sits out disabled. */}
         <button
           type="button"
-          title={pinned ? "Remove this search from the pinned list" : "Pin this search in the Search rail"}
+          title={
+            q.trim()
+              ? pinned
+                ? "Remove this search from the pinned list"
+                : "Pin this search in the Search rail"
+              : "A parsing-only search has no query to pin under"
+          }
+          disabled={!q.trim()}
           onClick={() => toggleFavorite(q, "original")}
-          className="no-print ml-auto text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className="no-print ml-auto text-xs text-sapphire hover:underline disabled:text-muted disabled:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
         >
           {pinned ? "Pinned" : "Pin search"}
         </button>
@@ -1276,7 +1317,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
             onClick={() => {
               if (load.status !== "ready") return;
               const doc = listDocuments.create({
-                title: `Passages for “${q}”`,
+                title: q.trim() ? `Passages for “${q}”` : "Passages for a parsing search",
                 kind: "passage-list",
                 items: load.hits.map((h) => ({ book: h.book, chapter: h.chapter, verse: h.verse })),
               });
@@ -1292,7 +1333,7 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
             type="button"
             title="Mark the listed verses in the reader as a named, toggleable visual filter"
             onClick={() => {
-              setFilterName(`“${q}” matches`);
+              setFilterName(q.trim() ? `“${q}” matches` : "Parsing matches");
               setNamingFilter(true);
             }}
             className="no-print ml-3 text-xs text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
@@ -1456,6 +1497,11 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
         ))}
       </nav>
       <div className="min-h-0 flex-1 overflow-y-auto">
+        {load.status === "idle" && (
+          <p className="px-6 py-8 text-center text-xs text-muted">
+            Name a word or set a parsing filter; a search needs one or the other.
+          </p>
+        )}
         {load.status === "loading" && (
           <p className="px-6 py-8 text-center text-xs text-muted">
             Searching the tagged Greek and Hebrew…
@@ -1473,8 +1519,14 @@ function OriginalPane({ q, paneId, tabId }: PaneProps) {
           <p className="px-6 py-8 text-center text-xs text-muted">
             Nothing in the tagged{" "}
             {load.lang === "hebrew" ? "Hebrew" : load.lang === "greek" ? "Greek" : "original"}{" "}
-            text answers to “{q}”
-            {Object.values(filters).some(Boolean) ? " with those filters" : ""}.
+            {q.trim() ? (
+              <>
+                text answers to “{q}”
+                {hasFilters ? " with those filters" : ""}.
+              </>
+            ) : (
+              "text passes those filters."
+            )}
           </p>
         )}
         {load.status === "ready" && load.total > 0 && (
@@ -1655,8 +1707,8 @@ type SemanticLoad =
   | { status: "ready"; hits: SemanticHit[]; withheld: { ref: string; reason: string }[] };
 
 /**
- * Search by meaning: the /search page's semantic mode carried into the
- * workspace. The concept posts to /api/semantic, where the Scribe's
+ * Search by meaning: the retired /search page's semantic mode carried into
+ * the workspace. The concept posts to /api/semantic, where the Scribe's
  * candidate references are verified against the actual canon before one is
  * shown; anything unverifiable is withheld and reported. The result is a
  * curated handful of passages, not a result set, so the Verses, Grid,

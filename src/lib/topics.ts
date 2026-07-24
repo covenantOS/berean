@@ -90,7 +90,7 @@ export async function getTopicByTitle(work: TopicWork, title: string): Promise<T
   return file.topics.find((t) => t.title.replace(/[^a-z0-9]+/g, " ").trim() === needle) ?? null;
 }
 
-/** Topic titles matching a query, across both works, for /search. */
+/** Topic titles matching a query, across both works, for the omnibox. */
 export async function searchTopics(
   query: string,
   limit = 12

@@ -559,7 +559,7 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     sourceRetrieved: "2026-07-18",
     allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
     notes:
-      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). The Factbook backbone: 4,247 individualised people, places, and other proper names with family relationships, geolocation, and 31,974 mapped references (24 LXX-only and 6 unparsable source refs skipped and counted), stored as an index, per-letter detail shards, and per-book verse maps under data/entities. Presented in the workspace's factbook tab (/library/entity/[id] redirects in), indexed in /search and the Library, and linked from the reader apparatus, the Atlas, and the Timeline. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-entities.mjs.",
+      "Attribution: Data created by www.STEPBible.org based on work at Tyndale House Cambridge (CC BY 4.0). The Factbook backbone: 4,247 individualised people, places, and other proper names with family relationships, geolocation, and 31,974 mapped references (24 LXX-only and 6 unparsable source refs skipped and counted), stored as an index, per-letter detail shards, and per-book verse maps under data/entities. Presented in the workspace's factbook tab (/library/entity/[id] redirects in), indexed in the omnibox and the Library, and linked from the reader apparatus, the Atlas, and the Timeline. Raw download kept under data/_sources/stepbible (out of git, see PROVENANCE.md); normalized by scripts/build-entities.mjs.",
     status: "shipped",
   },
   {

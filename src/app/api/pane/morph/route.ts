@@ -9,9 +9,12 @@ import { QueryError } from "@/lib/query";
  * /api/pane/search. One GET runs searchOriginal (src/lib/morphsearch.ts)
  * over TAHOT and TAGNT with the query and any parsing filters off the URL,
  * and answers with the verse-grouped hits, the canon-wide occurrence and
- * verse counts, and the language family the query resolved to. A malformed
- * in: scope answers with an error message instead of hits, and the pane
- * shows it.
+ * verse counts, and the language family the query resolved to. The query
+ * may be empty when at least one filter is set: the engine answers a
+ * filter-only question as a parsing concordance. With neither a query nor
+ * a filter there is nothing to ask, and the route says so with a 400. A
+ * malformed in: scope answers with an error message instead of hits, and
+ * the pane shows it.
  */
 
 /** JSON list cap, matching the Bible pane's; counts stay canon-wide. */
@@ -23,6 +26,12 @@ export async function GET(req: NextRequest) {
   for (const key of MORPH_FILTER_KEYS) {
     const v = req.nextUrl.searchParams.get(key);
     if (v) filters[key] = v;
+  }
+  if (!q && Object.keys(filters).length === 0) {
+    return NextResponse.json(
+      { q, hits: [], total: 0, verses: 0, lang: "both", error: "Name a word or set a parsing filter." },
+      { status: 400 }
+    );
   }
   if (q.length < 2 && Object.keys(filters).length === 0) {
     return NextResponse.json({ q, hits: [], total: 0, verses: 0, lang: "both" });

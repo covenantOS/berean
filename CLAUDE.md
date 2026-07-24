@@ -33,7 +33,7 @@ Before changing product behavior, read:
 - `src/lib/rights.ts` — rights & provenance registry (surfaced at `/sources`)
 - `src/lib/refs.ts` — server-side reference parsing and quotation verification
 - Room models on the store: `marginalia.ts`, `projects.ts` (study+sermon pipeline), `documents.ts`, `liturgy.ts`, `plans.ts`, `memory.ts`, `almanac.ts`, `settings.ts`
-- Rooms: `/` (the public landing: what the app is, the framed workspace mock, account creation, install paths), `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/library`, `/lexicon`, `/lexicon/[id]`, `/topics`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, `/chapel`, `/almanac`, `/settings`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme) (+ `/search`), `/sources`
+- Rooms: `/` (the public landing: what the app is, the framed workspace mock, account creation, install paths), `/workspace` (the pane-based studio: readers, the Library browser, the Factbook, lexicon and topic guides as tabs; `/library`, `/lexicon`, `/lexicon/[id]`, `/topics`, `/topics/[work]/[id]`, `/library/entity/[id]`, `/memory`, `/journal`, `/prayers`, `/plans`, `/desk`, `/pulpit`, `/study`, `/chapel`, `/almanac`, `/settings`, `/search`, and the `/read` pickers permanently redirect into it), `/read/[book]/[chapter]` (the reader; the citation scheme), `/sources`
 - The Scribe: `src/app/api/brief`, `api/liturgy`, `api/critique` (all citation-verified server-side; honest degradation without a key); `api/passage` serves verse text to editors
 - `desktop/` — Tauri shell for Mac/Windows (ADR 0002)
 - `npm run dev` / `npm run build` from this directory
@@ -48,8 +48,8 @@ calendar and rule of life; settings with governed Scribe memory and
 whole-graph export/import/delete. Original-language mode shipped: TAHOT
 (Hebrew OT) and TAGNT (Greek NT) under the reader with a configurable
 interlinear and a word study panel, lexicon aggregation (Strong's, TBESH,
-TBESG) in the workspace's lexicon tab (`/lexicon/[id]` redirects in), and morphology-aware lemma/parsing search as a
-mode of `/search`. Brenton's English Septuagint and the Greek LXX (Brenton
+TBESG) in the workspace's lexicon tab (`/lexicon/[id]` redirects in), and morphology-aware lemma/parsing search as the
+workspace search pane's original mode (`/search` redirects in), parsing filters included. Brenton's English Septuagint and the Greek LXX (Brenton
 diglot text, both public domain via eBible.org) ship as OT-only parallel
 columns (data/translations/brenton, data/lxx, scripts/build-brenton.mjs,
 scripts/build-lxx.mjs); LXX versification is kept as-is, with divergence
@@ -61,8 +61,8 @@ equivalents the LXX uses for it, with counts and glosses
 shipped: TIPNR people and places under `data/entities`
 (scripts/build-entities.mjs, src/lib/entities.ts), entity factbooks in the
 workspace's factbook tab (`/library/entity/[id]` redirects in), a
-people-and-places index and filter in the Library,
-an entity group in `/search`, and verse-level mentions in the reader margin.
+people-and-places index and filter in the Library, an entity group in the
+omnibox, and verse-level mentions in the reader margin.
 The topical index shipped: Nave's and Torrey's browsed together in the
 workspace's topics tab (`/topics` redirects in), with full verse
 texts and topic mentions in the reader apparatus. The Atlas shipped: TIPNR

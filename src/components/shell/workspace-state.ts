@@ -1,6 +1,7 @@
 "use client";
 
 import { GOSPEL_SLUGS, getBook } from "@/lib/canon";
+import { MORPH_FILTER_KEYS } from "@/lib/morphfilters";
 
 /**
  * Workspace pane state — the Phase 0 shell's one state tree.
@@ -69,6 +70,12 @@ export interface SearchTab {
   q: string;
   /** The engine the pane runs; absent reads as the precise Bible search. */
   mode?: "original" | "semantic";
+  /**
+   * The original mode's parsing filters (src/lib/morphfilters.ts), so they
+   * persist with the session. With filters set the query may be empty: the
+   * morph engine answers a filter-only question as a parsing concordance.
+   */
+  filters?: Record<string, string>;
 }
 
 /** A search over the user's own notes, manuscripts, lists, and prayers. */
@@ -793,12 +800,36 @@ export function readerTab(book = "genesis", chapter = 1): ReaderTab {
   };
 }
 
-export function searchTab(q: string, mode?: SearchMode): SearchTab {
+/**
+ * A filter set holds water at known morph keys (src/lib/morphfilters.ts)
+ * carrying short option slugs; anything else drops out, and an empty result
+ * means no filters at all.
+ */
+export function sanitizeSearchFilters(raw: unknown): Record<string, string> {
+  if (typeof raw !== "object" || raw === null) return {};
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (!(MORPH_FILTER_KEYS as readonly string[]).includes(k)) continue;
+    if (typeof v !== "string") continue;
+    const value = v.trim();
+    if (!/^[a-z0-9]+([ /-][a-z0-9]+)*$/i.test(value) || value.length > 40) continue;
+    out[k] = value;
+  }
+  return out;
+}
+
+export function searchTab(
+  q: string,
+  mode?: SearchMode,
+  filters?: Record<string, string>
+): SearchTab {
+  const clean = filters ? sanitizeSearchFilters(filters) : {};
   return {
     id: newId("tab"),
     type: "search",
     q,
     ...(mode && mode !== "bible" ? { mode } : {}),
+    ...(Object.keys(clean).length > 0 ? { filters: clean } : {}),
   };
 }
 
@@ -1518,6 +1549,7 @@ export type WorkspaceAction =
   | { type: "navigateBack"; paneId: string }
   | { type: "navigateForward"; paneId: string }
   | { type: "openSearch"; q: string; mode?: SearchMode; paneId?: string }
+  | { type: "setSearchFilters"; paneId: string; tabId: string; filters: Record<string, string> }
   | { type: "openDocSearch"; q: string; paneId?: string }
   | { type: "openBooksSearch"; q: string; paneId?: string }
   | { type: "openAllSearch"; q: string; paneId?: string }
@@ -1853,6 +1885,33 @@ export function workspaceReducer(
           ...l,
           tabs: [...l.tabs, tab],
           activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "setSearchFilters": {
+      const leaf = findLeaf(state.root, action.paneId);
+      const tab = leaf?.tabs.find((t) => t.id === action.tabId);
+      if (!leaf || !tab || tab.type !== "search") return state;
+      const filters = sanitizeSearchFilters(action.filters);
+      // An empty query with no filters left answers nothing; the tab keeps
+      // what it carries rather than persist a search that cannot re-run.
+      if (!tab.q.trim() && Object.keys(filters).length === 0) return state;
+      const current = tab.filters ?? {};
+      const keys = new Set([...Object.keys(current), ...Object.keys(filters)]);
+      if ([...keys].every((k) => current[k] === filters[k])) return state;
+      // In place, one pane only, like the concordance's book swap.
+      return {
+        ...state,
+        root: updateLeaf(state.root, action.paneId, (l) => ({
+          ...l,
+          tabs: l.tabs.map((t) => {
+            if (t.id !== action.tabId || t.type !== "search") return t;
+            const next = { ...t };
+            if (Object.keys(filters).length > 0) next.filters = filters;
+            else delete next.filters;
+            return next;
+          }),
         })),
       };
     }
@@ -3456,10 +3515,20 @@ function sanitizeNode(node: unknown): PaneNode | null {
     for (const raw of n.tabs) {
       if (typeof raw !== "object" || raw === null) continue;
       const t = raw as Record<string, unknown>;
-      if (t.type === "search" && typeof t.id === "string" && typeof t.q === "string" && t.q.trim()) {
+      if (t.type === "search" && typeof t.id === "string" && typeof t.q === "string") {
         // Old search tabs carry no mode and read as the Bible concordance.
         const mode = t.mode === "original" || t.mode === "semantic" ? t.mode : undefined;
-        tabs.push({ id: t.id, type: "search", q: t.q, ...(mode ? { mode } : {}) });
+        // The original mode's parsing filters persist beside the query; a
+        // filter-only tab keys on them, so it loads with an empty query.
+        const filters = sanitizeSearchFilters(t.filters);
+        if (!t.q.trim() && Object.keys(filters).length === 0) continue;
+        tabs.push({
+          id: t.id,
+          type: "search",
+          q: t.q,
+          ...(mode ? { mode } : {}),
+          ...(Object.keys(filters).length > 0 ? { filters } : {}),
+        });
         continue;
       }
       if (

@@ -70,7 +70,7 @@ const REF_RE = new RegExp(
   "i"
 );
 
-/** Base Strong's ids only; extended forms (H7225G) stay with /search. */
+/** Base Strong's ids only; extended forms (H7225G) stay with the original-language search. */
 const STRONGS_RE = /^\s*([GH])0*(\d{1,5})\s*$/i;
 
 /** Beyond these the lexicon has no entries; treat the input as search text. */

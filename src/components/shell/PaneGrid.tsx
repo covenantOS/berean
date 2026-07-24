@@ -199,7 +199,9 @@ function tabLabel(tab: Tab): string {
   if (tab.type === "search") {
     const engine =
       tab.mode === "original" ? " · Original" : tab.mode === "semantic" ? " · Meaning" : "";
-    return `“${tab.q}”${engine}`;
+    /* A filter-only original search keys on its filters, not a query. */
+    const label = tab.q.trim() ? `“${tab.q}”` : "Parsing only";
+    return `${label}${engine}`;
   }
   if (tab.type === "docsearch") return `“${tab.q}” · Docs`;
   if (tab.type === "bookssearch") return `“${tab.q}” · Books`;
@@ -568,6 +570,7 @@ function Pane({ leaf }: { leaf: LeafNode }) {
               mode={activeTab.mode ?? "bible"}
               paneId={leaf.id}
               tabId={activeTab.id}
+              filters={activeTab.filters}
             />
           ) : activeTab.type === "docsearch" ? (
             <DocSearchPane q={activeTab.q} />

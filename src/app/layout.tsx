@@ -83,7 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-muted sm:px-6">
             <span>
               Scripture text: King James Version (public domain) ·{" "}
-              <Link href="/search" className="text-sapphire">
+              <Link href="/workspace" className="text-sapphire">
                 Concordance
               </Link>{" "}
               ·{" "}

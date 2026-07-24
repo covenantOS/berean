@@ -1,8 +1,8 @@
 /**
  * The morphology filter vocabulary, shared between the server engine
- * (src/lib/morphsearch.ts) and client surfaces (the /search page's original
- * mode and the workspace search pane). This module is client-safe: no data
- * files load here, only the option lists the filter selects offer.
+ * (src/lib/morphsearch.ts) and the client surfaces that ask it (the
+ * workspace search pane's original mode). This module is client-safe: no
+ * data files load here, only the option lists the filter selects offer.
  */
 
 export interface MorphFilters {
