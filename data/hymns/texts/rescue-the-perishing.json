@@ -1,0 +1,72 @@
+{
+ "title": "Rescue the Perishing",
+ "altTitles": [],
+ "author": "Fanny Jane Crosby (1820-1915)",
+ "translator": null,
+ "meter": "11.10.11.10",
+ "credit": "Fanny Crosby, 1869, alt.",
+ "tunes": [
+  {
+   "name": "Rescue the Perishing",
+   "composer": "William Howard Doane (1832-1915)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Rescue the perishing, care for the dying,",
+ "verses": [
+  [
+   "Rescue the perishing, care for the dying,",
+   "Snatch them in pity from sin and the grave;",
+   "Weep o'er the erring one, lift up the fallen,",
+   "Tell them of Jesus, the mighty to save."
+  ],
+  [
+   "Though they are slighting Him, still He is waiting,",
+   "Waiting the penitent child to receive;",
+   "Plead with them earnestly, plead with them gently;",
+   "He will forgive they should only believe."
+  ],
+  [
+   "Down in the human heart, crushed by the tempter,",
+   "Feelings lie buried that grace can restore;",
+   "Touched by a loving heart, wakened by kindness,",
+   "Chords that were broken will vibrate once more."
+  ],
+  [
+   "Rescue the perishing, duty demands it;",
+   "Strength for thy labor the Lord will provide;",
+   "Back to the narrow way patiently win them;",
+   "Tell the poor wand'rer a Savior has died."
+  ]
+ ],
+ "refrain": [
+  "Rescue the perishing, care for the dying,",
+  "Jesus is merciful, Jesus will save."
+ ],
+ "refs": [
+  {
+   "book": "jude",
+   "chapter": 1,
+   "from": 22,
+   "to": 23
+  },
+  {
+   "book": "2-corinthians",
+   "chapter": 7,
+   "from": 10,
+   "to": 12
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 4,
+   "from": 16
+  },
+  {
+   "book": "1-peter",
+   "chapter": 3,
+   "from": 14,
+   "to": 16
+  }
+ ],
+ "id": "rescue-the-perishing"
+}

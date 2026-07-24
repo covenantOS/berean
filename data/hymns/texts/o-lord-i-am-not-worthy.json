@@ -1,0 +1,85 @@
+{
+ "title": "O Lord, I Am Not Worthy",
+ "altTitles": [],
+ "author": "1777 from Landshuter Gesangbuch",
+ "translator": null,
+ "meter": "7.6.7.6",
+ "credit": "from Landshuter Gesangbuch, 1777. Translation unknown, before 1913.",
+ "tunes": [
+  {
+   "name": "Non Dignus",
+   "composer": "traditional"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O Lord, I am not worthy",
+ "verses": [
+  [
+   "O Lord, I am not worthy",
+   "That Thou should'st come to me,",
+   "But speak the words of comfort,",
+   "My spirit healed shall be."
+  ],
+  [
+   "O Lord, Thou art all holy,",
+   "The angels Thee adore;",
+   "How, then, ought I sincerely",
+   "My wrongs and sins deplore!"
+  ],
+  [
+   "But when Thou soon wilt enter",
+   "My heart, my sinful heart,",
+   "Then heal me, be my shelter,",
+   "For Thou my Savior art."
+  ],
+  [
+   "O Lord, how can I thank Thee",
+   "For such a gift as this?",
+   "A gift which truly filleth",
+   "My soul with heav'nly bliss!"
+  ],
+  [
+   "I praise Thee, I extol Thee,",
+   "I love Thee O my Sire,",
+   "Till once in joy and glory,",
+   "In heav'n I Thee admire."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 8,
+   "from": 8
+  },
+  {
+   "book": "luke",
+   "chapter": 7,
+   "from": 6
+  },
+  {
+   "book": "luke",
+   "chapter": 5,
+   "from": 8
+  },
+  {
+   "book": "isaiah",
+   "chapter": 57,
+   "from": 18,
+   "to": 19
+  },
+  {
+   "book": "isaiah",
+   "chapter": 6,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "acts",
+   "chapter": 2,
+   "from": 46,
+   "to": 47
+  }
+ ],
+ "id": "o-lord-i-am-not-worthy"
+}

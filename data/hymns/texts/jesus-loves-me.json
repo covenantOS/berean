@@ -1,0 +1,55 @@
+{
+ "title": "Jesus Loves Me",
+ "altTitles": [],
+ "author": "Anna B. Warner (1827-1915)",
+ "translator": null,
+ "meter": "7.7.7.7",
+ "credit": "Anna B. Warner, 1860.",
+ "tunes": [
+  {
+   "name": "untitled",
+   "composer": "William Batchelder Bradbury (1816-1868)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus loves me! This I know,",
+ "verses": [
+  [
+   "Jesus loves me! This I know,",
+   "For the Bible tells me so.",
+   "Little ones to Him belong;",
+   "They are weak, but He is strong."
+  ],
+  [
+   "Jesus loves me! He who died",
+   "Heaven's gate to open wide;",
+   "He will wash away my sin,",
+   "Let His little child come in."
+  ],
+  [
+   "Jesus loves me! He will stay",
+   "Close beside me all the way;",
+   "Thou hast bled and died for me,",
+   "I will henceforth live for Thee."
+  ]
+ ],
+ "refrain": [
+  "Yes, Jesus loves me! Yes, Jesus loves me!",
+  "Yes, Jesus loves me! The Bible tells me so."
+ ],
+ "refs": [
+  {
+   "book": "ephesians",
+   "chapter": 3,
+   "from": 17,
+   "to": 18
+  },
+  {
+   "book": "john",
+   "chapter": 15,
+   "from": 12,
+   "to": 13
+  }
+ ],
+ "id": "jesus-loves-me"
+}

@@ -1,0 +1,88 @@
+{
+ "title": "I Come, O Savior, To Thy Table",
+ "altTitles": [],
+ "author": "Friedrich Christian Heyder (1677-1754)",
+ "translator": "composite",
+ "meter": "9.8.9.8",
+ "credit": "Friedrich C. Heyder, 1710.  Translation composite. Music: 'Ich Sterbe Täglich' from",
+ "tunes": [
+  {
+   "name": "Ich Sterbe Täglich",
+   "composer": "1756 from Emskirchner Choralbuch"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "I come, O Savior, to Thy table,",
+ "verses": [
+  [
+   "I come, O Savior, to Thy table,",
+   "For weak and weary is my soul;",
+   "Thou, Bread of Life, alone art able",
+   "To satisfy and make me whole:"
+  ],
+  [
+   "Oh, grant that I in manner worthy",
+   "May now approach Thy heav'nly board",
+   "And, as I lowly bow before Thee,",
+   "Look only unto Thee, O Lord!"
+  ],
+  [
+   "Unworthy though I am, O Savior,",
+   "Because I have a sinful heart,",
+   "Yet Thou Thy lamb wilt banish never,",
+   "For Thou my faithful Shepherd art:"
+  ],
+  [
+   "Oh, let me loathe all sin forever",
+   "As death and poison to my soul",
+   "That I through willful sinning never",
+   "May see Thy judgment take its toll!"
+  ],
+  [
+   "Thy heart is filled with fervent yearning",
+   "That sinners may salvation see",
+   "Who, Lord, to Thee in faith are turning;",
+   "So I, a sinner, come to Thee."
+  ]
+ ],
+ "refrain": [
+  "Lord, may Thy body and Thy blood",
+  "Be for my soul the highest good!"
+ ],
+ "refs": [
+  {
+   "book": "1-corinthians",
+   "chapter": 11,
+   "from": 23,
+   "to": 29
+  },
+  {
+   "book": "luke",
+   "chapter": 22,
+   "from": 17,
+   "to": 20
+  },
+  {
+   "book": "luke",
+   "chapter": 7,
+   "from": 6
+  },
+  {
+   "book": "mark",
+   "chapter": 14,
+   "from": 22,
+   "to": 25
+  },
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 26,
+   "to": 28
+  },
+  {
+   "book": "psalms",
+   "chapter": 130
+  }
+ ],
+ "id": "i-come-o-savior-to-thy-table"
+}

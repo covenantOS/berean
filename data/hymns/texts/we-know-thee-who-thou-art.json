@@ -1,0 +1,83 @@
+{
+ "title": "We Know Thee Who Thou Art",
+ "altTitles": [
+  "Prayer After Pardon"
+ ],
+ "author": "William Bright (1824-1901)",
+ "translator": null,
+ "meter": "6.6.8.6",
+ "credit": "William Bright, 1865.",
+ "tunes": [
+  {
+   "name": "Sellinge",
+   "composer": "John Pyke Hullah (1812-1884)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "We know Thee who Thou art,",
+ "verses": [
+  [
+   "We know Thee who Thou art,",
+   "Lord Jesus, Mary's Son;",
+   "We know the yearnings of Thy heart",
+   "To end Thy work begun."
+  ],
+  [
+   "That sacred fount of grace,",
+   "'Mid all the bliss of Heav'n,",
+   "Has joy whene'er we seek Thy face,",
+   "And kneel to be forgiv'n."
+  ],
+  [
+   "Brought home from ways perverse,",
+   "At peace Thine arms within,",
+   "We pray Thee, shield us from the curse",
+   "Of falling back to sin."
+  ],
+  [
+   "We dare not ask to live",
+   "Henceforth from trials free;",
+   "But oh! when next they tempt us, give",
+   "More strength to cling to Thee."
+  ],
+  [
+   "We know Thee who Thou art,",
+   "Our own redeeming Lord;",
+   "Be Thou by will, and mind, and heart,",
+   "Accepted, loved, adored."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "hebrews",
+   "chapter": 2,
+   "from": 14,
+   "to": 15
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 20,
+   "to": 21
+  },
+  {
+   "book": "philippians",
+   "chapter": 1,
+   "from": 6
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 23,
+   "to": 28
+  },
+  {
+   "book": "luke",
+   "chapter": 4,
+   "from": 33,
+   "to": 37
+  }
+ ],
+ "id": "we-know-thee-who-thou-art"
+}

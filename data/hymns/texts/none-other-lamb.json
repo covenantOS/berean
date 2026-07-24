@@ -1,0 +1,83 @@
+{
+ "title": "None Other Lamb",
+ "altTitles": [],
+ "author": "Christina Georgina Rossetti (1830-1894)",
+ "translator": null,
+ "meter": "8.10.10.4",
+ "credit": "Christina Rossetti, 1892. Music: 'Rossetti' William Jeater, 1907.",
+ "tunes": [
+  {
+   "name": "Rossetti",
+   "composer": "William Jeater (1858-?)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "None other Lamb, none other name,",
+ "verses": [
+  [
+   "None other Lamb, none other name,",
+   "None other hope in Heav'n or earth or sea,",
+   "None other hiding place from guilt and shame,",
+   "None beside Thee!"
+  ],
+  [
+   "My faith burns low, my hope burns low;",
+   "Only my heart's desire cries out in me",
+   "By the deep thunder of its want and woe,",
+   "Cries out to Thee."
+  ],
+  [
+   "Lord, Thou art life, though I be dead;",
+   "Love's fire Thou art, however cold I be:",
+   "Nor Heav'n have I, nor place to lay my head,",
+   "Nor home, but Thee."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 29
+  },
+  {
+   "book": "revelation",
+   "chapter": 5,
+   "from": 6
+  },
+  {
+   "book": "job",
+   "chapter": 40,
+   "from": 6,
+   "to": 14
+  },
+  {
+   "book": "psalms",
+   "chapter": 73,
+   "from": 25
+  },
+  {
+   "book": "psalms",
+   "chapter": 81,
+   "from": 6,
+   "to": 10
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 23
+  },
+  {
+   "book": "2-corinthians",
+   "chapter": 5,
+   "from": 1,
+   "to": 5
+  },
+  {
+   "book": "acts",
+   "chapter": 4,
+   "from": 12
+  }
+ ],
+ "id": "none-other-lamb"
+}

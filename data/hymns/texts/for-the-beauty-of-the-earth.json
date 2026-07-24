@@ -1,0 +1,90 @@
+{
+ "title": "For The Beauty Of The Earth",
+ "altTitles": [],
+ "author": "Folliot Sandford Pierpoint (1835-1917)",
+ "translator": null,
+ "meter": "7.7.7.7",
+ "credit": "Folliot S. Pierpoint, 1864.  Music: 'Dix' Conrad Kocher, 1838.  Setting: \"The English Hymnal\", 1906.",
+ "tunes": [
+  {
+   "name": "Dix",
+   "composer": "Conrad Kocher (1786-1872)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "For the beauty of the earth",
+ "verses": [
+  [
+   "For the beauty of the earth",
+   "For the glory of the skies,",
+   "For the love which from our birth",
+   "Over and around us lies."
+  ],
+  [
+   "For the beauty of each hour,",
+   "Of the day and of the night,",
+   "Hill and vale, and tree and flow'r,",
+   "Sun and moon, and stars of light."
+  ],
+  [
+   "For the joy of ear and eye,",
+   "For the heart and mind's delight,",
+   "For the mystic harmony",
+   "Linking sense to sound and sight."
+  ],
+  [
+   "For the joy of human love,",
+   "Brother, sister, parent, child,",
+   "Friends on earth and friends above,",
+   "For all gentle thoughts and mild."
+  ],
+  [
+   "For Thy Church, that evermore",
+   "Lifteth holy hands above,",
+   "Off'ring up on every shore",
+   "Her pure sacrifice of love."
+  ],
+  [
+   "For the martyrs' crown of light,",
+   "For Thy prophets' eagle eye,",
+   "For Thy bold confessors' might,",
+   "For the lips of infancy."
+  ],
+  [
+   "For Thy virgins' robes of snow,",
+   "For Thy maiden mother mild,",
+   "For Thyself, with hearts aglow,",
+   "Jesu, Victim undefiled."
+  ],
+  [
+   "For each perfect gift of Thine,",
+   "To our race so freely given,",
+   "Graces human and divine,",
+   "Flowers of earth and buds of Heaven."
+  ]
+ ],
+ "refrain": [
+  "Lord of all, to Thee we raise,",
+  "This our hymn of grateful praise."
+ ],
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 6,
+   "from": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 95,
+   "from": 1,
+   "to": 6
+  },
+  {
+   "book": "psalms",
+   "chapter": 33,
+   "from": 1,
+   "to": 6
+  }
+ ],
+ "id": "for-the-beauty-of-the-earth"
+}

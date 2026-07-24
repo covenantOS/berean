@@ -1,0 +1,66 @@
+{
+ "title": "Lift High The Cross",
+ "altTitles": [],
+ "author": "George William Kitchin (1827-1912); Michael Robert Newbolt (1874-1956)",
+ "translator": null,
+ "meter": "10.10",
+ "credit": "George W. Kitchin (1827-1912). Modified by Michael R. Newbolt, 1916.",
+ "tunes": [
+  {
+   "name": "Crucifier",
+   "composer": "Sydney Hugo Nicholson (1875-1947)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Come, brethren, follow where our Captain trod,",
+ "verses": [
+  [
+   "Come, brethren, follow where our Captain trod,",
+   "our King victorious, Christ the Son of God."
+  ],
+  [
+   "Led on their way by this triumphant sign,",
+   "The hosts of God in conquering ranks combine."
+  ],
+  [
+   "Each newborn servant of the Crucified",
+   "Bears on the brow the seal of Him Who died."
+  ],
+  [
+   "This is the sign which Satan's legions fear",
+   "and angels veil their faces to revere."
+  ],
+  [
+   "Saved by this Cross whereon their Lord was slain,",
+   "the sons of Adam their lost home regain."
+  ]
+ ],
+ "refrain": [
+  "Lift high the cross, the love of Christ proclaim,",
+  "Till all the world adore His sacred Name."
+ ],
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 11,
+   "from": 10
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 38,
+   "to": 39
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 1,
+   "from": 14
+  },
+  {
+   "book": "john",
+   "chapter": 3,
+   "from": 16
+  }
+ ],
+ "id": "lift-high-the-cross"
+}

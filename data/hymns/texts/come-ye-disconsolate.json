@@ -1,0 +1,89 @@
+{
+ "title": "Come, Ye Disconsolate",
+ "altTitles": [],
+ "author": "Thomas Moore (1779-1852); Thomas Hastings (1784-1872)",
+ "translator": null,
+ "meter": "11.10.11.10",
+ "credit": "verses 1-2 Thomas Moore, 1816.  Verse 3 Thomas Hastings, 1831.",
+ "tunes": [
+  {
+   "name": "Consolator (Webbe)",
+   "composer": "Samuel Webbe (1740-1816)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Come, ye disconsolate, wher'er ye languish;",
+ "verses": [
+  [
+   "Come, ye disconsolate, wher'er ye languish;",
+   "Come to the mercy seat, fervently kneel.",
+   "Here bring your wounded hearts, here tell your anguish;",
+   "Earth has no sorrow that Heav'n cannot heal."
+  ],
+  [
+   "Joy of the desolate, light of the straying,",
+   "Hope of the penitent, fadeless and pure,",
+   "Here speaks the Comforter, tenderly saying,",
+   "\"Earth has no sorrow that Heav'n cannot cure.\""
+  ],
+  [
+   "Here see the Bread of Life; see waters flowing",
+   "Forth from the throne of God, pure from above;",
+   "Come to the feast of love; come, ever knowing",
+   "Earth has no sorrow but Heav'n can remove."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 6,
+   "from": 33,
+   "to": 59
+  },
+  {
+   "book": "john",
+   "chapter": 7,
+   "from": 37
+  },
+  {
+   "book": "matthew",
+   "chapter": 11,
+   "from": 28,
+   "to": 30
+  },
+  {
+   "book": "isaiah",
+   "chapter": 55,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "isaiah",
+   "chapter": 53,
+   "from": 5
+  },
+  {
+   "book": "hosea",
+   "chapter": 14,
+   "from": 4
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 16,
+   "to": 17
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 26
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 1
+  }
+ ],
+ "id": "come-ye-disconsolate"
+}

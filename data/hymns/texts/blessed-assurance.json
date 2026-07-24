@@ -1,0 +1,61 @@
+{
+ "title": "Blessed Assurance",
+ "altTitles": [],
+ "author": "Fanny Jane Crosby (1820-1915)",
+ "translator": null,
+ "meter": "9.10.9.9",
+ "credit": "Fanny Crosby, 1873.",
+ "tunes": [
+  {
+   "name": "Blessed Assurance-Assurance",
+   "composer": "Phoebe P. Knapp (1839-1908)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Blessèd assurance, Jesus is mine!",
+ "verses": [
+  [
+   "Blessèd assurance, Jesus is mine!",
+   "O what a foretaste of glory divine!",
+   "Heir of salvation, purchase of God,",
+   "Born of His Spirit, washed in His blood."
+  ],
+  [
+   "Perfect submission, perfect delight,",
+   "Visions of rapture now burst on my sight;",
+   "Angels descending bring from above",
+   "Echoes of mercy, whispers of love."
+  ],
+  [
+   "Perfect submission, all is at rest",
+   "I in my Savior am happy and blest,",
+   "Watching and waiting, looking above,",
+   "Filled with His goodness, lost in His love."
+  ]
+ ],
+ "refrain": [
+  "This is my story, this is my song,",
+  "Praising my Savior, all the day long;",
+  "This is my story, this is my song,",
+  "Praising my Savior, all the day long."
+ ],
+ "refs": [
+  {
+   "book": "hebrews",
+   "chapter": 10,
+   "from": 21,
+   "to": 23
+  },
+  {
+   "book": "psalms",
+   "chapter": 71,
+   "from": 24
+  },
+  {
+   "book": "romans",
+   "chapter": 5,
+   "from": 1
+  }
+ ],
+ "id": "blessed-assurance"
+}

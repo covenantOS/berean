@@ -1,0 +1,59 @@
+{
+ "title": "Gabriel's Message",
+ "altTitles": [
+  "The Angel Gabriel From Heaven Came"
+ ],
+ "author": "Basque",
+ "translator": "Sabine Baring Gould (1834-1924)",
+ "meter": "10.10.12",
+ "credit": "Traditional Basque Carol; Paraphrased by Sabine Baring Gould, (1834-1924).",
+ "tunes": [
+  {
+   "name": "Gabriel`s Message",
+   "composer": "Basque"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The angel Gabriel from heaven came,",
+ "verses": [
+  [
+   "The angel Gabriel from heaven came,",
+   "his wings as drifted snow, his eyes as flame;",
+   "\"All hail,\" said he, \"thou lowly maiden, Mary,"
+  ],
+  [
+   "\"For know a blessed Mother thou shalt be,",
+   "all generations laud and honor thee,",
+   "thy Son shall be Emmanuel, by seers foretold,"
+  ],
+  [
+   "Then gentle Mary meekly bowed her head,",
+   "\"To me be as it pleaseth God,\" she said,",
+   "\"my soul shall laud and magnify His holy Name.\""
+  ],
+  [
+   "Of her, Emmanuel, the Christ was born",
+   "in Bethlehem, all on a Christmas morn,",
+   "and Christian folk throughout the world will ever say"
+  ]
+ ],
+ "refrain": [
+  "most highly favored lady,\"",
+  "Gloria!"
+ ],
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 1,
+   "from": 26,
+   "to": 38
+  },
+  {
+   "book": "luke",
+   "chapter": 1,
+   "from": 42,
+   "to": 48
+  }
+ ],
+ "id": "gabriel-s-message"
+}

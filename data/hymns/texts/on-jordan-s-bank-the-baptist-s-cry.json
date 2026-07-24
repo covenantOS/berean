@@ -1,0 +1,82 @@
+{
+ "title": "On Jordan's Bank the Baptist's Cry",
+ "altTitles": [],
+ "author": "Coffin, Charles (or Carolo or Carolus) (1676-1749)",
+ "translator": "John Chandler (1806-1876)",
+ "meter": "8.8.8.8",
+ "credit": "Charles Coffin, 1736. st. 1-3 translated by John Chandler, 1837; st 4-5 translator unknown.",
+ "tunes": [
+  {
+   "name": "Puer Nobis Nascitur",
+   "composer": "Michael Praetorius (1571-1621)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "On Jordan's bank the Baptist's cry",
+ "verses": [
+  [
+   "On Jordan's bank the Baptist's cry",
+   "Announces that the Lord is nigh;",
+   "Come, then, and hearken, for he brings",
+   "Glad tidings from the King of kings!"
+  ],
+  [
+   "Then cleansed be every breast from sin;",
+   "Make straight the way for God within;",
+   "Prepare we in our hearts a home,",
+   "Where such a mighty Guest may come."
+  ],
+  [
+   "For Thou art our Salvation, Lord,",
+   "Our Refuge, and our great Reward.",
+   "Without Thy grace our souls must fade",
+   "And wither like a flow'r decayed."
+  ],
+  [
+   "Stretch forth Thine hand, to heal our sore,",
+   "And make us rise and fall no more;",
+   "Once more upon Thy people shine,",
+   "And fill the world with love divine."
+  ],
+  [
+   "To Him Who left the throne of Heav'n",
+   "To save mankind, all praise be giv'n;",
+   "Like praise be to the Father done,",
+   "And Holy Spirit, Three in One."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 19,
+   "to": 23
+  },
+  {
+   "book": "matthew",
+   "chapter": 3,
+   "from": 1,
+   "to": 12
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 1,
+   "to": 8
+  },
+  {
+   "book": "luke",
+   "chapter": 3,
+   "from": 1,
+   "to": 14
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 40,
+   "to": 45
+  }
+ ],
+ "id": "on-jordan-s-bank-the-baptist-s-cry"
+}

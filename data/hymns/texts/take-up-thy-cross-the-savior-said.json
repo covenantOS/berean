@@ -1,0 +1,69 @@
+{
+ "title": "'Take Up Thy Cross', the Savior Said",
+ "altTitles": [],
+ "author": "Charles William Everest (1814-1877)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Charles W. Everest, 1833.  Music: 'Nun Lasst Uns Den Leib Begraben' George Rhau, 1544.",
+ "tunes": [
+  {
+   "name": "Nun Lasst Uns Den Leib Begraben",
+   "composer": "George Rhau (1488-1548)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "\"Take up thy cross,\" the Savior said,",
+ "verses": [
+  [
+   "\"Take up thy cross,\" the Savior said,",
+   "\"If thou wouldst My disciple be;",
+   "Deny thyself, the world forsake,",
+   "And humbly follow after Me.\""
+  ],
+  [
+   "Take up thy cross, let not its weight",
+   "Fill thy weak spirit with alarm;",
+   "His strength shall bear thy spirit up,",
+   "And brace thy heart and nerve thine arm."
+  ],
+  [
+   "Take up thy cross, nor heed the shame,",
+   "Nor let thy foolish pride rebel;",
+   "Thy Lord for thee the cross endured,",
+   "And saved thy soul from death and hell."
+  ],
+  [
+   "Take up thy cross then in His strength,",
+   "And calmly sin's wild deluge brave,",
+   "'Twill guide thee to a better home,",
+   "It points to glory o'er the grave."
+  ],
+  [
+   "Take up thy cross and follow Christ,",
+   "Nor think til death to lay it down;",
+   "For only those who bear the cross",
+   "May hope to wear the glorious crown."
+  ],
+  [
+   "To Thee, great Lord, the One in Three,",
+   "All praise forevermore ascend:",
+   "O grant us in our home to see",
+   "The heavenly life that knows no end."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "mark",
+   "chapter": 8,
+   "from": 34
+  },
+  {
+   "book": "matthew",
+   "chapter": 11,
+   "from": 28,
+   "to": 30
+  }
+ ],
+ "id": "take-up-thy-cross-the-savior-said"
+}

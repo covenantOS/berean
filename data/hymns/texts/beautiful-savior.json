@@ -1,0 +1,66 @@
+{
+ "title": "Beautiful Savior",
+ "altTitles": [
+  "Fairest Lord Jesus"
+ ],
+ "author": "German Jesuits",
+ "translator": "Joseph August Seiss (1823-1904)",
+ "meter": "5.5.7.5.5.8",
+ "credit": "German Jesuits, published 1677. Translated by Joseph A. Seiss, 1873.",
+ "tunes": [
+  {
+   "name": "Crusader`s Hymn",
+   "composer": "Silesian"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Beautiful Savior,",
+ "verses": [
+  [
+   "Beautiful Savior,",
+   "King of Creation",
+   "Son of God and Son of Man!",
+   "Truly I'd love Thee,",
+   "truly I'd serve Thee,",
+   "Light of my soul, my joy, my crown."
+  ],
+  [
+   "Fair are the meadows,",
+   "Fair are the woodlands,",
+   "Robed in the flow'rs of blooming spring;",
+   "Jesus is fairer,",
+   "Jesus is purer,",
+   "He makes our sorr'wing spirit sing."
+  ],
+  [
+   "Fair is the sunshine,",
+   "Fair is the moonlight,",
+   "Bright the sparkling stars on high;",
+   "Jesus shines brighter,",
+   "Jesus shines purer",
+   "Than all the angels in the sky."
+  ],
+  [
+   "Beautiful Savior,",
+   "Lord of the nations,",
+   "Son of God and Son of Man!",
+   "Glory and honor,",
+   "Praise, adoration",
+   "Now and forevermore be Thine!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "song-of-solomon",
+   "chapter": 6,
+   "from": 10
+  },
+  {
+   "book": "matthew",
+   "chapter": 6,
+   "from": 29
+  }
+ ],
+ "id": "beautiful-savior"
+}

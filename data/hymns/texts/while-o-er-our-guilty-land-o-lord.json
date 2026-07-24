@@ -1,0 +1,82 @@
+{
+ "title": "While O'er Our Guilty Land, O Lord",
+ "altTitles": [],
+ "author": "Samuel Davies (1723-1761); Brian James Dumont (1971-)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "verses 1-3, Samuel Davies, 1769. alt. verses 4-6, Brian J. Dumont, 15 Nov 2010.",
+ "tunes": [
+  {
+   "name": "Federal Street",
+   "composer": "Henry Kemble Oliver (1800-1885)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "While o'er our guilty land, O Lord,",
+ "verses": [
+  [
+   "While o'er our guilty land, O Lord,",
+   "We view the terrors of Your sword,",
+   "O where can all the helpless fly?",
+   "To whom but You direct their cry?"
+  ],
+  [
+   "On You, our guardian God, we call;",
+   "Before Your throne of grace we fall;",
+   "But is there no deliv'rance there?",
+   "And must we perish in despair?"
+  ],
+  [
+   "See, we repent, we weep, we mourn;",
+   "To our forsaken God we turn;",
+   "O spare our guilty country, spare",
+   "The Church which You have planted there."
+  ],
+  [
+   "We are the old, the sick, the lame;",
+   "We blind and deaf cry Jesus' Name.",
+   "We plead Your mercy for His sake,",
+   "And trust that You will not forsake."
+  ],
+  [
+   "Christ is our only righteousness,",
+   "His death for us is our redress.",
+   "Your promise stronger than our sin;",
+   "Blot out O Lord what we have been."
+  ],
+  [
+   "We are your children after all,",
+   "Redeemed by Christ after the fall.",
+   "Marked with Your Name in Baptism,",
+   "Our home remains in Your Kingdom."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 51,
+   "from": 1,
+   "to": 19
+  },
+  {
+   "book": "ezra",
+   "chapter": 9,
+   "from": 5,
+   "to": 15
+  },
+  {
+   "book": "1-kings",
+   "chapter": 8,
+   "from": 46,
+   "to": 53
+  },
+  {
+   "book": "job",
+   "chapter": 42,
+   "from": 1,
+   "to": 6
+  }
+ ],
+ "id": "while-o-er-our-guilty-land-o-lord"
+}

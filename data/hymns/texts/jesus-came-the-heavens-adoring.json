@@ -1,0 +1,88 @@
+{
+ "title": "Jesus Came, the Heavens Adoring",
+ "altTitles": [],
+ "author": "Godfrey Thring (1823-1903)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7",
+ "credit": "Godfrey Thring, 1864.",
+ "tunes": [
+  {
+   "name": "Sieh, hier bin ich, Ehrenkoenig",
+   "composer": "1698 from Geistreiches Gesangbuch Darmstadt"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus came, the heav'ns adoring,",
+ "verses": [
+  [
+   "Jesus came, the heav'ns adoring,",
+   "Came with peace from realms on high;",
+   "Jesus came for man's redemption,",
+   "Lowly came on earth to die.",
+   "Alleluia! Alleluia!",
+   "Came in deep humility."
+  ],
+  [
+   "Jesus comes again in mercy,",
+   "When our hearts are bowed with care;",
+   "Jesus comes again in answer",
+   "To an earnest, heartfelt prayer;",
+   "Alleluia! Alleluia!",
+   "Comes to save us from despair."
+  ],
+  [
+   "Jesus comes to hearts rejoicing,",
+   "Bringing news of sins forgiv'n;",
+   "Jesus comes in sounds of gladness,",
+   "Leading souls redeemed to Heav'n;",
+   "Alleluia! Alleluia!",
+   "Now the gate of death is riv'n."
+  ],
+  [
+   "Jesus comes in joy and sorrow,",
+   "Shares alike our hopes and fears;",
+   "Jesus comes, whate'er befalls us,",
+   "Glads our hearts, and dries our tears;",
+   "Alleluia! Alleluia!",
+   "Cheering e'en our failing years."
+  ],
+  [
+   "Jesus comes on clouds triumphant,",
+   "When the heav'ns shall pass away;",
+   "Jesus comes again in glory;",
+   "Let us then our homage pay,",
+   "Alleluia! Alleluia!",
+   "Till the dawn of endless day."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "mark",
+   "chapter": 13,
+   "from": 26
+  },
+  {
+   "book": "zechariah",
+   "chapter": 9,
+   "from": 9
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 14
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 18
+  },
+  {
+   "book": "matthew",
+   "chapter": 25,
+   "from": 31,
+   "to": 34
+  }
+ ],
+ "id": "jesus-came-the-heavens-adoring"
+}

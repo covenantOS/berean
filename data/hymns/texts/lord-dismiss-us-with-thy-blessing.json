@@ -1,0 +1,68 @@
+{
+ "title": "Lord, Dismiss Us With Thy Blessing",
+ "altTitles": [],
+ "author": "John Fawcett (1740-1817); Godfrey Thring (1823-1903)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7",
+ "credit": "John Fawcett, 1773; verse 3 alt. by Godfrey Thring, 1880.",
+ "tunes": [
+  {
+   "name": "Regent Square",
+   "composer": "Henry Thomas Smart (1813-1879)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord, dismiss us with Thy blessing;",
+ "verses": [
+  [
+   "Lord, dismiss us with Thy blessing;",
+   "Fill our hearts with joy and peace;",
+   "Let us each Thy love possessing,",
+   "Triumph in redeeming grace.",
+   "O refresh us, O refresh us,",
+   "Trav'ling through this wilderness."
+  ],
+  [
+   "Thanks we give and adoration",
+   "For Thy Gospel's joyful sound;",
+   "May the fruits of Thy salvation",
+   "In our hearts and lives abound.",
+   "Ever faithful, ever faithful,",
+   "To the truth may we be found."
+  ],
+  [
+   "So that when Thy love shall call us,",
+   "Savior, from the world away,",
+   "Fear of death shall not appall us,",
+   "Glad Thy summons to obey.",
+   "May we ever, may we ever,",
+   "Reign with Thee in endless day."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "numbers",
+   "chapter": 6,
+   "from": 22,
+   "to": 27
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 54,
+   "to": 57
+  },
+  {
+   "book": "hebrews",
+   "chapter": 9,
+   "from": 15
+  },
+  {
+   "book": "isaiah",
+   "chapter": 63,
+   "from": 9
+  }
+ ],
+ "id": "lord-dismiss-us-with-thy-blessing"
+}

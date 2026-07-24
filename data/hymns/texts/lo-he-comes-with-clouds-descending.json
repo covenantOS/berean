@@ -1,0 +1,95 @@
+{
+ "title": "Lo! He Comes With Clouds Descending",
+ "altTitles": [],
+ "author": "John Cennick (1718-1755); Charles Wesley (1707-1788)",
+ "translator": null,
+ "meter": "8.7.8.7.12.7",
+ "credit": "John Cennick, 1752. Altered by Charles Wesley, 1758, alt.",
+ "tunes": [
+  {
+   "name": "Helmsley",
+   "composer": "Thomas Olivers (1725-1799)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lo! He comes with clouds descending,",
+ "verses": [
+  [
+   "Lo! He comes with clouds descending,",
+   "Once for ev'ry sinner slain;",
+   "Thousand thousand saints attending,",
+   "Swell the triumph of His train:",
+   "Hallelujah! Hallelujah! Hallelujah!",
+   "God appears on earth to reign."
+  ],
+  [
+   "Ev'ry eye shall now behold Him",
+   "Robed in dreadful majesty;",
+   "Those who set at naught and sold Him,",
+   "Pierced and nailed Him to the tree,",
+   "Deeply wailing, deeply wailing, deeply wailing,",
+   "Shall the true Messiah see."
+  ],
+  [
+   "Ev'ry island, sea, and mountain,",
+   "Heav'n and earth, shall flee away;",
+   "All who hate Him must, confounded,",
+   "Hear the trump proclaim the day:",
+   "Come to judgment! Come to judgment! Come to judgment!",
+   "Come to judgment! Come away!"
+  ],
+  [
+   "Now redemption, long expected,",
+   "See in solemn pomp appear;",
+   "All His saints, by man rejected,",
+   "Now shall meet Him in the air:",
+   "Hallelujah! Hallelujah! Hallelujah!",
+   "See the day of God appear!"
+  ],
+  [
+   "Answer Thine own bride and Spirit,",
+   "Hasten, Lord, the gen'ral doom!",
+   "The new Heav'n and earth inherit,",
+   "Take Thy pining exiles home:",
+   "All creation, all creation, all creation,",
+   "Travails! groans! and bids Thee come!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "revelation",
+   "chapter": 1,
+   "from": 7
+  },
+  {
+   "book": "john",
+   "chapter": 20,
+   "from": 24,
+   "to": 31
+  },
+  {
+   "book": "revelation",
+   "chapter": 7,
+   "from": 9,
+   "to": 12
+  },
+  {
+   "book": "acts",
+   "chapter": 1,
+   "from": 11
+  },
+  {
+   "book": "1-thessalonians",
+   "chapter": 4,
+   "from": 13,
+   "to": 18
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 20
+  }
+ ],
+ "id": "lo-he-comes-with-clouds-descending"
+}

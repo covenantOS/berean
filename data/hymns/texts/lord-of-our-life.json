@@ -1,0 +1,73 @@
+{
+ "title": "Lord Of Our Life",
+ "altTitles": [],
+ "author": "Matthäus Apelles von Löwenstern (1594-1648)",
+ "translator": "Philip Pusey (1799-1855)",
+ "meter": "11.11.11.5",
+ "credit": "Matthäus Apelles von Löwenstern, 1644.  Translated by Philip Pusey, 1840.",
+ "tunes": [
+  {
+   "name": "Iste Confessor",
+   "composer": "1746 from Poitiers Antiphoner"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord of our life, and God of our salvation,",
+ "verses": [
+  [
+   "Lord of our life, and God of our salvation,",
+   "Star of our night, and Hope of every nation,",
+   "Hear and receive Thy church's supplication,",
+   "Lord God Almighty."
+  ],
+  [
+   "See round Thine Ark the hungry billows curling!",
+   "See how Thy foes their banners are unfurling!",
+   "Lord, while their darts envenomed they are hurling,",
+   "Thou canst preserve us."
+  ],
+  [
+   "Lord, Thou canst help when earthly armor faileth;",
+   "Lord, Thou canst save when sin itself assaileth;",
+   "Lord, o'er Thy Rock nor death nor hell prevaileth;",
+   "Grant us Thy peace, Lord."
+  ],
+  [
+   "Peace, in our hearts, our evil thoughts assuaging,",
+   "Peace, in Thy Church, where brothers are engaging,",
+   "Peace, when the world its busy war is waging;",
+   "Calm Thy foes raging!"
+  ],
+  [
+   "Grant us Thy help till backward they are driven;",
+   "Grant them Thy Truth, that they may be forgiven;",
+   "Grant peace on earth, and after we have striven,",
+   "Peace in Thy Heaven."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 27,
+   "from": 1,
+   "to": 14
+  },
+  {
+   "book": "psalms",
+   "chapter": 3,
+   "from": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 84,
+   "from": 11
+  },
+  {
+   "book": "matthew",
+   "chapter": 16,
+   "from": 18
+  }
+ ],
+ "id": "lord-of-our-life"
+}

@@ -1,0 +1,74 @@
+{
+ "title": "The King Shall Come",
+ "altTitles": [],
+ "author": null,
+ "translator": "John Brownlie (1857-1925)",
+ "meter": "8.6.8.6",
+ "credit": "Unknown author. Translated by John Brownlie, 1907.",
+ "tunes": [
+  {
+   "name": "Consolation-Morning Song",
+   "composer": "John Wyeth (1770-1858)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The King shall come when morning dawns,",
+ "verses": [
+  [
+   "The King shall come when morning dawns,",
+   "And light triumphant breaks;",
+   "When beauty gilds the eastern hills,",
+   "And life to joy awakes."
+  ],
+  [
+   "Not as of old a little child",
+   "To bear, and fight, and die,",
+   "But crowned with glory like the sun",
+   "That lights the morning sky."
+  ],
+  [
+   "O brighter than the rising morn",
+   "When He, victorious, rose,",
+   "And left the lonesome place of death,",
+   "Despite the rage of foes."
+  ],
+  [
+   "O brighter than that glorious morn",
+   "Shall this fair morning be,",
+   "When Christ, our King, in beauty comes,",
+   "And we His face shall see."
+  ],
+  [
+   "The King shall come when morning dawns,",
+   "And earth's dark night is past;",
+   "O haste the rising of that morn,",
+   "The day that aye shall last."
+  ],
+  [
+   "And let the endless bliss begin,",
+   "By weary saints foretold,",
+   "When right shall triumph over wrong,",
+   "And truth shall be extolled."
+  ],
+  [
+   "The King shall come when morning dawns,",
+   "And light and beauty brings:",
+   "Hail, Christ the Lord! Thy people pray,",
+   "Come quickly, King of kings."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "zephaniah",
+   "chapter": 1,
+   "from": 14
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 20
+  }
+ ],
+ "id": "the-king-shall-come"
+}

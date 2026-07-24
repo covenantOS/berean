@@ -1,0 +1,88 @@
+{
+ "title": "Beneath The Cross Of Jesus",
+ "altTitles": [],
+ "author": "Elizabeth Cecelia Douglas Clephane (1830-1869)",
+ "translator": null,
+ "meter": "7.6.8.6.8.6.8.6",
+ "credit": "Elizabeth C. Clephane, 1868.",
+ "tunes": [
+  {
+   "name": "St. Christopher",
+   "composer": "Frederick C. Maker (1844-1927)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Beneath the cross of Jesus",
+ "verses": [
+  [
+   "Beneath the cross of Jesus",
+   "I fain would take my stand,",
+   "The shadow of a mighty rock",
+   "within a weary land;",
+   "A home within the wilderness,",
+   "a rest upon the way,",
+   "From the burning of the noontide heat,",
+   "and the burden of the day."
+  ],
+  [
+   "O safe and happy shelter,",
+   "O refuge tried and sweet,",
+   "O trysting place where Heaven's love",
+   "and Heaven's justice meet!",
+   "As to the holy patriarch",
+   "that wondrous dream was giv'n,",
+   "So seems my Savior's cross to me,",
+   "a ladder up to heav'n."
+  ],
+  [
+   "There lies beneath its shadow",
+   "but on the further side",
+   "The darkness of an awful grave",
+   "that gapes both deep and wide",
+   "And there between us stands the cross",
+   "two arms outstretched to save",
+   "A watchman set to guard the way",
+   "from that eternal grave."
+  ],
+  [
+   "Upon that cross of Jesus",
+   "mine eye at times can see",
+   "The very dying form of One",
+   "Who suffered there for me;",
+   "And from my stricken heart with tears",
+   "two wonders I confess;",
+   "The wonders of redeeming love",
+   "and my unworthiness."
+  ],
+  [
+   "I take, O cross, thy shadow",
+   "for my abiding place;",
+   "I ask no other sunshine than",
+   "the sunshine of His face;",
+   "Content to let the world go by",
+   "to know no gain or loss,",
+   "My sinful self my only shame,",
+   "my glory all the cross."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "proverbs",
+   "chapter": 14,
+   "from": 26
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 1,
+   "from": 17,
+   "to": 18
+  },
+  {
+   "book": "galatians",
+   "chapter": 6,
+   "from": 14
+  }
+ ],
+ "id": "beneath-the-cross-of-jesus"
+}

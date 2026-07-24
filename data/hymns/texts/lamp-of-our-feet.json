@@ -1,0 +1,157 @@
+{
+ "title": "Lamp of Our Feet",
+ "altTitles": [],
+ "author": "Bernard Barton (1784-1849)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Bernard Barton, 1826.  Music: 'St. Agnes' John B. Dykes, 1866.",
+ "tunes": [
+  {
+   "name": "St. Agnes",
+   "composer": "John Bacchus Dykes (1823-1876)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lamp of our feet! whereby we trace",
+ "verses": [
+  [
+   "Lamp of our feet! whereby we trace",
+   "Our path, when wont to stray;",
+   "Stream from the fount of heav'nly grace!",
+   "Brook by the trav'ler's way!"
+  ],
+  [
+   "Bread of our souls! whereon we feed;",
+   "True manna from on high!",
+   "Our guide, and chart wherein we read",
+   "Of realms beyond the sky."
+  ],
+  [
+   "Pillar of firethrough watches dark!",
+   "Or radiant cloud by day!",
+   "When waves would whelm our tossing",
+   "barkOur anchor and our stay!"
+  ],
+  [
+   "Polestar on life's tempestuous deep!",
+   "Beacon! when doubts surround;",
+   "Compass! by which our course we keep;",
+   "Our deep sealead, to sound!"
+  ],
+  [
+   "Riches in poverty! our aid",
+   "In every needful hour!",
+   "Unshaken rock! the pilgrim's shade;",
+   "The soldier's fortress tow'r."
+  ],
+  [
+   "Our shield and buckler in the fight!",
+   "Vict'ry's triumphant palm!",
+   "Comfort in grief! in weakness, might!",
+   "In sickness, Gilead's balm."
+  ],
+  [
+   "Childhood's preceptor! manhood's trust!",
+   "Old age's firm ally!",
+   "Our hope\\-when we go down to dust,",
+   "Of immortality."
+  ],
+  [
+   "Pure oracles of truth divine!",
+   "Unlike each fabled dream",
+   "Given forth from Delphos' mystic shrine",
+   "Or groves of Academe!"
+  ],
+  [
+   "Word of the ever-living God!",
+   "Will of His glorious Son!",
+   "Without Thee, how could earth be trod?",
+   "Or Heaven itself be won?"
+  ],
+  [
+   "Yet to unfold thy hidden worth,",
+   "Thy mysteries to reveal,",
+   "That Spirit which first gave thee forth,",
+   "Thy volume must unseal!"
+  ],
+  [
+   "And we, if we aright would learn",
+   "The wisdom it imparts,",
+   "Must to its heavenly teaching turn",
+   "With simple, child-like hearts!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 119,
+   "from": 105
+  },
+  {
+   "book": "2-peter",
+   "chapter": 1,
+   "from": 19,
+   "to": 21
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 1,
+   "to": 5
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 14
+  },
+  {
+   "book": "john",
+   "chapter": 5,
+   "from": 24
+  },
+  {
+   "book": "john",
+   "chapter": 17,
+   "from": 17
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 8,
+   "from": 3
+  },
+  {
+   "book": "luke",
+   "chapter": 1,
+   "from": 1,
+   "to": 4
+  },
+  {
+   "book": "luke",
+   "chapter": 4,
+   "from": 32
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 1,
+   "from": 18
+  },
+  {
+   "book": "colossians",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 25
+  },
+  {
+   "book": "1-john",
+   "chapter": 1,
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "id": "lamp-of-our-feet"
+}

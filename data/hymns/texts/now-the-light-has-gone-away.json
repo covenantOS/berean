@@ -1,0 +1,79 @@
+{
+ "title": "Now the Light Has Gone Away",
+ "altTitles": [],
+ "author": "Frances Ridley Havergal (1836-1879)",
+ "translator": null,
+ "meter": "7.7.7.7",
+ "credit": "Frances Ridley Havergal, 1869.",
+ "tunes": [
+  {
+   "name": "Müde bin ich, geh zur Ruh",
+   "composer": "1842 from Liederbuch für Kleinkinder-Schulen"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Now the light has gone away;",
+ "verses": [
+  [
+   "Now the light has gone away;",
+   "Father, listen while I pray,",
+   "Asking Thee to watch and keep",
+   "And to send me quiet sleep."
+  ],
+  [
+   "Jesus, Savior, wash away",
+   "All that has been wrong today;",
+   "Help me every day to be",
+   "Good and gentle, more like Thee."
+  ],
+  [
+   "Let my near and dear ones be",
+   "Always near and dear to Thee.",
+   "Oh, bring me and all I love",
+   "To Thy happy home above."
+  ],
+  [
+   "Now my evening praise I give;",
+   "Thou didst die that I might live.",
+   "All my blessings come from Thee;",
+   "Oh, how good Thou art to me!"
+  ],
+  [
+   "Thou, my best and kindest Friend,",
+   "Thou wilt love me to the end.",
+   "Let me love Thee more and more,",
+   "Always better than before."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 4,
+   "from": 8
+  },
+  {
+   "book": "psalms",
+   "chapter": 16,
+   "from": 7
+  },
+  {
+   "book": "1-john",
+   "chapter": 1,
+   "from": 7,
+   "to": 9
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 10
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "id": "now-the-light-has-gone-away"
+}

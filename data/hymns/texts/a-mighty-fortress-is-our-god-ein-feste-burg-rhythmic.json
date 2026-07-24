@@ -1,0 +1,90 @@
+{
+ "title": "A Mighty Fortress Is Our God",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "composite",
+ "meter": "8.7.8.7.5.5.5.6.7",
+ "credit": "Martin Luther, 1529. Translation composite circa 1868 Pennsylvania Lutheran Church Book.",
+ "tunes": [
+  {
+   "name": "Ein Feste Burg (Rhythmic)",
+   "composer": "Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "A mighty Fortress is our God,",
+ "verses": [
+  [
+   "A mighty Fortress is our God,",
+   "A trusty Shield and Weapon;",
+   "He helps us free from every need",
+   "That hath us now o'ertaken.",
+   "The old evil Foe",
+   "Now means deadly woe;",
+   "Deep guile and great might",
+   "Are his dread arms in fight;",
+   "On Earth is not his equal."
+  ],
+  [
+   "With might of ours can naught be done,",
+   "Soon were our loss effected;",
+   "But for us fights the Valiant One,",
+   "Whom God Himself elected.",
+   "Ask ye, Who is this?",
+   "Jesus Christ it is.",
+   "Of Sabaoth Lord,",
+   "And there's none other God;",
+   "He holds the field forever."
+  ],
+  [
+   "Though devils all the world should fill,",
+   "All eager to devour us.",
+   "We tremble not, we fear no ill,",
+   "They shall not overpower us.",
+   "This world's prince may still",
+   "Scowl fierce as he will,",
+   "He can harm us none,",
+   "He's judged; the deed is done;",
+   "One little word can fell him."
+  ],
+  [
+   "The Word they still shall let remain",
+   "Nor any thanks have for it;",
+   "He's by our side upon the plain",
+   "With His good gifts and Spirit.",
+   "And take they our life,",
+   "Goods, fame, child and wife,",
+   "Let these all be gone,",
+   "They yet have nothing won;",
+   "The Kingdom ours remaineth."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "2-samuel",
+   "chapter": 22,
+   "from": 2,
+   "to": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 18,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 55,
+   "to": 57
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 37,
+   "to": 39
+  }
+ ],
+ "id": "a-mighty-fortress-is-our-god-ein-feste-burg-rhythmic"
+}

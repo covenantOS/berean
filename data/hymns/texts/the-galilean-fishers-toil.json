@@ -1,0 +1,127 @@
+{
+ "title": "The Galilean Fishers Toil",
+ "altTitles": [
+  "Come Blessed Jesu Come"
+ ],
+ "author": "Christopher Wordsworth (1807-1885)",
+ "translator": null,
+ "meter": "8.6.8.6.8.6.8.6",
+ "credit": "Christopher Wordsworth, 1865, alt.",
+ "tunes": [
+  {
+   "name": "Old 137th",
+   "composer": "1563 from Day's Psalter"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The Galilean fishers toil",
+ "verses": [
+  [
+   "The Galilean fishers toil",
+   "all night, and nothing take;",
+   "But Jesus comes,a wondrous spoil",
+   "is lifted from the lake.",
+   "Lord, when our labors are in vain",
+   "and vain the help of men,",
+   "When fruitless is our care and pain,",
+   "Come blessed Jesus then!"
+  ],
+  [
+   "The night is dark, the surges fill",
+   "the bark, the wild winds roar;",
+   "But Jesus comes and all is",
+   "still,the ship is at the shore.",
+   "O Lord, when storms around us howl,",
+   "and all is dark and drear,",
+   "In all the tempests of the soul,",
+   "O blessed Jesus hear."
+  ],
+  [
+   "A frail one, thrice denying Thee",
+   "saw mercy in Thine eyes,",
+   "The penitent upon the tree",
+   "was borne to Paradise.",
+   "In hours of sin and deep distress",
+   "o show us, Lord, Thy Face,",
+   "In penitential loneliness,",
+   "O give us Jesus grace!"
+  ],
+  [
+   "The faithful few retire in fear",
+   "to their closed upper room;",
+   "But suddenly with joyful cheer",
+   "they see their Master come.",
+   "Lord come to us, unloose our bands",
+   "and bid our terrors cease,",
+   "Lift over us Thy blessed hands,",
+   "Speak, holy Jesus Peace!"
+  ],
+  [
+   "In days, when faith will scarce be found,",
+   "and wolves be in the fold,",
+   "When sin and sorrow will abound",
+   "and charity wax cold,",
+   "Then hear Thy saints, who to Thee pray",
+   "to bring them to their home,",
+   "Hear when the Bride and Spirit say,",
+   "\"Come, Blessed Jesus, Come!\""
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 5,
+   "from": 1,
+   "to": 11
+  },
+  {
+   "book": "luke",
+   "chapter": 23,
+   "from": 39,
+   "to": 43
+  },
+  {
+   "book": "luke",
+   "chapter": 18,
+   "from": 8
+  },
+  {
+   "book": "john",
+   "chapter": 21,
+   "from": 1,
+   "to": 14
+  },
+  {
+   "book": "john",
+   "chapter": 6,
+   "from": 16,
+   "to": 21
+  },
+  {
+   "book": "john",
+   "chapter": 20,
+   "from": 19,
+   "to": 23
+  },
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 33,
+   "to": 35
+  },
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 69,
+   "to": 75
+  },
+  {
+   "book": "acts",
+   "chapter": 20,
+   "from": 29,
+   "to": 30
+  }
+ ],
+ "id": "the-galilean-fishers-toil"
+}

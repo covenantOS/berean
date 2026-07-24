@@ -1,0 +1,71 @@
+{
+ "title": "Whiter Than Snow",
+ "altTitles": [],
+ "author": "James L. Nicholson (1828-1876)",
+ "translator": null,
+ "meter": "11.11.11.11",
+ "credit": "James Nicholson, 1872.",
+ "tunes": [
+  {
+   "name": "Whiter Than Snow",
+   "composer": "William Gustavus Fischer (1835-1912)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord Jesus, I long to be perfectly whole;",
+ "verses": [
+  [
+   "Lord Jesus, I long to be perfectly whole;",
+   "I want Thee forever to live in my soul,",
+   "Break down ev'ry idol, cast out ev'ry foe;",
+   "Now wash me and I shall be whiter than snow."
+  ],
+  [
+   "Lord Jesus, look down from Thy throne in the skies,",
+   "And help me to make a complete sacrifice;",
+   "I give up myself, and whatever I know,",
+   "Now wash me and I shall be whiter than snow."
+  ],
+  [
+   "Lord Jesus, for this I most humbly entreat,",
+   "I wait, blessed Lord, at Thy crucified feet,",
+   "By faith, for my cleansing, I see Thy blood flow,",
+   "Now wash me and I shall be whiter than snow."
+  ],
+  [
+   "Lord Jesus, Thou seest I patiently wait,",
+   "Come now, and within me a new heart create;",
+   "To those who have sought Thee, Thou never said'st ``No,''",
+   "Now wash me and I shall be whiter than snow."
+  ]
+ ],
+ "refrain": [
+  "Whiter than snow, yes, whiter than snow;",
+  "Now wash me, and I shall be whiter than snow."
+ ],
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 51,
+   "from": 1,
+   "to": 12
+  },
+  {
+   "book": "isaiah",
+   "chapter": 1,
+   "from": 18
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 15
+  },
+  {
+   "book": "romans",
+   "chapter": 12,
+   "from": 1,
+   "to": 8
+  }
+ ],
+ "id": "whiter-than-snow"
+}

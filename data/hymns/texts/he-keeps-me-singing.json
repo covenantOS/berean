@@ -1,0 +1,80 @@
+{
+ "title": "He Keeps Me Singing",
+ "altTitles": [],
+ "author": "Luther Burgess Bridgers (1884-1948)",
+ "translator": null,
+ "meter": "9.7.9.7",
+ "credit": "Luther B. Bridgers, 1910.",
+ "tunes": [
+  {
+   "name": "He Keeps Me Singing",
+   "composer": "Hans Engelmann (1872-1914)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "There's within my heart a melody",
+ "verses": [
+  [
+   "There's within my heart a melody",
+   "Jesus whispers sweet and low,",
+   "\"Fear not, I am with thee, peace, be still,\"",
+   "In all of life's ebb and flow."
+  ],
+  [
+   "All my life was wrecked by sin and strife,",
+   "Discord filled my heart with pain,",
+   "Jesus swept across the broken strings,",
+   "Stirred the slumb'ring chords again."
+  ],
+  [
+   "Feasting on the riches of His grace,",
+   "Resting 'neath His shelt'ring wing,",
+   "Always looking on His smiling face,",
+   "That is why I shout and sing."
+  ],
+  [
+   "Though sometimes He leads through waters deep,",
+   "Trials fall across the way,",
+   "Though sometimes the path seems rough and steep,",
+   "See His footprints all the way."
+  ],
+  [
+   "Soon He's coming back to welcome me,",
+   "Far beyond the starry sky;",
+   "I shall wing my flight to worlds unknown,",
+   "I shall reign with Him on high."
+  ]
+ ],
+ "refrain": [
+  "Jesus, Jesus,",
+  "Jesus,Sweetest name I know,",
+  "Fills my ev'ry longing,",
+  "Keeps me singing as I go."
+ ],
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 61,
+   "from": 1,
+   "to": 8
+  },
+  {
+   "book": "psalms",
+   "chapter": 40,
+   "from": 2,
+   "to": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 33,
+   "from": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 23,
+   "from": 1,
+   "to": 6
+  }
+ ],
+ "id": "he-keeps-me-singing"
+}

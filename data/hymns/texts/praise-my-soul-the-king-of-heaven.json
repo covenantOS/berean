@@ -1,0 +1,71 @@
+{
+ "title": "Praise My Soul The King Of Heaven",
+ "altTitles": [],
+ "author": "Henry F. Lyte (1793-1847)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7",
+ "credit": "Henry F. Lyte, 1834.",
+ "tunes": [
+  {
+   "name": "Praise My Soul",
+   "composer": "John Goss (1800-1880)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Praise, my soul, the King of heaven;",
+ "verses": [
+  [
+   "Praise, my soul, the King of heaven;",
+   "To His feet thy tribute bring.",
+   "Ransomed, healed, restored, forgiven,",
+   "Evermore His praises sing:",
+   "Alleluia! Alleluia!",
+   "Praise the everlasting King."
+  ],
+  [
+   "Praise Him for His grace and favor",
+   "To our fathers in distress.",
+   "Praise Him still the same as ever,",
+   "Slow to chide, and swift to bless.",
+   "Alleluia! Alleluia!",
+   "Glorious in His faithfulness."
+  ],
+  [
+   "Father like He tends and spares us;",
+   "Well our feeble frame He knows.",
+   "In His hands He gently bears us,",
+   "Rescues us from all our foes.",
+   "Alleluia! Alleluia!",
+   "Widely yet His mercy flows."
+  ],
+  [
+   "Frail as summer's flower we flourish,",
+   "Blows the wind and it is gone;",
+   "But while mortals rise and perish",
+   "Our God lives unchanging on,",
+   "Praise Him, Praise Him, Hallelujah",
+   "Praise the High Eternal One!"
+  ],
+  [
+   "Angels, help us to adore Him;",
+   "Ye behold Him face to face;",
+   "Sun and moon, bow down before Him,",
+   "Dwellers all in time and space.",
+   "Alleluia! Alleluia!",
+   "Praise with us the God of grace."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 103,
+   "from": 1
+  },
+  {
+   "book": "psalms",
+   "chapter": 145
+  }
+ ],
+ "id": "praise-my-soul-the-king-of-heaven"
+}

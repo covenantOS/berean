@@ -1,0 +1,77 @@
+{
+ "title": "God Rest Ye Merry Gentlemen",
+ "altTitles": [],
+ "author": "English",
+ "translator": null,
+ "meter": "8.6.7.6.8.6",
+ "credit": "Traditional English.",
+ "tunes": [
+  {
+   "name": "God Rest Ye Merry Gentlemen",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "God rest ye merry, gentlemen,",
+ "verses": [
+  [
+   "God rest ye merry, gentlemen,",
+   "let nothing you dismay,",
+   "Remember Christ our Savior",
+   "was born on Christmas Day;",
+   "To save us all from Satan's pow'r",
+   "when we were gone astray."
+  ],
+  [
+   "In Bethlehem, in Israel,",
+   "this blessèd Babe was born,",
+   "And laid within a manger",
+   "upon this blessèd morn;",
+   "The which His mother Mary",
+   "did nothing take in scorn."
+  ],
+  [
+   "From God our heav'nly Father",
+   "a blessèd angel came;",
+   "And unto certain shepherds",
+   "brought tidings of the same;",
+   "How that in Bethlehem was born",
+   "the Son of God by name."
+  ],
+  [
+   "\"Fear not, then,\" said the angel,",
+   "\"Let nothing you afright",
+   "This day is born a Savior",
+   "of a pure Virgin bright,",
+   "To free all those who trust in Him",
+   "from Satan's pow'r and might.\""
+  ],
+  [
+   "The shepherds at those tidings",
+   "rejoiced much in mind,",
+   "And left their flocks afeeding",
+   "in tempest, storm and wind,",
+   "And went to Bethl'em straightaway",
+   "this blessèd Babe to find."
+  ]
+ ],
+ "refrain": [
+  "O tidings of comfort and joy,",
+  "comfort and joy;",
+  "O tidings of comfort and joy."
+ ],
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 10,
+   "to": 11
+  },
+  {
+   "book": "psalms",
+   "chapter": 46,
+   "from": 10
+  }
+ ],
+ "id": "god-rest-ye-merry-gentlemen"
+}

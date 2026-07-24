@@ -1,0 +1,61 @@
+{
+ "title": "He Who Would Valiant Be",
+ "altTitles": [],
+ "author": "John Bunyan (1628-1688); Percy Dearmer (1867-1936)",
+ "translator": null,
+ "meter": "11.11.12.11",
+ "credit": "John Bunyan, 1684. Modified by Percy Dearmer, 1906.",
+ "tunes": [
+  {
+   "name": "Monks Gate",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "He who would valiant be 'gainst all disaster,",
+ "verses": [
+  [
+   "He who would valiant be 'gainst all disaster,",
+   "Let him in constancy follow the Master.",
+   "There's no discouragement shall make him once relent",
+   "His first avowed intent to be a pilgrim."
+  ],
+  [
+   "Who so beset him round with dismal stories",
+   "Do but themselves confound his strength the more is.",
+   "No foes shall stay his might; though he with giants fight,",
+   "He will make good his right to be a pilgrim."
+  ],
+  [
+   "Since, Lord, Thou dost defend us with Thy Spirit,",
+   "We know we at the end, shall life inherit.",
+   "Then fancies flee away! I'll fear not what men say,",
+   "I'll labor night and day to be a pilgrim."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 12,
+   "from": 26
+  },
+  {
+   "book": "1-peter",
+   "chapter": 2,
+   "from": 19,
+   "to": 24
+  },
+  {
+   "book": "1-peter",
+   "chapter": 3,
+   "from": 12,
+   "to": 16
+  },
+  {
+   "book": "hebrews",
+   "chapter": 11
+  }
+ ],
+ "id": "he-who-would-valiant-be"
+}

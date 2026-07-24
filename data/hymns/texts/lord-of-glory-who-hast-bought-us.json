@@ -1,0 +1,83 @@
+{
+ "title": "Lord of Glory, Who Hast Bought Us",
+ "altTitles": [],
+ "author": "Eliza Sibbald Dykes Alderson (1818-1889)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Eliza S. Alderson, 1864.  Music: 'HyFrydol' Rowland H. Prichard, 1830.  Setting: \"The English Hymnal\", 1906.",
+ "tunes": [
+  {
+   "name": "HyFrydol",
+   "composer": "Rowland H. Prichard (1811-1887)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord of Glory, who hast bought us",
+ "verses": [
+  [
+   "Lord of Glory, who hast bought us",
+   "with Thy lifeblood as the price,",
+   "Never grudging for the lost ones",
+   "that tremendous sacrifice;",
+   "And with that hast freely given",
+   "blessings countless as the sand,",
+   "To th'unthankful and the evil",
+   "with Thine own unsparing hand."
+  ],
+  [
+   "Grant us hearts, dear Lord, to yield Thee",
+   "gladly, freely, of Thine own.",
+   "With the sunshine of Thy goodness",
+   "melt our thankless hearts of stone.",
+   "Till our cold and selfish natures,",
+   "warmed by Thee, at length believe",
+   "That more happy and more blessed",
+   "'tis to give than to receive."
+  ],
+  [
+   "Wondrous honor hast Thou given",
+   "to our humblest charity.",
+   "In Thine own mysterious sentence,",
+   "\"Ye have done it unto Me.\"",
+   "Can it be, O gracious Master,",
+   "Thou dost deign for alms to sue,",
+   "Saying by Thy poor and needy,",
+   "\"Give as I have given you\""
+  ],
+  [
+   "Lord of Glory, who hast bought us",
+   "with Thy lifeblood as the price,",
+   "Never grudging for the lost ones",
+   "that tremendous sacrifice;",
+   "Give us faith, to trust Thee boldly;",
+   "hope, to stay our souls on Thee;",
+   "But O, best of all Thy graces,",
+   "give us Thine own charity."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 25,
+   "from": 40
+  },
+  {
+   "book": "1-john",
+   "chapter": 3,
+   "from": 16,
+   "to": 19
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 16
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 32
+  }
+ ],
+ "id": "lord-of-glory-who-hast-bought-us"
+}

@@ -1,0 +1,67 @@
+{
+ "title": "Come, Thou Long-Expected Jesus",
+ "altTitles": [
+  "Hail, Thou Long-Expected Jesus"
+ ],
+ "author": "Charles Wesley (1707-1788)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Charles Wesley, 1745.",
+ "tunes": [
+  {
+   "name": "Jefferson",
+   "composer": "1835 from Southern Harmony"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Come, Thou long expected Jesus",
+ "verses": [
+  [
+   "Come, Thou long expected Jesus",
+   "Born to set Thy people free;",
+   "From our fears and sins release us,",
+   "Let us find our rest in Thee.",
+   "Israel's Strength and Consolation,",
+   "Hope of all the earth Thou art;",
+   "Dear Desire of every nation,",
+   "Joy of every longing heart."
+  ],
+  [
+   "Born Thy people to de liver,",
+   "Born a child and yet a King,",
+   "Born to reign in us forever,",
+   "Now Thy gracious kingdom bring.",
+   "By Thine own eternal Spirit",
+   "Rule in all our hearts alone;",
+   "By Thine all sufficient merit,",
+   "Raise us to Thy glorious throne."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 9,
+   "from": 6
+  },
+  {
+   "book": "luke",
+   "chapter": 1,
+   "from": 67,
+   "to": 75
+  },
+  {
+   "book": "isaiah",
+   "chapter": 61,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "2-peter",
+   "chapter": 1,
+   "from": 3,
+   "to": 4
+  }
+ ],
+ "id": "come-thou-long-expected-jesus"
+}

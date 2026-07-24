@@ -1,0 +1,81 @@
+{
+ "title": "I Know That My Redeemer Lives",
+ "altTitles": [],
+ "author": "Samuel Medley (1738-1799)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Samuel Medley, 1775.  Music: 'Duke Street' John Hatton, 1793.",
+ "tunes": [
+  {
+   "name": "Duke Street",
+   "composer": "John Hatton (1710-1793)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "I know that my Redeemer lives;",
+ "verses": [
+  [
+   "I know that my Redeemer lives;",
+   "What comfort this sweet sentence gives!",
+   "He lives, He lives, who once was dead;",
+   "He lives, my ever living Head."
+  ],
+  [
+   "He lives to bless me with His love,",
+   "He lives to plead for me above.",
+   "He lives my hungry soul to feed,",
+   "He lives to help in time of need."
+  ],
+  [
+   "He lives triumphant from the grave,",
+   "He lives eternally to save,",
+   "He lives all glorious in the sky,",
+   "He lives exalted there on high."
+  ],
+  [
+   "He lives to grant me rich supply,",
+   "He lives to guide me with His eye,",
+   "He lives to comfort me when faint,",
+   "He lives to hear my soul's complaint."
+  ],
+  [
+   "He lives to silence all my fears,",
+   "He lives to wipe away my tears",
+   "He lives to calm my troubled heart,",
+   "He lives all blessings to impart."
+  ],
+  [
+   "He lives, my kind, wise, heavenly Friend,",
+   "He lives and loves me to the end;",
+   "He lives, and while He lives, Ill sing;",
+   "He lives, my Prophet, Priest, and King."
+  ],
+  [
+   "He lives and grants me daily breath;",
+   "He lives, and I shall conquer death:",
+   "He lives my mansion to prepare;",
+   "He lives to bring me safely there."
+  ],
+  [
+   "He lives, all glory to His Name!",
+   "He lives, my Jesus, still the same.",
+   "Oh, the sweet joy this sentence gives,",
+   "I know that my Redeemer lives!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "job",
+   "chapter": 19,
+   "from": 25
+  },
+  {
+   "book": "psalms",
+   "chapter": 104,
+   "from": 33,
+   "to": 34
+  }
+ ],
+ "id": "i-know-that-my-redeemer-lives"
+}

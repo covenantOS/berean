@@ -1,0 +1,56 @@
+{
+ "title": "Breathe on Me, Breath of God",
+ "altTitles": [],
+ "author": "Edwin Hatch (1835-1889)",
+ "translator": null,
+ "meter": "6.6.8.6",
+ "credit": "Edwin Hatch, 1878.",
+ "tunes": [
+  {
+   "name": "Aylesbury",
+   "composer": "1718 from John Chetham's Psalmody"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Breathe on me, breath of God,",
+ "verses": [
+  [
+   "Breathe on me, breath of God,",
+   "Fill me with life anew,",
+   "That I may love what Thou dost love,",
+   "And do what Thou wouldst do."
+  ],
+  [
+   "Breathe on me, breath of God,",
+   "Until my heart is pure,",
+   "Until with Thee I will one will,",
+   "To do and to endure."
+  ],
+  [
+   "Breathe on me, breath of God,",
+   "So shall I never die,",
+   "But live with Thee the perfect life",
+   "Of Thine eternity."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "ezekiel",
+   "chapter": 37,
+   "from": 5,
+   "to": 9
+  },
+  {
+   "book": "genesis",
+   "chapter": 2,
+   "from": 7
+  },
+  {
+   "book": "isaiah",
+   "chapter": 42,
+   "from": 5
+  }
+ ],
+ "id": "breathe-on-me-breath-of-god"
+}

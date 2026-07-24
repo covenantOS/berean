@@ -1,0 +1,62 @@
+{
+ "title": "Lord, Keep Us Steadfast in Thy Word",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Catherine Winkworth (1827-1878)",
+ "meter": "8.8.8.8",
+ "credit": "Martin Luther, 1541.  Translated by Catherine Winkworth, 1863.",
+ "tunes": [
+  {
+   "name": "Erhalt Uns, Herr, bei deinem Wort",
+   "composer": "Wittenberg, 1543 from Klug's Geistliche Lieder auffs new gebessert"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord, keep us steadfast in Thy Word;",
+ "verses": [
+  [
+   "Lord, keep us steadfast in Thy Word;",
+   "Curb those who fain by craft and sword",
+   "Would wrest the kingdom from Thy Son",
+   "And set at naught all He hath done."
+  ],
+  [
+   "Lord Jesus Christ, Thy pow'r make known,",
+   "For Thou art Lord of lords alone;",
+   "Defend Thy Christendom that we",
+   "May evermore sing praise to Thee."
+  ],
+  [
+   "O Comforter of priceless worth,",
+   "Send peace and unity on earth.",
+   "Support us in our final strife",
+   "And lead us out of death to life."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 119,
+   "from": 5,
+   "to": 10
+  },
+  {
+   "book": "2-john",
+   "chapter": 1,
+   "from": 9
+  },
+  {
+   "book": "john",
+   "chapter": 8,
+   "from": 31
+  },
+  {
+   "book": "ephesians",
+   "chapter": 4,
+   "from": 3,
+   "to": 6
+  }
+ ],
+ "id": "lord-keep-us-steadfast-in-thy-word"
+}

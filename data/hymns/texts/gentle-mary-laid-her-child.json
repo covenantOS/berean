@@ -1,0 +1,69 @@
+{
+ "title": "Gentle Mary Laid Her Child",
+ "altTitles": [],
+ "author": "Joseph Simpson Cook (1859-1933)",
+ "translator": null,
+ "meter": "7.6.7.6.7.6.7.6",
+ "credit": "Joseph S. Cook, 1919.",
+ "tunes": [
+  {
+   "name": "Tempus Adest Floridum",
+   "composer": "1582 from Swedish Piae Cantones"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Gentle Mary laid her Child",
+ "verses": [
+  [
+   "Gentle Mary laid her Child",
+   "lowly in a manger;",
+   "There He lay, the undefiled,",
+   "to the world a Stranger:",
+   "Such a Babe in such a place,",
+   "can He be the Savior?",
+   "Ask the saved of all the race",
+   "who have found His favor."
+  ],
+  [
+   "Angels sang about His birth;",
+   "wise men sought and found Him;",
+   "Heaven's star shone brightly forth,",
+   "glory all around Him:",
+   "Shepherds saw the wondrous sight,",
+   "heard the angels singing;",
+   "All the plains were lit that night,",
+   "all the hills were ringing."
+  ],
+  [
+   "Gentle Mary laid her Child",
+   "lowly in a manger;",
+   "He is still the undefiled,",
+   "but no more a stranger:",
+   "Son of God, of humble birth,",
+   "beautiful the story;",
+   "Praise His Name in all the earth,",
+   "hail the King of glory!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 1,
+   "to": 20
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 5,
+   "to": 11
+  },
+  {
+   "book": "1-john",
+   "chapter": 3,
+   "from": 5
+  }
+ ],
+ "id": "gentle-mary-laid-her-child"
+}

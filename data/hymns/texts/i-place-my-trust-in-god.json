@@ -1,0 +1,69 @@
+{
+ "title": "I Place My Trust In God",
+ "altTitles": [],
+ "author": "Dorothy Amstutz; Loren J. Kropf (1989-)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "verses by Dorothy Amstutz, 2007. Refrain by Loren J. Kropf, 2010.",
+ "tunes": [
+  {
+   "name": "Haly Trust",
+   "composer": "Loren J. Kropf (1989-)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "I placed my trust in God today,",
+ "verses": [
+  [
+   "I placed my trust in God today,",
+   "For it is He who knows the way,",
+   "And when uncertainties arise,",
+   "I trust His judgment, true and wise."
+  ],
+  [
+   "I placed my trust in God today,",
+   "Alone I could not find my way.",
+   "Led by His guidance, safe and sure,",
+   "I then can rest in peace, secure."
+  ],
+  [
+   "I place my trust in God each day,",
+   "Committed, yielded to His way.",
+   "Naught can o'erthrow me when I'm there",
+   "Beneath His everlasting care."
+  ],
+  [
+   "I'll place my trust in God each day,",
+   "And while I walk the narrow way,",
+   "Each burden God will help me bear;",
+   "He hears my cry, my ev'ry prayer."
+  ],
+  [
+   "I'll place my trust in God each day,",
+   "Yes, even though the skies are gray.",
+   "Led by His hand, I will not fear;",
+   "I know that God is always near."
+  ]
+ ],
+ "refrain": [
+  "I'll place my trust in God today,",
+  "Even when I cannot see the way,",
+  "He'll lead me on with His strong hand,",
+  "Until I reach the promised land."
+ ],
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 25,
+   "from": 1,
+   "to": 9
+  },
+  {
+   "book": "psalms",
+   "chapter": 9,
+   "from": 9,
+   "to": 10
+  }
+ ],
+ "id": "i-place-my-trust-in-god"
+}

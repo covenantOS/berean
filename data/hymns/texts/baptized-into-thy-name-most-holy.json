@@ -1,0 +1,91 @@
+{
+ "title": "Baptized Into Thy Name Most Holy",
+ "altTitles": [],
+ "author": "Johann Jakob Rambach (1693-1735)",
+ "translator": "Catherine Winkworth (1827-1878); August Crull (1845-1923)",
+ "meter": "9.8.9.8.8.8",
+ "credit": "Johann Jakob Rambach, 1734.  Translated by Catherine Winkworth, 1863 and August Crull, 1884.",
+ "tunes": [
+  {
+   "name": "O Dass Ich Tausend Zungen Hätte (Dretzel)",
+   "composer": "Kornelius Heinrich Dretzel (1697-1775)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Baptized into Thy Name most holy,",
+ "verses": [
+  [
+   "Baptized into Thy Name most holy,",
+   "O Father, Son, and Holy Ghost,",
+   "I claim a place, though weak and lowly,",
+   "Among Thy seed, Thy chosen host.",
+   "Buried with Christ and dead to sin,",
+   "Thy Spirit now shall live within."
+  ],
+  [
+   "My loving Father, here doth take me",
+   "To be henceforth His child and heir;",
+   "My faithful Savior, now doth make me",
+   "The fruit of all His sorrows share;",
+   "My Comforter will comfort me",
+   "When darkest clouds around I see."
+  ],
+  [
+   "And I have vowed to fear and love Thee",
+   "And to obey Thee, Lord, alone;",
+   "I felt Thy Holy Spirit move me,",
+   "I dared to pledge myself Thine own,",
+   "Renouncing sin to keep the faith",
+   "And war with evil unto death."
+  ],
+  [
+   "My faithful God, Thou failest never,",
+   "Thy cov'nant surely will abide;",
+   "Oh, cast me not away forever",
+   "Should I transgress it on my side!",
+   "But if I fall hide not Thy face,",
+   "Restore Thy child, Lord, by Thy Grace."
+  ],
+  [
+   "Yes, all I am and love most dearly,",
+   "To Thee I offer now the whole;",
+   "O let me make my vows sincerely,",
+   "Take full possession of my soul!",
+   "Let naught within me, naught I own,",
+   "Serve any will save Thine alone."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 28,
+   "from": 19
+  },
+  {
+   "book": "romans",
+   "chapter": 6,
+   "from": 2,
+   "to": 4
+  },
+  {
+   "book": "galatians",
+   "chapter": 3,
+   "from": 26,
+   "to": 27
+  },
+  {
+   "book": "psalms",
+   "chapter": 51,
+   "from": 10,
+   "to": 12
+  },
+  {
+   "book": "romans",
+   "chapter": 14,
+   "from": 8,
+   "to": 9
+  }
+ ],
+ "id": "baptized-into-thy-name-most-holy"
+}

@@ -1,0 +1,73 @@
+{
+ "title": "Happy the Man Who Feareth God",
+ "altTitles": [
+  "Happy Who in God's Fear Doth Stay"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.8.8.8",
+ "credit": "Martin Luther, 1524.  Translated by Richard Massie, 1854.",
+ "tunes": [
+  {
+   "name": "Wo Gott Zum Haus (Walter)",
+   "composer": "1524 from Walter's Geistliche Gesangbüchlein"
+  },
+  {
+   "name": "Wo Gott Zum Haus",
+   "composer": "Wittenberg, 1533 from Klug's Geistliche Lieder"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Happy the man who feareth God,",
+ "verses": [
+  [
+   "Happy the man who feareth God,",
+   "Whose feet His holy ways have trod;",
+   "Thine own good hand shall nourish thee,",
+   "And well and happy shalt thou be."
+  ],
+  [
+   "Thy wife shall, like a fruitful vine,",
+   "Fill all thy house with clusters fine;",
+   "Thy children all be fresh and sound,",
+   "Like oliveplants thy table round."
+  ],
+  [
+   "Lo! to the man these blessings cleave",
+   "Who in God's holy fear doth live;",
+   "From him the ancient curse hath fled",
+   "By Adam's race inherited."
+  ],
+  [
+   "Out of Mount Zion God shall send,",
+   "And crown with joy thy latter end;",
+   "That thou Jerusalem mayst see,",
+   "In favor and prosperity."
+  ],
+  [
+   "He shall be with thee in thy ways,",
+   "And give thee health and length of days",
+   "Yea, thou shalt children's children see,",
+   "And peace on Israel shall be."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 146,
+   "from": 5
+  },
+  {
+   "book": "job",
+   "chapter": 28,
+   "from": 28
+  },
+  {
+   "book": "acts",
+   "chapter": 9,
+   "from": 31
+  }
+ ],
+ "id": "happy-the-man-who-feareth-god"
+}

@@ -1,0 +1,85 @@
+{
+ "title": "A Great and Mighty Wonder",
+ "altTitles": [],
+ "author": "Germanus of Constantinople (634-734)",
+ "translator": "John Mason Neale (1818-1866)",
+ "meter": "7.6.7.6",
+ "credit": "Germanus of Constantinople (634-734).  Translated by John Mason Neale, 1862.",
+ "tunes": [
+  {
+   "name": "Es Ist Ein Ros Entsprungen (Rhythmic)",
+   "composer": "Köln, 1599 from Altes Catholische Geistliche Kirchengeseng"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "A great and mighty wonder,",
+ "verses": [
+  [
+   "A great and mighty wonder,",
+   "a full and holy cure:",
+   "The virgin bears the Infant",
+   "with virgin honor pure!"
+  ],
+  [
+   "The Word becomes incarnate",
+   "and yet remains on high,",
+   "And cherubim sing anthems",
+   "to shepherds from the sky."
+  ],
+  [
+   "While thus they sing your Monarch,",
+   "those bright angelic bands,",
+   "Rejoice, ye vales and mountains,",
+   "ye oceans, clap your hands."
+  ],
+  [
+   "Since all He comes to ransom,",
+   "by all be He adored,",
+   "The Infant born in Bethl'em,",
+   "the Savior and the Lord."
+  ],
+  [
+   "And idol forms shall perish,",
+   "and error shall decay,",
+   "And Christ shall wield His scepter,",
+   "our Lord and God for aye."
+  ]
+ ],
+ "refrain": [
+  "Repeat the hymn again:",
+  "\"To God on high be glory",
+  "And peace on earth to men!\""
+ ],
+ "refs": [
+  {
+   "book": "1-timothy",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 14,
+   "to": 17
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 1,
+   "to": 20
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 2,
+   "from": 5,
+   "to": 6
+  },
+  {
+   "book": "hebrews",
+   "chapter": 2,
+   "from": 14,
+   "to": 15
+  }
+ ],
+ "id": "a-great-and-mighty-wonder"
+}

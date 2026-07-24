@@ -1,0 +1,83 @@
+{
+ "title": "Thine Arm, O Lord, in Days of Old",
+ "altTitles": [
+  "Your Hand, O Lord, in Days of Old"
+ ],
+ "author": "Edward Hayes Plumptre (1821-1891)",
+ "translator": null,
+ "meter": "8.6.8.6.8.6.8.6",
+ "credit": "",
+ "tunes": [
+  {
+   "name": "Kingsfold",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Thine arm, O Lord, in days of old,",
+ "verses": [
+  [
+   "Thine arm, O Lord, in days of old,",
+   "was strong to heal and save;",
+   "It triumphed o'er disease and death,",
+   "o'er darkness and the grave.",
+   "To Thee they went, the blind, the dumb,",
+   "the palsied and the lame,",
+   "The leper with his tainted life,",
+   "the sick with fevered frame."
+  ],
+  [
+   "And lo! Thy touch brought life and health,",
+   "gave speech, and strength and sight;",
+   "And youth renewed and fear relieved",
+   "owned Thee, the Lord of light;",
+   "And now, O Lord, be near to bless,",
+   "Almighty as of yore,",
+   "In crowded street, by restless couch,",
+   "as by Gennesaret's shore."
+  ],
+  [
+   "Be Thou our great Deliverer still,",
+   "Thou Lord of life and death;",
+   "Restore and quicken, soothe and bless,",
+   "with Thine almighty breath.",
+   "To hands that work and eyes that see,",
+   "give wisdom's heavenly lore,",
+   "That whole and sick, and weak and strong,",
+   "may praise Thee evermore."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 19,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "matthew",
+   "chapter": 9,
+   "from": 35,
+   "to": 36
+  },
+  {
+   "book": "john",
+   "chapter": 10,
+   "from": 10
+  },
+  {
+   "book": "1-peter",
+   "chapter": 2,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 40,
+   "to": 45
+  }
+ ],
+ "id": "thine-arm-o-lord-in-days-of-old"
+}

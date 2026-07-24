@@ -1,0 +1,92 @@
+{
+ "title": "A Mighty Fortress Is Our God",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Frederic Henry Hedge (1805-1890)",
+ "meter": "8.7.8.7.6.6.6.6.7",
+ "credit": "Martin Luther, 1529. Translation Frederic Henry Hedge, 1853.",
+ "tunes": [
+  {
+   "name": "Ein Feste Burg (Isorhythmic)",
+   "composer": "Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [
+  "Presbyterian Hymnal, Revised, 1911 Hymn 122."
+ ],
+ "firstLine": "A mighty fortress is our God,",
+ "verses": [
+  [
+   "A mighty fortress is our God,",
+   "a bulwark never failing;",
+   "Our helper He, amid the flood",
+   "of mortal ills prevailing:",
+   "For still our ancient foe",
+   "doth seek to work us woe;",
+   "His craft and pow'r are great,",
+   "and, armed with cruel hate,",
+   "On earth is not his equal."
+  ],
+  [
+   "Did we in our own strength confide,",
+   "our striving would be losing;",
+   "Were not the right Man on our side,",
+   "the Man of God's own choosing:",
+   "Dost ask who that may be?",
+   "Christ Jesus, it is He;",
+   "Lord Sabaoth, His name,",
+   "from age to age the same,",
+   "And He must win the battle."
+  ],
+  [
+   "And though this world, with devils filled,",
+   "should threaten to undo us,",
+   "We will not fear, for God hath willed",
+   "His truth to triumph through us:",
+   "The Prince of Darkness grim,",
+   "we tremble not for him;",
+   "His rage we can endure,",
+   "for lo, his doom is sure,",
+   "One little word shall fell him."
+  ],
+  [
+   "That word above all earthly pow'rs,",
+   "no thanks to them, abideth;",
+   "The Spirit and the gifts are ours",
+   "through Him who with us sideth:",
+   "Let goods and kindred go,",
+   "this mortal life also;",
+   "The body they may kill:",
+   "God's truth abideth still,",
+   "His kingdom is forever."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "2-samuel",
+   "chapter": 22,
+   "from": 2,
+   "to": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 18,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 55,
+   "to": 57
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 37,
+   "to": 39
+  }
+ ],
+ "id": "a-mighty-fortress-is-our-god-hedge"
+}

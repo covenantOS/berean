@@ -1,0 +1,73 @@
+{
+ "title": "The God of Abraham Praise",
+ "altTitles": [],
+ "author": "Daniel ben Judah (circa 1400)",
+ "translator": "Thomas Olivers (1725-1799)",
+ "meter": "6.6.12.6.6.12",
+ "credit": "Daniel ben Judah, circa 1400. Paraphrased by Thomas Olivers, circa 1765.",
+ "tunes": [
+  {
+   "name": "Yigdal",
+   "composer": "Hebrew"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The God of Abr'ham praise,",
+ "verses": [
+  [
+   "The God of Abr'ham praise,",
+   "Who reigns enthroned above;",
+   "Ancient of everlasting days, and God of Love;",
+   "Jehovah, great I AM!",
+   "by earth and Heav'n confessed;",
+   "I bow and bless the sacred Name forever blessed."
+  ],
+  [
+   "The God of Abr'ham praise,",
+   "at Whose supreme command",
+   "From earth I rise and seek the joys at His right hand;",
+   "I all on earth forsake,",
+   "its wisdom, fame, and pow'r;",
+   "And Him my only Portion make, my Shield and Tow'r."
+  ],
+  [
+   "The God of Abr'ham praise,",
+   "Whose all sufficient grace",
+   "Shall guide me all my happy days, in all my ways.",
+   "He calls a worm His friend,",
+   "He calls Himself my God!",
+   "And He shall save me to the end, thro' Jesus' blood."
+  ],
+  [
+   "He by Himself has sworn;",
+   "I on His oath depend,",
+   "I shall, on eagle wings upborne, to Heav'n ascend.",
+   "I shall behold His face;",
+   "I shall His pow'r adore,",
+   "And sing the wonders of His grace forevermore."
+  ],
+  [
+   "Tho' nature's strength decay,",
+   "and earth and hell withstand,",
+   "To Canaan's bounds I urge my way, at His command.",
+   "The wat'ry deep I pass,",
+   "with Jesus in my view;",
+   "And thro' the howling wilderness my way pursue."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "exodus",
+   "chapter": 3,
+   "from": 14,
+   "to": 15
+  },
+  {
+   "book": "1-chronicles",
+   "chapter": 29,
+   "from": 18
+  }
+ ],
+ "id": "the-god-of-abraham-praise"
+}

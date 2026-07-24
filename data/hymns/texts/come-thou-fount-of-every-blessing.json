@@ -1,0 +1,108 @@
+{
+ "title": "Come Thou Fount Of Every Blessing",
+ "altTitles": [],
+ "author": "Robert Robinson (1735-1790)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Robert Robinson, 1758.  Music: 'Nettleton' Asahel Nettleton, 1812.",
+ "tunes": [
+  {
+   "name": "Nettleton",
+   "composer": "Asahel Nettleton (1783-1844)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Come, Thou Fount of every blessing,",
+ "verses": [
+  [
+   "Come, Thou Fount of every blessing,",
+   "Tune my heart to sing Thy grace;",
+   "Streams of mercy, never ceasing,",
+   "Call for songs of loudest praise.",
+   "Teach me some melodious sonnet,",
+   "Sung by flaming tongues above.",
+   "Praise the mount! I'm fixed upon it,",
+   "Mount of Thy redeeming love."
+  ],
+  [
+   "Sorr'wing I shall be in spirit,",
+   "Till released from flesh and sin,",
+   "Yet from what I do inherit,",
+   "Here Thy praises I'll begin;",
+   "Here I raise my Ebenezer;",
+   "Here by Thy great help I've come;",
+   "And I hope, by Thy good pleasure,",
+   "Safely to arrive at home."
+  ],
+  [
+   "Jesus sought me when a stranger,",
+   "Wand'ring from the fold of God;",
+   "He, to rescue me from danger,",
+   "Interposed His precious blood;",
+   "How His kindness yet pursues me",
+   "Mortal tongue can never tell,",
+   "Clothed in flesh, till death shall loose me",
+   "I cannot proclaim it well."
+  ],
+  [
+   "O to grace how great a debtor",
+   "Daily I'm constrained to be!",
+   "Let Thy goodness, like a fetter,",
+   "Bind my wand'ring heart to Thee.",
+   "Prone to wander, Lord, I feel it,",
+   "Prone to leave the God I love;",
+   "Here's my heart, O take and seal it,",
+   "Seal it for Thy courts above."
+  ],
+  [
+   "O that day when freed from sinning,",
+   "I shall see Thy lovely face;",
+   "Clothèd then in blood washed linen",
+   "How I'll sing Thy sovereign grace;",
+   "Come, my Lord, no longer tarry,",
+   "Take my ransomed soul away;",
+   "Send thine angels now to carry",
+   "Me to realms of endless day."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 36,
+   "from": 9,
+   "to": 11
+  },
+  {
+   "book": "john",
+   "chapter": 4,
+   "from": 13,
+   "to": 14
+  },
+  {
+   "book": "1-samuel",
+   "chapter": 7,
+   "from": 3,
+   "to": 12
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 20,
+   "to": 21
+  },
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 18,
+   "to": 19
+  },
+  {
+   "book": "ephesians",
+   "chapter": 1,
+   "from": 13,
+   "to": 14
+  }
+ ],
+ "id": "come-thou-fount-of-every-blessing"
+}

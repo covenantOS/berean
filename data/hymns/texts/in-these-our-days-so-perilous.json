@@ -1,0 +1,48 @@
+{
+ "title": "In These Our Days So Perilous",
+ "altTitles": [
+  "Grant Peace, We Pray, in Mercy, Lord",
+  "Grant Peace in Mercy, Lord, We Pray"
+ ],
+ "author": "Latin; Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.7.8.7.8",
+ "credit": "Latin c. 6th century, adapted by Martin Luther, 1529.  Translated to English by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Verleih uns Frieden Gnädiglich",
+   "composer": "Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "In these our days so perilous,",
+ "verses": [
+  [
+   "In these our days so perilous,",
+   "Lord, peace in mercy send us;",
+   "No God but Thee can fight for us,",
+   "No God but Thee defend us;",
+   "Thou our only God and Savior."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "2-thessalonians",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "psalms",
+   "chapter": 35,
+   "from": 23
+  },
+  {
+   "book": "isaiah",
+   "chapter": 31,
+   "from": 4,
+   "to": 5
+  }
+ ],
+ "id": "in-these-our-days-so-perilous"
+}

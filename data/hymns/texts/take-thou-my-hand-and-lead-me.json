@@ -1,0 +1,65 @@
+{
+ "title": "Take Thou My Hand and Lead Me",
+ "altTitles": [
+  "O Take My Hand, Dear Father",
+  "Lord Take My Hand and Lead Me"
+ ],
+ "author": "Julie Katharina von Hausmann (1826-1901)",
+ "translator": "Julius Herman Edward Horstmann (1869-1954)",
+ "meter": "11.11.11.11",
+ "credit": "Julie Katharina von Hausmann, 1862.",
+ "tunes": [
+  {
+   "name": "So Nimm Denn Meine Hände",
+   "composer": "Friedrich Silcher (1789-1860)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Take Thou my hand, and lead me o'er life's rough way,",
+ "verses": [
+  [
+   "Take Thou my hand, and lead me o'er life's rough way,",
+   "with Heav'nly Manna feed me from day to day.",
+   "Alone my footsteps falter and straggle wide,",
+   "Lord who my life canst alter be Thou my guide."
+  ],
+  [
+   "Take Thou my heart and hide it in folds of grace",
+   "Though pain or woe betide it to know Thy face",
+   "Draw, Lord, of Thy good pleasure Thy child to Thee,",
+   "And grant me faith's full measure though naught I see."
+  ],
+  [
+   "Though oft I think Thou hidest Thy wondrous might,",
+   "Still to my goal Thou guidest me through dark night,",
+   "Take, then, my hands and lead me till life is o'er,",
+   "With heav'nly manna feed me forevermore."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 25,
+   "from": 1,
+   "to": 22
+  },
+  {
+   "book": "jeremiah",
+   "chapter": 31,
+   "from": 9,
+   "to": 14
+  },
+  {
+   "book": "exodus",
+   "chapter": 13,
+   "from": 21
+  },
+  {
+   "book": "psalms",
+   "chapter": 119,
+   "from": 105
+  }
+ ],
+ "id": "take-thou-my-hand-and-lead-me"
+}

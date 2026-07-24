@@ -1,0 +1,51 @@
+{
+ "title": "Praise God From Whom All Blessings Flow",
+ "altTitles": [
+  "Doxology; see also 'Awake, My Soul, And With The Sun'"
+ ],
+ "author": "Thomas Ken (1637-1711)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Thomas Ken, 1674.  Music: 'Old 100th' Genevan Psalter, attr. Louis Bourgeois, c. 1551.",
+ "tunes": [
+  {
+   "name": "Old 100th",
+   "composer": "Genevan Psalter; Louis Bourgeois (1510-1561)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Praise God, from Whom all blessings flow;",
+ "verses": [
+  [
+   "Praise God, from Whom all blessings flow;",
+   "Praise Him, all creatures here below;",
+   "Praise Him above, ye heav'nly host;",
+   "Praise Father, Son, and Holy Ghost."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "romans",
+   "chapter": 13,
+   "from": 11
+  },
+  {
+   "book": "psalms",
+   "chapter": 17,
+   "from": 15
+  },
+  {
+   "book": "psalms",
+   "chapter": 148,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "ephesians",
+   "chapter": 1,
+   "from": 3
+  }
+ ],
+ "id": "praise-god-from-whom-all-blessings-flow"
+}

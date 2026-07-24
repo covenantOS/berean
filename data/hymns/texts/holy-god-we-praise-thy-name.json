@@ -1,0 +1,76 @@
+{
+ "title": "Holy God, We Praise Thy Name",
+ "altTitles": [],
+ "author": "Ignaz Franz (1719-1790)",
+ "translator": "Clarence Alphonsus Walworth (1820-1900)",
+ "meter": "7.8.7.8.7.7",
+ "credit": "attr. Ignaz Franz, 1774. Translated by Clarence A. Walworth, 1858.",
+ "tunes": [
+  {
+   "name": "Te Deum",
+   "composer": "Maria Theresa, 1774 from Katholisches Gesangbuch"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Holy God, we praise Thy Name;",
+ "verses": [
+  [
+   "Holy God, we praise Thy Name;",
+   "Lord of all, we bow before Thee!",
+   "All on earth Thy scepter claim,",
+   "All in Heaven above adore Thee;",
+   "Infinite Thy vast domain,",
+   "Everlasting is Thy reign."
+  ],
+  [
+   "Hark! the loud celestial hymn",
+   "Angel choirs above are raising,",
+   "Cherubim and seraphim,",
+   "In unceasing chorus praising;",
+   "Fill the heavens with sweet accord:",
+   "Holy, holy, holy, Lord."
+  ],
+  [
+   "Lo! the apostolic train",
+   "Join the sacred Name to hallow;",
+   "Prophets swell the loud refrain,",
+   "And the white robed martyrs follow;",
+   "And from morn to set of sun,",
+   "Through the Church the song goes on."
+  ],
+  [
+   "Holy Father, Holy Son,",
+   "Holy Spirit, Three we name Thee;",
+   "While in essence only One,",
+   "Undivided God we claim Thee;",
+   "And adoring bend the knee,",
+   "While we own the mystery."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 103,
+   "from": 3
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 15
+  },
+  {
+   "book": "revelation",
+   "chapter": 4
+  },
+  {
+   "book": "revelation",
+   "chapter": 5
+  },
+  {
+   "book": "revelation",
+   "chapter": 6
+  }
+ ],
+ "id": "holy-god-we-praise-thy-name"
+}

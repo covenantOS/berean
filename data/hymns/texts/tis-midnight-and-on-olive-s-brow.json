@@ -1,0 +1,58 @@
+{
+ "title": "'Tis Midnight and On Olive's Brow",
+ "altTitles": [],
+ "author": "William Bingham Tappan (1794-1849)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "William Bingham Tappan, 1822.",
+ "tunes": [
+  {
+   "name": "St. Cross",
+   "composer": "John Bacchus Dykes (1823-1876)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "'Tis midnight, and on Olive's brow",
+ "verses": [
+  [
+   "'Tis midnight, and on Olive's brow",
+   "The star is dimmed that lately shone;",
+   "'Tis midnight, in the garden now",
+   "The suff'ring Savior prays alone."
+  ],
+  [
+   "'Tis midnight, and from all removed",
+   "Immanuel wrestles, lone, with fears;",
+   "E'en the disciple whom He loved",
+   "Heeds not his Master's grief and tears."
+  ],
+  [
+   "'Tis midnight, from the heav'nly plains",
+   "Are borne the songs that angels know;",
+   "Unheard by mortals are the strains",
+   "That sweetly soothe the Savior's woe."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 36,
+   "to": 45
+  },
+  {
+   "book": "luke",
+   "chapter": 22,
+   "from": 39,
+   "to": 46
+  },
+  {
+   "book": "mark",
+   "chapter": 14,
+   "from": 32,
+   "to": 41
+  }
+ ],
+ "id": "tis-midnight-and-on-olive-s-brow"
+}

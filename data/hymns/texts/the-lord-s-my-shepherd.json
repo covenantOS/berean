@@ -1,0 +1,106 @@
+{
+ "title": "The Lord's My Shepherd",
+ "altTitles": [],
+ "author": "1650 from the Scottish Psalter",
+ "translator": null,
+ "meter": "8.6.8.6.8.6.8.6",
+ "credit": "Psalm 23 from the Scottish Psalter, 1650 alt. by James Leith Macbeth Bain, 1915.",
+ "tunes": [
+  {
+   "name": "Marosa-Brother James Air",
+   "composer": "James Leith Macbeth Bain (1860-1925)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The Lord's my shepherd I'll not want,",
+ "verses": [
+  [
+   "The Lord's my shepherd I'll not want,",
+   "He makes me down to lie",
+   "In pastures green He leadeth me",
+   "The quiet waters by.",
+   "He leadeth me, He leadeth me,",
+   "The quiet waters by,",
+   "In pastures green He leadeth me",
+   "The quiet waters by."
+  ],
+  [
+   "My soul He doth restore again,",
+   "And me to walk doth make.",
+   "Within the paths of blessedness,",
+   "E'en for His Own Name's sake;",
+   "His Own Name's sake, His Own Name's sake,",
+   "E'en for His Own Name's sake;",
+   "Within the paths of blessedness,",
+   "E'en for His Own Name's sake."
+  ],
+  [
+   "Yea, though I walk in death's dark vale,",
+   "Yet will I fear no ill,",
+   "For Thou art with me, and Thy rod",
+   "And staff me comfort still;",
+   "I'll fear no ill, I'll fear no ill,",
+   "Yet will I fear no ill,",
+   "For Thou art with me, and Thy rod",
+   "And staff me comfort still."
+  ],
+  [
+   "My table Thou hast furnished well",
+   "In presence of my foes;",
+   "My head Thou dost with oil anoint,",
+   "And my cup overflows;",
+   "It overflows, It overflows,",
+   "And my cup overflows;",
+   "My head Thou dost with oil anoint,",
+   "And my cup overflows."
+  ],
+  [
+   "Goodness and mercy all my days",
+   "Will surely follow me:",
+   "And in my Father's heart always",
+   "My dwelling place shall be;",
+   "My dwelling place, My dwelling place,",
+   "My dwelling place shall be,",
+   "And in my Father's heart always",
+   "My dwelling place shall be."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 23,
+   "from": 1,
+   "to": 6
+  },
+  {
+   "book": "john",
+   "chapter": 10,
+   "from": 11,
+   "to": 15
+  },
+  {
+   "book": "revelation",
+   "chapter": 7,
+   "from": 17
+  },
+  {
+   "book": "ezekiel",
+   "chapter": 34,
+   "from": 23
+  },
+  {
+   "book": "isaiah",
+   "chapter": 40,
+   "from": 10,
+   "to": 11
+  },
+  {
+   "book": "hebrews",
+   "chapter": 13,
+   "from": 20,
+   "to": 21
+  }
+ ],
+ "id": "the-lord-s-my-shepherd"
+}

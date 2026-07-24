@@ -1,0 +1,86 @@
+{
+ "title": "All Praise To Thee, My God, This Night",
+ "altTitles": [],
+ "author": "Thomas Ken (1637-1711)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Thomas Ken, circa 1674.",
+ "tunes": [
+  {
+   "name": "Tallis` Canon",
+   "composer": "Thomas Tallis (1505-1585)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "All praise to Thee, my God, this night,",
+ "verses": [
+  [
+   "All praise to Thee, my God, this night,",
+   "For all the blessings of the light!",
+   "Keep me, O keep me, King of kings,",
+   "Beneath Thine own almighty wings."
+  ],
+  [
+   "Forgive me, Lord, for Thy dear Son,",
+   "The ill that I this day have done,",
+   "That with the world, myself, and Thee,",
+   "I, ere I sleep, at peace may be."
+  ],
+  [
+   "Teach me to live, that I may dread",
+   "The grave as little as my bed.",
+   "Teach me to die, that so I may",
+   "Rise glorious at the judgment day."
+  ],
+  [
+   "O may my soul on Thee repose,",
+   "And with sweet sleep mine eyelids close,",
+   "Sleep that may me more vig'rous make",
+   "To serve my God when I awake."
+  ],
+  [
+   "When in the night I sleepless lie,",
+   "My soul with heav'nly thoughts supply;",
+   "Let no ill dreams disturb my rest,",
+   "No pow'rs of darkness me molest."
+  ],
+  [
+   "O when shall I, in endless day,",
+   "For ever chase dark sleep away,",
+   "And hymns divine with angels sing,",
+   "All praise to thee, eternal King?"
+  ],
+  [
+   "Praise God, from Whom all blessings flow;",
+   "Praise Him, all creatures here below;",
+   "Praise Him above, ye heavenly host;",
+   "Praise Father, Son, and Holy Ghost."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 17,
+   "from": 8
+  },
+  {
+   "book": "psalms",
+   "chapter": 92,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "psalms",
+   "chapter": 4,
+   "from": 8
+  },
+  {
+   "book": "psalms",
+   "chapter": 91,
+   "from": 1,
+   "to": 16
+  }
+ ],
+ "id": "all-praise-to-thee-my-god-this-night"
+}

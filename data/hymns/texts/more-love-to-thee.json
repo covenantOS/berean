@@ -1,0 +1,62 @@
+{
+ "title": "More Love to Thee",
+ "altTitles": [],
+ "author": "Elizabeth Payson Prentis (1818-1878)",
+ "translator": null,
+ "meter": "10.10.12.8",
+ "credit": "Elizabeth Payson Prentis, 1856.",
+ "tunes": [
+  {
+   "name": "More Love to Thee",
+   "composer": "William Howard Doane (1832-1915)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "More love to Thee, O Christ; More love to Thee;",
+ "verses": [
+  [
+   "More love to Thee, O Christ; More love to Thee;",
+   "Hear Thou the pray'r I make On bended knee;",
+   "This is my earnest plea, More love, O Christ, to Thee,",
+   "More love to Thee; More love to Thee."
+  ],
+  [
+   "Once earthly joy I craved, Sought peace and rest;",
+   "Now thee alone I seek, Give what is best;",
+   "This all my pray'r shall be, More love, O Christ, to Thee,",
+   "More love to Thee; More love to Thee."
+  ],
+  [
+   "Then shall my latest breath, Whisper Thy praise,",
+   "This be the parting cry My heart shall raise;",
+   "This still its pray'r shall be, More love, O Christ, to Thee,",
+   "More love to Thee; More love to Thee."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "ephesians",
+   "chapter": 6,
+   "from": 24
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 16,
+   "to": 21
+  },
+  {
+   "book": "2-thessalonians",
+   "chapter": 3,
+   "from": 5
+  },
+  {
+   "book": "matthew",
+   "chapter": 22,
+   "from": 37,
+   "to": 40
+  }
+ ],
+ "id": "more-love-to-thee"
+}

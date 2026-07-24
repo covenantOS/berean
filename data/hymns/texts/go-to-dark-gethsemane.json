@@ -1,0 +1,120 @@
+{
+ "title": "Go To Dark Gethsemane",
+ "altTitles": [],
+ "author": "James Montgomery (1771-1854)",
+ "translator": null,
+ "meter": "7.7.7.7.7.7",
+ "credit": "James Montgomery, 1820. Music: 'Gethsemane' or 'Petra' Richard Redhead, 1853.",
+ "tunes": [
+  {
+   "name": "Gethsemane",
+   "composer": "Richard Redhead (1820-1901)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Go to dark Gethsemane,",
+ "verses": [
+  [
+   "Go to dark Gethsemane,",
+   "ye that feel the tempter's pow'r;",
+   "Your Redeemer's conflict see,",
+   "watch with Him one bitter hour,",
+   "Turn not from His griefs away;",
+   "learn from Jesus Christ to pray."
+  ],
+  [
+   "Follow to the judgment hall,",
+   "view the Lord of Life arraigned;",
+   "O the wormwood and the gall!",
+   "O the pangs His soul sustained!",
+   "Shun not suff'ring, shame, or loss;",
+   "learn from Christ to bear the cross."
+  ],
+  [
+   "Calv'ry's mournful mountain climb;",
+   "there, adoring at His feet,",
+   "Mark that miracle of time,",
+   "God's own sacrifice complete.",
+   "\"It is finished!\" hear Him cry;",
+   "learn from Jesus Christ to die."
+  ],
+  [
+   "Early hasten to the tomb",
+   "where they laid His breathless clay;",
+   "All is solitude and gloom.",
+   "Who has taken Him away?",
+   "Christ is ris'n! He meets our eyes;",
+   "Savior, teach us so to rise."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 36,
+   "to": 68
+  },
+  {
+   "book": "matthew",
+   "chapter": 27,
+   "from": 31,
+   "to": 56
+  },
+  {
+   "book": "matthew",
+   "chapter": 28,
+   "from": 1,
+   "to": 10
+  },
+  {
+   "book": "mark",
+   "chapter": 14,
+   "from": 32,
+   "to": 65
+  },
+  {
+   "book": "mark",
+   "chapter": 15,
+   "from": 20,
+   "to": 39
+  },
+  {
+   "book": "luke",
+   "chapter": 22,
+   "from": 39,
+   "to": 46
+  },
+  {
+   "book": "luke",
+   "chapter": 22,
+   "from": 66,
+   "to": 71
+  },
+  {
+   "book": "luke",
+   "chapter": 23,
+   "from": 26,
+   "to": 49
+  },
+  {
+   "book": "luke",
+   "chapter": 24,
+   "from": 1,
+   "to": 12
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 16,
+   "to": 30
+  },
+  {
+   "book": "john",
+   "chapter": 20,
+   "from": 1,
+   "to": 18
+  }
+ ],
+ "id": "go-to-dark-gethsemane"
+}

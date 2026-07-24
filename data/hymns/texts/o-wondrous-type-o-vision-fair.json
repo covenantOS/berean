@@ -1,0 +1,76 @@
+{
+ "title": "O Wondrous Type, O Vision Fair",
+ "altTitles": [],
+ "author": "Latin",
+ "translator": "John Mason Neale (1818-1866)",
+ "meter": "8.8.8.8",
+ "credit": "From the \"Sarum Breviary\", 1495.  Translated by John Mason Neale, 1851.",
+ "tunes": [
+  {
+   "name": "Deo Gracias",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O wondrous type! O vision fair",
+ "verses": [
+  [
+   "O wondrous type! O vision fair",
+   "Of glory that the Church may share,",
+   "Which Christ upon the mountain shows,",
+   "where brighter than the sun He glows!"
+  ],
+  [
+   "From age to age the tale declare,",
+   "How with the three disciples there,",
+   "Where Moses and Elijah meet,",
+   "The Lord holds converse high and sweet."
+  ],
+  [
+   "The law and prophets there have place,",
+   "Two chosen witnesses of grace;",
+   "The Father's voice from out the cloud",
+   "proclaims His only Son aloud."
+  ],
+  [
+   "With shining face and bright array,",
+   "Christ deigns to manifest today",
+   "What glory shall be theirs above",
+   "who joy in God with perfect love."
+  ],
+  [
+   "And faithful hearts are raised on high",
+   "by this great vision's mystery;",
+   "For which in joyful strains we raise",
+   "the voice of prayer, the hymn of praise."
+  ],
+  [
+   "O Father, with th'Eternal Son,",
+   "and Holy Spirit, ever One,",
+   "Vouchsafe to bring us by Thy grace",
+   "to see Thy glory face to face."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "mark",
+   "chapter": 9,
+   "from": 2,
+   "to": 13
+  },
+  {
+   "book": "matthew",
+   "chapter": 17,
+   "from": 1,
+   "to": 13
+  },
+  {
+   "book": "luke",
+   "chapter": 9,
+   "from": 28,
+   "to": 36
+  }
+ ],
+ "id": "o-wondrous-type-o-vision-fair"
+}

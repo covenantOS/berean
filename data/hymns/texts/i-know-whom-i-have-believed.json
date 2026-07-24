@@ -1,0 +1,79 @@
+{
+ "title": "I Know Whom I Have Believed",
+ "altTitles": [],
+ "author": "Daniel Webster Whittle (1840-1901); Elias Nathan (1840-1901)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Daniel Webster Whittle (a.k.a. Elias Nathan), 1883.",
+ "tunes": [
+  {
+   "name": "I Know Whom I Have Believed",
+   "composer": "James McGranahan (1840-1907)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "I know not why God's wondrous grace",
+ "verses": [
+  [
+   "I know not why God's wondrous grace",
+   "To me He hath made known,",
+   "Nor why, unworthy, Christ in love",
+   "Redeemed me for His own."
+  ],
+  [
+   "I know not how this saving faith",
+   "To me He did impart,",
+   "Nor how believing in His Word",
+   "Wrought peace within my heart."
+  ],
+  [
+   "I know not how the Spirit moves,",
+   "Convincing us of sin,",
+   "Revealing Jesus through the Word,",
+   "Creating faith in Him."
+  ],
+  [
+   "I know not what of good or ill",
+   "May be reserved for me,",
+   "Of weary ways or golden days,",
+   "Before His face I see."
+  ],
+  [
+   "I know not when my Lord may come,",
+   "At night or noonday fair,",
+   "Nor if I walk the vale with Him,",
+   "Or meet Him in the air."
+  ]
+ ],
+ "refrain": [
+  "But I know Whom I have believèd,",
+  "And am persuaded that He is able",
+  "To keep that which I've committed",
+  "Unto Him against that day."
+ ],
+ "refs": [
+  {
+   "book": "2-timothy",
+   "chapter": 1,
+   "from": 12
+  },
+  {
+   "book": "philippians",
+   "chapter": 3,
+   "from": 8,
+   "to": 11
+  },
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 5,
+   "to": 11
+  },
+  {
+   "book": "john",
+   "chapter": 17,
+   "from": 3
+  }
+ ],
+ "id": "i-know-whom-i-have-believed"
+}

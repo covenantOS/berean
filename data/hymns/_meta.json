@@ -1,0 +1,329 @@
+{
+ "files": 306,
+ "thmlScores": 298,
+ "admitted": 260,
+ "excluded": [
+  {
+   "file": "All_Creatures_Of_Our_God_And_King-Lasst_Uns_Erfreuen.abc",
+   "reason": "annotated meter does not sum to the verse count 39"
+  },
+  {
+   "file": "Ascribe_To_The_Lord_Honor-Iyin_Oluwa.abc",
+   "reason": "words not verified public domain (copyright: Tune public domain.  Lyrics and Setting Copyright 2012, Bola Omodun Ilori. These lyrics and this)"
+  },
+  {
+   "file": "Author_of_All_Life-Beach_Spring.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2009, Brian J. Dumont. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "Awake_My_Soul_An_Offering_Bring-Melismata_22.abc",
+   "reason": "words not verified public domain (copyright: Words and Setting: Copyright 2009, Brian L. Penney. These lyrics and this setting may be freely)"
+  },
+  {
+   "file": "Canon-Kanon.abc",
+   "reason": "no verse meter \"CHORAL\""
+  },
+  {
+   "file": "Christ_Arose-Christ_Arose.abc",
+   "reason": "no verse meter \"Irregular\""
+  },
+  {
+   "file": "Christ_My_King_On_High-Christ_My_King_On_High.abc",
+   "reason": "words not verified public domain (copyright: This hymn (lyrics, music, and setting) may be freely reproduced or used for Christian worship or)"
+  },
+  {
+   "file": "Day_of_Wrath_O_Day_of_Mourning-Dies_Irae_Dykes.abc",
+   "reason": "underlay verse syllable counts differ (36/36/36/36/36/12/12/12/12/12)"
+  },
+  {
+   "file": "Far_Far_Away_on_Judeas_Plains-Far_Far_Away_on_Judeas_Plains.abc",
+   "reason": "the thml text disagrees at verse 1"
+  },
+  {
+   "file": "For_All_The_Saints-Sine_Nomine.abc",
+   "reason": "underlay verse syllable counts differ (67/51/50/50/49/9/9/9/10/11)"
+  },
+  {
+   "file": "God_The_Father_Be_Our_Stay-Gott_Der_Vater_Wohn_uns_bei.abc",
+   "reason": "the thml text disagrees at verse count 4 against the thml text's 3"
+  },
+  {
+   "file": "Good_King_Wenceslas-Tempus_Adest_Floridum.abc",
+   "reason": "no verse meter \"\""
+  },
+  {
+   "file": "Hark_Hark_My_Soul-Finlandia.abc",
+   "reason": "no prefix of the meter sums to the verse count 63"
+  },
+  {
+   "file": "Have_Mercy_On_Me_O_My_God-Third_Mode_Melody.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2007, Brian L. Penney. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "His_Gifts-Simple_Gifts.abc",
+   "reason": "words not verified public domain (copyright: Melody, public domain.  Words and Setting: Copyright 2011 Brian J. Dumont. These lyrics and setting)"
+  },
+  {
+   "file": "How_Shall_We_Answer_Terrors_Cry-Melita.abc",
+   "reason": "words not verified public domain (Words copyright: Copyright 2001 Richard W. Adams. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "I_Bind_Unto_Myself_Today-St_Patricks_Breastplate.abc",
+   "reason": "underlay verse syllable counts differ (53/70/66/66/44)"
+  },
+  {
+   "file": "In_The_Bleak_MidWinter-Cranham.abc",
+   "reason": "no verse meter \"Irregular\""
+  },
+  {
+   "file": "It_Is_Well_With_My_Soul-It_Is_Well-Ville_Du_Havre.abc",
+   "reason": "the thml text disagrees at verse 1"
+  },
+  {
+   "file": "JesuJoyOfMansDesiring.abc",
+   "reason": "no verse meter \"CHORAL\""
+  },
+  {
+   "file": "Let_Our_Gladness_Have_No_End-Narodil_Se_Kristus_Pan-Salvator_Natus.abc",
+   "reason": "annotated meter does not sum to the verse count 22"
+  },
+  {
+   "file": "Lord_Enthroned_In_Heavenly_Splendor-Bryn_Calfaria.abc",
+   "reason": "the thml text disagrees at verse 2"
+  },
+  {
+   "file": "Lord_God_Thy_Praise_We_Sing-Herr_Gott_dich_Loben_Wir.abc",
+   "reason": "no verse meter \"CHORAL\""
+  },
+  {
+   "file": "Magnificat-Uffingham.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2009, Brian L. Penney. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "Moment_By_Moment-Whittle.abc",
+   "reason": "the alllyrics text disagrees at verse 2"
+  },
+  {
+   "file": "My_Neighbor-Tallis_Canon.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2007, John G. Fleischmann. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "My_Saviors_Love-My_Saviors_Love-I_Stand_Amazed_in_the_Presence.abc",
+   "reason": "the alllyrics text disagrees at verse 1"
+  },
+  {
+   "file": "My_Song_Shall_Be_Of_Jesus-Sondance-Choral.abc",
+   "reason": "no verse meter \"CHORAL\""
+  },
+  {
+   "file": "Nearer_My_God_To_Thee-Bethany.abc",
+   "reason": "underlay verse syllable counts differ (42/32/32/32/42)"
+  },
+  {
+   "file": "O_Be_Glad_All_Nations_on_Earth-Gwalia.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2009, Brian L. Penney. These lyrics may be freely reproduced or published for Christian)"
+  },
+  {
+   "file": "O_Come_All_Ye_Faithful-Adeste_Fideles-Portugese_Hymn.abc",
+   "reason": "no verse meter \"Irregular\""
+  },
+  {
+   "file": "O_Lord_My_God_I_Thirst_For_You-Kingsfold.abc",
+   "reason": "words not verified public domain (copyright: music and setting public domain.  Words: Copyright 2010, Anthony Robertson. These lyrics may be)"
+  },
+  {
+   "file": "Pass_Me_Not_O_Gentle_Savior-Pass_Me_Not_O_Gentle_Savior.abc",
+   "reason": "the thml text disagrees at verse count 4 against the thml text's 3"
+  },
+  {
+   "file": "Rejoice_O_Pilgrim_Throng-Marion.abc",
+   "reason": "the thml text disagrees at verse 1"
+  },
+  {
+   "file": "See_The_Lord_Ascends_In_Triumph-Rex_Gloriae.abc",
+   "reason": "underlay verse syllable counts differ (105/105/105/105/105/15/15/15/15/15)"
+  },
+  {
+   "file": "The_Apostle_Looked_And_Heard_A_Voice-London-Addisons.abc",
+   "reason": "words not verified public domain (copyright: music and setting public domain.  Words: Copyright 2005, Anthony Robertson. These lyrics may be)"
+  },
+  {
+   "file": "The_Cloud_Received_Christ_From_Their_Sight-Azmon.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2008, Brian J. Dumont. These lyrics may be freely reproduced or published for Christian)"
+  },
+  {
+   "file": "The_First_Noel-The_First_Noel.abc",
+   "reason": "no verse meter \"Irregular\""
+  },
+  {
+   "file": "The_Lily_of_the_Valley-Salvation-The_Lily_of_the_Valley.abc",
+   "reason": "no prefix of the meter sums to the verse count 75"
+  },
+  {
+   "file": "The_Lords_Prayer-Erfyniad.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2009, Brian L. Penney. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "The_Strife_Is_Oer_The_Battle_Done-Victory-Palestrina.abc",
+   "reason": "annotated meter does not sum to the verse count 28"
+  },
+  {
+   "file": "Though_In_The_Midst_Of_Life_We_Be-Mitten_Wir_Im_Leben_Sind.abc",
+   "reason": "no verse meter \"Peculiar\""
+  },
+  {
+   "file": "Were_You_There-Were_You_There.abc",
+   "reason": "no prefix of the meter sums to the verse count 30"
+  },
+  {
+   "file": "When_the_Roll_is_Called_Up_Yonder-When_the_Roll_is_Called_Up_Yonder.abc",
+   "reason": "the thml text disagrees at verse 1"
+  },
+  {
+   "file": "Yet_Before_We_See_Your_Plans-Holy_Manna.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2012, Brian J. Dumont. These lyrics may be freely reproduced or published for)"
+  },
+  {
+   "file": "You_People_Who_Now_Are_Baptized-Es_ist_Gewisslich_an_der_Zeit.abc",
+   "reason": "words not verified public domain (copyright: Words: Copyright 2011, Brian J. Dumont. These lyrics may be freely reproduced or published for)"
+  }
+ ],
+ "droppedRefs": [
+  {
+   "file": "Did_You_Think_To_Pray-Stockbridge.abc",
+   "piece": "1Thess 6:17",
+   "reason": "1-thessalonians 6 is beyond the canon"
+  },
+  {
+   "file": "Hark_The_Voice_Of_Jesus_Calling-Galilean.abc",
+   "piece": "Mt 9:37-39",
+   "reason": "matthew 9:37-39 is no verse of the canon"
+  }
+ ],
+ "selections": [
+  {
+   "file": "Awake_My_Heart_With_Gladness-Auf_Auf_Mein_Herz_mit_Freuden.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Baptized_Into_Your_Name_Most_Holy-O_Dass_Ich_Tausend_Zungen_Hatte_Dretzel.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "Built_On_The_Rock-Kirken_Den_Er_Et_Gammelt_Hus.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "Christ_Jesus_Lay_In_Deaths_Strong_Bands-Christ_Lag_in_Todes_Banden-Torgau.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "Christ_The_Lord_Is_Risen_Today-Llanfair.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Christ_The_Lord_Is_Risen_Today-Orientis_Partibus-Redhead_45.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Crown_Him_With_Many_Crowns-Diademata.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Dear_Christians_One_And_All_Rejoice-Es_ist_Gewisslich_an_der_Zeit.abc",
+   "scoreVerses": 5,
+   "pageVerses": 10
+  },
+  {
+   "file": "Dear_Christians_One_And_All_Rejoice-Nun-Freut-Euch.abc",
+   "scoreVerses": 5,
+   "pageVerses": 10
+  },
+  {
+   "file": "God_Rest_Ye_Merry_Gentlemen-God_Rest_Ye_Merry_Gentlemen.abc",
+   "scoreVerses": 5,
+   "pageVerses": 8
+  },
+  {
+   "file": "I_Come_O_Savior_To_Thy_Table-Ich_Sterbe_Taglich.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Jesus_In_Thy_Dying_Woes-Words_On_The_Cross_The_Litany.abc",
+   "scoreVerses": 3,
+   "pageVerses": 21
+  },
+  {
+   "file": "Jesus_Thy_Boundless_Love_To_Me-Yoakley.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Lift_High_The_Cross-Crucifier.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Lo_God_To_Heavn_Ascendeth-Von_Gott_will_ich_Nicht_Lazen.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "Lo_He_Comes_On_Clouds_Descending-Helmsley.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "O_Lord_How_Shall_I_Meet_Thee-Wie_Soll_Ich_Dich_Empfange.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "Praise_To_The_Lord_The_Almighty-Lobe_Den_Herren.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "Salvation_Unto_Us_Has_Come-Es_ist_das_Heil_uns_Kommen_her.abc",
+   "scoreVerses": 4,
+   "pageVerses": 10
+  },
+  {
+   "file": "That_Men_A_Godly_Life_Might_Live-Dies_sind_die_heilgen_zehu_Gebot.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "The_Bridegroom_Soon_Will_Call_Us-Act_Gott_Vom_Himmelreiche.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "The_Day_Is_Surely_Drawing_Near-Es_ist_Gewisslich_an_der_Zett.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  },
+  {
+   "file": "The_God_Of_Abraham_Praise-Yigdal-Leoni.abc",
+   "scoreVerses": 5,
+   "pageVerses": 9
+  },
+  {
+   "file": "To_Jordan_Came_Our_Lord_The_Christ-Christ_Unser_Herr.abc",
+   "scoreVerses": 5,
+   "pageVerses": 7
+  }
+ ],
+ "validated": 260,
+ "hymns": 250,
+ "merged": 10,
+ "allLyricsValidated": 5
+}

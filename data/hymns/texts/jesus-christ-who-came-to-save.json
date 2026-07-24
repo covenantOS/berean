@@ -1,0 +1,64 @@
+{
+ "title": "Jesus Christ Who Came to Save",
+ "altTitles": [
+  "Jesus Christ Today is Risen",
+  "Jesus Christ Our Savior True",
+  "Jesus Christ, Our Blessed Savior"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Leonard Woolsey Bacon (1830-1907)",
+ "meter": "7.6.5.7",
+ "credit": "Martin Luther, 1524.  Translated by Leonard Woolsey Bacon, 1883.",
+ "tunes": [
+  {
+   "name": "Jesus Christus Unser Heiland, Der Den Tod (Klug)",
+   "composer": "Wittenberg, 1533 from Klug's Geistliche Lieder"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus Christ, who came to save,",
+ "verses": [
+  [
+   "Jesus Christ, who came to save,",
+   "And overcame the grave,",
+   "Is now arisen,",
+   "And sin hath bound in prison."
+  ],
+  [
+   "Who withouten sin was found,",
+   "Bore our transgression's wound.",
+   "He is our Savior,",
+   "And brings us to God's favor."
+  ],
+  [
+   "Life and mercy, sin and death,",
+   "All in His hands He hath;",
+   "Them He'll deliver,",
+   "Who trust in Him forever."
+  ]
+ ],
+ "refrain": [
+  "Kyri' eleison."
+ ],
+ "refs": [
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 25,
+   "to": 26
+  },
+  {
+   "book": "romans",
+   "chapter": 6,
+   "from": 4,
+   "to": 11
+  },
+  {
+   "book": "hebrews",
+   "chapter": 4,
+   "from": 15,
+   "to": 16
+  }
+ ],
+ "id": "jesus-christ-who-came-to-save"
+}

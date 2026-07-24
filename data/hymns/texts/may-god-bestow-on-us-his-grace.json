@@ -1,0 +1,87 @@
+{
+ "title": "May God Bestow on Us His Grace",
+ "altTitles": [
+  "May God Unto Us Gracious Be",
+  "Would that the Lord Would Grant Us Grace"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.7.8.7.8.7.8.7.7",
+ "credit": "Martin Luther, 1524.  Translated by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Es Wollt uns Gott Genædig",
+   "composer": "German; Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "May God bestow on us His grace,",
+ "verses": [
+  [
+   "May God bestow on us His grace,",
+   "With blessings rich provide us,",
+   "And may the brightness of His face",
+   "To life eternal guide us",
+   "That we His saving health may know,",
+   "His gracious will and pleasure,",
+   "And also to the heathen show",
+   "Christ's riches without measure",
+   "And unto God convert them."
+  ],
+  [
+   "Thine over all shall be the praise",
+   "And thanks of every nation,",
+   "And all the world with joy shall raise",
+   "The voice of exultation;",
+   "For Thou shalt judge the earth, O Lord,",
+   "Nor suffer sin to flourish;",
+   "Thy people's pasture is Thy Word",
+   "Their souls to feed and nourish,",
+   "In righteous paths to keep them."
+  ],
+  [
+   "Oh, let the people praise Thy worth,",
+   "In all good works increasing;",
+   "The land shall plenteous fruit bring forth,",
+   "Thy Word is rich in blessing.",
+   "May God the Father, God the Son,",
+   "And God the Spirit bless us!",
+   "Let all the world praise Him alone,",
+   "Let solemn awe possess us.",
+   "Now let our hearts say, Amen."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 21
+  },
+  {
+   "book": "psalms",
+   "chapter": 67,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "psalms",
+   "chapter": 96,
+   "from": 10,
+   "to": 13
+  },
+  {
+   "book": "isaiah",
+   "chapter": 55,
+   "from": 10,
+   "to": 11
+  },
+  {
+   "book": "isaiah",
+   "chapter": 62,
+   "from": 1,
+   "to": 2
+  }
+ ],
+ "id": "may-god-bestow-on-us-his-grace"
+}

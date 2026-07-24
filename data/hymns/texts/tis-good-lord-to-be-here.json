@@ -1,0 +1,81 @@
+{
+ "title": "Tis Good, Lord, To Be Here",
+ "altTitles": [],
+ "author": "Joseph Armitage Robinson (1858-1933)",
+ "translator": null,
+ "meter": "6.6.8.6",
+ "credit": "Joseph Armitage Robinson, 1888.",
+ "tunes": [
+  {
+   "name": "Potsdam",
+   "composer": "Johann Sebastian Bach (1685-1750)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "'Tis good, Lord, to be here,",
+ "verses": [
+  [
+   "'Tis good, Lord, to be here,",
+   "Thy glory fills the night;",
+   "Thy face and garments, like the sun,",
+   "Shine with unborrowed light."
+  ],
+  [
+   "'Tis good, Lord, to be here,",
+   "Thy beauty to behold",
+   "Where Moses and Elijah stand,",
+   "Thy messengers of old."
+  ],
+  [
+   "Fulfiller of the past,",
+   "Promise of things to be,",
+   "We hail Thy body glorified",
+   "And our redemption see."
+  ],
+  [
+   "Before we taste of death,",
+   "We see Thy Kingdom come;",
+   "We fain would hold the vision bright",
+   "And make this hill our home."
+  ],
+  [
+   "'Tis good, Lord, to be here.",
+   "Yet we may not remain;",
+   "But since Thou bidst us leave the mount,",
+   "Come with us to the plain."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "mark",
+   "chapter": 9,
+   "from": 2,
+   "to": 13
+  },
+  {
+   "book": "matthew",
+   "chapter": 17,
+   "from": 1,
+   "to": 13
+  },
+  {
+   "book": "luke",
+   "chapter": 9,
+   "from": 28,
+   "to": 36
+  },
+  {
+   "book": "revelation",
+   "chapter": 1,
+   "from": 16
+  },
+  {
+   "book": "revelation",
+   "chapter": 21,
+   "from": 22,
+   "to": 27
+  }
+ ],
+ "id": "tis-good-lord-to-be-here"
+}

@@ -1,0 +1,84 @@
+{
+ "title": "He Leadeth Me",
+ "altTitles": [],
+ "author": "Joseph Henry Gilmore (1834-1918)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Joseph H. Gilmore, 1862.",
+ "tunes": [
+  {
+   "name": "He Leadeth Me",
+   "composer": "William Batchelder Bradbury (1816-1868)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "He leadeth me, O blessèd thought!",
+ "verses": [
+  [
+   "He leadeth me, O blessèd thought!",
+   "O words with heav'nly comfort fraught!",
+   "Whate'er I do, where'er I be",
+   "Still 'tis God's hand that leadeth me."
+  ],
+  [
+   "Sometimes mid scenes of deepest gloom,",
+   "Sometimes where Eden's bowers bloom,",
+   "By waters still, ov'r troubled sea,",
+   "Still 'tis His hand that leadeth me."
+  ],
+  [
+   "Lord, I would place my hand in Thine,",
+   "Nor ever murmur nor repine;",
+   "Content, whatever lot I see,",
+   "Since 'tis my God that leadeth me."
+  ],
+  [
+   "And when my task on earth is done,",
+   "When by Thy grace the vict'ry's won,",
+   "E'en death's cold wave I will not flee,",
+   "Since God through Jordan leadeth me."
+  ]
+ ],
+ "refrain": [
+  "He leadeth me, He leadeth me,",
+  "By His own hand He leadeth me;",
+  "His faithful follow'r I would be,",
+  "For by His hand He leadeth me."
+ ],
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 23,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "psalms",
+   "chapter": 31,
+   "from": 3
+  },
+  {
+   "book": "john",
+   "chapter": 16,
+   "from": 13
+  },
+  {
+   "book": "matthew",
+   "chapter": 6,
+   "from": 13
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 16,
+   "to": 20
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 43,
+   "to": 51
+  }
+ ],
+ "id": "he-leadeth-me"
+}

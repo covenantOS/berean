@@ -1,0 +1,86 @@
+{
+ "title": "My Hope Is Built",
+ "altTitles": [
+  "The Solid Rock"
+ ],
+ "author": "Edward Mote (1797-1874)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Edward Mote, circa 1834.",
+ "tunes": [
+  {
+   "name": "Melita",
+   "composer": "John Bacchus Dykes (1823-1876)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "My hope is built on nothing less",
+ "verses": [
+  [
+   "My hope is built on nothing less",
+   "Than Jesus' blood and righteousness.",
+   "I dare not trust the sweetest frame,",
+   "But wholly trust in Jesus' Name."
+  ],
+  [
+   "When darkness veils His lovely face,",
+   "I rest on His unchanging grace.",
+   "In every high and stormy gale,",
+   "My anchor holds within the veil."
+  ],
+  [
+   "His oath, His covenant, His blood,",
+   "Support me in the whelming flood.",
+   "When all around my soul gives way,",
+   "He then is all my hope and stay."
+  ],
+  [
+   "When He shall come with trumpet sound,",
+   "Oh may I then in Him be found.",
+   "Dressed in His righteousness alone,",
+   "Faultless to stand before the throne."
+  ]
+ ],
+ "refrain": [
+  "On Christ the solid Rock I stand,",
+  "All other ground is sinking sand."
+ ],
+ "refs": [
+  {
+   "book": "1-peter",
+   "chapter": 2,
+   "from": 5,
+   "to": 8
+  },
+  {
+   "book": "ephesians",
+   "chapter": 2,
+   "from": 19,
+   "to": 22
+  },
+  {
+   "book": "matthew",
+   "chapter": 7,
+   "from": 24,
+   "to": 27
+  },
+  {
+   "book": "psalms",
+   "chapter": 18,
+   "from": 2
+  },
+  {
+   "book": "2-corinthians",
+   "chapter": 3,
+   "from": 4,
+   "to": 6
+  },
+  {
+   "book": "1-thessalonians",
+   "chapter": 4,
+   "from": 16,
+   "to": 17
+  }
+ ],
+ "id": "my-hope-is-built"
+}

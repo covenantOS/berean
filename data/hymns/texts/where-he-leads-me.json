@@ -1,0 +1,82 @@
+{
+ "title": "Where He Leads Me",
+ "altTitles": [
+  "I Can Hear My Savior Calling",
+  "Follow All The Way"
+ ],
+ "author": "Edward William Blandy",
+ "translator": null,
+ "meter": "8.8.8.9",
+ "credit": "Edward (or Ernest) William Blandy, 1890.",
+ "tunes": [
+  {
+   "name": "Blandy",
+   "composer": "John Samuel Norris (1844-1907); Philip Paul Bliss (1838-1876)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "I can hear my Savior calling,",
+ "verses": [
+  [
+   "I can hear my Savior calling,",
+   "I can hear my Savior calling,",
+   "I can hear my Savior calling,",
+   "\"Take thy cross and follow, follow Me.\""
+  ],
+  [
+   "I'll go with Him through the garden,",
+   "I'll go with Him through the garden,",
+   "I'll go with Him through the garden,",
+   "I'll go with Him, with Him all the way."
+  ],
+  [
+   "I'll go with Him through the judgment,",
+   "I'll go with Him through the judgment,",
+   "I'll go with Him through the judgment,",
+   "I'll go with Him, with Him all the way."
+  ],
+  [
+   "He will give me grace and glory,",
+   "He will give me grace and glory,",
+   "He will give me grace and glory,",
+   "And go with me, with me all the way."
+  ]
+ ],
+ "refrain": [
+  "Where He leads me I will follow,",
+  "Where He leads me I will follow,",
+  "Where He leads me I will follow;",
+  "I'll go with Him, with Him, all the way."
+ ],
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 12,
+   "from": 26
+  },
+  {
+   "book": "john",
+   "chapter": 21,
+   "from": 22
+  },
+  {
+   "book": "john",
+   "chapter": 13,
+   "from": 37,
+   "to": 38
+  },
+  {
+   "book": "john",
+   "chapter": 10,
+   "from": 27,
+   "to": 30
+  },
+  {
+   "book": "mark",
+   "chapter": 8,
+   "from": 34,
+   "to": 38
+  }
+ ],
+ "id": "where-he-leads-me"
+}

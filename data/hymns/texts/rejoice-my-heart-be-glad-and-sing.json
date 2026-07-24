@@ -1,0 +1,78 @@
+{
+ "title": "Rejoice, My Heart, Be Glad and Sing",
+ "altTitles": [
+  "O Lord I Sing with Lips and Heart"
+ ],
+ "author": "Paul Gerhardt (1607-1676)",
+ "translator": "composite",
+ "meter": "8.6.8.6",
+ "credit": "Paul Gerhardt, 1653.  Translation composite.",
+ "tunes": [
+  {
+   "name": "Ich Singe dir mit Herz",
+   "composer": "Johann Balthasar König (1691-1758)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Rejoice, my heart, be glad and sing,",
+ "verses": [
+  [
+   "Rejoice, my heart, be glad and sing,",
+   "A cheerful trust maintain;",
+   "For God, the Source of everything,",
+   "Thy Portion shall remain."
+  ],
+  [
+   "He is thy Treasure, He thy Joy,",
+   "Thy Life and Light and Lord,",
+   "Thy Counselor when doubts annoy,",
+   "Thy Shield and great Reward."
+  ],
+  [
+   "Why spend the day in blank despair,",
+   "In restless thought the night?",
+   "On thy Creator cast thy care;",
+   "He makes thy burdens light."
+  ],
+  [
+   "Did not His love and truth and pow'r",
+   "Watch o'er thy childhood day?",
+   "Has He not oft in threat'ning hour",
+   "Turned dreaded ills away?"
+  ],
+  [
+   "His wisdom never plans in vain,",
+   "Ne'er falters or mistakes;",
+   "All that His counsels did ordain",
+   "A happy ending makes."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 8,
+   "from": 1,
+   "to": 9
+  },
+  {
+   "book": "psalms",
+   "chapter": 27,
+   "from": 1,
+   "to": 6
+  },
+  {
+   "book": "micah",
+   "chapter": 7,
+   "from": 18,
+   "to": 19
+  },
+  {
+   "book": "psalms",
+   "chapter": 73,
+   "from": 25,
+   "to": 26
+  }
+ ],
+ "id": "rejoice-my-heart-be-glad-and-sing"
+}

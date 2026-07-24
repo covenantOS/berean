@@ -1,0 +1,89 @@
+{
+ "title": "We Now Implore God the Holy Ghost",
+ "altTitles": [
+  "To God the Holy Spirit Let Us Pray",
+  "O Holy Ghost to Thee We Pray",
+  "Now Do We Pray God the Holy Ghost",
+  "Now Pray We All God the Comforter",
+  "Now Let Us Pray to the Holy Ghost"
+ ],
+ "author": "German; Martin Luther (1483-1546)",
+ "translator": "composite",
+ "meter": "9.9.11.10.4",
+ "credit": "v.1 ancient German.  verses 2-4 Martin Luther, 1524.  Translation composite.",
+ "tunes": [
+  {
+   "name": "Nun Bitten wir den Heiligen Geist",
+   "composer": "German"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "We now implore God the Holy Ghost",
+ "verses": [
+  [
+   "We now implore God the Holy Ghost",
+   "For the true faith, which we need the most,",
+   "That in our last moments He may befriend us",
+   "And, as homeward we journey, attend us.",
+   "Lord, have mercy."
+  ],
+  [
+   "Shine in our hearts, O most precious Light,",
+   "That we Jesus Christ may know aright,",
+   "Clinging to our Savior, whose blood hath bought us.",
+   "Who again to our homeland hath brought us.",
+   "Lord, have mercy."
+  ],
+  [
+   "Thou sacred Love, grace on us bestow,",
+   "Set our hearts with heav'nly fire aglow",
+   "That with hearts united we love each other,",
+   "Of one mind, in peace with ev'ry brother.",
+   "Lord, have mercy!"
+  ],
+  [
+   "Thou highest Comfort in ev'ry need,",
+   "Grant that neither shame nor death we heed,",
+   "That e'en then our courage may never fail us",
+   "When the Foe shall accuse and assail us.",
+   "Lord, have mercy!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 26
+  },
+  {
+   "book": "john",
+   "chapter": 16,
+   "from": 13,
+   "to": 15
+  },
+  {
+   "book": "ephesians",
+   "chapter": 4,
+   "from": 3,
+   "to": 6
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 23,
+   "to": 27
+  },
+  {
+   "book": "romans",
+   "chapter": 9,
+   "from": 1
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 12,
+   "from": 3
+  }
+ ],
+ "id": "we-now-implore-god-the-holy-ghost"
+}

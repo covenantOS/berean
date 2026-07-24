@@ -1,0 +1,91 @@
+{
+ "title": "Lo, How A Rose E'er Blooming",
+ "altTitles": [],
+ "author": "German; Fridrich Layriz (1808-1859)",
+ "translator": "Theodore Baker (1851-1934); Harriet Reynolds Krauth (1845-1925); Harriet Reynolds Spaeth (1845-1925); John Casper Mattes (1876-1948)",
+ "meter": "7.6.7.6.6.7.6",
+ "credit": "verses 1-2, 15th Century German.  Translated by Theodore Baker, 1894.",
+ "tunes": [
+  {
+   "name": "Es Ist Ein Ros Entsprungen (Rhythmic)",
+   "composer": "Köln, 1599 from Altes Catholische Geistliche Kirchengeseng"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lo, how a Rose e'er blooming",
+ "verses": [
+  [
+   "Lo, how a Rose e'er blooming",
+   "from tender stem hath sprung!",
+   "Of Jesse's lineage coming,",
+   "as men of old have sung.",
+   "It came, a flow'ret bright,",
+   "amid the cold of winter,",
+   "When half spent was the night."
+  ],
+  [
+   "Isaiah 'twas foretold it,",
+   "the Rose I have in mind;",
+   "With Mary we behold it,",
+   "the virgin mother kind.",
+   "To show God's love aright,",
+   "she bore to men a Savior,",
+   "When half spent was the night."
+  ],
+  [
+   "The shepherds heard the story",
+   "proclaimed by angels bright,",
+   "How Christ, the Lord of glory",
+   "was born on earth this night.",
+   "To Bethlehem they sped",
+   "and in the manger found Him,",
+   "As angel heralds said."
+  ],
+  [
+   "This Flow'r, whose fragrance tender",
+   "with sweetness fills the air,",
+   "Dispels with glorious splendor",
+   "the darkness everywhere;",
+   "True Man, yet very God,",
+   "from sin and death He saves us,",
+   "And lightens ev'ry load."
+  ],
+  [
+   "O Savior, Child of Mary,",
+   "who felt our human woe,",
+   "O Savior, King of glory,",
+   "who dost our weakness know;",
+   "Bring us at length we pray,",
+   "to the bright courts of Heaven,",
+   "And to the endless day!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 11,
+   "from": 1,
+   "to": 10
+  },
+  {
+   "book": "matthew",
+   "chapter": 1,
+   "from": 20,
+   "to": 21
+  },
+  {
+   "book": "hebrews",
+   "chapter": 2,
+   "from": 14,
+   "to": 15
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 1,
+   "to": 18
+  }
+ ],
+ "id": "lo-how-a-rose-e-er-blooming"
+}

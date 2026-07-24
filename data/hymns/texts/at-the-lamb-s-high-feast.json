@@ -1,0 +1,110 @@
+{
+ "title": "At The Lamb's High Feast",
+ "altTitles": [],
+ "author": "Latin",
+ "translator": "Robert Campbell (1814-1868)",
+ "meter": "7.7.7.7.4",
+ "credit": "Latin, circa 6th Century. Translated by Robert Campbell, 1849.",
+ "tunes": [
+  {
+   "name": "Sonne der Gerechtigkeit",
+   "composer": "Kirchengeseng, 1566 Czech"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "At the Lamb's high feast we sing,",
+ "verses": [
+  [
+   "At the Lamb's high feast we sing,",
+   "Praise to our victorious King,",
+   "Who has washed us in the tide",
+   "Flowing from his piercèd side;",
+   "Alleluia!"
+  ],
+  [
+   "Praise we Him, whose love divine",
+   "Gives His sacred blood for wine,",
+   "Gives His body for the feast,",
+   "Christ the Victim, Christ the Priest.",
+   "Alleluia!"
+  ],
+  [
+   "Where the Paschal blood is poured,",
+   "Death's dark angel sheathes his sword;",
+   "Israel's hosts triumphant go",
+   "Through the wave that drowns the foe.",
+   "Alleluia!"
+  ],
+  [
+   "Praise we Christ, whose blood was shed,",
+   "Paschal Victim, Paschal Bread;",
+   "With sincerity and love",
+   "Eat we Manna from above.",
+   "Alleluia!"
+  ],
+  [
+   "Mighty Victim from the sky,",
+   "Hell's fierce pow'rs beneath Thee lie;",
+   "Thou hast conquered in the fight,",
+   "Thou hast brought us life and light;",
+   "Alleluia!"
+  ],
+  [
+   "Now no more can death appall,",
+   "Now no more the grave enthrall;",
+   "Thou hast opened Paradise,",
+   "And in Thee Thy saints shall rise."
+  ],
+  [
+   "Paschal triumph, Easter joy,",
+   "This alone can sin destroy;",
+   "From sin's death do Thou set free",
+   "Souls reborn, O Lord, in Thee."
+  ],
+  [
+   "Hymns of glory and of praise,",
+   "Father, to Thee we raise;",
+   "Risen Lord, all praise to Thee,",
+   "Ever with the Spirit be."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "revelation",
+   "chapter": 19,
+   "from": 6,
+   "to": 10
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 34
+  },
+  {
+   "book": "exodus",
+   "chapter": 12,
+   "from": 21,
+   "to": 27
+  },
+  {
+   "book": "matthew",
+   "chapter": 26,
+   "from": 26,
+   "to": 28
+  },
+  {
+   "book": "john",
+   "chapter": 6,
+   "from": 32,
+   "to": 35
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 53,
+   "to": 57
+  }
+ ],
+ "id": "at-the-lamb-s-high-feast"
+}

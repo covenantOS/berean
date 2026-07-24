@@ -1,0 +1,129 @@
+{
+ "title": "All My Heart This Night Rejoices",
+ "altTitles": [
+  "All My Heart Again Rejoices"
+ ],
+ "author": "Paul Gerhardt (1607-1676)",
+ "translator": "Catherine Winkworth (1827-1878)",
+ "meter": "8.3.3.6.8.3.3.6",
+ "credit": "Paul Gerhardt, 1656. Translated by Catherine Winkworth, 1858.",
+ "tunes": [
+  {
+   "name": "Ebeling",
+   "composer": "Johann Georg Ebeling (1637-1676)"
+  }
+ ],
+ "lyricSources": [
+  "Music source: \"The Chorale book for England\" 1863 Hymn 31.  Lyric source: Lyra Germanica, 1872 Hymn I. page 13"
+ ],
+ "firstLine": "All my heart this night rejoices,",
+ "verses": [
+  [
+   "All my heart this night rejoices,",
+   "As I hear,",
+   "Far and near,",
+   "Sweetest angel voices;",
+   "\"Christ is born,\" their choirs are singing,",
+   "Till the air",
+   "Ev'rywhere",
+   "Now with joy is ringing."
+  ],
+  [
+   "For it dawns,the promised morrow",
+   "Of His birth",
+   "Who the earth",
+   "Rescues from her sorrow.",
+   "God to wear our form descendeth,",
+   "Of His grace",
+   "To our race",
+   "Here His Son He lendeth:"
+  ],
+  [
+   "Yea, so truly for us careth,",
+   "That His Son",
+   "All we've done",
+   "As our off'ring beareth;",
+   "As our Lamb who, dying for us,",
+   "Bears our load,",
+   "And to God",
+   "Doth in peace restore us."
+  ],
+  [
+   "Hark! a voice from yonder manger,",
+   "Soft and sweet,",
+   "Doth entreat,",
+   "\"Flee from woe and danger;",
+   "Brethren come, from all doth grieve you",
+   "You are freed,",
+   "All you need",
+   "I will surely give you.\""
+  ],
+  [
+   "Come then, let us hasten yonder;",
+   "Here let all,",
+   "Great and small,",
+   "Kneel in awe and wonder.",
+   "Love Him who with love is yearning;",
+   "Hail the Star",
+   "That from far",
+   "Bright with hope is burning!"
+  ],
+  [
+   "Ye who pine in weary sadness, Weep no more, For the door",
+   "Now is found of gladness. Cling to Him for He will guide you",
+   "Where no cross, Pain or loss, Can again betide you."
+  ],
+  [
+   "Hither come, ye heavy\\- hearted, Who for sin Deep within,",
+   "Long and sore have smarted; For the poison'd wounds you're feeling",
+   "Help is near, One is here Mighty for their healing!"
+  ],
+  [
+   "Hither come, ye poor and wretched; Know His will Is to fill",
+   "Every hand outstretched; Here are riches without measure,",
+   "Here forget All regret, Fill your hearts with treasure."
+  ],
+  [
+   "Blessed Savior, let me find Thee! Keep Thou me Close to Thee,",
+   "Cast me not behind Thee! Life of life, my heart Thou stillest,",
+   "Calm I rest On Thy breast, All this void Thou fillest."
+  ],
+  [
+   "Thee, dear Lord, with heed I'll cherish, Live to Thee, And with Thee",
+   "Dying, shall not perish; But shall dwell with Thee for ever,",
+   "Far on high In the joy That can alter never."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 8,
+   "to": 15
+  },
+  {
+   "book": "isaiah",
+   "chapter": 7,
+   "from": 14
+  },
+  {
+   "book": "isaiah",
+   "chapter": 9,
+   "from": 2,
+   "to": 7
+  },
+  {
+   "book": "galatians",
+   "chapter": 4,
+   "from": 4
+  },
+  {
+   "book": "hebrews",
+   "chapter": 2,
+   "from": 14,
+   "to": 17
+  }
+ ],
+ "id": "all-my-heart-this-night-rejoices"
+}

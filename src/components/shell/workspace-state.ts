@@ -605,6 +605,20 @@ export interface SermonTab {
   title?: string;
 }
 
+/**
+ * The hymn reader: one hymn from the Chapel hymnbook (src/lib/hymns.ts)
+ * open with its verses, tunes, and scripture links. One reader rides per
+ * pane; a new hymn retargets it, the sermon's rule.
+ */
+export interface HymnTab {
+  id: string;
+  type: "hymn";
+  /** The hymn's id in the hymnbook. */
+  hymn: string;
+  /** The hymn's title captured at open time, for the tab strip. */
+  title?: string;
+}
+
 export type Tab =
   | ReaderTab
   | SearchTab
@@ -655,7 +669,8 @@ export type Tab =
   | WisdomExplorerTab
   | MediaTab
   | ConfessionTab
-  | SermonTab;
+  | SermonTab
+  | HymnTab;
 
 /* ---------- drop targets (where a dragged module can land) ---------- */
 
@@ -974,6 +989,15 @@ export function sermonTab(sermon: string, title?: string): SermonTab {
   };
 }
 
+export function hymnTab(hymn: string, title?: string): HymnTab {
+  return {
+    id: newId("tab"),
+    type: "hymn",
+    hymn,
+    ...(title ? { title } : {}),
+  };
+}
+
 /**
  * A media pin holds water at a book and a chapter inside it; the verse rides
  * optional. The verse's real bound is the chapter's length, which the
@@ -1231,6 +1255,9 @@ export function singletonKey(tab: Tab): string | null {
       return `${tab.type}:${tab.doc ?? ""}`;
     case "sermon":
       /* One sermon reader per pane; a new sermon retargets it. */
+      return tab.type;
+    case "hymn":
+      /* One hymn reader per pane; a new hymn retargets it. */
       return tab.type;
     case "guideeditor":
       return `${tab.type}:${tab.guideId ?? ""}`;
@@ -1537,6 +1564,7 @@ export type WorkspaceAction =
   | { type: "openHarmony"; book?: string; chapter?: number; verse?: number; paneId?: string }
   | { type: "openConfession"; doc?: string; section?: string; title?: string; paneId?: string }
   | { type: "openSermon"; slug: string; title?: string; paneId?: string }
+  | { type: "openHymn"; hymn: string; title?: string; paneId?: string }
   | {
       type: "setHarmonyRef";
       paneId: string;
@@ -2497,6 +2525,36 @@ export function workspaceReducer(
       // One sermon reader per pane; a new sermon retargets the tab already
       // there, reopening the same one focuses it.
       const tab = sermonTab(action.slug, title);
+      const existing = findSingleton(leaf, tab);
+      if (existing) {
+        return {
+          ...state,
+          activePaneId: paneId,
+          root: updateLeaf(state.root, paneId, (l) => ({
+            ...l,
+            activeTabId: existing.id,
+            tabs: l.tabs.map((t) => (t.id === existing.id ? absorbSingleton(t, tab) : t)),
+          })),
+        };
+      }
+      return landTab(state, paneId, tab);
+    }
+
+    case "openHymn": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The id holds water only as a well-formed hymnbook id; an id the
+      // corpus lacks loads anyway and the pane says so, the sermon rule.
+      if (typeof action.hymn !== "string" || !/^[a-z0-9-]+$/.test(action.hymn)) return state;
+      const title =
+        typeof action.title === "string" && action.title.trim()
+          ? action.title.trim().slice(0, 120)
+          : undefined;
+      // One hymn reader per pane; a new hymn retargets the tab already
+      // there, reopening the same one focuses it.
+      const tab = hymnTab(action.hymn, title);
       const existing = findSingleton(leaf, tab);
       if (existing) {
         return {

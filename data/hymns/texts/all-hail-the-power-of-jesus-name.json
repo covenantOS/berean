@@ -1,0 +1,105 @@
+{
+ "title": "All Hail The Power Of Jesus' Name",
+ "altTitles": [],
+ "author": "Edward Perronet (1726-1792)",
+ "translator": null,
+ "meter": "8.6.8.6.8.6",
+ "credit": "Edward Perronet, 1780.  Music: 'Coronation' Oliver Holden, 1793.",
+ "tunes": [
+  {
+   "name": "Coronation",
+   "composer": "Oliver Holden (1765-1844)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "All hail the pow'r of Jesus' Name!",
+ "verses": [
+  [
+   "All hail the pow'r of Jesus' Name!",
+   "Let angels prostrate fall;",
+   "Bring forth the royal diadem,",
+   "and crown Him Lord of all.",
+   "Bring forth the royal diadem,",
+   "and crown Him Lord of all."
+  ],
+  [
+   "Let highborn seraphs tune the lyre,",
+   "and as they tune it, fall",
+   "Before His face Who tunes their choir,",
+   "and crown Him Lord of all.",
+   "Before His face Who tunes their choir,",
+   "and crown Him Lord of all."
+  ],
+  [
+   "Crown Him, ye morning stars of light,",
+   "who fixed this floating ball;",
+   "Now hail the strength of Israel's might,",
+   "and crown Him Lord of all.",
+   "Now hail the strength of Israel's might,",
+   "and crown Him Lord of all."
+  ],
+  [
+   "Crown Him, ye martyrs of your God,",
+   "who from His altar call;",
+   "Extol the Stem of Jesse's Rod,",
+   "and crown Him Lord of all.",
+   "Extol the Stem of Jesse's Rod,",
+   "and crown Him Lord of all."
+  ],
+  [
+   "Ye seed of Israel's chosen race,",
+   "ye ransomed from the fall,",
+   "Hail Him Who saves you by His grace,",
+   "and crown Him Lord of all.",
+   "Hail Him Who saves you by His grace,",
+   "and crown Him Lord of all."
+  ],
+  [
+   "Hail Him, ye heirs of David's line, whom David Lord did call,",
+   "The God incarnate, Man divine, and crown Him Lord of all,",
+   "The God incarnate, Man divine, and crown Him Lord of all."
+  ],
+  [
+   "Sinners, whose love can ne'er forget the wormwood and the gall,",
+   "Go spread your trophies at His feet, and crown Him Lord of all.",
+   "Go spread your trophies at His feet, and crown Him Lord of all."
+  ],
+  [
+   "Let every tribe and every tongue before Him prostrate fall",
+   "And shout in universal song the crownèd Lord of all.",
+   "And shout in universal song the crownèd Lord of all."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 9,
+   "to": 11
+  },
+  {
+   "book": "revelation",
+   "chapter": 5,
+   "from": 9,
+   "to": 14
+  },
+  {
+   "book": "hebrews",
+   "chapter": 2,
+   "from": 9
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "revelation",
+   "chapter": 19,
+   "from": 16
+  }
+ ],
+ "id": "all-hail-the-power-of-jesus-name"
+}

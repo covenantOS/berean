@@ -1,0 +1,70 @@
+{
+ "title": "Holy Spirit, Ever Dwelling",
+ "altTitles": [],
+ "author": "Timothy Rees (1874-1939)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Timothy Rees, 1922.",
+ "tunes": [
+  {
+   "name": "Ebenezer",
+   "composer": "Thomas J. Williams (1869-1944)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Holy Spirit, ever dwelling",
+ "verses": [
+  [
+   "Holy Spirit, ever dwelling",
+   "in the holiest realms of light",
+   "Holy Spirit, ever brooding",
+   "o'er a world of gloom and blight",
+   "Holy Spirit, ever raising",
+   "earthbound souls to glory high",
+   "Living, lifeimparting Spirit",
+   "you we praise and magnify."
+  ],
+  [
+   "Holy Spirit, ever breathing",
+   "on the church the breath of life",
+   "Holy Spirit, ever striving",
+   "through your people's ceaseless strife",
+   "Holy Spirit, ever forming",
+   "in the church the mind of Christ",
+   "In our worship we will praise you",
+   "for your fruit and gifts unpriced."
+  ],
+  [
+   "Holy Spirit, ever working",
+   "through the church's ministry",
+   "Quick'ning, strength'ning, and absolving",
+   "setting captive sinners free",
+   "Holy Spirit, ever binding",
+   "age to age and soul to soul",
+   "In community unending",
+   "you we worship and extol."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "genesis",
+   "chapter": 1,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 12,
+   "from": 12,
+   "to": 14
+  },
+  {
+   "book": "ephesians",
+   "chapter": 3,
+   "from": 7,
+   "to": 9
+  }
+ ],
+ "id": "holy-spirit-ever-dwelling"
+}

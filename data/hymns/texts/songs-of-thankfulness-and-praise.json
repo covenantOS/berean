@@ -1,0 +1,124 @@
+{
+ "title": "Songs of Thankfulness and Praise",
+ "altTitles": [],
+ "author": "Christopher Wordsworth (1807-1885)",
+ "translator": null,
+ "meter": "7.7.7.7.7.7.7.7",
+ "credit": "Christopher Wordsworth, 1862.",
+ "tunes": [
+  {
+   "name": "St. George`s Windsor",
+   "composer": "George Job Elvey (1816-1893)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Songs of thankfulness and praise,",
+ "verses": [
+  [
+   "Songs of thankfulness and praise,",
+   "Jesus, Lord, to Thee we raise,",
+   "Manifested by the star",
+   "To the sages from afar;",
+   "Branch of royal David's stem",
+   "In Thy birth at Bethlehem;",
+   "Anthems be to Thee addressed,",
+   "God in man made manifest."
+  ],
+  [
+   "Manifest at Jordan's stream,",
+   "Prophet, Priest, and King supreme;",
+   "And at Cana, wedding guest,",
+   "In Thy Godhead manifest;",
+   "Manifest in pow'r divine,",
+   "Changing water into wine;",
+   "Anthems be to Thee addressed,",
+   "God in man made manifest."
+  ],
+  [
+   "Manifest in making whole",
+   "Palsied limbs and fainting soul;",
+   "Manifest in valiant fight,",
+   "Quelling all the devil's might;",
+   "Manifest in gracious will,",
+   "Ever bringing good from ill;",
+   "Anthems be to Thee addressed,",
+   "God in man made manifest."
+  ],
+  [
+   "Sun and moon shall darkened be,",
+   "Stars shall fall, the heav'ns shall flee,",
+   "Christ will then like lightning shine,",
+   "All will see His glorious sign:",
+   "All will then the trumpet hear;",
+   "All will see the Judge appear;",
+   "Thou by all wilt be confessed,",
+   "God in man made manifest."
+  ],
+  [
+   "Grant us grace to see Thee, Lord,",
+   "Mirrored in Thy holy Word;",
+   "May we imitate Thee now,",
+   "And be pure, as pure art Thou;",
+   "That we like to Thee may be",
+   "At Thy great Epiphany;",
+   "And may praise Thee, ever blest,",
+   "God in man made manifest."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 95,
+   "from": 2
+  },
+  {
+   "book": "isaiah",
+   "chapter": 61,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 20
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 7,
+   "to": 11
+  },
+  {
+   "book": "luke",
+   "chapter": 3,
+   "from": 15,
+   "to": 22
+  },
+  {
+   "book": "john",
+   "chapter": 2,
+   "from": 1,
+   "to": 11
+  },
+  {
+   "book": "matthew",
+   "chapter": 11,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "luke",
+   "chapter": 7,
+   "from": 18,
+   "to": 22
+  },
+  {
+   "book": "revelation",
+   "chapter": 19,
+   "from": 1,
+   "to": 16
+  }
+ ],
+ "id": "songs-of-thankfulness-and-praise"
+}

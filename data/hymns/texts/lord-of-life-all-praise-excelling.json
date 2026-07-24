@@ -1,0 +1,92 @@
+{
+ "title": "Lord of Life, All Praise Excelling",
+ "altTitles": [],
+ "author": "Clement Clarke Moore (1779-1863)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Clement C. Moore, 1808.",
+ "tunes": [
+  {
+   "name": "HyFrydol",
+   "composer": "Rowland H. Prichard (1811-1887)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lord of life, all praise excelling,",
+ "verses": [
+  [
+   "Lord of life, all praise excelling,",
+   "Thou, in glory unconfined,",
+   "Deignst to make Thy humble dwelling",
+   "With the poor of humble mind.",
+   "As Thy love, through all creation,",
+   "Beams like Thy diffusive light;",
+   "So the high and humble station",
+   "Both are equal in Thy sight."
+  ],
+  [
+   "Thus Thy care, for all providing,",
+   "Warmed Thy faithful prophet's tongue;",
+   "Who, the lot of all deciding,",
+   "To Thy chosen Israel sung.",
+   "When Thy harvest yields Thee pleasure,",
+   "Thou the golden sheaf shalt bind;",
+   "To the poor belongs the treasure",
+   "Of the scattered ears behind."
+  ],
+  [
+   "Still we read Thy Word declaring",
+   "Mercy, Lord, Thine own decree;",
+   "Mercy ev'ry sorrow sharing,",
+   "Warms the heart resembling Thee.",
+   "Still the orphan and the stranger,",
+   "Still the widow owns Thy care;",
+   "Screened by Thee in ev'ry danger,",
+   "Heard by Thee in ev'ry prayer."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 5,
+   "from": 2,
+   "to": 12
+  },
+  {
+   "book": "luke",
+   "chapter": 6,
+   "from": 20,
+   "to": 23
+  },
+  {
+   "book": "psalms",
+   "chapter": 68,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "psalms",
+   "chapter": 10,
+   "from": 14
+  },
+  {
+   "book": "james",
+   "chapter": 4,
+   "from": 6
+  },
+  {
+   "book": "luke",
+   "chapter": 1,
+   "from": 46,
+   "to": 55
+  },
+  {
+   "book": "john",
+   "chapter": 4,
+   "from": 35,
+   "to": 38
+  }
+ ],
+ "id": "lord-of-life-all-praise-excelling"
+}

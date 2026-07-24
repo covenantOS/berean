@@ -1,0 +1,73 @@
+{
+ "title": "God Will Take Care of You",
+ "altTitles": [],
+ "author": "Civilla Durfee Martin (1866-1948)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Civilla Durfee Martin, 1905.",
+ "tunes": [
+  {
+   "name": "Martin",
+   "composer": "Walter Stillman Martin (1862-1935)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Be not dismayed whate'er betide,",
+ "verses": [
+  [
+   "Be not dismayed whate'er betide,",
+   "God will take care of you;",
+   "Beneath His wings of love abide,",
+   "God will take care of you."
+  ],
+  [
+   "Through days of toil when heart doth fail,",
+   "God will take care of you;",
+   "When dangers fierce your path assail,",
+   "God will take care of you."
+  ],
+  [
+   "All you may need He will provide,",
+   "God will take care of you;",
+   "Nothing you ask will be denied,",
+   "God will take care of you."
+  ],
+  [
+   "No matter what may be the test,",
+   "God will take care of you;",
+   "Lean, weary one, upon His breast,",
+   "God will take care of you."
+  ]
+ ],
+ "refrain": [
+  "God will take care of you,",
+  "through ev'ry day, o'er all the way;",
+  "He will take care of you,",
+  "God will take care of you."
+ ],
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 34,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "luke",
+   "chapter": 12,
+   "from": 30,
+   "to": 32
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 32
+  },
+  {
+   "book": "philippians",
+   "chapter": 4,
+   "from": 19
+  }
+ ],
+ "id": "god-will-take-care-of-you"
+}

@@ -1,0 +1,70 @@
+{
+ "title": "O Come O Come Emmanuel",
+ "altTitles": [],
+ "author": null,
+ "translator": "John Mason Neale (1818-1866)",
+ "meter": "8.8.8.8",
+ "credit": "various, combined by unknown author approx 12th Century, Translated by John Mason Neale, 1851.",
+ "tunes": [
+  {
+   "name": "Veni Emmanuel",
+   "composer": "French"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O come, O come, Emmanuel,",
+ "verses": [
+  [
+   "O come, O come, Emmanuel,",
+   "And ransom captive Israel,",
+   "That mourns in lonely exile here",
+   "Until the Son of God appear."
+  ],
+  [
+   "O come, Thou Wisdom from on high,",
+   "Who orderest all things mightily;",
+   "To us the path of knowledge show,",
+   "And teach us in her ways to go."
+  ],
+  [
+   "O come, Thou Rod of Jesse, free",
+   "Thine own from Satan's tyranny;",
+   "From depths of hell Thy people save,",
+   "And give them vict'ry ov'r the grave."
+  ],
+  [
+   "O come, Thou Dayspring, come and cheer",
+   "Our spirits by Thine advent here;",
+   "Disperse the gloomy clouds of night,",
+   "And death's dark shadows put to flight."
+  ],
+  [
+   "O come, Thou Key of David, come,",
+   "And open wide our heav'nly home;",
+   "Make safe the way that leads on high,",
+   "And close the path to misery."
+  ]
+ ],
+ "refrain": [
+  "Rejoice! Rejoice! Emmanuel",
+  "shall come to thee, O Israel."
+ ],
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 7,
+   "from": 14
+  },
+  {
+   "book": "isaiah",
+   "chapter": 11,
+   "from": 1
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 20
+  }
+ ],
+ "id": "o-come-o-come-emmanuel"
+}

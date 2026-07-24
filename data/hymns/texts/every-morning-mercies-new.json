@@ -1,0 +1,94 @@
+{
+ "title": "Every Morning Mercies New",
+ "altTitles": [],
+ "author": "Greville Phillimore (1821-1884)",
+ "translator": null,
+ "meter": "7.7.7.7.7.7",
+ "credit": "Greville Phillimore, 1863.",
+ "tunes": [
+  {
+   "name": "Kelso",
+   "composer": "Edward John Hopkins (1818-1901)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Ev'ry morning mercies new",
+ "verses": [
+  [
+   "Ev'ry morning mercies new",
+   "Fall as fresh as morning dew;",
+   "Ev'ry morning let us pay",
+   "Tribute with the early day:",
+   "For Thy mercies, Lord, are sure;",
+   "Thy compassion doth endure."
+  ],
+  [
+   "Still the greatness of Thy love",
+   "Daily doth our sins remove;",
+   "Daily, far as east from west,",
+   "Lifts the burden from the breast;",
+   "Gives unbought to those who pray",
+   "Strength to stand in evil day."
+  ],
+  [
+   "Let our prayers each morn prevail,",
+   "That these gifts may never fail;",
+   "And, as we confess the sin",
+   "And the tempter's pow'r within,",
+   "Feed us with the Bread of Life,",
+   "Fit us for our daily strife."
+  ],
+  [
+   "As the morning light returns,",
+   "As the sun with splendor burns,",
+   "Teach us still to turn to Thee,",
+   "Ever blessed Trinity,",
+   "With our hands our hearts to raise,",
+   "In unfailing prayer and praise."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "lamentations",
+   "chapter": 3,
+   "from": 22,
+   "to": 23
+  },
+  {
+   "book": "psalms",
+   "chapter": 30,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "psalms",
+   "chapter": 103,
+   "from": 8,
+   "to": 13
+  },
+  {
+   "book": "isaiah",
+   "chapter": 33,
+   "from": 2
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 32,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "proverbs",
+   "chapter": 19,
+   "from": 12
+  },
+  {
+   "book": "john",
+   "chapter": 6,
+   "from": 45,
+   "to": 51
+  }
+ ],
+ "id": "every-morning-mercies-new"
+}

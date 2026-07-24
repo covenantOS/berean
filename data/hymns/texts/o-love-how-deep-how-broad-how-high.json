@@ -1,0 +1,94 @@
+{
+ "title": "O Love, How Deep, How Broad, How High",
+ "altTitles": [],
+ "author": null,
+ "translator": "Benjamin Webb (1819-1885)",
+ "meter": "8.8.8.8",
+ "credit": "Unknown, 15th Century; Translated by Benjamin Webb, 1852, alt.",
+ "tunes": [
+  {
+   "name": "Deo Gracias",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O love, how deep, how broad, how high,",
+ "verses": [
+  [
+   "O love, how deep, how broad, how high,",
+   "How passing thought and fantasy,",
+   "That God, the Son of God, should take",
+   "Our mortal form for mortals' sake!"
+  ],
+  [
+   "He sent no angel to our race",
+   "Of higher or of lower place,",
+   "But wore the robe of human frame",
+   "And He Himself, to this world came."
+  ],
+  [
+   "Nor willed He only to appear;",
+   "His pleasure was to tarry here;",
+   "And God and Man with man would be",
+   "The space of thirty years and three."
+  ],
+  [
+   "For us baptized, for us He bore",
+   "His holy fast and hungered sore,",
+   "For us temptations sharp He knew;",
+   "For us the tempter overthrew."
+  ],
+  [
+   "For us He prayed; for us He taught;",
+   "For us His daily works He wrought;",
+   "By words and signs and actions thus",
+   "Still seeking not Himself, but us."
+  ],
+  [
+   "For us to wicked men betrayed,",
+   "Scourged, mocked, in crown of thorns arrayed,",
+   "For us He bore the cross's death,",
+   "For us at length gave up His breath."
+  ],
+  [
+   "For us He rose from death again;",
+   "For us He went on high to reign;",
+   "For us He sent His Spirit here,",
+   "To guide, to strengthen, and to cheer."
+  ],
+  [
+   "All honor, laud, and glory be,",
+   "O Jesus, virgin-born to Thee!",
+   "All glory, as is ever meet",
+   "To Father and to Paraclete."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "ephesians",
+   "chapter": 3,
+   "from": 14,
+   "to": 21
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 7,
+   "to": 10
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 38,
+   "to": 39
+  },
+  {
+   "book": "1-peter",
+   "chapter": 5,
+   "from": 6,
+   "to": 7
+  }
+ ],
+ "id": "o-love-how-deep-how-broad-how-high"
+}

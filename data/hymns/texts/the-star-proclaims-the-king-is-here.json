@@ -1,0 +1,80 @@
+{
+ "title": "The Star Proclaims the King is Here",
+ "altTitles": [
+  "Herod Why Dreadest thou a Foe?",
+  "How Vain the Cruel Herod's Fear",
+  "When Christ's Appearing Was Made Known",
+  "Why Herod Unrelenting Foe",
+  "Why Impious Herod, Shouldst Thou Fear"
+ ],
+ "author": "Coelius Sedulius (5th Century)",
+ "translator": "John Mason Neale (1818-1866)",
+ "meter": "8.8.8.8",
+ "credit": "Coelius Sedulius, c. 450. German version by M. Luther, 1543.  English translation by John Mason Neale, 1852.",
+ "tunes": [
+  {
+   "name": "Wo Gott Zum Haus",
+   "composer": "Wittenberg, 1533 from Klug's Geistliche Lieder"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The star proclaims the King is here;",
+ "verses": [
+  [
+   "The star proclaims the King is here;",
+   "But, Herod, why this senseless fear?",
+   "He takes no realms of earth away",
+   "Who gives the realms of heav'nly day."
+  ],
+  [
+   "The wiser Magi see from far",
+   "And follow on His guiding star;",
+   "And led by light, to light they press",
+   "And by their gifts their God confess."
+  ],
+  [
+   "Within the Jordan's crystal flood",
+   "In meekness stands the Lamb of God",
+   "And, sinless, sanctifies the wave,",
+   "Mankind from sin to cleanse and save."
+  ],
+  [
+   "At Cana first His pow'r is shown;",
+   "His might the blushing waters own",
+   "And, changing as He speaks the word,",
+   "Flow wine, obedient to their Lord."
+  ],
+  [
+   "All glory, Jesus, be to Thee",
+   "For this Thy glad epiphany;",
+   "Whom with the Father we adore",
+   "And Holy Ghost forevermore."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 2,
+   "from": 1,
+   "to": 12
+  },
+  {
+   "book": "ephesians",
+   "chapter": 1,
+   "from": 9
+  },
+  {
+   "book": "john",
+   "chapter": 18,
+   "from": 36,
+   "to": 37
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 29
+  }
+ ],
+ "id": "the-star-proclaims-the-king-is-here"
+}

@@ -1,0 +1,63 @@
+{
+ "title": "Savior, Who Thy Flock Art Feeding",
+ "altTitles": [],
+ "author": "William Augustus Mühlenberg (1796-1877)",
+ "translator": null,
+ "meter": "8.7.8.7",
+ "credit": "William Augustus Mühlenberg, 1826.",
+ "tunes": [
+  {
+   "name": "Batty",
+   "composer": "Basel, 1745 from Johann Thommen's Musicalischer Christenschatz"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Savior, who Thy flock art feeding",
+ "verses": [
+  [
+   "Savior, who Thy flock art feeding",
+   "With the Shepherd's kindest care,",
+   "All the feeble gently leading,",
+   "While the lambs Thy bosom share."
+  ],
+  [
+   "Now, these little ones receiving,",
+   "Fold them in Thy gracious arm;",
+   "There, we know, Thy Word believing,",
+   "Only there secure from harm."
+  ],
+  [
+   "Never, from Thy pasture roving,",
+   "Let them be the lion's prey;",
+   "Let Thy tenderness, so loving,",
+   "Keep them through life's dang'rous way."
+  ],
+  [
+   "Then within Thy fold eternal",
+   "Let them find a resting place,",
+   "Feed in pastures ever vernal,",
+   "Drink the rivers of Thy grace."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 40,
+   "from": 11
+  },
+  {
+   "book": "john",
+   "chapter": 10,
+   "from": 1,
+   "to": 18
+  },
+  {
+   "book": "ezekiel",
+   "chapter": 34,
+   "from": 11,
+   "to": 24
+  }
+ ],
+ "id": "savior-who-thy-flock-art-feeding"
+}

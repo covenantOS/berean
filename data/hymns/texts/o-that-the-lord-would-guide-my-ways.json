@@ -1,0 +1,78 @@
+{
+ "title": "O That The Lord Would Guide My Ways",
+ "altTitles": [],
+ "author": "Isaac Watts (1674-1748)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Isaac Watts, 1719, alt.",
+ "tunes": [
+  {
+   "name": "Evan",
+   "composer": "William Henry Havergal (1793-1870)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O that the Lord would guide my ways",
+ "verses": [
+  [
+   "O that the Lord would guide my ways",
+   "To keep His statutes still!",
+   "O that my God would grant me grace",
+   "To know and do His will!"
+  ],
+  [
+   "O send Thy Spirit down to write",
+   "Thy law upon my heart!",
+   "Nor let my tongue indulge deceit,",
+   "Nor act the liar's part."
+  ],
+  [
+   "From vanity turn off mine eyes;",
+   "Let no corrupt design,",
+   "Nor covetous desires arise",
+   "Within this soul of mine."
+  ],
+  [
+   "Order my footsteps by Thy Word,",
+   "And make my heart sincere;",
+   "Let sin have no dominion, Lord,",
+   "But keep my conscience clear."
+  ],
+  [
+   "Assist my soul, too apt to stray,",
+   "A stricter watch to keep;",
+   "And should I e'er forget Thy way,",
+   "Restore Thy wand'ring sheep."
+  ],
+  [
+   "Make me to walk in Thy commands, 'Tis a delightful road;",
+   "Nor let my head, or heart, or hands, Offend against my God."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 119,
+   "from": 5
+  },
+  {
+   "book": "ezekiel",
+   "chapter": 36,
+   "from": 25,
+   "to": 29
+  },
+  {
+   "book": "ezekiel",
+   "chapter": 11,
+   "from": 19,
+   "to": 20
+  },
+  {
+   "book": "isaiah",
+   "chapter": 24,
+   "from": 5
+  }
+ ],
+ "id": "o-that-the-lord-would-guide-my-ways"
+}

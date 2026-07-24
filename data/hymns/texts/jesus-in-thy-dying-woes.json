@@ -1,0 +1,76 @@
+{
+ "title": "Jesus, In Thy Dying Woes",
+ "altTitles": [],
+ "author": "Thomas Benson Pollock (1836-1896)",
+ "translator": null,
+ "meter": "7.7.7.6",
+ "credit": "Thomas B. Pollock, 1870.",
+ "tunes": [
+  {
+   "name": "Words on the Cross - The Litany",
+   "composer": "William Henry Monk (1823-1889)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus, in Thy dying woes,",
+ "verses": [
+  [
+   "Jesus, in Thy dying woes,",
+   "Even while Thy lifeblood flows,",
+   "Craving pardon for Thy foes;",
+   "Hear us, holy Jesus."
+  ],
+  [
+   "Savior, for our pardon sue,",
+   "When our sins Thy pangs renew,",
+   "For we know not what we do:",
+   "Hear us, holy Jesus."
+  ],
+  [
+   "O may we, who mercy need,",
+   "Be like Thee in heart and deed,",
+   "When with wrong our spirits bleed:",
+   "Hear us, holy Jesus."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 23,
+   "from": 34
+  },
+  {
+   "book": "luke",
+   "chapter": 23,
+   "from": 43
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 26,
+   "to": 27
+  },
+  {
+   "book": "matthew",
+   "chapter": 27,
+   "from": 46
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 28
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 30
+  },
+  {
+   "book": "luke",
+   "chapter": 23,
+   "from": 46
+  }
+ ],
+ "id": "jesus-in-thy-dying-woes"
+}

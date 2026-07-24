@@ -1,0 +1,82 @@
+{
+ "title": "Savior Of The Nations Come",
+ "altTitles": [],
+ "author": "Ambrose of Milan (340-397)",
+ "translator": "Martin Luther (1483-1546); William Morton Reynolds (1812-1876)",
+ "meter": "7.7.7.7",
+ "credit": "Ambrose of Milan, c. 397.  Translated to German by Martin Luther, 1524.",
+ "tunes": [
+  {
+   "name": "Nun Komm, Der Heiden Heiland",
+   "composer": "1524 from Walter's Geistliche Gesangbüchlein"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Savior of the nations, come;",
+ "verses": [
+  [
+   "Savior of the nations, come;",
+   "Virgin's Son, here make Thy home!",
+   "Marvel now, O heav'n and earth,",
+   "That the Lord chose such a birth."
+  ],
+  [
+   "Not by human flesh and blood;",
+   "By the Spirit of our God",
+   "Was the Word of God made flesh,",
+   "Woman's offspring, pure and fresh."
+  ],
+  [
+   "Wondrous birth! O wondrous Child",
+   "Of the virgin undefiled!",
+   "Though by all the world disowned,",
+   "Still to be in heaven enthroned."
+  ],
+  [
+   "From the Father forth He came",
+   "And returneth to the same,",
+   "Captive leading death and hell",
+   "High the song of triumph swell!"
+  ],
+  [
+   "Thou, the Father's only Son,",
+   "Hast o'er sin the vict'ry won.",
+   "Boundless shall Thy kingdom be;",
+   "When shall we its glories see?"
+  ],
+  [
+   "Brightly doth Thy manger shine,",
+   "Glorious is its light divine.",
+   "Let not sin o'ercloud this light;",
+   "Ever be our faith thus bright."
+  ],
+  [
+   "Praise to God the Father sing,",
+   "Praise to God the Son, our King,",
+   "Praise to God the Spirit be",
+   "Ever and eternally."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 67,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 1,
+   "to": 4
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 30,
+   "to": 32
+  }
+ ],
+ "id": "savior-of-the-nations-come"
+}

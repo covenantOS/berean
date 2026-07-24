@@ -1,0 +1,82 @@
+{
+ "title": "The Advent of Our God",
+ "altTitles": [],
+ "author": "Coffin, Charles (or Carolo or Carolus) (1676-1749)",
+ "translator": "John Chandler (1806-1876)",
+ "meter": "6.6.8.6",
+ "credit": "Charles Coffin, 1736.  translated by John Chandler, 1837, alt.",
+ "tunes": [
+  {
+   "name": "St. Thomas",
+   "composer": "Aaron Williams (1731-1776)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The advent of our God",
+ "verses": [
+  [
+   "The advent of our God",
+   "Shall be our theme for prayer",
+   "Come, let us meet him on the road",
+   "And place for Him prepare."
+  ],
+  [
+   "The everlasting Son",
+   "Incarnate stoops to be,",
+   "Himself the servant's form puts on",
+   "To set His people free."
+  ],
+  [
+   "Come, Zion's daughter, rise",
+   "To meet your lowly King,",
+   "Nor let your faithless heart despise",
+   "The peace He comes to bring."
+  ],
+  [
+   "As judge, on clouds of light,",
+   "He soon will come again",
+   "And all His scattered saints unite",
+   "With Him on high to reign."
+  ],
+  [
+   "Before the dawning day",
+   "Let sin be put to flight;",
+   "No longer let the law hold sway,",
+   "But walk in freedom's light."
+  ],
+  [
+   "All glory to the Son",
+   "Who comes to set us free,",
+   "With Father, Spirit, ever One,",
+   "Through all eternity."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 19,
+   "from": 28,
+   "to": 40
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 5,
+   "to": 11
+  },
+  {
+   "book": "ephesians",
+   "chapter": 4,
+   "from": 22,
+   "to": 24
+  },
+  {
+   "book": "daniel",
+   "chapter": 7,
+   "from": 13,
+   "to": 14
+  }
+ ],
+ "id": "the-advent-of-our-god"
+}

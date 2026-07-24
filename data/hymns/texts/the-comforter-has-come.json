@@ -1,0 +1,84 @@
+{
+ "title": "The Comforter Has Come",
+ "altTitles": [],
+ "author": "Frank Bottome (1823-1894)",
+ "translator": null,
+ "meter": "12.12.12.6",
+ "credit": "Frank Bottome, 1890.",
+ "tunes": [
+  {
+   "name": "The Comforter Has Come",
+   "composer": "William James Kirkpatrick (1838-1921)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O spread the tidings 'round, wherever man is found,",
+ "verses": [
+  [
+   "O spread the tidings 'round, wherever man is found,",
+   "Wherever human hearts and human woes abound;",
+   "Let ev'ry Christian tongue proclaim the joyful sound:",
+   "The Comforter has come!"
+  ],
+  [
+   "The long, long night is past, the morning breaks at last,",
+   "And hush'd the dreadful wail and fury of the blast,",
+   "As o'er the golden hills the day advances fast!",
+   "The Comforter has come!"
+  ],
+  [
+   "Lo, the great King of kings, with healing in His wings,",
+   "To ev'ry captive soul a full deliv'rance brings;",
+   "And thro' the vacant cells the song of triumph rings;",
+   "The Comforter has come!"
+  ],
+  [
+   "O boundless love divine! how shall this tongue of mine",
+   "To wond'ring mortals tell the matchless grace divine;",
+   "That I, a child of hell, should in His image shine!",
+   "The Comforter has come!"
+  ],
+  [
+   "Sing, till the echoes fly above the vaulted sky,",
+   "And all the saints above to all below reply,",
+   "In strains of endless love the song that ne'er will die:",
+   "The Comforter has come!"
+  ]
+ ],
+ "refrain": [
+  "The Comforter has come, The Comforter has come!",
+  "The Holy Ghost from heav'n, The Father's promise giv'n;",
+  "O spread the tidings 'round, Wherever man is found:",
+  "The Comforter has come!"
+ ],
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 14,
+   "from": 16
+  },
+  {
+   "book": "psalms",
+   "chapter": 23,
+   "from": 4
+  },
+  {
+   "book": "isaiah",
+   "chapter": 40,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "isaiah",
+   "chapter": 66,
+   "from": 12,
+   "to": 14
+  },
+  {
+   "book": "matthew",
+   "chapter": 5,
+   "from": 14
+  }
+ ],
+ "id": "the-comforter-has-come"
+}

@@ -1,0 +1,72 @@
+{
+ "title": "From Nazareth",
+ "altTitles": [],
+ "author": "Margaret Elizabeth Munson Sangster (1838-1912)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Margaret E. Sangster, 1911. Music: 'Puer Nobis Nascitur' Michael Praetorius, 1609.",
+ "tunes": [
+  {
+   "name": "Puer Nobis Nascitur",
+   "composer": "Michael Praetorius (1571-1621)"
+  }
+ ],
+ "lyricSources": [
+  "\"A Little Book of Homespun Verse\" by Margaret Sangster, 1911. page 21-22."
+ ],
+ "firstLine": "Comes any good from Nazareth?",
+ "verses": [
+  [
+   "Comes any good from Nazareth?",
+   "The scornful challenge as of old",
+   "Is flung on many'a jeering breath",
+   "From cloistered cells and marts of gold."
+  ],
+  [
+   "Comes any good from Nazareth?",
+   "Behold, the mighty Nazarene,",
+   "The Lord of life, the Lord of death,",
+   "Through warring ages walks serene."
+  ],
+  [
+   "One touch upon His garment's fringe",
+   "Still heals the hurt of bitter years.",
+   "Before Him yet the demons cringe,",
+   "He gives the wine of joy for tears."
+  ],
+  [
+   "O city of the Carpenter,",
+   "Upon the hill slope old and gray,",
+   "The world among its pain and stir",
+   "Turns yearning eyes on thee today."
+  ],
+  [
+   "For He who dwelt in Nazareth,",
+   "And wrought with toil of hand and brain,",
+   "Alone gives victory to faith",
+   "Until the day He come again."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 43,
+   "to": 51
+  },
+  {
+   "book": "mark",
+   "chapter": 5,
+   "from": 25,
+   "to": 34
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 32,
+   "to": 34
+  }
+ ],
+ "id": "from-nazareth"
+}

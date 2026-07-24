@@ -1,0 +1,53 @@
+{
+ "title": "There's a Great Day Coming",
+ "altTitles": [],
+ "author": "Will Lamartine Thompson (1847-1909)",
+ "translator": null,
+ "meter": "11.9.14",
+ "credit": "Will L. Thompson, 1886.",
+ "tunes": [
+  {
+   "name": "Theres a Great Day Coming",
+   "composer": "Will Lamartine Thompson (1847-1909)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "There's a great day coming, A great day coming,",
+ "verses": [
+  [
+   "There's a great day coming, A great day coming,",
+   "There's a great day coming by and by;",
+   "When the saints and the sinners shall be parted right and left,"
+  ],
+  [
+   "There's a bright day coming, A bright day coming,",
+   "There's a bright day coming by and by;",
+   "But its brightness shall only come to them that love the Lord,"
+  ],
+  [
+   "There's a sad day coming, A sad day coming,",
+   "There's a sad day coming by and by;",
+   "When the sinner shall hear his doom, \"Depart, I know ye not,\""
+  ]
+ ],
+ "refrain": [
+  "Are you ready for that day to come? Are you ready?",
+  "Are you ready? Are you ready for the judgment day?",
+  "Are you ready? Are you ready? For the judgment day?"
+ ],
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 25,
+   "from": 31,
+   "to": 46
+  },
+  {
+   "book": "matthew",
+   "chapter": 25,
+   "from": 1,
+   "to": 13
+  }
+ ],
+ "id": "there-s-a-great-day-coming"
+}

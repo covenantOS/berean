@@ -1,0 +1,83 @@
+{
+ "title": "All Who Believe and Are Baptized",
+ "altTitles": [
+  "He That Believes and Is Baptized"
+ ],
+ "author": "Thomas Hansen Kingo (1634-1703)",
+ "translator": "George Alfred Taylor Rygh (1860-1942)",
+ "meter": "8.7.8.7.8.8.7",
+ "credit": "Thomas Hansen Kingo, 1689.  Translation by George Alfred Taylor Rygh, 1909, alt.",
+ "tunes": [
+  {
+   "name": "Es ist das Heil uns Kommen Her",
+   "composer": "Wittenberg, 1524 from Etlich Christlich Lider"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "All who believe and are baptized",
+ "verses": [
+  [
+   "All who believe and are baptized",
+   "shall see the Lord's salvation;",
+   "baptized into the death of Christ,",
+   "they are a new creation.",
+   "through Christ's redemption they shall stand",
+   "among the glorious heav'nly band",
+   "of every tribe and nation."
+  ],
+  [
+   "With one accord, O God, we pray:",
+   "grant us thy Holy Spirit;",
+   "look thou on our infirmity",
+   "through Jesus' blood and merit.",
+   "Grant us to grow in grace each day",
+   "that by this sacrament we may",
+   "eternal life inherit."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "mark",
+   "chapter": 16,
+   "from": 16
+  },
+  {
+   "book": "romans",
+   "chapter": 6,
+   "from": 3,
+   "to": 4
+  },
+  {
+   "book": "titus",
+   "chapter": 3,
+   "from": 4,
+   "to": 7
+  },
+  {
+   "book": "jude",
+   "chapter": 1,
+   "from": 20,
+   "to": 21
+  },
+  {
+   "book": "isaiah",
+   "chapter": 53,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "colossians",
+   "chapter": 2,
+   "from": 11,
+   "to": 14
+  },
+  {
+   "book": "revelation",
+   "chapter": 7,
+   "from": 13,
+   "to": 14
+  }
+ ],
+ "id": "all-who-believe-and-are-baptized"
+}

@@ -1,0 +1,73 @@
+{
+ "title": "Wilt Thou, O Man, Live Happily",
+ "altTitles": [
+  "Man, Wouldst Thou Live All Blissfully"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.8.8.7",
+ "credit": "Martin Luther, 1524.  Translated by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Mensch, Willt du Leben Seligich",
+   "composer": "Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Wilt thou, O man, live happily,",
+ "verses": [
+  [
+   "Wilt thou, O man, live happily,",
+   "And dwell with God eternally,",
+   "The ten commandments keep, for thus",
+   "Our God Himself biddeth us."
+  ],
+  [
+   "I am the Lord and God! take heed",
+   "No other god doth thee mislead;",
+   "Thy heart shall trust alone in Me,",
+   "My kingdom then thou shalt be."
+  ],
+  [
+   "Honor My Name in word and deed,",
+   "And call on Me in time of need:",
+   "Hallow the Sabbath, that I may",
+   "Work in thy heart on that day."
+  ],
+  [
+   "Obedient always, next to Me,",
+   "To father and to mother be;",
+   "Kill no man: even anger dread;",
+   "Keep sacred thy marriage bed."
+  ],
+  [
+   "Steal not, nor do thy neighbor wrong",
+   "By bearing witness with false tongue;",
+   "Thy neighbor's wife desire thou not,",
+   "Nor grudge him aught he hath got."
+  ]
+ ],
+ "refrain": [
+  "Kyr' eleison!"
+ ],
+ "refs": [
+  {
+   "book": "exodus",
+   "chapter": 20,
+   "from": 1,
+   "to": 17
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 5,
+   "from": 6,
+   "to": 21
+  },
+  {
+   "book": "psalms",
+   "chapter": 90,
+   "from": 1
+  }
+ ],
+ "id": "wilt-thou-o-man-live-happily"
+}

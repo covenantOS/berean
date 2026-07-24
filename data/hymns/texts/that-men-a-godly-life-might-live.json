@@ -1,0 +1,80 @@
+{
+ "title": "That Men a godly Life Might Live",
+ "altTitles": [
+  "These Are the Holy Ten Commands"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.8.8.7",
+ "credit": "Martin Luther, 1524.  Translated by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Dies sind die heil`gen zehu Gebot",
+   "composer": "1524 from Erfurt Enchiridion"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "That man a godly life might live,",
+ "verses": [
+  [
+   "That man a godly life might live,",
+   "God did these ten commandments give",
+   "By His true servant Moses, high",
+   "Upon the mount Sinai."
+  ],
+  [
+   "I am thy God and Lord alone,",
+   "No other God besides Me own;",
+   "On My great mercy venture thee,",
+   "With all thy heart love thou Me."
+  ],
+  [
+   "By idle word and speech profane",
+   "Take not My holy Name in vain;",
+   "And praise not aught as good and true",
+   "But what God doth say and do."
+  ],
+  [
+   "Hallow the day which God hath blest,",
+   "That thou and all thy house may rest;",
+   "Keep hand and heart from labor free,",
+   "That God may so work in thee."
+  ],
+  [
+   "Give to thy parents honor due,",
+   "Be dutiful and loving too;",
+   "And help them when their strength decays",
+   "So shalt thou have length of days."
+  ]
+ ],
+ "refrain": [
+  "Have mercy, Lord."
+ ],
+ "refs": [
+  {
+   "book": "exodus",
+   "chapter": 20,
+   "from": 1,
+   "to": 17
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 5,
+   "from": 6,
+   "to": 21
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 2,
+   "from": 5,
+   "to": 6
+  },
+  {
+   "book": "psalms",
+   "chapter": 60,
+   "from": 11,
+   "to": 12
+  }
+ ],
+ "id": "that-men-a-godly-life-might-live"
+}

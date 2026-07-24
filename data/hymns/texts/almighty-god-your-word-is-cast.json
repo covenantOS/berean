@@ -1,0 +1,99 @@
+{
+ "title": "Almighty God Your Word Is Cast",
+ "altTitles": [],
+ "author": "John Cawood (1775-1852)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "John Cawood, 1816.  Music: 'St. Anne' William Croft, 1708.",
+ "tunes": [
+  {
+   "name": "St. Anne",
+   "composer": "William Croft (1678-1727)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Almighty God, Your Word is cast",
+ "verses": [
+  [
+   "Almighty God, Your Word is cast",
+   "Like seed into the ground;",
+   "Now let the dew of Heav'n descend,",
+   "And righteous fruits abound."
+  ],
+  [
+   "Let not the foe of Christ and man",
+   "This holy seed remove,",
+   "But give it root in ev'ry heart",
+   "To bring forth fruits of love."
+  ],
+  [
+   "Let not the world's deceitful cares",
+   "The rising plant destroy.",
+   "But let it yield a hundredfold",
+   "The fruits of peace and joy."
+  ],
+  [
+   "Nor let Your Word so kindly sent",
+   "To raise us to Your throne",
+   "Return to You, and sadly tell",
+   "That we reject Your Son."
+  ],
+  [
+   "Oft as the precious seed is sown,",
+   "Your quick'ning grace bestow,",
+   "That all whose souls the truth receive,",
+   "Its saving power may know."
+  ],
+  [
+   "Great God, come down and on Your Word",
+   "Your mighty power bestow,",
+   "That all who hear the joyful sound,",
+   "Your saving grace may know."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 8,
+   "from": 4,
+   "to": 15
+  },
+  {
+   "book": "mark",
+   "chapter": 4,
+   "from": 3,
+   "to": 8
+  },
+  {
+   "book": "mark",
+   "chapter": 4,
+   "from": 13,
+   "to": 20
+  },
+  {
+   "book": "matthew",
+   "chapter": 13,
+   "from": 3,
+   "to": 9
+  },
+  {
+   "book": "matthew",
+   "chapter": 13,
+   "from": 18,
+   "to": 30
+  },
+  {
+   "book": "romans",
+   "chapter": 1,
+   "from": 16
+  },
+  {
+   "book": "luke",
+   "chapter": 4,
+   "from": 17,
+   "to": 27
+  }
+ ],
+ "id": "almighty-god-your-word-is-cast"
+}

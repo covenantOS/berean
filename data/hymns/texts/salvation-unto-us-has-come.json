@@ -1,0 +1,90 @@
+{
+ "title": "Salvation Unto Us Has Come",
+ "altTitles": [
+  "To Us Salvation Now Is Come"
+ ],
+ "author": "Paul Speratus (1484-1551)",
+ "translator": "composite",
+ "meter": "8.7.8.7.8.8.7",
+ "credit": "Paul Speratus, 1523.  Translation composite.",
+ "tunes": [
+  {
+   "name": "Es ist das Heil uns Kommen Her",
+   "composer": "Wittenberg, 1524 from Etlich Christlich Lider"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Salvation unto us has come",
+ "verses": [
+  [
+   "Salvation unto us has come",
+   "By God's free grace and favor;",
+   "Good works cannot avert our doom,",
+   "They help and save us never.",
+   "Faith looks to Jesus Christ alone,",
+   "Who did for all the world atone;",
+   "He is our one Redeemer."
+  ],
+  [
+   "What God did in His law demand",
+   "And none to Him could render",
+   "Caused wrath and woe on every hand",
+   "For man, the vile offender.",
+   "Our flesh has not those pure desires",
+   "The spirit of the Law requires,",
+   "And lost is our condition."
+  ],
+  [
+   "It was a false, misleading dream",
+   "That God His Law had given",
+   "So sinners could themselves redeem",
+   "And by their works gain Heaven.",
+   "The Law is but a mirror bright",
+   "To bring the inbred sin to light",
+   "That lurks within our nature."
+  ],
+  [
+   "From sin our flesh could not abstain",
+   "Sin held its sway unceasing;",
+   "The task was useless and in vain,",
+   "Our guilt was e'er increasing.",
+   "None can remove sin's poisoned dart",
+   "Or purify our guileful heart?",
+   "So deep is our corruption."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "ephesians",
+   "chapter": 2,
+   "from": 1,
+   "to": 10
+  },
+  {
+   "book": "romans",
+   "chapter": 3,
+   "from": 10,
+   "to": 31
+  },
+  {
+   "book": "romans",
+   "chapter": 5,
+   "from": 1,
+   "to": 11
+  },
+  {
+   "book": "galatians",
+   "chapter": 4,
+   "from": 1,
+   "to": 25
+  },
+  {
+   "book": "luke",
+   "chapter": 6,
+   "from": 47,
+   "to": 49
+  }
+ ],
+ "id": "salvation-unto-us-has-come"
+}

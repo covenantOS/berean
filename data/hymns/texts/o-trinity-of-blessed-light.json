@@ -1,0 +1,70 @@
+{
+ "title": "O Trinity of Blessed Light",
+ "altTitles": [
+  "Thou Who Art Three in Unity"
+ ],
+ "author": "Ambrose of Milan (340-397)",
+ "translator": "John Mason Neale (1818-1866)",
+ "meter": "8.8.8.8",
+ "credit": "Ambrose of Milan, 4th Century.  German version by M. Luther, 1543.",
+ "tunes": [
+  {
+   "name": "O Lux Beata Trinitas",
+   "composer": "Latin"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "O Trinity of blessèd light,",
+ "verses": [
+  [
+   "O Trinity of blessèd light,",
+   "O Unity of princely might,",
+   "The fiery sun now goes his way;",
+   "Shed Thou within our hearts a ray."
+  ],
+  [
+   "To Thee our morning song of praise,",
+   "To Thee our evening prayer we raise;",
+   "O grant us with Thy saints on high",
+   "To praise Thee through eternity."
+  ],
+  [
+   "All laud to God the Father be,",
+   "All praise, eternal Son, to Thee,",
+   "All glory, as is ever meet,",
+   "To God the holy Paraclete."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "genesis",
+   "chapter": 1,
+   "from": 3
+  },
+  {
+   "book": "1-john",
+   "chapter": 1,
+   "from": 5,
+   "to": 7
+  },
+  {
+   "book": "2-corinthians",
+   "chapter": 4,
+   "from": 6
+  },
+  {
+   "book": "ephesians",
+   "chapter": 5,
+   "from": 8,
+   "to": 14
+  },
+  {
+   "book": "psalms",
+   "chapter": 113,
+   "from": 2,
+   "to": 3
+  }
+ ],
+ "id": "o-trinity-of-blessed-light"
+}

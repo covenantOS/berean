@@ -1,0 +1,61 @@
+{
+ "title": "Jesus Christ Is Risen Today",
+ "altTitles": [],
+ "author": "Bohemian; Charles Wesley (1707-1788)",
+ "translator": "John Arnold",
+ "meter": "7.7.7.7.16",
+ "credit": "14th Century Bohemian Latin carol. Stanzas 1-3 translated in John Arnold's Compleat Psalmist, 1749.",
+ "tunes": [
+  {
+   "name": "Easter Hymn",
+   "composer": "1708 from Lyra Davidica"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus Christ is ris'n today,",
+ "verses": [
+  [
+   "Jesus Christ is ris'n today,",
+   "Alleluia! Our triumphant",
+   "holy day, Alleluia!",
+   "Who did once, upon the cross,",
+   "Alleluia! Suffer to redeem our loss, Alleluia!"
+  ],
+  [
+   "Hymns of praise then let us sing,",
+   "Alleluia! Unto Christ,",
+   "our heav'nly King, Alleluia!",
+   "Who endured the cross and grave,",
+   "Alleluia! Sinners to redeem and save, Alleluia!"
+  ],
+  [
+   "But the pain which He endured,",
+   "Alleluia! Our salvation",
+   "hath procured, Alleluia!",
+   "Now above the sky He's king,",
+   "Alleluia! Where the angels ever sing, Alleluia!"
+  ],
+  [
+   "Sing we to our God above,",
+   "Alleluia! Praise eternal",
+   "as His love, Alleluia!",
+   "Praise Him, all you heav'nly host,",
+   "Alleluia! Father, Son, and Holy Ghost, Alleluia!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 28,
+   "from": 6
+  },
+  {
+   "book": "luke",
+   "chapter": 24,
+   "from": 5,
+   "to": 7
+  }
+ ],
+ "id": "jesus-christ-is-risen-today"
+}

@@ -1,0 +1,70 @@
+{
+ "title": "Joy to the World",
+ "altTitles": [],
+ "author": "Isaac Watts (1674-1748)",
+ "translator": null,
+ "meter": "8.6.8.6.6.8",
+ "credit": "Isaac Watts, 1719.",
+ "tunes": [
+  {
+   "name": "Antioch",
+   "composer": "George Frederick Handel (1685-1759)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Joy to the world, the Lord is come!",
+ "verses": [
+  [
+   "Joy to the world, the Lord is come!",
+   "Let earth receive her King;",
+   "Let ev'ry heart prepare Him room,",
+   "And Heav'n and nature sing,",
+   "And Heav'n and nature sing,",
+   "And Heav'n, and Heav'n, and nature sing."
+  ],
+  [
+   "Joy to the earth, the Savior reigns!",
+   "Let men their songs employ;",
+   "While fields and floods, rocks, hills and plains",
+   "Repeat the sounding joy,",
+   "Repeat the sounding joy,",
+   "Repeat, repeat, the sounding joy."
+  ],
+  [
+   "No more let sins and sorrows grow,",
+   "Nor thorns infest the ground;",
+   "He comes to make His blessings flow",
+   "Far as the curse is found,",
+   "Far as the curse is found,",
+   "Far as, far as, the curse is found."
+  ],
+  [
+   "He rules the world with truth and grace,",
+   "And makes the nations prove",
+   "The glories of His righteousness,",
+   "And wonders of His love,",
+   "And wonders of His love,",
+   "And wonders, wonders, of His love."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 10
+  },
+  {
+   "book": "psalms",
+   "chapter": 97,
+   "from": 1
+  },
+  {
+   "book": "psalms",
+   "chapter": 98,
+   "from": 4,
+   "to": 9
+  }
+ ],
+ "id": "joy-to-the-world"
+}

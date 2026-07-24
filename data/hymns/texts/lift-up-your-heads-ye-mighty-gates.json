@@ -1,0 +1,105 @@
+{
+ "title": "Lift Up Your Heads, Ye Mighty Gates",
+ "altTitles": [],
+ "author": "Georg Weissel (1590-1635)",
+ "translator": "Catherine Winkworth (1827-1878)",
+ "meter": "8.8.8.8.8.8.6.6",
+ "credit": "Georg Weissel, 1642. Translated by Catherine Winkworth, 1855.",
+ "tunes": [
+  {
+   "name": "Milwaukee",
+   "composer": "August Lemke (1820-1913)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Lift up your heads, ye mighty gates!",
+ "verses": [
+  [
+   "Lift up your heads, ye mighty gates!",
+   "Behold, the King of glory waits;",
+   "The King of kings is drawing near,",
+   "The Savior of the world is here;",
+   "Life and salvation doth He bring,",
+   "Wherefore rejoice and gladly sing:",
+   "We praise Thee, Father, now!",
+   "Creator, wise art Thou!"
+  ],
+  [
+   "The Lord is just, a Helper tried,",
+   "Mercy is ever at His side,",
+   "His kingly crown is holiness,",
+   "His scepter, pity in distress,",
+   "The end of all our woe He brings;",
+   "Wherefore the earth is glad and sings:",
+   "We praise Thee, Savior, now!",
+   "Mighty in deed art Thou!"
+  ],
+  [
+   "O blest the land, the city blest,",
+   "Where Christ the Ruler is confessed!",
+   "O happy hearts and happy homes",
+   "To whom this King in triumph comes!",
+   "The cloudless Sun of joy He is,",
+   "Who bringeth pure delight and bliss.",
+   "O Comforter divine,",
+   "What boundless grace is Thine!"
+  ],
+  [
+   "Fling wide the portals of your heart;",
+   "Make it a temple, set apart",
+   "From earthly use for heav'ns employ,",
+   "Adorned with prayer and love and joy;",
+   "So shall your Sovereign enter in,",
+   "and new and nobler life begin;",
+   "To Thee, O God, be praise,",
+   "For Word, and deed, and grace!"
+  ],
+  [
+   "Redeemer, come! I open wide",
+   "My heart to Thee; here, Lord, abide!",
+   "Let me Thy inner presence feel,",
+   "Thy grace and love in me reveal.",
+   "Thy Holy Spirit guide us on,",
+   "Until our glorious goal be won!",
+   "Eternal praise and fame",
+   "We offer to Thy Name."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 24,
+   "from": 7
+  },
+  {
+   "book": "psalms",
+   "chapter": 118,
+   "from": 19,
+   "to": 20
+  },
+  {
+   "book": "matthew",
+   "chapter": 3,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "isaiah",
+   "chapter": 26,
+   "from": 2
+  },
+  {
+   "book": "isaiah",
+   "chapter": 60,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 20
+  }
+ ],
+ "id": "lift-up-your-heads-ye-mighty-gates"
+}

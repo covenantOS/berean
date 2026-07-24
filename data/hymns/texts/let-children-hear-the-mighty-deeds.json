@@ -1,0 +1,69 @@
+{
+ "title": "Let Children Hear The Mighty Deeds",
+ "altTitles": [],
+ "author": "Isaac Watts (1674-1748)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Isaac Watts, 1719.  Music: 'Lea' James Lea Summers, (1837-1881).",
+ "tunes": [
+  {
+   "name": "Lea",
+   "composer": "James Lea Summers (1837-1881)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Let children hear the mighty deeds",
+ "verses": [
+  [
+   "Let children hear the mighty deeds",
+   "Which God performed of old;",
+   "Which in our younger years we saw,",
+   "And which our fathers told."
+  ],
+  [
+   "He bids us make His glories known,",
+   "His works of pow'r and grace;",
+   "And we'll convey His wonders down",
+   "Through every rising race."
+  ],
+  [
+   "Our lips shall tell them to our sons,",
+   "And they again to theirs;",
+   "That generations yet unborn",
+   "May teach them to their heirs."
+  ],
+  [
+   "Thus shall they learn in God alone",
+   "Their hope securely stands,",
+   "That they may ne'er forget His work",
+   "But practice His commands."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 78,
+   "from": 5,
+   "to": 8
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 4,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 6,
+   "from": 7
+  },
+  {
+   "book": "deuteronomy",
+   "chapter": 11,
+   "from": 19,
+   "to": 20
+  }
+ ],
+ "id": "let-children-hear-the-mighty-deeds"
+}

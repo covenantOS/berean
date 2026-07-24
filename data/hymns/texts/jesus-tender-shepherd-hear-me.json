@@ -1,0 +1,50 @@
+{
+ "title": "Jesus, Tender Shepherd, Hear Me",
+ "altTitles": [],
+ "author": "Mary Lundie Duncan (1814-1840)",
+ "translator": null,
+ "meter": "8.7.8.7",
+ "credit": "Mary L. Duncan, 1839.  Music and Setting: 'Evening Prayer' John Stainer, 1898.",
+ "tunes": [
+  {
+   "name": "Evening Prayer",
+   "composer": "John Stainer (1840-1901)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus, tender Shepherd, hear me;",
+ "verses": [
+  [
+   "Jesus, tender Shepherd, hear me;",
+   "Bless Thy little lamb tonight;",
+   "Through the darkness be Thou near me;",
+   "Watch my sleep till morning light."
+  ],
+  [
+   "All this day thy hand has led me,",
+   "And I thank Thee for Thy care;",
+   "Thou hast clothed me, warmed and fed me,",
+   "Listen to my evening prayer."
+  ],
+  [
+   "Let my sins be all forgiven;",
+   "Bless the friends I love so well;",
+   "Take me, when I die, to heaven,",
+   "Happy there with Thee to dwell."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 63,
+   "from": 8
+  },
+  {
+   "book": "john",
+   "chapter": 10,
+   "from": 11
+  }
+ ],
+ "id": "jesus-tender-shepherd-hear-me"
+}

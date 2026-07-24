@@ -1,0 +1,92 @@
+{
+ "title": "My Faith Looks Up To Thee",
+ "altTitles": [
+  "My Faith Looks Trustingly"
+ ],
+ "author": "Ray Palmer (1808-1887)",
+ "translator": null,
+ "meter": "6.6.4.6.6.6.4",
+ "credit": "Ray Palmer, 1830.  Music and Setting: 'Olivet' Lowell Mason, 1832.",
+ "tunes": [
+  {
+   "name": "Olivet",
+   "composer": "Lowell Mason (1792-1872)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "My faith looks up to Thee,",
+ "verses": [
+  [
+   "My faith looks up to Thee,",
+   "Thou Lamb of Calvary,",
+   "Savior divine!",
+   "Now hear me while I pray,",
+   "take all my guilt away,",
+   "O let me from this day",
+   "be wholly Thine!"
+  ],
+  [
+   "May Thy rich grace impart",
+   "Strength to my fainting heart,",
+   "my zeal inspire!",
+   "As Thou hast died for me,",
+   "O may my love to Thee,",
+   "Pure warm, and changeless be,",
+   "a living fire!"
+  ],
+  [
+   "While life's dark maze I tread,",
+   "And griefs around me spread,",
+   "be Thou my Guide;",
+   "Bid darkness turn to day,",
+   "wipe sorrow's tears away,",
+   "Nor let me ever stray",
+   "from Thee aside."
+  ],
+  [
+   "When ends life's transient dream,",
+   "When death's cold sullen stream",
+   "over me roll;",
+   "Blest Savior, then in love,",
+   "fear and distrust remove;",
+   "O bear me safe above,",
+   "a ransomed soul!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "2-corinthians",
+   "chapter": 5,
+   "from": 7
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 29
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 36
+  },
+  {
+   "book": "hebrews",
+   "chapter": 12,
+   "from": 2,
+   "to": 3
+  },
+  {
+   "book": "ephesians",
+   "chapter": 3,
+   "from": 12
+  },
+  {
+   "book": "revelation",
+   "chapter": 2,
+   "from": 10,
+   "to": 11
+  }
+ ],
+ "id": "my-faith-looks-up-to-thee"
+}

@@ -1,0 +1,73 @@
+{
+ "title": "Jesus, Thy Boundless Love To Me",
+ "altTitles": [],
+ "author": "Paul Gerhardt (1607-1676)",
+ "translator": "John Wesley (1703-1791)",
+ "meter": "8.8.8.8.8.8",
+ "credit": "Paul Gerhardt, 1653.  Translated by John Wesley, 1739.",
+ "tunes": [
+  {
+   "name": "Yoakley",
+   "composer": "William Yoakley"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus, Thy boundless love to me",
+ "verses": [
+  [
+   "Jesus, Thy boundless love to me",
+   "No thought can reach, no tongue declare;",
+   "Unite my thankful heart with Thee",
+   "And reign without a rival there.",
+   "To Thee alone, dear Lord, I live;",
+   "Myself to Thee, dear Lord, I give."
+  ],
+  [
+   "O, grant that nothing in my soul",
+   "May dwell but Thy pure love alone!",
+   "Oh, may Thy love possess me whole,",
+   "My joy, my treasure, and my crown!",
+   "All coldness from my heart remove;",
+   "My every act, word, thought, be love."
+  ],
+  [
+   "O love, how cheering is thy ray!",
+   "All pain before thy presence flies;",
+   "Care, anguish, sorrow, melt away",
+   "Where'er thy healing beams arise.",
+   "O Jesus, nothing may I see,",
+   "Nothing desire or seek, but Thee!"
+  ],
+  [
+   "This love unwearied I pursue",
+   "And dauntlessly to Thee aspire.",
+   "Oh, may Thy love my hope renew",
+   "Burn in my soul like heav'nly fire!",
+   "And day and night be all my care",
+   "To guard this sacred treasure there."
+  ],
+  [
+   "My Savior, Thou Thy love to me",
+   "In shame, in want, in pain, hast showed;",
+   "For me, on the accursed tree,",
+   "Thou pourest forth Thy guiltless blood;",
+   "Thy wounds upon my heart impress,",
+   "Nor aught shall the lov'd stamp efface."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "ephesians",
+   "chapter": 3,
+   "from": 18
+  },
+  {
+   "book": "matthew",
+   "chapter": 6,
+   "from": 19,
+   "to": 21
+  }
+ ],
+ "id": "jesus-thy-boundless-love-to-me"
+}

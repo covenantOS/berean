@@ -696,6 +696,19 @@ export const RIGHTS_REGISTRY: RightsEntry[] = [
     status: "shipped",
   },
   {
+    id: "openhymnal-pd",
+    title: "The Open Hymnal Project (2014.06), the public-domain hymnbook",
+    kind: "hymnal",
+    rightsHolder: "Public domain (per-part marking in each score file)",
+    license: "Public domain",
+    source: "The Open Hymnal Project: http://openhymnal.org/OpenHymnal2014.06-abc.zip with the release's ThML text http://openhymnal.org/openhymnal.201406.xml (terms: http://openhymnal.org/copying.html)",
+    sourceRetrieved: "2026-07-23",
+    allowedUses: ["presentation", "search", "quotation", "export", "ai-indexing", "offline"],
+    notes:
+      "The project's copying page lists copyright per hymn part (words, translation, music, setting) inside each file and places every part marked 'public domain' outside copyright in the United States; its own produced content is public domain. Berean ships the words only: the build (scripts/build-hymns.mjs) admits a score when its copyright line claims the public domain with no dated claim on the words or lyrics, and the 16 files whose words ride a 'free for Christian worship' license or a modern words copyright are excluded and recorded. 250 hymns ship from the 306 scores: verse text recovered from the sung underlay and the after-score blocks and checked letter-for-letter against the release's own text edition (or the project's current lyrics page for scores the 2014.06 ThML omits); scripture references from each file's %OHSCRIP line, validated against the canon (two printed references fail and sit in the build report); each hymn carries author, translator, meter, tune, and its printed lyric source. Vendored at data/_sources/openhymnal/ (see PROVENANCE.md); built into data/hymns/index.json and data/hymns/texts. Ships in the Chapel hymnbook, the hymn reader, and the service composer's hymn elements. Music, settings, and the project's scores themselves are not shipped. The Scottish Psalter remains the planned psalter below; the Olney Hymns (Standard Ebooks' public-domain production) is the registered candidate for the next hymnal supplement.",
+    status: "shipped",
+  },
+  {
     id: "psalter-1650",
     title: "The Psalms of David in Metre (Scottish Psalter, 1650)",
     kind: "hymnal",

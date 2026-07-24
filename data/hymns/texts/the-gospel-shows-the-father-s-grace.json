@@ -1,0 +1,80 @@
+{
+ "title": "The Gospel Shows The Father's Grace",
+ "altTitles": [],
+ "author": "Matthias Loy (1828-1915)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Matthias Loy, 1863.",
+ "tunes": [
+  {
+   "name": "Herr Jesu Christ, Dict Zu Uns Wend",
+   "composer": "Dresden, 1628 from Cantionale Germanicum"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The Gospel shows the Father's grace,",
+ "verses": [
+  [
+   "The Gospel shows the Father's grace,",
+   "Who sent his Son to save our race,",
+   "Proclaims how Jesus lived and died",
+   "That man might thus be justified."
+  ],
+  [
+   "It sets the Lamb before our eyes,",
+   "Who made th'atoning sacrifice,",
+   "And calls the souls with guilt oppressed",
+   "To come and find eternal rest."
+  ],
+  [
+   "It brings the Savior's righteousness",
+   "Our souls to robe in royal dress;",
+   "From all our guilt it brings release",
+   "And gives the troubled conscience peace."
+  ],
+  [
+   "It is the pow'r of God to save",
+   "From sin and Satan and the grave;",
+   "It works the faith, which firmly clings",
+   "To all the treasures which it brings."
+  ],
+  [
+   "It bears to all the tidings glad",
+   "And bids their hearts no more be sad;",
+   "The heavy laden souls it cheers",
+   "And banishes their guilty fears."
+  ],
+  [
+   "May we in faith its tidings learn",
+   "Nor thanklessly its blessings spurn;",
+   "May we in faith its truth confess",
+   "And praise the Lord our Righteousness!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "romans",
+   "chapter": 1,
+   "from": 16,
+   "to": 17
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "hebrews",
+   "chapter": 9,
+   "from": 28
+  }
+ ],
+ "id": "the-gospel-shows-the-father-s-grace"
+}

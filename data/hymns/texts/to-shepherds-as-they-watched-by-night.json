@@ -1,0 +1,80 @@
+{
+ "title": "To Shepherds As They Watched By Night",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.8.8.8",
+ "credit": "Martin Luther, 1543. translated by Richard Massie, 1854.",
+ "tunes": [
+  {
+   "name": "Vom Himmel Hoch",
+   "composer": "Leipzig, 1539 from Schumann's Geistliche Lieder"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "To shepherds as they watched by night",
+ "verses": [
+  [
+   "To shepherds as they watched by night",
+   "Appeared a host of angels bright;",
+   "Behold the tender Babe, they said,",
+   "In yonder lowly manger laid."
+  ],
+  [
+   "At Bethlehem, in David's town,",
+   "As Micah did of old make known;",
+   "'Tis Jesus Christ, your Lord and King,",
+   "Who doth to all salvation bring."
+  ],
+  [
+   "Oh, then rejoice that through His Son",
+   "God is with sinners now at one;",
+   "Made like yourselves of flesh and blood,",
+   "Your Brother is th'eternal God."
+  ],
+  [
+   "What harm can sin and death then do?",
+   "The true God now abides with you.",
+   "Let hell and Satan rage and chafe,",
+   "Christ is your Brother ye are safe."
+  ],
+  [
+   "Not one He will or can forsake",
+   "Who Him his confidence doth make.",
+   "Let all his wiles the Tempter try,",
+   "You may his utmost pow'rs defy."
+  ],
+  [
+   "Ye shall and must at last prevail;",
+   "God's own ye are, ye cannot fail.",
+   "To God forever sing your praise",
+   "With joy and patience all your days."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 9,
+   "from": 2
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 8,
+   "to": 15
+  },
+  {
+   "book": "micah",
+   "chapter": 5,
+   "from": 2
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 55,
+   "to": 57
+  }
+ ],
+ "id": "to-shepherds-as-they-watched-by-night"
+}

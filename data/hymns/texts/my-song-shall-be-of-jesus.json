@@ -1,0 +1,69 @@
+{
+ "title": "My Song Shall Be Of Jesus",
+ "altTitles": [],
+ "author": "Fanny Jane Crosby (1820-1915); Edith Margaret Clarkson (1915-2008)",
+ "translator": null,
+ "meter": "7.6.7.6.7.6.7.6",
+ "credit": "Fanny J. Crosby, 1875.  Adapted by Margaret Clarkson, 1973.",
+ "tunes": [
+  {
+   "name": "Sondance",
+   "composer": "Kenneth W. Paxton"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "My song shall be of Jesus,",
+ "verses": [
+  [
+   "My song shall be of Jesus,",
+   "His Mercy crowns my days",
+   "He fills my cup with blessings",
+   "and tunes my heart to praise",
+   "My song shall be of Jesus",
+   "the precious Lamb of God",
+   "Who gave Himself my ransom",
+   "and bought me with His blood"
+  ],
+  [
+   "My song shall be of Jesus,",
+   "while sitting at His feet",
+   "He calls to mind His goodness,",
+   "and makes my joy complete;",
+   "My song shall be of Jesus,",
+   "whatever ills befall,",
+   "I'll sing the grace that saves me,",
+   "and triumphs over all."
+  ],
+  [
+   "My song shall be of Jesus,",
+   "when pressing on my way",
+   "To where my home shines glorious",
+   "in pure and perfect day.",
+   "And when my soul shall enter",
+   "the many mansions fair,",
+   "A song of praise to Jesus",
+   "I'll sing forever there."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 34,
+   "from": 1
+  },
+  {
+   "book": "isaiah",
+   "chapter": 12,
+   "from": 1,
+   "to": 6
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 2,
+   "from": 5,
+   "to": 6
+  }
+ ],
+ "id": "my-song-shall-be-of-jesus"
+}

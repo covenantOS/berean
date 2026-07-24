@@ -1,0 +1,87 @@
+{
+ "title": "The Winds and Billows Loudly Roar",
+ "altTitles": [],
+ "author": "Christopher Wordsworth (1807-1885)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Christopher Wordsworth, 1865.",
+ "tunes": [
+  {
+   "name": "Consolation-Morning Song",
+   "composer": "John Wyeth (1770-1858)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The winds and billows loudly roar",
+ "verses": [
+  [
+   "The winds and billows loudly roar",
+   "We flounder in the deep",
+   "Our bark is frail, far off the shore,",
+   "And Jesus is asleep."
+  ],
+  [
+   "\"Save us, we perish, Lord,\" they cry;",
+   "To Thee we fly for aid;",
+   "\"Awake! awake!\" they say; but why",
+   "So faithless and afraid?"
+  ],
+  [
+   "His head is pillow'd on the stern,",
+   "As Man He is asleep;",
+   "As God He all things does discern,",
+   "And endless vigils keep."
+  ],
+  [
+   "He does the elements control;",
+   "By His Almighty Will.",
+   "The angry waves their surges roll;",
+   "And at His Word are still."
+  ],
+  [
+   "O ye, who in the Church's Bark",
+   "O'er life's rough ocean sail,",
+   "When all around is drear and dark,",
+   "and human efforts fail,"
+  ],
+  [
+   "Touch not, with rude, irreverent hands,",
+   "And coward faithlessness,",
+   "Him, who the winds and waves commands;",
+   "But wait in quietness."
+  ],
+  [
+   "O never, never when distressed,",
+   "To doubtful means resort;",
+   "Christ's Bark, when on the billow's crest,",
+   "Is safe as in the port."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 8,
+   "from": 23,
+   "to": 27
+  },
+  {
+   "book": "mark",
+   "chapter": 4,
+   "from": 35,
+   "to": 41
+  },
+  {
+   "book": "psalms",
+   "chapter": 89,
+   "from": 9
+  },
+  {
+   "book": "luke",
+   "chapter": 8,
+   "from": 22,
+   "to": 25
+  }
+ ],
+ "id": "the-winds-and-billows-loudly-roar"
+}

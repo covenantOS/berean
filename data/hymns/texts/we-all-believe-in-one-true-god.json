@@ -1,0 +1,93 @@
+{
+ "title": "We All Believe in One True God",
+ "altTitles": [
+  "In One True God We All Believe"
+ ],
+ "author": "Medieval; Martin Luther (1483-1546)",
+ "translator": "composite",
+ "meter": "8.8.8.8.8.8.8.8.8.8",
+ "credit": "Medieval text expanded by Martin Luther, 1524.  Translation composite.",
+ "tunes": [
+  {
+   "name": "Wir Glauben all an Einen Gott, Schoepfer",
+   "composer": "Medieval; Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "We all believe in one true God,",
+ "verses": [
+  [
+   "We all believe in one true God,",
+   "Who created earth and heaven,",
+   "The Father, who to us in love",
+   "Hath the right of children given.",
+   "He both soul and body feedeth,",
+   "All we need He doth provide us;",
+   "He through snares and perils leadeth,",
+   "Watching that no harm betide us.",
+   "He careth for us day and night,",
+   "All things are governed by His might."
+  ],
+  [
+   "We all believe in Jesus Christ,",
+   "His own Son, our Lord, possessing",
+   "An equal Godhead, throne, and might,",
+   "Source of every grace and blessing.",
+   "Born of Mary, virgin mother,",
+   "By the power of the Spirit,",
+   "Made true man, our elder Brother,",
+   "That the lost might life inherit;",
+   "Was crucified for sinful men",
+   "And raised by God to life again."
+  ],
+  [
+   "We all confess the Holy Ghost,",
+   "Who sweet grace and comfort giveth",
+   "And with the Father and the Son",
+   "In eternal glory liveth;",
+   "Who the Church, His own creation,",
+   "Keeps in unity of spirit.",
+   "Here forgiveness and salvation",
+   "Daily come through Jesus' merit.",
+   "All flesh shall rise, and we shall be",
+   "In bliss with God eternally."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "1-john",
+   "chapter": 5,
+   "from": 20
+  },
+  {
+   "book": "isaiah",
+   "chapter": 41,
+   "from": 9,
+   "to": 13
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 14
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 12,
+   "from": 3
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 26,
+   "to": 27
+  }
+ ],
+ "id": "we-all-believe-in-one-true-god"
+}

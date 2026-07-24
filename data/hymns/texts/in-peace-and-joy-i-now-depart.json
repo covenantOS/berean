@@ -1,0 +1,78 @@
+{
+ "title": "In Peace and Joy I Now Depart",
+ "altTitles": [
+  "The Song of Simeon: Nunc Dimitis"
+ ],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Leonard Woolsey Bacon (1830-1907)",
+ "meter": "8.5.8.4.7.7",
+ "credit": "Martin Luther, 1524.  Translated by Leonard Woolsey Bacon, 1884, alt.",
+ "tunes": [
+  {
+   "name": "Mit Fried und Freud ich Far Dahin",
+   "composer": "1524 from Walter's Geistliche Gesangbüchlein"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "In peace and joy I now depart",
+ "verses": [
+  [
+   "In peace and joy I now depart",
+   "At God's disposing;",
+   "For full of comfort is my heart,",
+   "Soft reposing.",
+   "So the Lord hath promised me,",
+   "And death is but a slumber."
+  ],
+  [
+   "'Tis Christ that wrought this work for me,",
+   "My faithful Savior,",
+   "Whom Thou hast made mine eyes to see",
+   "By Thy favor.",
+   "Now I know He is my Life,",
+   "My Help in need and dying."
+  ],
+  [
+   "Him Thou hast unto all set forth",
+   "Their great Salvation",
+   "And to His kingdom called the earth,",
+   "Every nation,",
+   "By Thy dear and wholesome Word,",
+   "In every place resounding."
+  ],
+  [
+   "He is the Hope and saving Light",
+   "Of lands benighted;",
+   "By Him are they who dwelt in night",
+   "Fed and lighted.",
+   "He is Israel's Praise and Bliss,",
+   "Their Joy, Reward, and Glory."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 29,
+   "to": 32
+  },
+  {
+   "book": "genesis",
+   "chapter": 49,
+   "from": 18
+  },
+  {
+   "book": "isaiah",
+   "chapter": 42,
+   "from": 6,
+   "to": 7
+  },
+  {
+   "book": "isaiah",
+   "chapter": 49,
+   "from": 6
+  }
+ ],
+ "id": "in-peace-and-joy-i-now-depart"
+}

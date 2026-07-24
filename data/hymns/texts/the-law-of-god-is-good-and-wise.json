@@ -1,0 +1,73 @@
+{
+ "title": "The Law Of God Is Good And Wise",
+ "altTitles": [],
+ "author": "Matthias Loy (1828-1915)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Matthias Loy, 1863.  Music: 'Erhalt Uns, Herr, bei deinem Wort' from Klug's Geistliche Lieder, 1543.",
+ "tunes": [
+  {
+   "name": "Erhalt Uns, Herr, bei deinem Wort",
+   "composer": "Wittenberg, 1543 from Klug's Geistliche Lieder auffs new gebessert"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The law of God is good and wise,",
+ "verses": [
+  [
+   "The law of God is good and wise,",
+   "And sets His will before our eyes,",
+   "Shows us the way of righteousness,",
+   "And dooms to death when we transgress."
+  ],
+  [
+   "Its light of holiness imparts",
+   "The knowledge of our sinful hearts,",
+   "That we may see our lost estate",
+   "And seek deliv'rance ere too late."
+  ],
+  [
+   "To those who help in Christ have found",
+   "And would in works of love abound",
+   "It shows what deeds are His delight",
+   "And should be done as good and right."
+  ],
+  [
+   "When men the offered help disdain",
+   "And willfully in sin remain,",
+   "Its terror in their ear resounds",
+   "And keeps their wickedness in bounds."
+  ],
+  [
+   "The law is good, but since the fall",
+   "Its holiness condemns us all;",
+   "It dooms us for our sin to die",
+   "And has no pow'r to justify."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 19,
+   "from": 8
+  },
+  {
+   "book": "romans",
+   "chapter": 3,
+   "from": 19,
+   "to": 26
+  },
+  {
+   "book": "romans",
+   "chapter": 2,
+   "from": 12
+  },
+  {
+   "book": "exodus",
+   "chapter": 18,
+   "from": 20
+  }
+ ],
+ "id": "the-law-of-god-is-good-and-wise"
+}

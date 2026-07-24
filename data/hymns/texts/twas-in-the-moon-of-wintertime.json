@@ -1,0 +1,84 @@
+{
+ "title": "Twas In The Moon of Wintertime",
+ "altTitles": [
+  "Huron Carol",
+  "Jesus He Is Born"
+ ],
+ "author": "Jean de Brébeuf (1593-1649)",
+ "translator": "Jesse Edgar Middleton (1872-1960)",
+ "meter": "8.6.8.6.8.8",
+ "credit": "Jean de Brébeuf, 1642.  Translated by Jesse Edgar Middleton, 1926.",
+ "tunes": [
+  {
+   "name": "Huron Carol",
+   "composer": "French"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "'Twas in the moon of wintertime,",
+ "verses": [
+  [
+   "'Twas in the moon of wintertime,",
+   "When all the birds had fled,",
+   "That mighty Gitchi Manitou",
+   "Sent angel choirs instead;",
+   "Before their light the stars grew dim,",
+   "And wand'ring hunters heard the hymn:"
+  ],
+  [
+   "Within a lodge of broken bark",
+   "The tender babe was found,",
+   "A ragged robe of rabbit skin",
+   "Enwrapped His beauty 'round;",
+   "But as the hunter braves drew nigh,",
+   "The angel song rang loud and high:"
+  ],
+  [
+   "The earliest moon of wintertime",
+   "Is not so round and fair",
+   "As was the ring of glory on",
+   "The helpless Infant there.",
+   "The chiefs from far before Him knelt",
+   "With gifts of fox and beaver pelt."
+  ],
+  [
+   "Oh children of the forest free,",
+   "Oh sons of Manitou,",
+   "The holy Child of earth and Heav'n",
+   "Is born today for you.",
+   "Come kneel before the radiant Boy,",
+   "Who brings you beauty, peace and joy."
+  ]
+ ],
+ "refrain": [
+  "Jesus your King is born,",
+  "Jesus is born,",
+  "In excelsis gloria."
+ ],
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 7,
+   "to": 14
+  },
+  {
+   "book": "matthew",
+   "chapter": 2,
+   "from": 11
+  },
+  {
+   "book": "acts",
+   "chapter": 2,
+   "from": 38,
+   "to": 39
+  },
+  {
+   "book": "1-peter",
+   "chapter": 5,
+   "from": 6,
+   "to": 7
+  }
+ ],
+ "id": "twas-in-the-moon-of-wintertime"
+}

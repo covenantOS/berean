@@ -1,0 +1,85 @@
+{
+ "title": "Hallelujah, What a Savior!",
+ "altTitles": [
+  "Man of Sorrows"
+ ],
+ "author": "Philip Paul Bliss (1838-1876)",
+ "translator": null,
+ "meter": "7.7.7",
+ "credit": "Philip Paul Bliss, 1875. Music and Setting: 'Hallelujah What a Savior' Philip Paul Bliss, 1875.",
+ "tunes": [
+  {
+   "name": "Hallelujah What a Savior",
+   "composer": "Philip Paul Bliss (1838-1876)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Man of Sorrows! what a name",
+ "verses": [
+  [
+   "Man of Sorrows! what a name",
+   "For the Son of God, who came",
+   "Ruined sinners to reclaim."
+  ],
+  [
+   "Bearing shame and scoffing rude,",
+   "In my place condemned He stood;",
+   "Sealed my pardon with His blood."
+  ],
+  [
+   "Guilty, vile, and helpless we;",
+   "Spotless Lamb of God was He;",
+   "\"Full atonement!\" can it be?"
+  ],
+  [
+   "Lifted up was He to die;",
+   "\"It is finished!\" was His cry;",
+   "Now in Heav'n exalted high."
+  ],
+  [
+   "When He comes, our glorious King,",
+   "All His ransomed home to bring,",
+   "Then anew His song we'll sing:"
+  ]
+ ],
+ "refrain": [
+  "Hallelujah! What a Savior!"
+ ],
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 53,
+   "from": 3
+  },
+  {
+   "book": "1-john",
+   "chapter": 2,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "hebrews",
+   "chapter": 4,
+   "from": 14,
+   "to": 16
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 2,
+   "from": 5,
+   "to": 6
+  },
+  {
+   "book": "john",
+   "chapter": 19,
+   "from": 30
+  },
+  {
+   "book": "hebrews",
+   "chapter": 12,
+   "from": 1,
+   "to": 2
+  }
+ ],
+ "id": "hallelujah-what-a-savior"
+}

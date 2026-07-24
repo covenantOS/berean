@@ -1,0 +1,68 @@
+{
+ "title": "Comfort, Comfort Ye My People",
+ "altTitles": [],
+ "author": "Olearius (Oelschlaeger), Johann (1611-1684)",
+ "translator": "Catherine Winkworth (1827-1878)",
+ "meter": "8.7.8.7.7.7.8.8",
+ "credit": "Johann Olearius (Oelschlaeger), 1671.  Translated by Catherine Winkworth, 1862.",
+ "tunes": [
+  {
+   "name": "Freu dich sehr, o meine Seele",
+   "composer": "Geneva, 1551 from Trente Quatre Pseaumes de David"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Comfort, comfort ye My people,",
+ "verses": [
+  [
+   "Comfort, comfort ye My people,",
+   "Speak ye peace, thus saith our God;",
+   "Comfort those who sit in darkness,",
+   "Mourning 'neath their sorrow's load;",
+   "Speak ye to Jerusalem",
+   "Of the peace that waits for them;",
+   "Tell her that her sins I cover,",
+   "And her warfare now is over."
+  ],
+  [
+   "For the herald's voice is crying",
+   "In the desert far and near,",
+   "Bidding all men to repentance,",
+   "Since the kingdom now is here.",
+   "O that warning cry obey!",
+   "Now prepare for God a way!",
+   "Let the valleys rise to meet Him,",
+   "And the hills bow down to greet Him."
+  ],
+  [
+   "Yea, her sins our God will pardon,",
+   "Blotting out each dark misdeed;",
+   "All that well deserved His anger",
+   "He will no more see nor heed.",
+   "She has suffered many a day,",
+   "Now her griefs have passed away,",
+   "God will change her pining sadness",
+   "Into ever springing gladness."
+  ],
+  [
+   "Make ye straight what long was crooked,",
+   "Make the rougher places plain:",
+   "Let your hearts be true and humble,",
+   "As befits His holy reign,",
+   "For the glory of the Lord",
+   "O'er the earth is shed abroad,",
+   "And all flesh shall see the token",
+   "That His Word is never broken."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "isaiah",
+   "chapter": 40,
+   "from": 1,
+   "to": 8
+  }
+ ],
+ "id": "comfort-comfort-ye-my-people"
+}

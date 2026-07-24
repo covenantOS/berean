@@ -1,0 +1,80 @@
+{
+ "title": "See Amid the Winter's Snow",
+ "altTitles": [],
+ "author": "Edward Caswall (1814-1878)",
+ "translator": null,
+ "meter": "7.7.7.7",
+ "credit": "Edward Caswall, 1851.  Music: 'Humility' John Goss, 1870.",
+ "tunes": [
+  {
+   "name": "Humility",
+   "composer": "John Goss (1800-1880)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "See amid the winter's snow,",
+ "verses": [
+  [
+   "See amid the winter's snow,",
+   "Born for us on earth below,",
+   "See, the gentle Lamb appears,",
+   "Promised from eternal years."
+  ],
+  [
+   "Lo, within a manger lies",
+   "He Who built the starry skies;",
+   "He Who, thronèd in height sublime,",
+   "Sits amid the cherubim."
+  ],
+  [
+   "Say, you holy shepherds, say,",
+   "Tell your joyful news today.",
+   "Why have you now left your sheep",
+   "On the lonely mountain steep?"
+  ],
+  [
+   "\"As we watched at dead of night,",
+   "Lo, we saw a wondrous light;",
+   "Angels singing 'Peace on earth'",
+   "Told us of the Savior's birth.\""
+  ],
+  [
+   "Sacred Infant, all divine,",
+   "What a tender love was Thine,",
+   "Thus to come from highest bliss",
+   "Down to such a world as this."
+  ],
+  [
+   "Teach, O teach us, holy Child,",
+   "By Thy face so meek and mild,",
+   "Teach us to resemble Thee,",
+   "In Thy sweet humility."
+  ]
+ ],
+ "refrain": [
+  "Hail that ever blessèd morn,",
+  "Hail redemption's happy dawn,",
+  "Sing through all Jerusalem:",
+  "Christ is born in Bethlehem."
+ ],
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 1,
+   "to": 20
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 29
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 3,
+   "to": 8
+  }
+ ],
+ "id": "see-amid-the-winter-s-snow"
+}

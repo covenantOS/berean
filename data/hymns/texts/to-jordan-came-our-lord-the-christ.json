@@ -1,0 +1,100 @@
+{
+ "title": "To Jordan Came Our Lord, The Christ",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.7.8.7.8.7.8.7.7",
+ "credit": "Martin Luther, 1541. Translated by Richard Massie, 1854.",
+ "tunes": [
+  {
+   "name": "Christ, Unser Herr",
+   "composer": "Johann Walther (1496-1570)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "To Jordan came our Lord the Christ,",
+ "verses": [
+  [
+   "To Jordan came our Lord the Christ,",
+   "To do God's pleasure willing,",
+   "And there was by Saint John baptized,",
+   "All righteousness fulfilling;",
+   "There did He consecrate a bath",
+   "To wash away transgression,",
+   "And quench the bitterness of death",
+   "By His own blood and passion;",
+   "He would a new life give us."
+  ],
+  [
+   "So hear ye all, and well perceive",
+   "What God doth call baptism,",
+   "And what a Christian should believe",
+   "Who error shuns and schism:",
+   "That we should water use, the Lord",
+   "Declareth it His pleasure;",
+   "Not simple water, but the Word",
+   "And Spirit without measure;",
+   "He is the true Baptizer."
+  ],
+  [
+   "To show us this, He hath His Word",
+   "With signs and symbols given;",
+   "On Jordan's banks was plainly heard",
+   "The Father's voice from Heaven:",
+   "\"This is My wellbeloved Son,",
+   "In whom My soul delighteth;",
+   "Hear Him.\" Yea, hear Him every one",
+   "Whom He Himself inviteth,",
+   "Hear and obey His teaching."
+  ],
+  [
+   "In tender manhood Jesus straight",
+   "To holy Jordan wendeth;",
+   "The Holy Ghost from Heaven's gate",
+   "In dovelike shape descendeth;",
+   "That thus the truth be not denied,",
+   "Nor should our faith e'er waver,",
+   "That the Three Persons all preside,",
+   "At baptism's holy laver,",
+   "And dwell with the believer."
+  ],
+  [
+   "Thus Jesus His disciples sent:",
+   "Go teach ye every nation,",
+   "That lost in sin they must repent;",
+   "And flee from condemnation:",
+   "He that believes and is baptized,",
+   "Obtains a mighty blessing;",
+   "A newborn man, no more he dies,",
+   "Eternal life possessing,",
+   "A joyful heir of Heaven."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 3,
+   "from": 13,
+   "to": 17
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 7,
+   "to": 11
+  },
+  {
+   "book": "luke",
+   "chapter": 3,
+   "from": 15,
+   "to": 22
+  },
+  {
+   "book": "acts",
+   "chapter": 2,
+   "from": 38
+  }
+ ],
+ "id": "to-jordan-came-our-lord-the-christ"
+}

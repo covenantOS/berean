@@ -1,0 +1,89 @@
+{
+ "title": "What A Friend We Have In Jesus",
+ "altTitles": [],
+ "author": "Joseph Medlicott Scriven (1819-1886)",
+ "translator": null,
+ "meter": "8.7.8.7.8.7.8.7",
+ "credit": "Joseph M. Scriven, 1855.",
+ "tunes": [
+  {
+   "name": "untitled",
+   "composer": "Charles Crozat Converse (1834-1918)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "What a Friend we have in Jesus,",
+ "verses": [
+  [
+   "What a Friend we have in Jesus,",
+   "all our sins and griefs to bear!",
+   "What a privilege to carry",
+   "everything to God in prayer!",
+   "O what peace we often forfeit,",
+   "O what needless pain we bear,",
+   "All because we do not carry",
+   "everything to God in prayer."
+  ],
+  [
+   "Have we trials and temptations?",
+   "Is there trouble anywhere?",
+   "We should never be discouraged;",
+   "take it to the Lord in prayer.",
+   "Can we find a friend so faithful",
+   "who will all our sorrows share?",
+   "Jesus knows our every weakness;",
+   "take it to the Lord in prayer."
+  ],
+  [
+   "Are we weak and heavy laden,",
+   "cumbered with a load of care?",
+   "Precious Savior, still our refuge,",
+   "take it to the Lord in prayer.",
+   "Do your friends despise, forsake you?",
+   "Take it to the Lord in prayer!",
+   "In His arms He'll take and shield you;",
+   "you will find a solace there."
+  ],
+  [
+   "Blessed Savior, Thou hast promised",
+   "Thou wilt all our burdens bear",
+   "May we ever, Lord, be bringing",
+   "all to Thee in earnest prayer.",
+   "Soon in glory bright unclouded",
+   "there will be no need for prayer",
+   "Rapture, praise and endless worship",
+   "will be our sweet portion there."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 15,
+   "from": 13
+  },
+  {
+   "book": "matthew",
+   "chapter": 7,
+   "from": 7,
+   "to": 8
+  },
+  {
+   "book": "hebrews",
+   "chapter": 4,
+   "from": 15
+  },
+  {
+   "book": "john",
+   "chapter": 15,
+   "from": 14,
+   "to": 16
+  },
+  {
+   "book": "1-peter",
+   "chapter": 2,
+   "from": 24
+  }
+ ],
+ "id": "what-a-friend-we-have-in-jesus"
+}

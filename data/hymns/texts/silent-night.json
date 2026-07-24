@@ -1,0 +1,66 @@
+{
+ "title": "Silent Night",
+ "altTitles": [],
+ "author": "Josef Mohr (1792-1848)",
+ "translator": "John Freeman Young (1820-1885)",
+ "meter": "6.6.8.8.6.6",
+ "credit": "Josef Mohr, 1818. stanzas 1,3 Translated by John Freeman Young, 1863.",
+ "tunes": [
+  {
+   "name": "Stille Nacht",
+   "composer": "Franz Xaver Gruber (1787-1863)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Silent night, holy night,",
+ "verses": [
+  [
+   "Silent night, holy night,",
+   "All is calm, all is bright",
+   "Round yon virgin mother and Child.",
+   "Holy Infant, so tender and mild,",
+   "Sleep in heavenly peace,",
+   "Sleep in heavenly peace."
+  ],
+  [
+   "Silent night, holy night,",
+   "Shepherds quake at the sight;",
+   "Glories stream from heaven afar,",
+   "Heavenly hosts sing Alleluia!",
+   "Christ the Savior is born,",
+   "Christ the Savior is born!"
+  ],
+  [
+   "Silent night, holy night,",
+   "Son of God, love's pure light;",
+   "Radiant beams from Thy holy face",
+   "With the dawn of redeeming grace,",
+   "Jesus, Lord, at Thy birth,",
+   "Jesus, Lord, at Thy birth."
+  ],
+  [
+   "Silent night, holy night",
+   "Wondrous star, lend thy light;",
+   "With the angels let us sing,",
+   "Alleluia to our King;",
+   "Christ the Savior is born,",
+   "Christ the Savior is born!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 8,
+   "to": 9
+  },
+  {
+   "book": "colossians",
+   "chapter": 1,
+   "from": 12,
+   "to": 13
+  }
+ ],
+ "id": "silent-night"
+}

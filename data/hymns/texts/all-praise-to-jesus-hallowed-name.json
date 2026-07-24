@@ -1,0 +1,94 @@
+{
+ "title": "All Praise to Jesus' Hallowed Name",
+ "altTitles": [
+  "All Praise to Thee, O Jesus Christ",
+  "O Jesus Christ, All Praise to Thee",
+  "We Praise You, Jesus at Your Birth",
+  "All Praise to Thee, Eternal Lord"
+ ],
+ "author": "German; Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.7.8.8",
+ "credit": "verse 1, ancient German.  verses 2-7, Martin Luther, 1524.  Translated by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Gelobet Seist Du",
+   "composer": "1524 from Walter's Geistliche Gesangbüchlein"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "All praise to Jesus' hallowed Name",
+ "verses": [
+  [
+   "All praise to Jesus' hallowed Name",
+   "Who of virgin pure became",
+   "True man for us! The angels sing",
+   "As the glad news to earth they bring."
+  ],
+  [
+   "Th'Eternal Father's only Son",
+   "For a manger leaves His throne",
+   "Disguised in our poor flesh and blood",
+   "See now the everlasting Good."
+  ],
+  [
+   "He whom the world could not inwrap",
+   "Yonder lies in Mary's lap;",
+   "He is become an infant small,",
+   "Who by His might upholdeth all."
+  ],
+  [
+   "Th'Eternal Light, come down from heav'n,",
+   "Hath to us new sunshine giv'n;",
+   "It shineth in the midst of night,",
+   "And maketh us the sons of light."
+  ],
+  [
+   "The Father's Son, God everblest,",
+   "In the world became a guest;",
+   "He leads us from this vale of tears,",
+   "And makes us in his kingdom heirs."
+  ],
+  [
+   "He came to earth so mean and poor, Man to pity and restore,",
+   "And make us rich in heaven above, Equal with angels through his love."
+  ],
+  [
+   "All this He did to show His grace To our poor and sinful race;",
+   "For this let Christendom adore And praise His name for evermore."
+  ]
+ ],
+ "refrain": [
+  "Hallelujah!"
+ ],
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 14
+  },
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 7,
+   "to": 14
+  },
+  {
+   "book": "isaiah",
+   "chapter": 9,
+   "from": 2
+  },
+  {
+   "book": "1-timothy",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "1-john",
+   "chapter": 1,
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "id": "all-praise-to-jesus-hallowed-name"
+}

@@ -1,0 +1,87 @@
+{
+ "title": "Not Worthy, Lord, to Gather Up the Crumbs",
+ "altTitles": [],
+ "author": "Edward Henry Jr. Bickersteth (1825-1906)",
+ "translator": null,
+ "meter": "10.10.10.10",
+ "credit": "Edward Henry Bickersteth, 1872.  Music: 'Eventide' William H. Monk, 1861.  Setting: William H. Monk, 1861.",
+ "tunes": [
+  {
+   "name": "Eventide",
+   "composer": "William Henry Monk (1823-1889)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Not worthy, Lord, to gather up the crumbs",
+ "verses": [
+  [
+   "Not worthy, Lord, to gather up the crumbs",
+   "With trembling hand that from Thy table fall,",
+   "A weary, heavy laden sinner comes",
+   "To plead Thy promise and obey Thy call."
+  ],
+  [
+   "I am not worthy to be thought Thy child,",
+   "Nor sit the last and lowest at Thy board;",
+   "Too long a wanderer and too oft beguiled;",
+   "I only ask one reconciling word."
+  ],
+  [
+   "One word from Thee, my Lord, one smile, one look,",
+   "And I could face the cold, rough world again;",
+   "And with that treasure in my heart could brook",
+   "The wrath of devils and the scorn of men."
+  ],
+  [
+   "And is not mercy Thy prerogativeFree",
+   "mercy, boundless, fathomless, divine?",
+   "Me, Lord, the chief of sinners, me forgive,",
+   "And Thine the greater glory, only Thine."
+  ],
+  [
+   "I hear Thy voice; Thou bid'st me come and rest;",
+   "I come, I kneel, I clasp Thy piercèd feet;",
+   "Thou bid'st me take my place, a welcome guest",
+   "Among Thy saints, and of Thy banquet eat."
+  ],
+  [
+   "My praise can only breathe itself in prayer,",
+   "My prayer can only lose itself in Thee;",
+   "Dwell Thou forever in my heart, and there,",
+   "Lord, let me sup with Thee; sup Thou with me."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 15,
+   "from": 22,
+   "to": 28
+  },
+  {
+   "book": "luke",
+   "chapter": 17,
+   "from": 7,
+   "to": 10
+  },
+  {
+   "book": "luke",
+   "chapter": 7,
+   "from": 6
+  },
+  {
+   "book": "mark",
+   "chapter": 7,
+   "from": 27,
+   "to": 29
+  },
+  {
+   "book": "luke",
+   "chapter": 14,
+   "from": 7,
+   "to": 11
+  }
+ ],
+ "id": "not-worthy-lord-to-gather-up-the-crumbs"
+}

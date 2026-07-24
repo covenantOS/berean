@@ -1,0 +1,89 @@
+{
+ "title": "Christ The Lord Is Risen Today",
+ "altTitles": [
+  "Lyra"
+ ],
+ "author": "Charles Wesley (1707-1788); unknown",
+ "translator": null,
+ "meter": "7.7.7.7.16",
+ "credit": "Stanzas 1-7, Charles Wesley, 1739. Stanzas 8-10, 14th Century; translated in Lyra Davidica.",
+ "tunes": [
+  {
+   "name": "Llanfair",
+   "composer": "Robert Williams (1782-1818)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Christ, the Lord, is risen today,",
+ "verses": [
+  [
+   "Christ, the Lord, is risen today,",
+   "Alleluia! Sons of men",
+   "and angels say, Alleluia!",
+   "Raise your joys and triumphs high,",
+   "Alleluia! Sing, ye heavens, and earth, reply, Alleluia!"
+  ],
+  [
+   "Love's redeeming work is done,",
+   "Alleluia! Fought the fight,",
+   "the battle won, Alleluia!",
+   "Lo! the Sun's eclipse is o'er,",
+   "Alleluia! Lo! He sets in blood no more, Alleluia!"
+  ],
+  [
+   "Vain the stone, the watch, the seal,",
+   "Alleluia! Christ hath burst",
+   "the gates of hell, Alleluia!",
+   "Death in vain forbids His rise,",
+   "Alleluia! Christ hath opened paradise, Alleluia!"
+  ],
+  [
+   "Lives again our glorious King,",
+   "Alleluia! Where, O death,",
+   "is now thy sting? Alleluia!",
+   "Once He died our souls to save,",
+   "Alleluia! Where thy victory, O grave? Alleluia!"
+  ],
+  [
+   "Soar we now where Christ hath led,",
+   "Alleluia! Following our",
+   "exalted Head, Alleluia!",
+   "Made like Him, like Him we rise,",
+   "Alleluia! Ours the cross, the grave, the skies, Alleluia!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "matthew",
+   "chapter": 28,
+   "from": 5,
+   "to": 6
+  },
+  {
+   "book": "luke",
+   "chapter": 24,
+   "from": 4,
+   "to": 7
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 55,
+   "to": 57
+  },
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 18,
+   "to": 21
+  },
+  {
+   "book": "revelation",
+   "chapter": 5,
+   "from": 9,
+   "to": 13
+  }
+ ],
+ "id": "christ-the-lord-is-risen-today-llanfair"
+}

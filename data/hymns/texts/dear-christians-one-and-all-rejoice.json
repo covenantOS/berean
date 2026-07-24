@@ -1,0 +1,105 @@
+{
+ "title": "Dear Christians, One and All Rejoice",
+ "altTitles": [],
+ "author": "Martin Luther (1483-1546)",
+ "translator": "Richard Massie (1800-1887)",
+ "meter": "8.7.8.7.8.8.7",
+ "credit": "Martin Luther, 1523.  Translated by Richard Massie, 1854, alt.",
+ "tunes": [
+  {
+   "name": "Es ist Gewisslich an der Zeit",
+   "composer": "Wittenberg, 1533 from Klug's Geistliche Lieder"
+  },
+  {
+   "name": "Nun Freut Euch",
+   "composer": "Martin Luther (1483-1546)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Dear Christians, one and all rejoice,",
+ "verses": [
+  [
+   "Dear Christians, one and all rejoice,",
+   "With exultation springing,",
+   "And with united heart and voice",
+   "And holy rapture singing,",
+   "Proclaim the wonders God hath done,",
+   "How his right arm the vict'ry won;",
+   "Right dearly it hath cost him."
+  ],
+  [
+   "Fast bound in Satan's chains I lay.",
+   "Death brooded darkly o'er me;",
+   "Sin was my torment night and day,",
+   "Therein my mother bore me.",
+   "Deeper and deeper still I fell,",
+   "Life was become a living hell,",
+   "So firmly sin possessed me."
+  ],
+  [
+   "My good works could avail me naught,",
+   "For they with sin were stainéd;",
+   "Freewill against God's judgment fought,",
+   "And dead to good remainéd.",
+   "Grief drove me to despair, and I",
+   "Had nothing left me but to die,",
+   "To hell I fast was sinking."
+  ],
+  [
+   "God saw, in his eternal grace,",
+   "My sorrow out of measure;",
+   "He thought upon his tenderness",
+   "To save was his good pleasure.",
+   "He turn'd to me a Father's",
+   "heartNot small the cost to heal my",
+   "smart He gave his best and dearest."
+  ],
+  [
+   "He spake to his beloved Son:",
+   "'Tis time to take compassion;",
+   "Then go, bright jewel of my crown,",
+   "And bring to man salvation;",
+   "From sin and sorrow set him free,",
+   "Slay bitter death for him, that he",
+   "May live with thee forever."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 6,
+   "to": 9
+  },
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 14
+  },
+  {
+   "book": "psalms",
+   "chapter": 98,
+   "from": 1,
+   "to": 3
+  },
+  {
+   "book": "2-timothy",
+   "chapter": 1,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "galatians",
+   "chapter": 4,
+   "from": 4,
+   "to": 5
+  },
+  {
+   "book": "romans",
+   "chapter": 3,
+   "from": 28
+  }
+ ],
+ "id": "dear-christians-one-and-all-rejoice"
+}

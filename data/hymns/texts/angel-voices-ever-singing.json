@@ -1,0 +1,74 @@
+{
+ "title": "Angel Voices, Ever Singing",
+ "altTitles": [],
+ "author": "Francis Pott (1832-1909)",
+ "translator": null,
+ "meter": "8.5.8.5.8.7",
+ "credit": "Francis Pott, 1861.  Music: 'Angel Voices (Monk)' Edwin G. Monk, 1861.",
+ "tunes": [
+  {
+   "name": "Angel Voices (Monk)",
+   "composer": "Edwin George Monk (1819-1900)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Angel voices, ever singing,",
+ "verses": [
+  [
+   "Angel voices, ever singing,",
+   "round Thy throne of light,",
+   "Angel harps, forever ringing,",
+   "rest not day or night;",
+   "Thousands only live to bless Thee,",
+   "and confess Thee Lord of might."
+  ],
+  [
+   "Thou Who art beyond the farthest",
+   "mortal eye can scan,",
+   "Can it be that Thou regardest",
+   "songs of sinful man?",
+   "Can we feel that Thou art near us",
+   "and wilt hear us? Yea, we can."
+  ],
+  [
+   "Lord, we know Thy love rejoices",
+   "o'er each work of Thine;",
+   "Thou didst ears and hands and voices",
+   "for Thy praise combine;",
+   "Craftsman's art and music's measure",
+   "for Thy pleasure didst design."
+  ],
+  [
+   "Here, great God, today we offer",
+   "of Thine own to Thee;",
+   "And for Thine acceptance proffer,",
+   "all unworthily,",
+   "Hearts and minds, and hands and voices,",
+   "in our choicest melody."
+  ],
+  [
+   "Honor, glory, might and merit,",
+   "Thine shall ever be,",
+   "Father, Son, and Holy Spirit,",
+   "blessed Trinity;",
+   "Of the best that Thou hast given",
+   "Earth and Heaven render Thee."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "revelation",
+   "chapter": 5,
+   "from": 8,
+   "to": 14
+  },
+  {
+   "book": "psalms",
+   "chapter": 148,
+   "from": 1,
+   "to": 2
+  }
+ ],
+ "id": "angel-voices-ever-singing"
+}

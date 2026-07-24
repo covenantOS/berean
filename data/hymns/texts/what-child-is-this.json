@@ -1,0 +1,75 @@
+{
+ "title": "What Child Is This?",
+ "altTitles": [],
+ "author": "William Chatterton Dix (1837-1865)",
+ "translator": null,
+ "meter": "8.7.8.7.6.8.6.7",
+ "credit": "William Chatterton Dix, 1865.",
+ "tunes": [
+  {
+   "name": "Greensleeves",
+   "composer": "English"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "What Child is this who, laid to rest",
+ "verses": [
+  [
+   "What Child is this who, laid to rest",
+   "On Mary's lap is sleeping?",
+   "Whom angels greet with anthems sweet,",
+   "While shepherds watch are keeping?",
+   "This, this is Christ the King,",
+   "Whom shepherds guard and angels sing;",
+   "Haste, haste, to bring Him laud,",
+   "The Babe, the Son of Mary."
+  ],
+  [
+   "Why lies He in such mean estate,",
+   "Where ox and ass are feeding?",
+   "Good Christians, fear, for sinners here",
+   "The silent Word is pleading.",
+   "Nails, spear shall pierce Him through,",
+   "The cross be borne for me, for you.",
+   "Hail, hail the Word made flesh,",
+   "The Babe, the Son of Mary."
+  ],
+  [
+   "So bring Him incense, gold and myrrh,",
+   "Come peasant, king to own Him;",
+   "The King of kings salvation brings,",
+   "Let loving hearts enthrone Him.",
+   "Raise, raise a song on high,",
+   "The virgin sings her lullaby.",
+   "Joy, joy for Christ is born,",
+   "The Babe, the Son of Mary."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 7
+  },
+  {
+   "book": "matthew",
+   "chapter": 2,
+   "from": 1,
+   "to": 11
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 5,
+   "to": 8
+  },
+  {
+   "book": "isaiah",
+   "chapter": 53,
+   "from": 1,
+   "to": 6
+  }
+ ],
+ "id": "what-child-is-this"
+}

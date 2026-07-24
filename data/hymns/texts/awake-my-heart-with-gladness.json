@@ -1,0 +1,114 @@
+{
+ "title": "Awake, My Heart, With Gladness",
+ "altTitles": [],
+ "author": "Paul Gerhardt (1607-1676)",
+ "translator": "John Kelly (1833-1890)",
+ "meter": "7.6.7.6.6.6.6.6",
+ "credit": "Paul Gerhardt, 1648.  Translated by John Kelly, 1867, alt.",
+ "tunes": [
+  {
+   "name": "Auf, Auf, Mein Herz mit Freuden",
+   "composer": "Johann Crüger (1598-1662)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Awake, my heart, with gladness,",
+ "verses": [
+  [
+   "Awake, my heart, with gladness,",
+   "See what today is done;",
+   "How after gloom and sadness,",
+   "Comes forth the glorious Sun.",
+   "My Savior there was laid",
+   "Where our bed must be made",
+   "When to the realms of light",
+   "Our spirit wings its flight."
+  ],
+  [
+   "They in the grave did sink Him,",
+   "The foe held jubilee;",
+   "Before he can bethink him,",
+   "Lo! Christ again is free.",
+   "And \"Victory\" He cries,",
+   "And waving tow'rds the skies",
+   "His banner, while the field",
+   "Is by the Hero held!"
+  ],
+  [
+   "Upon the grave is standing",
+   "The Hero looking round;",
+   "The foe, no more withstanding,",
+   "His weapons on the ground",
+   "Throws down, his hellish pow'r",
+   "To Christ must he give o'er,",
+   "And to the Victor's bands",
+   "Must yield his feet and hands."
+  ],
+  [
+   "A sight it is to gladden;",
+   "And fill the heart with glee,",
+   "No more affright or sadden",
+   "Shall aught, or take from me",
+   "My trust or fortitude,",
+   "Or any precious good",
+   "The Savior bought for me",
+   "In sov'reign love and free."
+  ],
+  [
+   "Hell and its prince, the devil,",
+   "Of all their pow'rs are shorn;",
+   "Now I am safe from evil,",
+   "And sin I laugh to scorn.",
+   "Grim Death with all his might",
+   "Cannot my soul affright;",
+   "He is a pow'rless form,",
+   "Howe'er he rage and storm."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "colossians",
+   "chapter": 2,
+   "from": 13,
+   "to": 15
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 42,
+   "to": 58
+  },
+  {
+   "book": "romans",
+   "chapter": 6,
+   "from": 1,
+   "to": 11
+  },
+  {
+   "book": "1-peter",
+   "chapter": 1,
+   "from": 3,
+   "to": 9
+  },
+  {
+   "book": "isaiah",
+   "chapter": 41,
+   "from": 1,
+   "to": 20
+  },
+  {
+   "book": "romans",
+   "chapter": 8,
+   "from": 35,
+   "to": 39
+  },
+  {
+   "book": "revelation",
+   "chapter": 20,
+   "from": 1,
+   "to": 3
+  }
+ ],
+ "id": "awake-my-heart-with-gladness"
+}

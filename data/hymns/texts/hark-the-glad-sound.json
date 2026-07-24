@@ -1,0 +1,106 @@
+{
+ "title": "Hark the Glad Sound",
+ "altTitles": [],
+ "author": "Philip Doddridge (1702-1751)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Philip Doddridge, 1735.",
+ "tunes": [
+  {
+   "name": "Chesterfield",
+   "composer": "Thomas Haweis (1734-1820)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Hark, the glad sound! the Savior comes!",
+ "verses": [
+  [
+   "Hark, the glad sound! the Savior comes!",
+   "The Sa* vior promised long;",
+   "Let every heart prepare a throne,",
+   "And every voice a song."
+  ],
+  [
+   "On Him the Spirit, largely poured,",
+   "Exerts* its sacred Fire;",
+   "Wisdom and might, and zeal and love,",
+   "His holy Breast inspire."
+  ],
+  [
+   "He comes the pris'ners to release,",
+   "In Sa* tan's bondage held;",
+   "The gates of brass before Him burst,",
+   "The iron fetters yield."
+  ],
+  [
+   "He comes from thickest films of vice",
+   "To clear* the mental ray,",
+   "And on the eyeballs of the blind",
+   "To pour celestial day."
+  ],
+  [
+   "He comes the broken heart to bind,",
+   "The bleed* ing soul to cure;",
+   "And with the treasures of His grace",
+   "T'enrich the humble poor."
+  ],
+  [
+   "His silver trumpets publish loud",
+   "The jub'lee of the Lord",
+   "Our debts are all remitted now",
+   "Our heritage restored."
+  ],
+  [
+   "Our glad hosannas, Prince of Peace,",
+   "Thy welcome shall proclaim;",
+   "And Heav'n's eternal arches ring",
+   "With Thy belovèd name."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 4,
+   "from": 18,
+   "to": 19
+  },
+  {
+   "book": "isaiah",
+   "chapter": 61,
+   "from": 1,
+   "to": 2
+  },
+  {
+   "book": "revelation",
+   "chapter": 5,
+   "from": 11,
+   "to": 12
+  },
+  {
+   "book": "psalms",
+   "chapter": 107,
+   "from": 13,
+   "to": 14
+  },
+  {
+   "book": "acts",
+   "chapter": 16,
+   "from": 25,
+   "to": 34
+  },
+  {
+   "book": "leviticus",
+   "chapter": 25,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "mark",
+   "chapter": 2,
+   "from": 18,
+   "to": 22
+  }
+ ],
+ "id": "hark-the-glad-sound"
+}

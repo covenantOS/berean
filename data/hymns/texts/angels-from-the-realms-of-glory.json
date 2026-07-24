@@ -1,0 +1,79 @@
+{
+ "title": "Angels From the Realms of Glory",
+ "altTitles": [],
+ "author": "James Montgomery (1771-1854)",
+ "translator": null,
+ "meter": "8.7.8.7",
+ "credit": "James Montgomery, 1816.",
+ "tunes": [
+  {
+   "name": "Regent Square",
+   "composer": "Henry Thomas Smart (1813-1879)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Angels from the realms of glory,",
+ "verses": [
+  [
+   "Angels from the realms of glory,",
+   "Wing your flight o'er all the earth;",
+   "Ye who sang creation's story",
+   "Now proclaim Messiah's birth."
+  ],
+  [
+   "Shepherds, in the field abiding,",
+   "Watching o'er your flocks by night,",
+   "God with us is now residing;",
+   "Yonder shines the infant light:"
+  ],
+  [
+   "Sages, leave your contemplations,",
+   "Brighter visions beam afar;",
+   "Seek the great Desire of nations;",
+   "Ye have seen His natal star."
+  ],
+  [
+   "Saints, before the altar bending,",
+   "Watching long in hope and fear;",
+   "Suddenly the Lord, descending,",
+   "In His temple shall appear."
+  ],
+  [
+   "Sinners, wrung with true repentance,",
+   "Doomed for guilt to endless pains,",
+   "Justice now revokes the sentence,",
+   "Mercy calls you; break your chains."
+  ],
+  [
+   "Though an Infant now we view Him,",
+   "He shall fill His Father's throne,",
+   "Gather all the nations to Him;",
+   "Every knee shall then bow down:"
+  ],
+  [
+   "All creation, join in praising",
+   "God, the Father, Spirit, Son,",
+   "Evermore your voices raising",
+   "To th'eternal Three in One."
+  ]
+ ],
+ "refrain": [
+  "Come and worship, come and worship,",
+  "Worship Christ, the newborn King."
+ ],
+ "refs": [
+  {
+   "book": "luke",
+   "chapter": 2,
+   "from": 6,
+   "to": 20
+  },
+  {
+   "book": "matthew",
+   "chapter": 2,
+   "from": 1,
+   "to": 11
+  }
+ ],
+ "id": "angels-from-the-realms-of-glory"
+}

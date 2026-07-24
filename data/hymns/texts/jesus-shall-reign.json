@@ -1,0 +1,99 @@
+{
+ "title": "Jesus Shall Reign",
+ "altTitles": [],
+ "author": "Isaac Watts (1674-1748)",
+ "translator": null,
+ "meter": "8.8.8.8",
+ "credit": "Isaac Watts, 1719.",
+ "tunes": [
+  {
+   "name": "Duke Street",
+   "composer": "John Hatton (1710-1793)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Jesus shall reign where'er the sun",
+ "verses": [
+  [
+   "Jesus shall reign where'er the sun",
+   "Does his successive journeys run;",
+   "His kingdom stretch from shore to shore",
+   "Till moons shall wax and wane no more."
+  ],
+  [
+   "For Him shall endless prayer be made,",
+   "And praises throng to crown His head;",
+   "His Name, like sweet perfume shall rise",
+   "With every morning sacrifice."
+  ],
+  [
+   "People and realms of every tongue",
+   "Dwell on His love with sweetest song;",
+   "And infant voices shall proclaim",
+   "Their early blessings on His Name."
+  ],
+  [
+   "Blessings abound where'er He reigns;",
+   "The prisoner leaps to lose his chains,",
+   "The weary find eternal rest,",
+   "And all the sons of want are blest."
+  ],
+  [
+   "Where He displays His healing power",
+   "Death and the curse are known no more;",
+   "In Him the tribes of Adam boast",
+   "More blessings than their father lost."
+  ],
+  [
+   "Let every creature rise and bring",
+   "Peculiar honors to our King,",
+   "Angels descend with songs again,",
+   "And earth repeat the loud Amen."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "zechariah",
+   "chapter": 9,
+   "from": 9,
+   "to": 10
+  },
+  {
+   "book": "psalms",
+   "chapter": 72,
+   "from": 8
+  },
+  {
+   "book": "revelation",
+   "chapter": 22,
+   "from": 3,
+   "to": 5
+  },
+  {
+   "book": "revelation",
+   "chapter": 15,
+   "from": 3,
+   "to": 4
+  },
+  {
+   "book": "1-corinthians",
+   "chapter": 15,
+   "from": 22,
+   "to": 28
+  },
+  {
+   "book": "isaiah",
+   "chapter": 9,
+   "from": 6,
+   "to": 7
+  },
+  {
+   "book": "mark",
+   "chapter": 1,
+   "from": 34,
+   "to": 39
+  }
+ ],
+ "id": "jesus-shall-reign"
+}

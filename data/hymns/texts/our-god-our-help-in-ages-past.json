@@ -1,0 +1,87 @@
+{
+ "title": "Our God, Our Help In Ages Past",
+ "altTitles": [],
+ "author": "Isaac Watts (1674-1748)",
+ "translator": null,
+ "meter": "8.6.8.6",
+ "credit": "Isaac Watts, 1719.  Music: 'St. Anne' William Croft, 1708.",
+ "tunes": [
+  {
+   "name": "St. Anne",
+   "composer": "William Croft (1678-1727)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Our God, our help in ages past,",
+ "verses": [
+  [
+   "Our God, our help in ages past,",
+   "Our hope for years to come,",
+   "Our shelter from the stormy blast,",
+   "And our eternal home."
+  ],
+  [
+   "Under the shadow of Thy throne",
+   "Thy saints have dwelt secure;",
+   "Sufficient is Thine arm alone,",
+   "And our defense is sure."
+  ],
+  [
+   "Before the hills in order stood,",
+   "Or earth received her frame,",
+   "From everlasting Thou art God,",
+   "To endless years the same."
+  ],
+  [
+   "Thy Word commands our flesh to dust,",
+   "'Return, ye sons of men:'",
+   "All nations rose from earth at first,",
+   "And turn to earth again."
+  ],
+  [
+   "A thousand ages in Thy sight",
+   "Are like an evening gone;",
+   "Short as the watch that ends the night",
+   "Before the rising sun."
+  ],
+  [
+   "The busy tribes of flesh and blood,",
+   "With all their lives and cares,",
+   "Are carried downwards by the flood,",
+   "And lost in following years."
+  ],
+  [
+   "Time, like an ever rolling stream,",
+   "Bears all its sons away;",
+   "They fly, forgotten, as a dream",
+   "Dies at the opening day."
+  ],
+  [
+   "Like flowery fields the nations stand",
+   "Pleased with the morning light;",
+   "The flowers beneath the mower's hand",
+   "Lie withering ere 'tis night."
+  ],
+  [
+   "Our God, our help in ages past,",
+   "Our hope for years to come,",
+   "Be Thou our guard while troubles last,",
+   "And our eternal home."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "psalms",
+   "chapter": 90,
+   "from": 1
+  },
+  {
+   "book": "hebrews",
+   "chapter": 1,
+   "from": 1,
+   "to": 2
+  }
+ ],
+ "id": "our-god-our-help-in-ages-past"
+}

@@ -86,6 +86,7 @@ const ManuscriptPane = dynamic(() => import("./ManuscriptPane"), { loading: Pane
 const PersonalBookPane = dynamic(() => import("./PersonalBookPane"), { loading: PaneLoading });
 const ConfessionsPane = dynamic(() => import("./ConfessionsPane"), { loading: PaneLoading });
 const SermonsPane = dynamic(() => import("./SermonsPane"), { loading: PaneLoading });
+const HymnsPane = dynamic(() => import("./HymnsPane"), { loading: PaneLoading });
 const PulpitPane = dynamic(() => import("./PulpitPane"), { loading: PaneLoading });
 const ProjectPane = dynamic(() => import("./ProjectPane"), { loading: PaneLoading });
 const ChapelPane = dynamic(() => import("./ChapelPane"), { loading: PaneLoading });
@@ -279,6 +280,7 @@ function tabLabel(tab: Tab): string {
     return tab.book === "psalms" ? "Psalms Explorer" : "Proverbs Explorer";
   }
   if (tab.type === "media") return "Media";
+  if (tab.type === "hymn") return tab.title ? `Hymn: ${tab.title}` : "Hymn";
   return tab.entryId ? `Lexicon ${tab.entryId}` : "Lexicon";
 }
 
@@ -656,6 +658,10 @@ function Pane({ leaf }: { leaf: LeafNode }) {
           ) : activeTab.type === "sermon" ? (
             <div className="h-full overflow-y-auto p-4">
               <SermonsPane paneId={leaf.id} tabId={activeTab.id} slug={activeTab.sermon} />
+            </div>
+          ) : activeTab.type === "hymn" ? (
+            <div className="h-full overflow-y-auto p-4">
+              <HymnsPane paneId={leaf.id} tabId={activeTab.id} hymn={activeTab.hymn} />
             </div>
           ) : activeTab.type === "pulpit" ? (
             <div className="h-full overflow-y-auto p-4">

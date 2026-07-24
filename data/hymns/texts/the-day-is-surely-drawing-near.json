@@ -1,0 +1,102 @@
+{
+ "title": "The Day is Surely Drawing Near",
+ "altTitles": [],
+ "author": "Bartholomäus Ringwaldt (1532-1599)",
+ "translator": "Phillip Adam Peter (1832-1919)",
+ "meter": "8.7.8.7.8.8.7",
+ "credit": "Bartholomäus Ringwaldt, 1565.  Translated by Phillip A. Peter, 1872, alt.",
+ "tunes": [
+  {
+   "name": "Es ist Gewisslich an der Zeit",
+   "composer": "Wittenberg, 1533 from Klug's Geistliche Lieder"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "The day is surely drawing near,",
+ "verses": [
+  [
+   "The day is surely drawing near,",
+   "When God's Son, the Anointed,",
+   "Shall with great majesty appear,",
+   "As Judge of all appointed.",
+   "All mirth and laughter then shall cease",
+   "When flames on flames will still increase,",
+   "As Scripture truly teacheth."
+  ],
+  [
+   "A trumpet loud shall then resound,",
+   "And all the earth be shaken;",
+   "Then all who in their graves are found",
+   "Shall from their sleep awaken.",
+   "But all that live shall in that hour,",
+   "By the Almighty's boundless pow'r",
+   "Be changed at His commanding."
+  ],
+  [
+   "A book is opened then to all,",
+   "A record truly telling",
+   "What each hath done, both great and small,",
+   "When he on earth was dwelling;",
+   "And every heart be clearly seen,",
+   "And all be known as they have been,",
+   "In thoughts and words and actions."
+  ],
+  [
+   "Then woe to those who scorned the Lord,",
+   "And sought but carnal pleasures,",
+   "Who here despised His precious Word,",
+   "And loved their earthly treasures!",
+   "With shame and trembling they will stand,",
+   "And at the Judge's stern command",
+   "To Satan be delivered."
+  ],
+  [
+   "O Jesus, who my debt didst pay",
+   "And for my sin wast smitten",
+   "Within the Book of Life, oh, may",
+   "My name be also written!",
+   "I will not doubt; I trust in Thee,",
+   "From Satan Thou hast made me free",
+   "And from all condemnation."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "revelation",
+   "chapter": 20,
+   "from": 11,
+   "to": 15
+  },
+  {
+   "book": "luke",
+   "chapter": 21,
+   "from": 25,
+   "to": 36
+  },
+  {
+   "book": "matthew",
+   "chapter": 25,
+   "from": 32,
+   "to": 46
+  },
+  {
+   "book": "2-timothy",
+   "chapter": 4,
+   "from": 1
+  },
+  {
+   "book": "revelation",
+   "chapter": 13,
+   "from": 5,
+   "to": 9
+  },
+  {
+   "book": "1-thessalonians",
+   "chapter": 4,
+   "from": 13,
+   "to": 18
+  }
+ ],
+ "id": "the-day-is-surely-drawing-near"
+}

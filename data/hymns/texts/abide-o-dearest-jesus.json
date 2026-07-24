@@ -1,0 +1,90 @@
+{
+ "title": "Abide, O Dearest Jesus",
+ "altTitles": [
+  "Abide with Us, Lord Jesus",
+  "Abide Among Us with Thy Grace",
+  "Abide with Us, Our Savior",
+  "Come, Abide with Thy Grace, in Our Hearts",
+  "O Savior, Go Beside us"
+ ],
+ "author": "Joshua Stegmann (1588-1632)",
+ "translator": "August Crull (1845-1923)",
+ "meter": "7.6.7.6",
+ "credit": "Joshua Stegmann, 1628.  Translated by August Crull circa 1892.",
+ "tunes": [
+  {
+   "name": "Christus der ist mein Leben",
+   "composer": "Melchior Vulpius (1560-1615)"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Abide, O dearest Jesus,",
+ "verses": [
+  [
+   "Abide, O dearest Jesus,",
+   "Among us with Thy grace,",
+   "That Satan may not harm us,",
+   "Nor we to sin give place."
+  ],
+  [
+   "Abide, O dear Redeemer,",
+   "Among us with Thy Word,",
+   "And thus now and hereafter",
+   "True peace and joy afford."
+  ],
+  [
+   "Abide with heav'nly brightness",
+   "Among us, precious Light;",
+   "Thy truth direct, and keep us",
+   "From error's gloomy night."
+  ],
+  [
+   "Abide with richest blessings",
+   "Among us, bounteous Lord;",
+   "Let us in grace and wisdom",
+   "Grow daily through Thy Word."
+  ],
+  [
+   "Abide with Thy protection",
+   "Among us, Lord, our Strength,",
+   "Lest world and Satan fell us",
+   "And overcome at length."
+  ],
+  [
+   "Abide, O faithful Savior, Among us with Thy love;",
+   "Grant steadfastness, and help us To reach our home above."
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "1-john",
+   "chapter": 4,
+   "from": 13,
+   "to": 16
+  },
+  {
+   "book": "matthew",
+   "chapter": 28,
+   "from": 20
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 1,
+   "to": 14
+  },
+  {
+   "book": "philippians",
+   "chapter": 4,
+   "from": 13
+  },
+  {
+   "book": "colossians",
+   "chapter": 1,
+   "from": 11,
+   "to": 12
+  }
+ ],
+ "id": "abide-o-dearest-jesus"
+}

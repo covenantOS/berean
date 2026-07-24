@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCollection } from "@/lib/hooks";
 import {
   Liturgy,
@@ -13,6 +13,76 @@ import {
 import { plans, generatorFor, currentDay, readingsForDay } from "@/lib/plans";
 import { getBook } from "@/lib/canon";
 import { useWorkspaceDispatch } from "./WorkspaceContext";
+
+interface HymnSummary {
+  id: string;
+  title: string;
+  author: string | null;
+  meter: string;
+  firstLine: string;
+}
+
+/**
+ * The hymnbook in the Chapel: the Open Hymnal's public-domain corpus,
+ * browsable and searchable, each row opening the hymn reader in a tab.
+ */
+function HymnbookSection() {
+  const { dispatch } = useWorkspaceDispatch();
+  const [hymns, setHymns] = useState<HymnSummary[] | null>(null);
+  const [q, setQ] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/pane/hymns", { signal: controller.signal })
+      .then(async (res) => (res.ok ? ((await res.json()) as { hymns: HymnSummary[] }) : null))
+      .then((data) => setHymns(data?.hymns ?? []))
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setHymns([]);
+      });
+    return () => controller.abort();
+  }, []);
+
+  if (hymns === null) return null;
+  const needle = q.trim().toLowerCase();
+  const shown = needle
+    ? hymns.filter(
+        (h) =>
+          h.title.toLowerCase().includes(needle) ||
+          h.firstLine.toLowerCase().includes(needle) ||
+          (h.author ?? "").toLowerCase().includes(needle)
+      )
+    : hymns;
+  return (
+    <div className="mt-8">
+      <h3 className="small-caps mb-2 text-sm text-muted">The hymnbook</h3>
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Title, first line, or author"
+        aria-label="Search the hymnbook"
+        className="mb-2 w-full rounded-[4px] border border-rule bg-paper px-3 py-2 text-sm focus:outline focus:outline-2 focus:outline-sapphire"
+      />
+      <ul className="max-h-80 space-y-1 overflow-y-auto">
+        {shown.slice(0, 60).map((h) => (
+          <li key={h.id}>
+            <button
+              type="button"
+              onClick={() => dispatch({ type: "openHymn", hymn: h.id, title: h.title })}
+              className="w-full rounded-[4px] px-2 py-1.5 text-left hover:bg-paper"
+            >
+              <span className="text-sm text-ink">{h.title}</span>
+              <span className="ml-2 text-xs text-muted">{[h.author, h.meter].filter(Boolean).join(" · ")}</span>
+            </button>
+          </li>
+        ))}
+        {shown.length > 60 ? (
+          <li className="px-2 py-1 text-xs text-muted">The first 60 of {shown.length} answers.</li>
+        ) : null}
+      </ul>
+    </div>
+  );
+}
 
 /** Opens the passage in the workspace, the way every pane asks. */
 function openRef(book: string, chapter: number) {
@@ -255,6 +325,7 @@ export default function ChapelPane() {
               A plain evening order: appointed, not tracked. Nothing here is scored.
             </p>
           </div>
+          <HymnbookSection />
         </aside>
       </div>
     </div>

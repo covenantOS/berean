@@ -1,0 +1,3481 @@
+{
+ "hymns": [
+  {
+   "id": "take-up-thy-cross-the-savior-said",
+   "title": "'Take Up Thy Cross', the Savior Said",
+   "author": "Charles William Everest (1814-1877)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Nun Lasst Uns Den Leib Begraben"
+   ],
+   "firstLine": "\"Take up thy cross,\" the Savior said,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "tis-midnight-and-on-olive-s-brow",
+   "title": "'Tis Midnight and On Olive's Brow",
+   "author": "William Bingham Tappan (1794-1849)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "St. Cross"
+   ],
+   "firstLine": "'Tis midnight, and on Olive's brow",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "twas-on-that-dark-that-doleful-night",
+   "title": "'Twas On That Dark, That Doleful Night",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "St. Cross"
+   ],
+   "firstLine": "'Twas on that dark, that doleful night",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "a-child-of-the-king",
+   "title": "A Child of The King",
+   "altTitles": [
+    "My Father is Rich in Houses and Lands"
+   ],
+   "author": "Harriet Eugenia Peck Buell (1834-1910)",
+   "translator": null,
+   "meter": "10.11.11.11",
+   "tunes": [
+    "Binghamton"
+   ],
+   "firstLine": "My Father is rich in houses and lands,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "a-great-and-mighty-wonder",
+   "title": "A Great and Mighty Wonder",
+   "author": "Germanus of Constantinople (634-734)",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "7.6.7.6",
+   "tunes": [
+    "Es Ist Ein Ros Entsprungen (Rhythmic)"
+   ],
+   "firstLine": "A great and mighty wonder,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "a-lamb-goes-uncomplaining-forth",
+   "title": "A Lamb Goes Uncomplaining Forth",
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "composite",
+   "meter": "8.7.8.7.8.8.7.8.8.7",
+   "tunes": [
+    "An Wasserflüssen Babylon"
+   ],
+   "firstLine": "A Lamb goes uncomplaining forth,",
+   "verses": 10,
+   "refrain": false
+  },
+  {
+   "id": "a-mighty-fortress-is-our-god-hedge",
+   "title": "A Mighty Fortress Is Our God",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Frederic Henry Hedge (1805-1890)",
+   "meter": "8.7.8.7.6.6.6.6.7",
+   "tunes": [
+    "Ein Feste Burg (Isorhythmic)"
+   ],
+   "firstLine": "A mighty fortress is our God,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "a-mighty-fortress-is-our-god-ein-feste-burg-rhythmic",
+   "title": "A Mighty Fortress Is Our God",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "8.7.8.7.5.5.5.6.7",
+   "tunes": [
+    "Ein Feste Burg (Rhythmic)"
+   ],
+   "firstLine": "A mighty Fortress is our God,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "abide-with-me",
+   "title": "Abide With Me",
+   "author": "Henry F. Lyte (1793-1847)",
+   "translator": null,
+   "meter": "10.10.10.10",
+   "tunes": [
+    "Eventide"
+   ],
+   "firstLine": "Abide with me; fast falls the eventide;",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "abide-o-dearest-jesus",
+   "title": "Abide, O Dearest Jesus",
+   "altTitles": [
+    "Abide with Us, Lord Jesus",
+    "Abide Among Us with Thy Grace",
+    "Abide with Us, Our Savior",
+    "Come, Abide with Thy Grace, in Our Hearts",
+    "O Savior, Go Beside us"
+   ],
+   "author": "Joshua Stegmann (1588-1632)",
+   "translator": "August Crull (1845-1923)",
+   "meter": "7.6.7.6",
+   "tunes": [
+    "Christus der ist mein Leben"
+   ],
+   "firstLine": "Abide, O dearest Jesus,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "all-depends-on-our-possessing",
+   "title": "All Depends On Our Possessing",
+   "author": null,
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.7.8.8.7",
+   "tunes": [
+    "Alles ist an Gottes Segen"
+   ],
+   "firstLine": "All depends on our possessing",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "all-glory-laud-and-honor",
+   "title": "All Glory, Laud, and Honor",
+   "author": "Theodulf of Orleans (760-821)",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "7.6.7.6",
+   "tunes": [
+    "Valet Will Ich Dir Geben"
+   ],
+   "firstLine": "Thou art the King of Israel,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "all-hail-the-power-of-jesus-name",
+   "title": "All Hail The Power Of Jesus' Name",
+   "author": "Edward Perronet (1726-1792)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6",
+   "tunes": [
+    "Coronation"
+   ],
+   "firstLine": "All hail the pow'r of Jesus' Name!",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "all-my-heart-this-night-rejoices",
+   "title": "All My Heart This Night Rejoices",
+   "altTitles": [
+    "All My Heart Again Rejoices"
+   ],
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.3.3.6.8.3.3.6",
+   "tunes": [
+    "Ebeling"
+   ],
+   "firstLine": "All my heart this night rejoices,",
+   "verses": 10,
+   "refrain": false
+  },
+  {
+   "id": "all-praise-to-jesus-hallowed-name",
+   "title": "All Praise to Jesus' Hallowed Name",
+   "altTitles": [
+    "All Praise to Thee, O Jesus Christ",
+    "O Jesus Christ, All Praise to Thee",
+    "We Praise You, Jesus at Your Birth",
+    "All Praise to Thee, Eternal Lord"
+   ],
+   "author": "German; Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.8",
+   "tunes": [
+    "Gelobet Seist Du"
+   ],
+   "firstLine": "All praise to Jesus' hallowed Name",
+   "verses": 7,
+   "refrain": true
+  },
+  {
+   "id": "all-praise-to-thee-my-god-this-night",
+   "title": "All Praise To Thee, My God, This Night",
+   "author": "Thomas Ken (1637-1711)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Tallis` Canon"
+   ],
+   "firstLine": "All praise to Thee, my God, this night,",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "all-who-believe-and-are-baptized",
+   "title": "All Who Believe and Are Baptized",
+   "altTitles": [
+    "He That Believes and Is Baptized"
+   ],
+   "author": "Thomas Hansen Kingo (1634-1703)",
+   "translator": "George Alfred Taylor Rygh (1860-1942)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Es ist das Heil uns Kommen Her"
+   ],
+   "firstLine": "All who believe and are baptized",
+   "verses": 2,
+   "refrain": false
+  },
+  {
+   "id": "alleluia-alleluia-hearts-to-heaven-and-voices-raise",
+   "title": "Alleluia, Alleluia! Hearts to Heaven and Voices Raise",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Ode to Joy"
+   ],
+   "firstLine": "Alleluia, alleluia!",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "alleluia-sing-to-jesus",
+   "title": "Alleluia, Sing To Jesus!",
+   "author": "William Chatterton Dix (1837-1865)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "HyFrydol"
+   ],
+   "firstLine": "Alleluia! sing to Jesus!",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "almighty-god-your-word-is-cast",
+   "title": "Almighty God Your Word Is Cast",
+   "author": "John Cawood (1775-1852)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "St. Anne"
+   ],
+   "firstLine": "Almighty God, Your Word is cast",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "amazing-grace",
+   "title": "Amazing Grace",
+   "author": "John Newton (1725-1807)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "New Britain"
+   ],
+   "firstLine": "Amazing grace! How sweet the sound",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "and-can-it-be",
+   "title": "And Can It Be",
+   "author": "Charles Wesley (1707-1788)",
+   "translator": null,
+   "meter": "8.8.8.8.8.8",
+   "tunes": [
+    "Fillmore"
+   ],
+   "firstLine": "And can it be that I should gain",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "angel-voices-ever-singing",
+   "title": "Angel Voices, Ever Singing",
+   "author": "Francis Pott (1832-1909)",
+   "translator": null,
+   "meter": "8.5.8.5.8.7",
+   "tunes": [
+    "Angel Voices (Monk)"
+   ],
+   "firstLine": "Angel voices, ever singing,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "angels-from-the-realms-of-glory",
+   "title": "Angels From the Realms of Glory",
+   "author": "James Montgomery (1771-1854)",
+   "translator": null,
+   "meter": "8.7.8.7",
+   "tunes": [
+    "Regent Square"
+   ],
+   "firstLine": "Angels from the realms of glory,",
+   "verses": 7,
+   "refrain": true
+  },
+  {
+   "id": "angels-we-have-heard-on-high",
+   "title": "Angels We Have Heard On High",
+   "author": "French",
+   "translator": "James Chadwick (1813-1882)",
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Gloria"
+   ],
+   "firstLine": "Angels we have heard on high",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "as-with-gladness-men-of-old",
+   "title": "As With Gladness Men of Old",
+   "author": "William Chatterton Dix (1837-1865)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7",
+   "tunes": [
+    "Dix"
+   ],
+   "firstLine": "As with gladness, men of old",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "at-the-lamb-s-high-feast",
+   "title": "At The Lamb's High Feast",
+   "author": "Latin",
+   "translator": "Robert Campbell (1814-1868)",
+   "meter": "7.7.7.7.4",
+   "tunes": [
+    "Sonne der Gerechtigkeit"
+   ],
+   "firstLine": "At the Lamb's high feast we sing,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "awake-my-heart-with-gladness",
+   "title": "Awake, My Heart, With Gladness",
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "John Kelly (1833-1890)",
+   "meter": "7.6.7.6.6.6.6.6",
+   "tunes": [
+    "Auf, Auf, Mein Herz mit Freuden"
+   ],
+   "firstLine": "Awake, my heart, with gladness,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "awake-my-soul-and-with-the-sun",
+   "title": "Awake, My Soul, And With The Sun",
+   "altTitles": [
+    "see also 'Praise God, From Whom All Blessings Flow'"
+   ],
+   "author": "Thomas Ken (1637-1711)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Old 100th"
+   ],
+   "firstLine": "Awake, my soul, and with the sun",
+   "verses": 11,
+   "refrain": false
+  },
+  {
+   "id": "away-in-a-manger",
+   "title": "Away In A Manger",
+   "author": "anonymous; John T. MacFarland (1851-1913)",
+   "translator": null,
+   "meter": "11.11.11.11",
+   "tunes": [
+    "Mueller"
+   ],
+   "firstLine": "Away in a manger, no crib for a bed,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "baptized-into-thy-name-most-holy",
+   "title": "Baptized Into Thy Name Most Holy",
+   "author": "Johann Jakob Rambach (1693-1735)",
+   "translator": "Catherine Winkworth (1827-1878); August Crull (1845-1923)",
+   "meter": "9.8.9.8.8.8",
+   "tunes": [
+    "O Dass Ich Tausend Zungen Hätte (Dretzel)"
+   ],
+   "firstLine": "Baptized into Thy Name most holy,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "be-still-my-soul",
+   "title": "Be Still My Soul",
+   "author": "Katharina Amalia Dorothea von Schlegel (1697-1768)",
+   "translator": "Jane Laurie Borthwick (1813-1897)",
+   "meter": "10.10.10.10.10.10",
+   "tunes": [
+    "Finlandia"
+   ],
+   "firstLine": "Be still, my soul: the Lord is on thy side.",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "be-thou-my-vision",
+   "title": "Be Thou My Vision",
+   "author": "Dallan Forgaill (8th Century)",
+   "translator": "Mary Elizabeth Byrne (1880-1931); Eleanor Henrietta Hull (1860-1935)",
+   "meter": "10.10.10.10",
+   "tunes": [
+    "Slane"
+   ],
+   "firstLine": "Be Thou my Vision, O Lord of my heart;",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "beautiful-savior",
+   "title": "Beautiful Savior",
+   "altTitles": [
+    "Fairest Lord Jesus"
+   ],
+   "author": "German Jesuits",
+   "translator": "Joseph August Seiss (1823-1904)",
+   "meter": "5.5.7.5.5.8",
+   "tunes": [
+    "Crusader`s Hymn"
+   ],
+   "firstLine": "Beautiful Savior,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "behold-a-host-arrayed-in-white",
+   "title": "Behold, A Host, Arrayed in White",
+   "author": "Hans Adolf Brorson (1694-1764)",
+   "translator": "composite",
+   "meter": "8.8.4.4.6.8.8.4.4.6.8.8.4.4.6",
+   "tunes": [
+    "Den Store Hvide Flok"
+   ],
+   "firstLine": "Behold a host, arrayed in white,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "beneath-the-cross-of-jesus",
+   "title": "Beneath The Cross Of Jesus",
+   "author": "Elizabeth Cecelia Douglas Clephane (1830-1869)",
+   "translator": null,
+   "meter": "7.6.8.6.8.6.8.6",
+   "tunes": [
+    "St. Christopher"
+   ],
+   "firstLine": "Beneath the cross of Jesus",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "blessed-assurance",
+   "title": "Blessed Assurance",
+   "author": "Fanny Jane Crosby (1820-1915)",
+   "translator": null,
+   "meter": "9.10.9.9",
+   "tunes": [
+    "Blessed Assurance-Assurance"
+   ],
+   "firstLine": "Blessèd assurance, Jesus is mine!",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "blessed-jesus-at-thy-word",
+   "title": "Blessed Jesus at Thy Word",
+   "author": "Tobias Clausnitzer (1619-1684)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "7.8.7.8.8.8",
+   "tunes": [
+    "Liebster Jesu wir Sind Hier"
+   ],
+   "firstLine": "Blessed Jesus, at Thy Word",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "blest-be-the-tie-that-binds",
+   "title": "Blest Be The Tie That Binds",
+   "author": "John Fawcett (1740-1817)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Boylston",
+    "Dennis"
+   ],
+   "firstLine": "Blest be the tie that binds",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "blind-bartimaeus",
+   "title": "Blind Bartimaeus",
+   "author": "Henry Wadsworth Longfellow (1807-1882)",
+   "translator": null,
+   "meter": "8.8.8.8.8.8",
+   "tunes": [
+    "Fillmore"
+   ],
+   "firstLine": "Blind Bartimaeus at the gates",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "breathe-on-me-breath-of-god",
+   "title": "Breathe on Me, Breath of God",
+   "author": "Edwin Hatch (1835-1889)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Aylesbury"
+   ],
+   "firstLine": "Breathe on me, breath of God,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "built-on-the-rock",
+   "title": "Built on the Rock",
+   "author": "Nikolai Frederik Severin Grundtvig (1783-1872)",
+   "translator": "Carl Døving (1867-1937)",
+   "meter": "8.8.8.8.8.8.8",
+   "tunes": [
+    "Kirken Den Er Et Gammelt Hus"
+   ],
+   "firstLine": "Built on the Rock the church doth stand,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "by-grace-i-m-saved",
+   "title": "By Grace I'm Saved",
+   "author": "Christian Ludwig Scheidt (1709-1761)",
+   "translator": "Matthias Loy (1828-1915)",
+   "meter": "9.8.9.8.8.8",
+   "tunes": [
+    "O Dass Ich Tansend Zungen"
+   ],
+   "firstLine": "By grace I'm savedgrace free and boundless!",
+   "verses": 10,
+   "refrain": false
+  },
+  {
+   "id": "christ-jesus-lay-in-death-s-strong-bands",
+   "title": "Christ Jesus Lay In Death's Strong Bands",
+   "altTitles": [
+    "In Death's Strong Bands"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.7.8.7.4",
+   "tunes": [
+    "Christ lag in Tobes Banden"
+   ],
+   "firstLine": "Christ Jesus lay in death's strong bands,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "christ-returneth",
+   "title": "Christ Returneth",
+   "author": "H. L. Turner (18th Century)",
+   "translator": null,
+   "meter": "12.12.12.7",
+   "tunes": [
+    "Christ Returneth"
+   ],
+   "firstLine": "It may be at morn, when the day is awaking,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "christ-the-lord-is-risen-today-llanfair",
+   "title": "Christ The Lord Is Risen Today",
+   "altTitles": [
+    "Lyra"
+   ],
+   "author": "Charles Wesley (1707-1788); unknown",
+   "translator": null,
+   "meter": "7.7.7.7.16",
+   "tunes": [
+    "Llanfair"
+   ],
+   "firstLine": "Christ, the Lord, is risen today,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "christ-the-lord-is-risen-today-orientis-partibus",
+   "title": "Christ The Lord Is Risen Today",
+   "altTitles": [
+    "Lyra"
+   ],
+   "author": "Charles Wesley (1707-1788); unknown",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Orientis Partibus"
+   ],
+   "firstLine": "\"Christ, the Lord, is risen today!\"",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "come-down-o-love-divine",
+   "title": "Come Down, O Love Divine",
+   "author": "Bianco of Siena (?-1434)",
+   "translator": "Richard Frederick Littledale (1833-1890)",
+   "meter": "6.6.11.6.6.11",
+   "tunes": [
+    "Down Ampney"
+   ],
+   "firstLine": "Come down, O love divine,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "come-holy-spirit-lord-our-god",
+   "title": "Come Holy Spirit, Lord Our God",
+   "altTitles": [
+    "Come Holy Ghost,  God and Lord",
+    "Come Holy Ghost, God and Lord"
+   ],
+   "author": "Latin; Martin Luther (1483-1546)",
+   "translator": "Arthur Tozel Russell (1806-1874)",
+   "meter": "8.8.9.7.8.8.9.9",
+   "tunes": [
+    "Komm Heiliger Geist, Herre Gott"
+   ],
+   "firstLine": "Come, Holy Spirit, Lord our God,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "come-thou-fount-of-every-blessing",
+   "title": "Come Thou Fount Of Every Blessing",
+   "author": "Robert Robinson (1735-1790)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Nettleton"
+   ],
+   "firstLine": "Come, Thou Fount of every blessing,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "come-god-creator-holy-ghost",
+   "title": "Come, God Creator, Holy Ghost",
+   "altTitles": [
+    "Creator, Spirit, Holy Dove",
+    "Come Holy Ghost, Creator Blest"
+   ],
+   "author": "Charlemagne (742-814); Rhabanus Maurus (776-856); Gregory the Great (c. 540-604); Ambrose of Milan (340-397)",
+   "translator": "Martin Luther (1483-1546); Leonard Woolsey Bacon (1830-1907)",
+   "meter": "8.8.8.7",
+   "tunes": [
+    "Komm, Gott Schoepfer Heiliger Geist"
+   ],
+   "firstLine": "Come, God Creator, Holy Ghost,",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "come-thou-long-expected-jesus",
+   "title": "Come, Thou Long-Expected Jesus",
+   "altTitles": [
+    "Hail, Thou Long-Expected Jesus"
+   ],
+   "author": "Charles Wesley (1707-1788)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Jefferson"
+   ],
+   "firstLine": "Come, Thou long expected Jesus",
+   "verses": 2,
+   "refrain": false
+  },
+  {
+   "id": "come-ye-disconsolate",
+   "title": "Come, Ye Disconsolate",
+   "author": "Thomas Moore (1779-1852); Thomas Hastings (1784-1872)",
+   "translator": null,
+   "meter": "11.10.11.10",
+   "tunes": [
+    "Consolator (Webbe)"
+   ],
+   "firstLine": "Come, ye disconsolate, wher'er ye languish;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "come-your-heart-and-voices-raising",
+   "title": "Come, Your Heart and Voices Raising",
+   "altTitles": [
+    "Come and Christ the Lord Be Praising",
+    "Come and Let Us Christ Revere Now",
+    "Come Unite in Praise and Singing"
+   ],
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "composite",
+   "meter": "8.8.8.7",
+   "tunes": [
+    "Quem Pastores"
+   ],
+   "firstLine": "Come, your hearts and voices raising,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "comfort-comfort-ye-my-people",
+   "title": "Comfort, Comfort Ye My People",
+   "author": "Olearius (Oelschlaeger), Johann (1611-1684)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.7.8.7.7.7.8.8",
+   "tunes": [
+    "Freu dich sehr, o meine Seele"
+   ],
+   "firstLine": "Comfort, comfort ye My people,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "crown-him-with-many-crowns",
+   "title": "Crown Him With Many Crowns",
+   "author": "Matthew Bridges (1800-1894); Godfrey Thring (1823-1903)",
+   "translator": null,
+   "meter": "6.6.8.6.6.6.8.6",
+   "tunes": [
+    "Diademata"
+   ],
+   "firstLine": "Crown Him with many crowns,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "dear-christians-one-and-all-rejoice",
+   "title": "Dear Christians, One and All Rejoice",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Es ist Gewisslich an der Zeit",
+    "Nun Freut Euch"
+   ],
+   "firstLine": "Dear Christians, one and all rejoice,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "despair-not-o-heart",
+   "title": "Despair Not, O Heart",
+   "author": "Aurelius Clemens Prudentius (348-413)",
+   "translator": "O. T. Sanden (1853-1917)",
+   "meter": "9.9.9.9",
+   "tunes": [
+    "Iam Moesta"
+   ],
+   "firstLine": "Despair not, O heart, in thy sorrow,",
+   "verses": 9,
+   "refrain": false
+  },
+  {
+   "id": "did-you-think-to-pray",
+   "title": "Did You Think To Pray?",
+   "author": "Mary Ann Pepper Kidder (1820-1905)",
+   "translator": null,
+   "meter": "8.5.8.8.5",
+   "tunes": [
+    "Stockbridge"
+   ],
+   "firstLine": "Ere you left your room this morning,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "every-morning-mercies-new",
+   "title": "Every Morning Mercies New",
+   "author": "Greville Phillimore (1821-1884)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7",
+   "tunes": [
+    "Kelso"
+   ],
+   "firstLine": "Ev'ry morning mercies new",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "faith-of-our-fathers",
+   "title": "Faith of Our Fathers",
+   "author": "Frederick William Faber (1814-1863); James George Walton (1821-1905)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "St. Catherine"
+   ],
+   "firstLine": "Faith of our fathers, living still,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "fear-not-o-little-flock",
+   "title": "Fear Not, O Little Flock",
+   "author": "King Gustavus Adolphus (1594-1632); Jacob Fabricius (1593-1654); Johann M. Altenburg (1584-1640)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.6.8.8.6",
+   "tunes": [
+    "Kommt her zu mir, spricht Gottes Sohn"
+   ],
+   "firstLine": "Fear not, O little flock, the foe",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "for-the-beauty-of-the-earth",
+   "title": "For The Beauty Of The Earth",
+   "author": "Folliot Sandford Pierpoint (1835-1917)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Dix"
+   ],
+   "firstLine": "For the beauty of the earth",
+   "verses": 8,
+   "refrain": true
+  },
+  {
+   "id": "from-heaven-above-to-earth-i-come",
+   "title": "From Heaven Above To Earth I Come",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Vom Himmel Hoch"
+   ],
+   "firstLine": "From Heaven above to earth I come,",
+   "verses": 15,
+   "refrain": false
+  },
+  {
+   "id": "from-nazareth",
+   "title": "From Nazareth",
+   "author": "Margaret Elizabeth Munson Sangster (1838-1912)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Puer Nobis Nascitur"
+   ],
+   "firstLine": "Comes any good from Nazareth?",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "gabriel-s-message",
+   "title": "Gabriel's Message",
+   "altTitles": [
+    "The Angel Gabriel From Heaven Came"
+   ],
+   "author": "Basque",
+   "translator": "Sabine Baring Gould (1834-1924)",
+   "meter": "10.10.12",
+   "tunes": [
+    "Gabriel`s Message"
+   ],
+   "firstLine": "The angel Gabriel from heaven came,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "gentle-mary-laid-her-child",
+   "title": "Gentle Mary Laid Her Child",
+   "author": "Joseph Simpson Cook (1859-1933)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Tempus Adest Floridum"
+   ],
+   "firstLine": "Gentle Mary laid her Child",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "glorious-things-of-thee-are-spoken",
+   "title": "Glorious Things of Thee are Spoken",
+   "author": "John Newton (1725-1807)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Austria (Haydn)"
+   ],
+   "firstLine": "Glorious things of thee are spoken,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "go-to-dark-gethsemane",
+   "title": "Go To Dark Gethsemane",
+   "author": "James Montgomery (1771-1854)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7",
+   "tunes": [
+    "Gethsemane"
+   ],
+   "firstLine": "Go to dark Gethsemane,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "god-himself-is-present",
+   "title": "God Himself is Present",
+   "altTitles": [
+    "God Himself is With Us",
+    "God Reveals His Presence",
+    "Lo! God Is Here"
+   ],
+   "author": "Gerhard Tersteegen (1697-1769)",
+   "translator": "Frederick William Foster (1760-1835); John Miller (1756-1790)",
+   "meter": "6.6.8.6.6.8.6.6.6",
+   "tunes": [
+    "Wunderbarer König"
+   ],
+   "firstLine": "God Himself is present:",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "god-rest-ye-merry-gentlemen",
+   "title": "God Rest Ye Merry Gentlemen",
+   "author": "English",
+   "translator": null,
+   "meter": "8.6.7.6.8.6",
+   "tunes": [
+    "God Rest Ye Merry Gentlemen"
+   ],
+   "firstLine": "God rest ye merry, gentlemen,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "god-will-take-care-of-you",
+   "title": "God Will Take Care of You",
+   "author": "Civilla Durfee Martin (1866-1948)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Martin"
+   ],
+   "firstLine": "Be not dismayed whate'er betide,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "god-that-madest-earth-and-heaven",
+   "title": "God, That Madest Earth and Heaven",
+   "altTitles": [
+    "God, Who Madest Earth and Heaven",
+    "God, Who Made the Earth and Heaven"
+   ],
+   "author": "Reginald Heber (1783-1826); William Mercer (1811-1873); Richard Whately (1787-1863)",
+   "translator": null,
+   "meter": "8.4.8.4.8.8.8.4",
+   "tunes": [
+    "Ar Hyd Y Nos"
+   ],
+   "firstLine": "God, that madest earth and Heaven,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "god-whose-almighty-word",
+   "title": "God, Whose Almighty Word",
+   "author": "John Marriott (1780-1825)",
+   "translator": null,
+   "meter": "6.6.4.6.6.6.4",
+   "tunes": [
+    "Italian Hymn"
+   ],
+   "firstLine": "God, whose almighty word",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "guide-me-o-thou-great-jehovah",
+   "title": "Guide Me, O Thou Great Jehovah",
+   "author": "William Williams (1717-1791)",
+   "translator": "Peter Williams (1723-1796)",
+   "meter": "8.7.8.7.8.7.7",
+   "tunes": [
+    "Cwm Rhondda"
+   ],
+   "firstLine": "Guide me, O Thou great Jehovah,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "hallelujah-what-a-savior",
+   "title": "Hallelujah, What a Savior!",
+   "altTitles": [
+    "Man of Sorrows"
+   ],
+   "author": "Philip Paul Bliss (1838-1876)",
+   "translator": null,
+   "meter": "7.7.7",
+   "tunes": [
+    "Hallelujah What a Savior"
+   ],
+   "firstLine": "Man of Sorrows! what a name",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "happy-the-man-who-feareth-god",
+   "title": "Happy the Man Who Feareth God",
+   "altTitles": [
+    "Happy Who in God's Fear Doth Stay"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Wo Gott Zum Haus (Walter)",
+    "Wo Gott Zum Haus"
+   ],
+   "firstLine": "Happy the man who feareth God,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "hark-the-glad-sound",
+   "title": "Hark the Glad Sound",
+   "author": "Philip Doddridge (1702-1751)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Chesterfield"
+   ],
+   "firstLine": "Hark, the glad sound! the Savior comes!",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "hark-the-voice-of-jesus-calling",
+   "title": "Hark, the Voice of Jesus Calling",
+   "author": "Daniel March (1816-1909)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Galilean"
+   ],
+   "firstLine": "Hark, the voice of Jesus calling,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "hark-the-herald-angels-sing",
+   "title": "Hark! The Herald Angels Sing",
+   "author": "Charles Wesley (1707-1788)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7.7.7",
+   "tunes": [
+    "Mendelssohn"
+   ],
+   "firstLine": "Hark! The herald angels sing,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "he-keeps-me-singing",
+   "title": "He Keeps Me Singing",
+   "author": "Luther Burgess Bridgers (1884-1948)",
+   "translator": null,
+   "meter": "9.7.9.7",
+   "tunes": [
+    "He Keeps Me Singing"
+   ],
+   "firstLine": "There's within my heart a melody",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "he-leadeth-me",
+   "title": "He Leadeth Me",
+   "author": "Joseph Henry Gilmore (1834-1918)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "He Leadeth Me"
+   ],
+   "firstLine": "He leadeth me, O blessèd thought!",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "he-was-not-willing",
+   "title": "He Was Not Willing",
+   "author": "Lucy Jane Rider Meyer (1849-1922)",
+   "translator": null,
+   "meter": "11.10.11.10.11.10.11.10",
+   "tunes": [
+    "He Was Not Willing"
+   ],
+   "firstLine": "\"He was not willing that any should perish\";",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "he-who-would-valiant-be",
+   "title": "He Who Would Valiant Be",
+   "author": "John Bunyan (1628-1688); Percy Dearmer (1867-1936)",
+   "translator": null,
+   "meter": "11.11.12.11",
+   "tunes": [
+    "Monks Gate"
+   ],
+   "firstLine": "He who would valiant be 'gainst all disaster,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "holy-ghost-with-light-divine",
+   "title": "Holy Ghost, with Light Divine",
+   "author": "Andrew Reed (1787-1862); Samuel Longfellow (1819-1892)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Canterbury"
+   ],
+   "firstLine": "Holy Ghost, with light divine",
+   "verses": 13,
+   "refrain": false
+  },
+  {
+   "id": "holy-god-we-praise-thy-name",
+   "title": "Holy God, We Praise Thy Name",
+   "author": "Ignaz Franz (1719-1790)",
+   "translator": "Clarence Alphonsus Walworth (1820-1900)",
+   "meter": "7.8.7.8.7.7",
+   "tunes": [
+    "Te Deum"
+   ],
+   "firstLine": "Holy God, we praise Thy Name;",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "holy-spirit-ever-dwelling",
+   "title": "Holy Spirit, Ever Dwelling",
+   "author": "Timothy Rees (1874-1939)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Ebenezer"
+   ],
+   "firstLine": "Holy Spirit, ever dwelling",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "holy-holy-holy",
+   "title": "Holy, Holy, Holy",
+   "author": "Reginald Heber (1783-1826)",
+   "translator": null,
+   "meter": "6.6.6.6.6.6.5.5",
+   "tunes": [
+    "Nicaea"
+   ],
+   "firstLine": "Holy, holy, holy!",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "hosanna-loud-hosanna",
+   "title": "Hosanna, Loud Hosanna",
+   "author": "Jeanette Threlfall (1821-1880)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Ellacombe"
+   ],
+   "firstLine": "Hosanna, loud hosanna,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "how-firm-a-foundation",
+   "title": "How Firm A Foundation",
+   "author": "John Rippon (1751-1836)",
+   "translator": null,
+   "meter": "11.11.11.11",
+   "tunes": [
+    "Foundation (Funk)"
+   ],
+   "firstLine": "How firm a foundation, ye saints of the Lord,",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "i-am-jesus-little-lamb",
+   "title": "I Am Jesus' Little Lamb",
+   "author": "Henrietta Luise von Hayn (1724-1782)",
+   "translator": "composite",
+   "meter": "7.7.8.8.7.7",
+   "tunes": [
+    "Weil Ich Jesu Schäflein Bin"
+   ],
+   "firstLine": "I am Jesus' little lamb,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "i-come-o-savior-to-thy-table",
+   "title": "I Come, O Savior, To Thy Table",
+   "author": "Friedrich Christian Heyder (1677-1754)",
+   "translator": "composite",
+   "meter": "9.8.9.8",
+   "tunes": [
+    "Ich Sterbe Täglich"
+   ],
+   "firstLine": "I come, O Savior, to Thy table,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "i-heard-the-bells-on-christmas-day",
+   "title": "I Heard The Bells On Christmas Day",
+   "author": "Henry Wadsworth Longfellow (1807-1882)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Waltham (Calkin)"
+   ],
+   "firstLine": "I heard the bells on Christmas day",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "i-know-that-my-redeemer-lives",
+   "title": "I Know That My Redeemer Lives",
+   "author": "Samuel Medley (1738-1799)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Duke Street"
+   ],
+   "firstLine": "I know that my Redeemer lives;",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "i-know-whom-i-have-believed",
+   "title": "I Know Whom I Have Believed",
+   "author": "Daniel Webster Whittle (1840-1901); Elias Nathan (1840-1901)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "I Know Whom I Have Believed"
+   ],
+   "firstLine": "I know not why God's wondrous grace",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "i-need-thee-every-hour",
+   "title": "I Need Thee Every Hour",
+   "author": "Annie Sherwood Hawks (1836-1918)",
+   "translator": null,
+   "meter": "10.10",
+   "tunes": [
+    "I Need Thee Every Hour"
+   ],
+   "firstLine": "I need Thee ev'ry hour, Most gracious Lord;",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "i-place-my-trust-in-god",
+   "title": "I Place My Trust In God",
+   "author": "Dorothy Amstutz; Loren J. Kropf (1989-)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Haly Trust"
+   ],
+   "firstLine": "I placed my trust in God today,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "i-sing-the-mighty-power-of-god",
+   "title": "I Sing the Mighty Power of God",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "Ellacombe"
+   ],
+   "firstLine": "I sing the mighty pow'r of God,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "i-m-but-a-stranger-here",
+   "title": "I'm But A Stranger Here",
+   "author": "Thomas Rawson Taylor (1807-1835)",
+   "translator": null,
+   "meter": "6.4.6.4.6.6.6.4",
+   "tunes": [
+    "St. Edmund (Sullivan)"
+   ],
+   "firstLine": "I'm but a stranger here,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "if-god-had-not-been-on-our-side",
+   "title": "If God Had Not Been on Our Side",
+   "altTitles": [
+    "Had God not Come, May Israel Say",
+    "Were God Not With Us At This Time"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Wär Gott nicht mit uns diese Zeit (1524)",
+    "Wär Gott nicht mit uns diese Zeit (1537)"
+   ],
+   "firstLine": "If God had not been on our side",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "if-god-himself-be-for-me",
+   "title": "If God Himself Be For Me",
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Woodbird"
+   ],
+   "firstLine": "If God Himself be for me,",
+   "verses": 15,
+   "refrain": false
+  },
+  {
+   "id": "immortal-invisible-god-only-wise",
+   "title": "Immortal, Invisible, God Only Wise",
+   "author": "Walter Chalmers Smith (1824-1908)",
+   "translator": null,
+   "meter": "11.11.11.11",
+   "tunes": [
+    "St. Denio"
+   ],
+   "firstLine": "Immortal, invisible, God only wise,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "in-his-temple-now-behold-him",
+   "title": "In His Temple Now Behold Him",
+   "author": "Henry John Pye (1825-1903); William Cooke (1821-1894)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7",
+   "tunes": [
+    "Westminster Abbey"
+   ],
+   "firstLine": "In His temple now behold Him,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "in-peace-and-joy-i-now-depart",
+   "title": "In Peace and Joy I Now Depart",
+   "altTitles": [
+    "The Song of Simeon: Nunc Dimitis"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Leonard Woolsey Bacon (1830-1907)",
+   "meter": "8.5.8.4.7.7",
+   "tunes": [
+    "Mit Fried und Freud ich Far Dahin"
+   ],
+   "firstLine": "In peace and joy I now depart",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "in-these-our-days-so-perilous",
+   "title": "In These Our Days So Perilous",
+   "altTitles": [
+    "Grant Peace, We Pray, in Mercy, Lord",
+    "Grant Peace in Mercy, Lord, We Pray"
+   ],
+   "author": "Latin; Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.8",
+   "tunes": [
+    "Verleih uns Frieden Gnädiglich"
+   ],
+   "firstLine": "In these our days so perilous,",
+   "verses": 1,
+   "refrain": false
+  },
+  {
+   "id": "isaiah-mighty-seer-in-days-of-old",
+   "title": "Isaiah, Mighty Seer, In Days of Old",
+   "altTitles": [
+    "These Things the Seer Isaiah did Befall",
+    "Isaiah 'twas the Prophet"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "10.10.10.10.10.10.10.10.10.10.10.10.10.10.10.10",
+   "tunes": [
+    "Jesaia Dem Propheten das Geschah"
+   ],
+   "firstLine": "Isaiah, mighty seer, in days of old",
+   "verses": 1,
+   "refrain": false
+  },
+  {
+   "id": "it-came-upon-a-midnight-clear",
+   "title": "It Came Upon A Midnight Clear",
+   "author": "Edmund Hamilton Sears (1810-1876)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "Carol"
+   ],
+   "firstLine": "It came upon the midnight clear,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "jerusalem-the-golden",
+   "title": "Jerusalem the Golden",
+   "author": "Bernard of Cluny aka. Bernard of Morlaix (12th Century)",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Ewing"
+   ],
+   "firstLine": "Jerusalem the golden,",
+   "verses": 15,
+   "refrain": false
+  },
+  {
+   "id": "jesus-came-the-heavens-adoring",
+   "title": "Jesus Came, the Heavens Adoring",
+   "author": "Godfrey Thring (1823-1903)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7",
+   "tunes": [
+    "Sieh, hier bin ich, Ehrenkoenig"
+   ],
+   "firstLine": "Jesus came, the heav'ns adoring,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "jesus-christ-is-risen-today",
+   "title": "Jesus Christ Is Risen Today",
+   "author": "Bohemian; Charles Wesley (1707-1788)",
+   "translator": "John Arnold",
+   "meter": "7.7.7.7.16",
+   "tunes": [
+    "Easter Hymn"
+   ],
+   "firstLine": "Jesus Christ is ris'n today,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "jesus-christ-who-came-to-save",
+   "title": "Jesus Christ Who Came to Save",
+   "altTitles": [
+    "Jesus Christ Today is Risen",
+    "Jesus Christ Our Savior True",
+    "Jesus Christ, Our Blessed Savior"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Leonard Woolsey Bacon (1830-1907)",
+   "meter": "7.6.5.7",
+   "tunes": [
+    "Jesus Christus Unser Heiland, Der Den Tod (Klug)"
+   ],
+   "firstLine": "Jesus Christ, who came to save,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "jesus-christ-our-blessed-savior",
+   "title": "Jesus Christ, Our Blessed Savior",
+   "altTitles": [
+    "Jesus Christ Our Redeemer Born",
+    "Christ Who Freed Our Souls From Danger",
+    "Jesus Christ Our God and Savior"
+   ],
+   "author": "John Hus (1369-1415); Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887); unknown",
+   "meter": "8.8.7.8",
+   "tunes": [
+    "Jesus Christus Unser Heiland, Der Von Uns (Walter)",
+    "Jesus Christus Unser Heiland, Der Von Uns (Klug)"
+   ],
+   "firstLine": "Jesus Christ, our Blessed Savior,",
+   "verses": 10,
+   "refrain": false
+  },
+  {
+   "id": "jesus-grant-that-balm-and-healing",
+   "title": "Jesus Grant That Balm and Healing",
+   "author": "Johann Heermann (1585-1647)",
+   "translator": "composite",
+   "meter": "8.7.8.7.7.7.8.8",
+   "tunes": [
+    "Der Am Kreuz"
+   ],
+   "firstLine": "Jesus, grant that balm and healing",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "jesus-is-all-the-world-to-me",
+   "title": "Jesus Is All the World To Me",
+   "author": "Will Lamartine Thompson (1847-1909)",
+   "translator": null,
+   "meter": "8.6.8.6.8.8.8.3",
+   "tunes": [
+    "Jesus Is All The World to Me"
+   ],
+   "firstLine": "Jesus is all the world to me,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "jesus-loves-me",
+   "title": "Jesus Loves Me",
+   "author": "Anna B. Warner (1827-1915)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "untitled"
+   ],
+   "firstLine": "Jesus loves me! This I know,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "jesus-shall-reign",
+   "title": "Jesus Shall Reign",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Duke Street"
+   ],
+   "firstLine": "Jesus shall reign where'er the sun",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "jesus-sinners-doth-receive",
+   "title": "Jesus Sinners Doth Receive",
+   "author": "Erdmann Neumeister (1671-1756)",
+   "translator": "Henry Mills (1786-1867)",
+   "meter": "7.8.7.8.7.7",
+   "tunes": [
+    "Meinen Jesum Lass` Ich Nicht (Darmstadt)"
+   ],
+   "firstLine": "Jesus sinners doth receive;",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "jesus-wants-all-of-his-children",
+   "title": "Jesus Wants All Of His Children",
+   "author": "Mrs. James W. Wood; Brian James Dumont (1971-)",
+   "translator": null,
+   "meter": "8.5.8.5",
+   "tunes": [
+    "Blessed Are They"
+   ],
+   "firstLine": "Jesus wants all of His children",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "jesus-in-thy-dying-woes",
+   "title": "Jesus, In Thy Dying Woes",
+   "author": "Thomas Benson Pollock (1836-1896)",
+   "translator": null,
+   "meter": "7.7.7.6",
+   "tunes": [
+    "Words on the Cross - The Litany"
+   ],
+   "firstLine": "Jesus, in Thy dying woes,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "jesus-king-of-glory",
+   "title": "Jesus, King of Glory",
+   "author": "W. Hope Davison (1827-1894)",
+   "translator": null,
+   "meter": "6.5.6.5.6.5.6.5",
+   "tunes": [
+    "St. Alban"
+   ],
+   "firstLine": "Jesus, King of glory,",
+   "verses": 6,
+   "refrain": true
+  },
+  {
+   "id": "jesus-tender-shepherd-hear-me",
+   "title": "Jesus, Tender Shepherd, Hear Me",
+   "author": "Mary Lundie Duncan (1814-1840)",
+   "translator": null,
+   "meter": "8.7.8.7",
+   "tunes": [
+    "Evening Prayer"
+   ],
+   "firstLine": "Jesus, tender Shepherd, hear me;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "jesus-thy-boundless-love-to-me",
+   "title": "Jesus, Thy Boundless Love To Me",
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "John Wesley (1703-1791)",
+   "meter": "8.8.8.8.8.8",
+   "tunes": [
+    "Yoakley"
+   ],
+   "firstLine": "Jesus, Thy boundless love to me",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "joy-to-the-world",
+   "title": "Joy to the World",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.6.8.6.6.8",
+   "tunes": [
+    "Antioch"
+   ],
+   "firstLine": "Joy to the world, the Lord is come!",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "joyful-joyful-we-adore-thee",
+   "title": "Joyful, Joyful, We Adore Thee",
+   "author": "Henry Jackson van Dyke (1852-1933)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Ode to Joy"
+   ],
+   "firstLine": "Joyful, joyful, we adore Thee,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "lamp-of-our-feet",
+   "title": "Lamp of Our Feet",
+   "author": "Bernard Barton (1784-1849)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "St. Agnes"
+   ],
+   "firstLine": "Lamp of our feet! whereby we trace",
+   "verses": 11,
+   "refrain": false
+  },
+  {
+   "id": "let-all-mortal-flesh-keep-silence",
+   "title": "Let All Mortal Flesh Keep Silence",
+   "author": "from Liturgy of St. James",
+   "translator": "Gerard Moultrie (1829-1885)",
+   "meter": "8.7.8.7.8.7",
+   "tunes": [
+    "Picardy"
+   ],
+   "firstLine": "Let all mortal flesh keep silence,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "let-children-hear-the-mighty-deeds",
+   "title": "Let Children Hear The Mighty Deeds",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Lea"
+   ],
+   "firstLine": "Let children hear the mighty deeds",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "lift-high-the-cross",
+   "title": "Lift High The Cross",
+   "author": "George William Kitchin (1827-1912); Michael Robert Newbolt (1874-1956)",
+   "translator": null,
+   "meter": "10.10",
+   "tunes": [
+    "Crucifier"
+   ],
+   "firstLine": "Come, brethren, follow where our Captain trod,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "lift-up-your-heads-ye-mighty-gates",
+   "title": "Lift Up Your Heads, Ye Mighty Gates",
+   "author": "Georg Weissel (1590-1635)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.8.8.8.8.6.6",
+   "tunes": [
+    "Milwaukee"
+   ],
+   "firstLine": "Lift up your heads, ye mighty gates!",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "lo-god-to-heav-n-ascendeth",
+   "title": "Lo, God To Heav'n Ascendeth",
+   "author": "Gottfried Wilhelm Sacer (1635-1699)",
+   "translator": "Frances Elizabeth Cox (1812-1897)",
+   "meter": "7.6.7.6.6.7.7.6",
+   "tunes": [
+    "Von Gott will ich Nicht Lazen"
+   ],
+   "firstLine": "Lo, God to Heav'n ascendeth!",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "lo-how-a-rose-e-er-blooming",
+   "title": "Lo, How A Rose E'er Blooming",
+   "author": "German; Fridrich Layriz (1808-1859)",
+   "translator": "Theodore Baker (1851-1934); Harriet Reynolds Krauth (1845-1925); Harriet Reynolds Spaeth (1845-1925); John Casper Mattes (1876-1948)",
+   "meter": "7.6.7.6.6.7.6",
+   "tunes": [
+    "Es Ist Ein Ros Entsprungen (Rhythmic)"
+   ],
+   "firstLine": "Lo, how a Rose e'er blooming",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "lo-he-comes-with-clouds-descending",
+   "title": "Lo! He Comes With Clouds Descending",
+   "author": "John Cennick (1718-1755); Charles Wesley (1707-1788)",
+   "translator": null,
+   "meter": "8.7.8.7.12.7",
+   "tunes": [
+    "Helmsley"
+   ],
+   "firstLine": "Lo! He comes with clouds descending,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "look-down-o-lord-from-heaven-behold",
+   "title": "Look Down, O Lord, From Heaven Behold",
+   "altTitles": [
+    "O God, from Heaven Look Down",
+    "O God, Look Down from Heaven and See"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Frances Elizabeth Cox (1812-1897)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Ach Gott vom Himmel",
+    "Es ist das Heil uns Kommen Her"
+   ],
+   "firstLine": "Look down, O Lord, from heav'n behold,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "lord-jesus-think-on-me",
+   "title": "Lord Jesus Think On Me",
+   "author": "Synesius of Cyrene (375-430)",
+   "translator": "Allen William Chatfield (1808-1896)",
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Southwell"
+   ],
+   "firstLine": "Lord Jesus, think on me",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "lord-of-glory-who-hast-bought-us",
+   "title": "Lord of Glory, Who Hast Bought Us",
+   "author": "Eliza Sibbald Dykes Alderson (1818-1889)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "HyFrydol"
+   ],
+   "firstLine": "Lord of Glory, who hast bought us",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "lord-of-life-all-praise-excelling",
+   "title": "Lord of Life, All Praise Excelling",
+   "author": "Clement Clarke Moore (1779-1863)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "HyFrydol"
+   ],
+   "firstLine": "Lord of life, all praise excelling,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "lord-of-our-life",
+   "title": "Lord Of Our Life",
+   "author": "Matthäus Apelles von Löwenstern (1594-1648)",
+   "translator": "Philip Pusey (1799-1855)",
+   "meter": "11.11.11.5",
+   "tunes": [
+    "Iste Confessor"
+   ],
+   "firstLine": "Lord of our life, and God of our salvation,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "lord-who-throughout-these-forty-days",
+   "title": "Lord Who Throughout These Forty Days",
+   "altTitles": [
+    "O Lord, Throughout These Forty Days"
+   ],
+   "author": "Claudia Frances Ibotson Hernaman (1838-1898)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "St. Flavian"
+   ],
+   "firstLine": "Lord, who throughout these forty days",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "lord-dismiss-us-with-thy-blessing",
+   "title": "Lord, Dismiss Us With Thy Blessing",
+   "author": "John Fawcett (1740-1817); Godfrey Thring (1823-1903)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7",
+   "tunes": [
+    "Regent Square"
+   ],
+   "firstLine": "Lord, dismiss us with Thy blessing;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "lord-keep-us-steadfast-in-thy-word",
+   "title": "Lord, Keep Us Steadfast in Thy Word",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Erhalt Uns, Herr, bei deinem Wort"
+   ],
+   "firstLine": "Lord, keep us steadfast in Thy Word;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "lord-thee-i-love-with-all-my-heart",
+   "title": "Lord, Thee I Love with All My Heart",
+   "author": "Martin Schalling (1532-1608)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.7.8.8.7.8.8.8.8.8.4.8",
+   "tunes": [
+    "Herzlich Lieb hab ich Dich O Herr"
+   ],
+   "firstLine": "Lord, Thee I love with all my heart;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "lord-who-at-cana-s-wedding-feast",
+   "title": "Lord, Who at Cana's Wedding Feast",
+   "author": "Adelaide Thrupp (1831-1908)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "St. Ursula"
+   ],
+   "firstLine": "Lord, who at Cana's wedding feast",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "may-god-bestow-on-us-his-grace",
+   "title": "May God Bestow on Us His Grace",
+   "altTitles": [
+    "May God Unto Us Gracious Be",
+    "Would that the Lord Would Grant Us Grace"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.8.7.8.7.7",
+   "tunes": [
+    "Es Wollt uns Gott Genædig"
+   ],
+   "firstLine": "May God bestow on us His grace,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "more-love-to-thee",
+   "title": "More Love to Thee",
+   "author": "Elizabeth Payson Prentis (1818-1878)",
+   "translator": null,
+   "meter": "10.10.12.8",
+   "tunes": [
+    "More Love to Thee"
+   ],
+   "firstLine": "More love to Thee, O Christ; More love to Thee;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "my-faith-looks-up-to-thee",
+   "title": "My Faith Looks Up To Thee",
+   "altTitles": [
+    "My Faith Looks Trustingly"
+   ],
+   "author": "Ray Palmer (1808-1887)",
+   "translator": null,
+   "meter": "6.6.4.6.6.6.4",
+   "tunes": [
+    "Olivet"
+   ],
+   "firstLine": "My faith looks up to Thee,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "my-hope-is-built",
+   "title": "My Hope Is Built",
+   "altTitles": [
+    "The Solid Rock"
+   ],
+   "author": "Edward Mote (1797-1874)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Melita"
+   ],
+   "firstLine": "My hope is built on nothing less",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "my-jesus-as-thou-wilt",
+   "title": "My Jesus, As Thou Wilt",
+   "author": "Benjamin Schmolck (1672-1737)",
+   "translator": "Jane Laurie Borthwick (1813-1897)",
+   "meter": "6.6.6.6.6.6.6.6",
+   "tunes": [
+    "Jewett"
+   ],
+   "firstLine": "My Jesus, as Thou wilt!",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "my-song-shall-be-of-jesus",
+   "title": "My Song Shall Be Of Jesus",
+   "author": "Fanny Jane Crosby (1820-1915); Edith Margaret Clarkson (1915-2008)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Sondance"
+   ],
+   "firstLine": "My song shall be of Jesus,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "my-soul-now-praise-thy-maker",
+   "title": "My Soul, Now Praise Thy Maker",
+   "altTitles": [
+    "My Soul, Now Bless Thy Maker"
+   ],
+   "author": "Johann Graumann (1487-1541)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "7.8.7.8.7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Nun Lob, Mein Seel"
+   ],
+   "firstLine": "My soul, now praise thy maker!",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "no-not-one",
+   "title": "No, Not One!",
+   "author": "Jr., Johnson Oatman (1856-1922)",
+   "translator": null,
+   "meter": "10.6.10.6",
+   "tunes": [
+    "No, Not One"
+   ],
+   "firstLine": "There's not a friend like the lowly Jesus,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "none-other-lamb",
+   "title": "None Other Lamb",
+   "author": "Christina Georgina Rossetti (1830-1894)",
+   "translator": null,
+   "meter": "8.10.10.4",
+   "tunes": [
+    "Rossetti"
+   ],
+   "firstLine": "None other Lamb, none other name,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "not-worthy-lord-to-gather-up-the-crumbs",
+   "title": "Not Worthy, Lord, to Gather Up the Crumbs",
+   "author": "Edward Henry Jr. Bickersteth (1825-1906)",
+   "translator": null,
+   "meter": "10.10.10.10",
+   "tunes": [
+    "Eventide"
+   ],
+   "firstLine": "Not worthy, Lord, to gather up the crumbs",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "now-praise-we-christ-the-holy-one",
+   "title": "Now Praise We Christ, the Holy One",
+   "altTitles": [
+    "Jesus We Now Must Laud and Sing",
+    "From East to West"
+   ],
+   "author": "Coelius Sedulius (5th Century)",
+   "translator": "Martin Luther (1483-1546); Richard Massie (1800-1887)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Christum Wir Sollen Loben Schon"
+   ],
+   "firstLine": "Now praise we Christ, the Holy One,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "now-rest-beneath-night-s-shadow",
+   "title": "Now Rest Beneath Night's Shadow",
+   "altTitles": [
+    "Now All the Woods Are Sleeping",
+    "Now Woods and Wolds Are Sleeping",
+    "The Duteous Day Now Closeth"
+   ],
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "composite",
+   "meter": "7.7.6.7.7.8",
+   "tunes": [
+    "Innsbruck"
+   ],
+   "firstLine": "Now rest beneath night's shadow",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "now-thank-we-all-our-god",
+   "title": "Now Thank We All Our God",
+   "author": "Martin Rinkart (1586-1649)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "6.7.6.7.6.6.6.6",
+   "tunes": [
+    "Nun Danket"
+   ],
+   "firstLine": "Now thank we all our God,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "now-the-light-has-gone-away",
+   "title": "Now the Light Has Gone Away",
+   "author": "Frances Ridley Havergal (1836-1879)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Müde bin ich, geh zur Ruh"
+   ],
+   "firstLine": "Now the light has gone away;",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-chief-of-cities-bethlehem",
+   "title": "O Chief of Cities Bethlehem",
+   "author": "Aurelius Clemens Prudentius (348-413)",
+   "translator": "Nathaniel Barratt Smithers (1818-1896); Charles Winfred Douglas (1867-1944); John Patrick Crichton-Stuart Marquess of Bute (1847-1900)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Puer Nobis Nascitur"
+   ],
+   "firstLine": "O chief of cities, Bethlehem,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-come-o-come-emmanuel",
+   "title": "O Come O Come Emmanuel",
+   "author": null,
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Veni Emmanuel"
+   ],
+   "firstLine": "O come, O come, Emmanuel,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "o-day-of-rest-and-gladness",
+   "title": "O Day of Rest And Gladness",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Woodbird"
+   ],
+   "firstLine": "O day of rest and gladness,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "o-father-all-creating",
+   "title": "O Father, All Creating",
+   "author": "John Ellerton (1826-1893)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Aurelia"
+   ],
+   "firstLine": "O Father, all creating,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "o-for-a-thousand-tongues",
+   "title": "O For A Thousand Tongues",
+   "author": "Charles Wesley (1707-1788)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Azmon"
+   ],
+   "firstLine": "O for a thousand tongues to sing",
+   "verses": 19,
+   "refrain": false
+  },
+  {
+   "id": "o-holy-spirit-enter-in",
+   "title": "O Holy Spirit, Enter In",
+   "author": "Michael Schirmer (1606-1673)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.7.8.8.7.4.8.4.8",
+   "tunes": [
+    "Wie Schön Leuchtet"
+   ],
+   "firstLine": "O Holy Spirit, enter in,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "o-holy-blessed-trinity",
+   "title": "O Holy, Blessed Trinity",
+   "altTitles": [
+    "O Blessed Holy Trinity",
+    "O Holy, Holy, Holy Three",
+    "O Thou Most Holy Trinity"
+   ],
+   "author": "Martin Behm (1557-1622)",
+   "translator": "Conrad Herman Louis Schuette (1843-1926)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "O Heilige Dreifaltigkeit"
+   ],
+   "firstLine": "O Holy, Blessed Trinity,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-little-town-of-bethlehem",
+   "title": "O Little Town of Bethlehem",
+   "author": "Phillips Brooks (1835-1893)",
+   "translator": null,
+   "meter": "8.6.8.6.7.6.8.6",
+   "tunes": [
+    "St. Louis"
+   ],
+   "firstLine": "O little town of Bethlehem,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-lord-my-soul-convicted",
+   "title": "O Lord My Soul Convicted",
+   "altTitles": [
+    "Here Lord My Soul Convicted"
+   ],
+   "author": "James Maxwell",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Winchester New"
+   ],
+   "firstLine": "O Lord, my soul convicted stands",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-lord-of-heav-n-and-earth-and-sea",
+   "title": "O Lord of Heav'n and Earth and Sea",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "8.8.8.4",
+   "tunes": [
+    "Es Ist Kein Tag"
+   ],
+   "firstLine": "O Lord of Heav'n and earth and sea,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "o-lord-we-praise-thee",
+   "title": "O Lord We Praise Thee",
+   "altTitles": [
+    "May God be Praised Henceforth and Blest Forever",
+    "Let God Be Blest"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "11.8.11.8.5.9.9.6.7.5",
+   "tunes": [
+    "Gott Sei Gelobet und Gebenedeiet"
+   ],
+   "firstLine": "O Lord, we praise Thee, bless Thee, and adore Thee,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "o-lord-how-shall-i-meet-thee",
+   "title": "O Lord, How Shall I Meet Thee",
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Wie Soll ich Dich Empfange"
+   ],
+   "firstLine": "O Lord, how shall I meet Thee,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-lord-i-am-not-worthy",
+   "title": "O Lord, I Am Not Worthy",
+   "author": "1777 from Landshuter Gesangbuch",
+   "translator": null,
+   "meter": "7.6.7.6",
+   "tunes": [
+    "Non Dignus"
+   ],
+   "firstLine": "O Lord, I am not worthy",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "o-love-how-deep-how-broad-how-high",
+   "title": "O Love, How Deep, How Broad, How High",
+   "author": null,
+   "translator": "Benjamin Webb (1819-1885)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Deo Gracias"
+   ],
+   "firstLine": "O love, how deep, how broad, how high,",
+   "verses": 8,
+   "refrain": false
+  },
+  {
+   "id": "o-sacred-head-now-wounded",
+   "title": "O Sacred Head, Now Wounded",
+   "author": "Bernard of Clairvaux (1091-1153)",
+   "translator": "James Waddel Alexander (1804-1859)",
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Passion Chorale"
+   ],
+   "firstLine": "O sacred Head, now wounded,",
+   "verses": 11,
+   "refrain": false
+  },
+  {
+   "id": "o-that-the-lord-would-guide-my-ways",
+   "title": "O That The Lord Would Guide My Ways",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Evan"
+   ],
+   "firstLine": "O that the Lord would guide my ways",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "o-the-deep-deep-love-of-jesus",
+   "title": "O The Deep, Deep Love of Jesus",
+   "author": "Samuel Trevor Francis (1834-1925)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Ebenezer"
+   ],
+   "firstLine": "O the deep, deep love of Jesus,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "o-trinity-of-blessed-light",
+   "title": "O Trinity of Blessed Light",
+   "altTitles": [
+    "Thou Who Art Three in Unity"
+   ],
+   "author": "Ambrose of Milan (340-397)",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "O Lux Beata Trinitas"
+   ],
+   "firstLine": "O Trinity of blessèd light,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "o-wondrous-type-o-vision-fair",
+   "title": "O Wondrous Type, O Vision Fair",
+   "author": "Latin",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Deo Gracias"
+   ],
+   "firstLine": "O wondrous type! O vision fair",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "of-the-father-s-love-begotten",
+   "title": "Of The Father's Love Begotten",
+   "author": "Aurelius Clemens Prudentius (348-413)",
+   "translator": "John Mason Neale (1818-1866); Henry Williams Baker (1821-1877)",
+   "meter": "8.7.8.7.8.7.7",
+   "tunes": [
+    "Divinum Mysterium"
+   ],
+   "firstLine": "Of the Father's love begotten",
+   "verses": 9,
+   "refrain": false
+  },
+  {
+   "id": "oh-blest-the-house",
+   "title": "Oh, Blest the House",
+   "author": "Christoph Karl Ludwig von Pfeil (1712-1784)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Wo Gott Zum Haus"
+   ],
+   "firstLine": "Oh blest the house, whate'er befall,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "on-jordan-s-bank-the-baptist-s-cry",
+   "title": "On Jordan's Bank the Baptist's Cry",
+   "author": "Coffin, Charles (or Carolo or Carolus) (1676-1749)",
+   "translator": "John Chandler (1806-1876)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Puer Nobis Nascitur"
+   ],
+   "firstLine": "On Jordan's bank the Baptist's cry",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "on-what-has-now-been-sown",
+   "title": "On What Has Now Been Sown",
+   "author": "John Newton (1725-1807)",
+   "translator": null,
+   "meter": "6.6.6.6.8.8",
+   "tunes": [
+    "Darwall`s 148th"
+   ],
+   "firstLine": "On what has now been sown",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "one-thing-s-needful",
+   "title": "One Thing's Needful",
+   "author": "Johann Heinrich Schröder (1667-1699)",
+   "translator": "Frances Elizabeth Cox (1812-1897)",
+   "meter": "8.7.8.7.12.12.11.11",
+   "tunes": [
+    "Eins ist Not"
+   ],
+   "firstLine": "One thing's needful: then, Lord Jesus,",
+   "verses": 10,
+   "refrain": false
+  },
+  {
+   "id": "open-now-thy-gates-of-beauty",
+   "title": "Open Now Thy Gates of Beauty",
+   "author": "Benjamin Schmolck (1672-1737)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.7.8.7.7.7",
+   "tunes": [
+    "Unser Herrscher"
+   ],
+   "firstLine": "Open now thy gates of beauty,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "our-father-thou-in-heaven-above",
+   "title": "Our Father Thou in Heaven Above",
+   "altTitles": [
+    "Our Father, Who from Heaven Above",
+    "Our Father in the Heaven Who Art"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "8.8.8.8.8.8",
+   "tunes": [
+    "Vater Unser im Himmelreich"
+   ],
+   "firstLine": "Our Father, Thou in heav'n above,",
+   "verses": 9,
+   "refrain": false
+  },
+  {
+   "id": "our-god-our-help-in-ages-past",
+   "title": "Our God, Our Help In Ages Past",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "St. Anne"
+   ],
+   "firstLine": "Our God, our help in ages past,",
+   "verses": 9,
+   "refrain": false
+  },
+  {
+   "id": "out-of-the-deep-i-cry-to-thee",
+   "title": "Out of the Deep I Cry to Thee",
+   "altTitles": [
+    "From Depths of Woe I Cry to Thee"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Arthur Tozel Russell (1806-1874)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Aus Tiefer Not (Luther)",
+    "Aus Tiefer Not (Strassburg)"
+   ],
+   "firstLine": "Out of the deep I cry to Thee;",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "over-kidron-jesus-treadeth",
+   "title": "Over Kidron Jesus Treadeth",
+   "altTitles": [
+    "Over Kedron Jesus Treadeth",
+    "Over Cedron Jesus Treadeth"
+   ],
+   "author": "Thomas Hansen Kingo (1634-1703)",
+   "translator": "J. Jeffrey (19th Century)",
+   "meter": "8.7.8.7.7.7.8.8",
+   "tunes": [
+    "Over Kedron Jesus Traeder"
+   ],
+   "firstLine": "Over Kidron Jesus treadeth",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "praise-god-from-whom-all-blessings-flow",
+   "title": "Praise God From Whom All Blessings Flow",
+   "altTitles": [
+    "Doxology; see also 'Awake, My Soul, And With The Sun'"
+   ],
+   "author": "Thomas Ken (1637-1711)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Old 100th"
+   ],
+   "firstLine": "Praise God, from Whom all blessings flow;",
+   "verses": 1,
+   "refrain": false
+  },
+  {
+   "id": "praise-my-soul-the-king-of-heaven",
+   "title": "Praise My Soul The King Of Heaven",
+   "author": "Henry F. Lyte (1793-1847)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7",
+   "tunes": [
+    "Praise My Soul"
+   ],
+   "firstLine": "Praise, my soul, the King of heaven;",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "praise-the-lord-ye-heavens-adore-him",
+   "title": "Praise The Lord, Ye Heavens Adore Him",
+   "author": "Edward Osler (1798-1863)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Austria (Haydn)"
+   ],
+   "firstLine": "Praise the Lord, ye heav'ns, adore Him;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "praise-to-the-lord-the-almighty",
+   "title": "Praise To The Lord, The Almighty",
+   "author": "Joachim Neander (1650-1680)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "14.14.4.7.8",
+   "tunes": [
+    "Lobe den Herren"
+   ],
+   "firstLine": "Praise to the Lord, the Almighty, the King of creation!",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "rejoice-my-heart-be-glad-and-sing",
+   "title": "Rejoice, My Heart, Be Glad and Sing",
+   "altTitles": [
+    "O Lord I Sing with Lips and Heart"
+   ],
+   "author": "Paul Gerhardt (1607-1676)",
+   "translator": "composite",
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Ich Singe dir mit Herz"
+   ],
+   "firstLine": "Rejoice, my heart, be glad and sing,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "rescue-the-perishing",
+   "title": "Rescue the Perishing",
+   "author": "Fanny Jane Crosby (1820-1915)",
+   "translator": null,
+   "meter": "11.10.11.10",
+   "tunes": [
+    "Rescue the Perishing"
+   ],
+   "firstLine": "Rescue the perishing, care for the dying,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "rock-of-ages",
+   "title": "Rock of Ages",
+   "author": "Augustus Montague Toplady (1740-1778)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7",
+   "tunes": [
+    "Toplady"
+   ],
+   "firstLine": "Rock of Ages, cleft for me,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "salvation-unto-us-has-come",
+   "title": "Salvation Unto Us Has Come",
+   "altTitles": [
+    "To Us Salvation Now Is Come"
+   ],
+   "author": "Paul Speratus (1484-1551)",
+   "translator": "composite",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Es ist das Heil uns Kommen Her"
+   ],
+   "firstLine": "Salvation unto us has come",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "savior-of-the-nations-come",
+   "title": "Savior Of The Nations Come",
+   "author": "Ambrose of Milan (340-397)",
+   "translator": "Martin Luther (1483-1546); William Morton Reynolds (1812-1876)",
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Nun Komm, Der Heiden Heiland"
+   ],
+   "firstLine": "Savior of the nations, come;",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "savior-when-in-dust-to-thee",
+   "title": "Savior When In Dust To Thee",
+   "author": "Robert Grant (1778-1838)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7.7.7",
+   "tunes": [
+    "Aberystwyth (Parry)"
+   ],
+   "firstLine": "Savior, when in dust to Thee",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "savior-like-a-shepherd-lead-us",
+   "title": "Savior, Like A Shepherd Lead Us",
+   "author": "Dorothy Ann Thrupp (1779-1847)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Bradbury"
+   ],
+   "firstLine": "Savior, like a shepherd lead us,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "savior-who-thy-flock-art-feeding",
+   "title": "Savior, Who Thy Flock Art Feeding",
+   "author": "William Augustus Mühlenberg (1796-1877)",
+   "translator": null,
+   "meter": "8.7.8.7",
+   "tunes": [
+    "Batty"
+   ],
+   "firstLine": "Savior, who Thy flock art feeding",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "see-amid-the-winter-s-snow",
+   "title": "See Amid the Winter's Snow",
+   "author": "Edward Caswall (1814-1878)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Humility"
+   ],
+   "firstLine": "See amid the winter's snow,",
+   "verses": 6,
+   "refrain": true
+  },
+  {
+   "id": "silent-night",
+   "title": "Silent Night",
+   "author": "Josef Mohr (1792-1848)",
+   "translator": "John Freeman Young (1820-1885)",
+   "meter": "6.6.8.8.6.6",
+   "tunes": [
+    "Stille Nacht"
+   ],
+   "firstLine": "Silent night, holy night,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "sing-o-sing-this-blessed-morn",
+   "title": "Sing, O Sing, This Blessed Morn",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Nativity"
+   ],
+   "firstLine": "Sing, O sing, this blessed morn,",
+   "verses": 11,
+   "refrain": true
+  },
+  {
+   "id": "songs-of-thankfulness-and-praise",
+   "title": "Songs of Thankfulness and Praise",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "7.7.7.7.7.7.7.7",
+   "tunes": [
+    "St. George`s Windsor"
+   ],
+   "firstLine": "Songs of thankfulness and praise,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "souls-of-men-why-will-ye-scatter",
+   "title": "Souls of Men! Why Will Ye Scatter",
+   "altTitles": [
+    "There's a Wideness in God's Mercy"
+   ],
+   "author": "Frederick William Faber (1814-1863)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "In Babilone"
+   ],
+   "firstLine": "Souls of men! why will ye scatter",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "stricken-smitten-and-afflicted",
+   "title": "Stricken, Smitten, and Afflicted",
+   "author": "Thomas Kelly (1769-1855)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "O Mein Jesu, Ich Muss Sterben"
+   ],
+   "firstLine": "Stricken, smitten, and afflicted,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "take-my-life-and-let-it-be",
+   "title": "Take My Life And Let It Be",
+   "author": "Frances Ridley Havergal (1836-1879)",
+   "translator": null,
+   "meter": "7.7.7.7",
+   "tunes": [
+    "Mozart"
+   ],
+   "firstLine": "Take my life, and let it be",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "take-thou-my-hand-and-lead-me",
+   "title": "Take Thou My Hand and Lead Me",
+   "altTitles": [
+    "O Take My Hand, Dear Father",
+    "Lord Take My Hand and Lead Me"
+   ],
+   "author": "Julie Katharina von Hausmann (1826-1901)",
+   "translator": "Julius Herman Edward Horstmann (1869-1954)",
+   "meter": "11.11.11.11",
+   "tunes": [
+    "So Nimm Denn Meine Hände"
+   ],
+   "firstLine": "Take Thou my hand, and lead me o'er life's rough way,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "that-men-a-godly-life-might-live",
+   "title": "That Men a godly Life Might Live",
+   "altTitles": [
+    "These Are the Holy Ten Commands"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.8.8.7",
+   "tunes": [
+    "Dies sind die heil`gen zehu Gebot"
+   ],
+   "firstLine": "That man a godly life might live,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "the-advent-of-our-god",
+   "title": "The Advent of Our God",
+   "author": "Coffin, Charles (or Carolo or Carolus) (1676-1749)",
+   "translator": "John Chandler (1806-1876)",
+   "meter": "6.6.8.6",
+   "tunes": [
+    "St. Thomas"
+   ],
+   "firstLine": "The advent of our God",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "the-bridegroom-soon-will-call-us",
+   "title": "The Bridegroom Soon Will Call Us",
+   "author": "Johann Walther (1496-1570)",
+   "translator": "Matthias Loy (1828-1915)",
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Act Gott Vom Himmelreiche"
+   ],
+   "firstLine": "The Bridegroom soon will call us,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-church-s-one-foundation",
+   "title": "The Church's One Foundation",
+   "author": "Samuel John Stone (1839-1900)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Aurelia"
+   ],
+   "firstLine": "The Church's one foundation",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "the-comforter-has-come",
+   "title": "The Comforter Has Come",
+   "author": "Frank Bottome (1823-1894)",
+   "translator": null,
+   "meter": "12.12.12.6",
+   "tunes": [
+    "The Comforter Has Come"
+   ],
+   "firstLine": "O spread the tidings 'round, wherever man is found,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "the-day-is-surely-drawing-near",
+   "title": "The Day is Surely Drawing Near",
+   "author": "Bartholomäus Ringwaldt (1532-1599)",
+   "translator": "Phillip Adam Peter (1832-1919)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Es ist Gewisslich an der Zeit"
+   ],
+   "firstLine": "The day is surely drawing near,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-galilean-fishers-toil",
+   "title": "The Galilean Fishers Toil",
+   "altTitles": [
+    "Come Blessed Jesu Come"
+   ],
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "Old 137th"
+   ],
+   "firstLine": "The Galilean fishers toil",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-god-of-abraham-praise",
+   "title": "The God of Abraham Praise",
+   "author": "Daniel ben Judah (circa 1400)",
+   "translator": "Thomas Olivers (1725-1799)",
+   "meter": "6.6.12.6.6.12",
+   "tunes": [
+    "Yigdal"
+   ],
+   "firstLine": "The God of Abr'ham praise,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-gospel-shows-the-father-s-grace",
+   "title": "The Gospel Shows The Father's Grace",
+   "author": "Matthias Loy (1828-1915)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Herr Jesu Christ, Dict Zu Uns Wend"
+   ],
+   "firstLine": "The Gospel shows the Father's grace,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "the-king-shall-come",
+   "title": "The King Shall Come",
+   "author": null,
+   "translator": "John Brownlie (1857-1925)",
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Consolation-Morning Song"
+   ],
+   "firstLine": "The King shall come when morning dawns,",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "the-law-of-god-is-good-and-wise",
+   "title": "The Law Of God Is Good And Wise",
+   "author": "Matthias Loy (1828-1915)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Erhalt Uns, Herr, bei deinem Wort"
+   ],
+   "firstLine": "The law of God is good and wise,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-lord-s-my-shepherd",
+   "title": "The Lord's My Shepherd",
+   "author": "1650 from the Scottish Psalter",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "Marosa-Brother James Air"
+   ],
+   "firstLine": "The Lord's my shepherd I'll not want,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-love-of-god",
+   "title": "The Love of God",
+   "author": "Frederick Martin Lehman (1868-1953)",
+   "translator": null,
+   "meter": "8.8.8.8.8.8.8.6",
+   "tunes": [
+    "The Love of God"
+   ],
+   "firstLine": "The love of God is greater far",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "the-mouth-of-fools-doth-god-confess",
+   "title": "The Mouth of Fools Doth God Confess",
+   "altTitles": [
+    "Although the Fools Say with Their Mouth"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.8.8.7",
+   "tunes": [
+    "Es spricht der Unweisen Mund"
+   ],
+   "firstLine": "The mouth of fools doth God confess,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "the-old-rugged-cross",
+   "title": "The Old Rugged Cross",
+   "author": "George Bennard (1873-1958)",
+   "translator": null,
+   "meter": "12.8.12.9",
+   "tunes": [
+    "Old Rugged Cross"
+   ],
+   "firstLine": "On a hill far away stood an old rugged cross,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "the-people-that-in-darkness-sat",
+   "title": "The People That in Darkness Sat",
+   "author": "John Morison (1746-1798)",
+   "translator": null,
+   "meter": "8.6.8.6.6",
+   "tunes": [
+    "Lobt Gott, ihr Christen Allzugleich"
+   ],
+   "firstLine": "The people that in darkness sat",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "the-star-proclaims-the-king-is-here",
+   "title": "The Star Proclaims the King is Here",
+   "altTitles": [
+    "Herod Why Dreadest thou a Foe?",
+    "How Vain the Cruel Herod's Fear",
+    "When Christ's Appearing Was Made Known",
+    "Why Herod Unrelenting Foe",
+    "Why Impious Herod, Shouldst Thou Fear"
+   ],
+   "author": "Coelius Sedulius (5th Century)",
+   "translator": "John Mason Neale (1818-1866)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Wo Gott Zum Haus"
+   ],
+   "firstLine": "The star proclaims the King is here;",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "the-winds-and-billows-loudly-roar",
+   "title": "The Winds and Billows Loudly Roar",
+   "author": "Christopher Wordsworth (1807-1885)",
+   "translator": null,
+   "meter": "8.6.8.6",
+   "tunes": [
+    "Consolation-Morning Song"
+   ],
+   "firstLine": "The winds and billows loudly roar",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "there-s-a-great-day-coming",
+   "title": "There's a Great Day Coming",
+   "author": "Will Lamartine Thompson (1847-1909)",
+   "translator": null,
+   "meter": "11.9.14",
+   "tunes": [
+    "Theres a Great Day Coming"
+   ],
+   "firstLine": "There's a great day coming, A great day coming,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "thine-arm-o-lord-in-days-of-old",
+   "title": "Thine Arm, O Lord, in Days of Old",
+   "altTitles": [
+    "Your Hand, O Lord, in Days of Old"
+   ],
+   "author": "Edward Hayes Plumptre (1821-1891)",
+   "translator": null,
+   "meter": "8.6.8.6.8.6.8.6",
+   "tunes": [
+    "Kingsfold"
+   ],
+   "firstLine": "Thine arm, O Lord, in days of old,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "thou-who-at-thy-first-eucharist",
+   "title": "Thou, Who at Thy First Eucharist",
+   "altTitles": [
+    "Lord, Who the Night You Were Betrayed",
+    "At That First Eucharist"
+   ],
+   "author": "William H. Turton (1856-1938)",
+   "translator": null,
+   "meter": "10.10.10.10.10.10",
+   "tunes": [
+    "Unde Et Memores"
+   ],
+   "firstLine": "Thou, who at Thy first Eucharist didst pray",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "through-the-night-of-doubt-and-sorrow",
+   "title": "Through the Night of Doubt and Sorrow",
+   "author": "Bernhardt Severin Ingemann (1789-1862)",
+   "translator": "Sabine Baring Gould (1834-1924)",
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "Rex Gloriae"
+   ],
+   "firstLine": "Through the night of doubt and sorrow",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "tis-good-lord-to-be-here",
+   "title": "Tis Good, Lord, To Be Here",
+   "author": "Joseph Armitage Robinson (1858-1933)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Potsdam"
+   ],
+   "firstLine": "'Tis good, Lord, to be here,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "to-avert-from-men-god-s-wrath",
+   "title": "To Avert From Men God's Wrath",
+   "author": "John Hus (1369-1415)",
+   "translator": "Christian Ignatius Latrobe (1758-1836)",
+   "meter": "7.7.7.7.7.7",
+   "tunes": [
+    "Gethsemane"
+   ],
+   "firstLine": "To avert from men God's wrath",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "to-god-be-the-glory",
+   "title": "To God Be The Glory",
+   "author": "Fanny Jane Crosby (1820-1915)",
+   "translator": null,
+   "meter": "11.11.11.11",
+   "tunes": [
+    "To God Be the Glory"
+   ],
+   "firstLine": "To God be the glory, great things He has done;",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "to-jordan-came-our-lord-the-christ",
+   "title": "To Jordan Came Our Lord, The Christ",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.7.8.7.8.7.8.7.7",
+   "tunes": [
+    "Christ, Unser Herr"
+   ],
+   "firstLine": "To Jordan came our Lord the Christ,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "to-shepherds-as-they-watched-by-night",
+   "title": "To Shepherds As They Watched By Night",
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Vom Himmel Hoch"
+   ],
+   "firstLine": "To shepherds as they watched by night",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "today-thy-mercy-calls-me",
+   "title": "Today Thy Mercy Calls Me",
+   "altTitles": [
+    "Today Your Mercy Calls Us"
+   ],
+   "author": "Oswald Allen (1816-1878)",
+   "translator": null,
+   "meter": "7.6.7.6.7.6.7.6",
+   "tunes": [
+    "Anthes"
+   ],
+   "firstLine": "Today Thy mercy calls me",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "twas-in-the-moon-of-wintertime",
+   "title": "Twas In The Moon of Wintertime",
+   "altTitles": [
+    "Huron Carol",
+    "Jesus He Is Born"
+   ],
+   "author": "Jean de Brébeuf (1593-1649)",
+   "translator": "Jesse Edgar Middleton (1872-1960)",
+   "meter": "8.6.8.6.8.8",
+   "tunes": [
+    "Huron Carol"
+   ],
+   "firstLine": "'Twas in the moon of wintertime,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "under-his-wings",
+   "title": "Under His Wings",
+   "author": "William Orcutt Cushing (1823-1902)",
+   "translator": null,
+   "meter": "11.10.11.10",
+   "tunes": [
+    "Under His Wings"
+   ],
+   "firstLine": "Under His wings I am safely abiding,",
+   "verses": 3,
+   "refrain": true
+  },
+  {
+   "id": "wake-awake-for-night-is-flying",
+   "title": "Wake, Awake, for Night Is Flying",
+   "author": "Phillipp Nicolai (1556-1608)",
+   "translator": "Catherine Winkworth (1827-1878)",
+   "meter": "8.9.8.8.9.8.6.6.4.8.8",
+   "tunes": [
+    "Wachet Auf"
+   ],
+   "firstLine": "Wake, awake, for night is flying;",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "we-all-believe-in-one-true-god",
+   "title": "We All Believe in One True God",
+   "altTitles": [
+    "In One True God We All Believe"
+   ],
+   "author": "Medieval; Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "8.8.8.8.8.8.8.8.8.8",
+   "tunes": [
+    "Wir Glauben all an Einen Gott, Schoepfer"
+   ],
+   "firstLine": "We all believe in one true God,",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "we-gather-together",
+   "title": "We Gather Together",
+   "author": null,
+   "translator": "Theodore Baker (1851-1934)",
+   "meter": "6.6.6.5.6.6.6.5",
+   "tunes": [
+    "Kremser"
+   ],
+   "firstLine": "We gather together",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "we-give-thee-but-thine-own",
+   "title": "We Give Thee But Thine Own",
+   "author": "William Walsham How (1823-1897)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Energy"
+   ],
+   "firstLine": "We give Thee but Thine own,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "we-know-thee-who-thou-art",
+   "title": "We Know Thee Who Thou Art",
+   "altTitles": [
+    "Prayer After Pardon"
+   ],
+   "author": "William Bright (1824-1901)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Sellinge"
+   ],
+   "firstLine": "We know Thee who Thou art,",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "we-now-implore-god-the-holy-ghost",
+   "title": "We Now Implore God the Holy Ghost",
+   "altTitles": [
+    "To God the Holy Spirit Let Us Pray",
+    "O Holy Ghost to Thee We Pray",
+    "Now Do We Pray God the Holy Ghost",
+    "Now Pray We All God the Comforter",
+    "Now Let Us Pray to the Holy Ghost"
+   ],
+   "author": "German; Martin Luther (1483-1546)",
+   "translator": "composite",
+   "meter": "9.9.11.10.4",
+   "tunes": [
+    "Nun Bitten wir den Heiligen Geist"
+   ],
+   "firstLine": "We now implore God the Holy Ghost",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "what-a-friend-we-have-in-jesus",
+   "title": "What A Friend We Have In Jesus",
+   "author": "Joseph Medlicott Scriven (1819-1886)",
+   "translator": null,
+   "meter": "8.7.8.7.8.7.8.7",
+   "tunes": [
+    "untitled"
+   ],
+   "firstLine": "What a Friend we have in Jesus,",
+   "verses": 4,
+   "refrain": false
+  },
+  {
+   "id": "what-child-is-this",
+   "title": "What Child Is This?",
+   "author": "William Chatterton Dix (1837-1865)",
+   "translator": null,
+   "meter": "8.7.8.7.6.8.6.7",
+   "tunes": [
+    "Greensleeves"
+   ],
+   "firstLine": "What Child is this who, laid to rest",
+   "verses": 3,
+   "refrain": false
+  },
+  {
+   "id": "when-i-survey-the-wondrous-cross",
+   "title": "When I Survey the Wondrous Cross",
+   "author": "Isaac Watts (1674-1748)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Duke Street",
+    "Hamburg",
+    "O Waly Waly",
+    "Rockingham Old"
+   ],
+   "firstLine": "When I survey the wondrous cross",
+   "verses": 5,
+   "refrain": false
+  },
+  {
+   "id": "where-he-leads-me",
+   "title": "Where He Leads Me",
+   "altTitles": [
+    "I Can Hear My Savior Calling",
+    "Follow All The Way"
+   ],
+   "author": "Edward William Blandy",
+   "translator": null,
+   "meter": "8.8.8.9",
+   "tunes": [
+    "Blandy"
+   ],
+   "firstLine": "I can hear my Savior calling,",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "while-o-er-our-guilty-land-o-lord",
+   "title": "While O'er Our Guilty Land, O Lord",
+   "author": "Samuel Davies (1723-1761); Brian James Dumont (1971-)",
+   "translator": null,
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Federal Street"
+   ],
+   "firstLine": "While o'er our guilty land, O Lord,",
+   "verses": 6,
+   "refrain": false
+  },
+  {
+   "id": "whiter-than-snow",
+   "title": "Whiter Than Snow",
+   "author": "James L. Nicholson (1828-1876)",
+   "translator": null,
+   "meter": "11.11.11.11",
+   "tunes": [
+    "Whiter Than Snow"
+   ],
+   "firstLine": "Lord Jesus, I long to be perfectly whole;",
+   "verses": 4,
+   "refrain": true
+  },
+  {
+   "id": "wilt-thou-o-man-live-happily",
+   "title": "Wilt Thou, O Man, Live Happily",
+   "altTitles": [
+    "Man, Wouldst Thou Live All Blissfully"
+   ],
+   "author": "Martin Luther (1483-1546)",
+   "translator": "Richard Massie (1800-1887)",
+   "meter": "8.8.8.7",
+   "tunes": [
+    "Mensch, Willt du Leben Seligich"
+   ],
+   "firstLine": "Wilt thou, O man, live happily,",
+   "verses": 5,
+   "refrain": true
+  },
+  {
+   "id": "within-the-father-s-house",
+   "title": "Within the Father's House",
+   "author": "James Russell Woodford (1820-1885)",
+   "translator": null,
+   "meter": "6.6.8.6",
+   "tunes": [
+    "Franconia"
+   ],
+   "firstLine": "Within the Father's house",
+   "verses": 7,
+   "refrain": false
+  },
+  {
+   "id": "you-parents-hear-what-jesus-taught",
+   "title": "You Parents Hear What Jesus Taught",
+   "author": "Ludwig Helmbold (1532-1598)",
+   "translator": "William Martin Czamanske (1873-1964)",
+   "meter": "8.8.8.8",
+   "tunes": [
+    "Herr Jesu Christ, Dict Zu Uns Wend"
+   ],
+   "firstLine": "You parents, hear what Jesus taught",
+   "verses": 3,
+   "refrain": false
+  }
+ ]
+}

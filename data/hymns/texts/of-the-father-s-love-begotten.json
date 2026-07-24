@@ -1,0 +1,136 @@
+{
+ "title": "Of The Father's Love Begotten",
+ "altTitles": [],
+ "author": "Aurelius Clemens Prudentius (348-413)",
+ "translator": "John Mason Neale (1818-1866); Henry Williams Baker (1821-1877)",
+ "meter": "8.7.8.7.8.7.7",
+ "credit": "Aurelius Prudentius Clemens, 5th Century.",
+ "tunes": [
+  {
+   "name": "Divinum Mysterium",
+   "composer": "Latin"
+  }
+ ],
+ "lyricSources": [],
+ "firstLine": "Of the Father's love begotten",
+ "verses": [
+  [
+   "Of the Father's love begotten",
+   "Ere the worlds began to be,",
+   "He is Alpha and Omega,",
+   "He the source, the ending He,",
+   "Of the things that are, that have been,",
+   "And that future years shall see,",
+   "Evermore and evermore!"
+  ],
+  [
+   "At His Word they were created;",
+   "He commanded; it was done:",
+   "Heav'n and earth and depths of ocean",
+   "In their threefold order one;",
+   "All that grows beneath the shining",
+   "Of the moon and burning sun,",
+   "Evermore and evermore!"
+  ],
+  [
+   "He is found in human fashion,",
+   "Death and sorrow here to know,",
+   "That the race of Adam's children,",
+   "Doomed by law to endless woe,",
+   "May not henceforth die and perish",
+   "In the dreadful gulf below,",
+   "Evermore and evermore!"
+  ],
+  [
+   "Oh that birth forever blessèd!",
+   "When the virgin, full of grace,",
+   "By the Holy Ghost conceiving,",
+   "Bare the Savior of our race;",
+   "And the Babe, the world's Redeemer,",
+   "First revealed His sacred face,",
+   "Evermore and evermore!"
+  ],
+  [
+   "O ye heights of heav'n adore Him;",
+   "Angel hosts, His praises sing;",
+   "Pow'rs, dominions, bow before Him,",
+   "and extol our God and King:",
+   "Let no tongue on earth be silent,",
+   "Every voice in concert ring,",
+   "Evermore and evermore!"
+  ],
+  [
+   "He is here, Whom seers in old time Chanted of, while ages ran;",
+   "Whom the writings of the prophets Promised since the world began:",
+   "Then foretold, now manifested, to receive the praise of man,",
+   "Evermore and evermore!"
+  ],
+  [
+   "Righteous Judge of souls departed, Righteous King of them that live,",
+   "On the Father's throne exalted None in might with Thee may strive;",
+   "Who at last in vengeance coming Sinners from Thy face shalt drive,",
+   "Evermore and evermore!"
+  ],
+  [
+   "Thee let old men, Thee let young men, Thee let choirs of infants sing;",
+   "Thee the matrons and the virgins, And the children answering:",
+   "Let their guileless songs re-echo, And the heart its music bring,",
+   "Evermore and evermore!"
+  ],
+  [
+   "Christ, to Thee with God the Father, And, O Holy Ghost, to Thee,",
+   "Hymn and chant with high thanksgiving, And unwearied praises be:",
+   "Honor, glory, and dominion, And eternal victory,",
+   "Evermore and evermore!"
+  ]
+ ],
+ "refrain": null,
+ "refs": [
+  {
+   "book": "john",
+   "chapter": 3,
+   "from": 16
+  },
+  {
+   "book": "acts",
+   "chapter": 13,
+   "from": 32,
+   "to": 39
+  },
+  {
+   "book": "revelation",
+   "chapter": 1,
+   "from": 8
+  },
+  {
+   "book": "john",
+   "chapter": 1,
+   "from": 1,
+   "to": 5
+  },
+  {
+   "book": "philippians",
+   "chapter": 2,
+   "from": 5,
+   "to": 11
+  },
+  {
+   "book": "matthew",
+   "chapter": 1,
+   "from": 20,
+   "to": 23
+  },
+  {
+   "book": "matthew",
+   "chapter": 13,
+   "from": 16,
+   "to": 17
+  },
+  {
+   "book": "luke",
+   "chapter": 24,
+   "from": 27
+  }
+ ],
+ "id": "of-the-father-s-love-begotten"
+}
