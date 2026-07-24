@@ -83,8 +83,11 @@ check("factbook", factbook.status === 200 && factbook.json?.name);
 const hymn = await getJson("/api/pane/hymns?id=amazing-grace");
 check("hymn", hymn.status === 200 && hymn.json?.verses?.length > 0);
 
-const home = await get("/", { redirect: "manual" });
-check("home redirects", home.status === 307 || home.status === 308);
+const home = await get("/");
+check("landing serves", home.status === 200 && home.body.includes("Berean Blue"));
+
+const library = await get("/library", { redirect: "manual" });
+check("library redirects", library.status === 307 || library.status === 308);
 
 const read = await get("/read/john/3");
 check("citation reader 200", read.status === 200);
