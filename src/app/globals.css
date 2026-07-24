@@ -1,51 +1,86 @@
 @import "tailwindcss";
 
 /*
- * Berean design tokens — "Built From Stone" (berean-plan §3).
- * Deep charcoal ink on warm parchment; stained glass supplies the accents:
- * window blue, burgundy, warm gold — used the way light falls through a
- * lancet window onto a stone floor. Candlelight evening mode renders the
- * whole study warm, never inverted white.
+ * Berean design tokens: the nave.
+ * The workspace is a room lit by blue glass. Paper is morning light through
+ * sapphire and amber panes over bright stone; candlelight is the same nave
+ * at night, deep blue-black, every pane glowing from within. Three color
+ * registers per theme: --stained-* deep panes that carry text and signal,
+ * --pane-* the bright glass for washes and gradients, --glow-* the halo
+ * each pane casts. Sapphire is the hero, amber the accent of glory, emerald
+ * and ruby the liturgical colors, violet the fifth pane of the rose.
  */
 :root {
-  --signal-ink: #262016;
-  --signal-paper: #f3ecdd;
-  --surface: #faf5e9;
-  --stained-ruby: #7d2d3e;
-  --stained-sapphire: #2d5977;
-  --stained-amber: #a97a1f;
-  --stained-emerald: #3d6b52;
-  --stained-violet: #5d4a78;
-  --rule: #d9cdb4;
-  --ink-muted: #6d5f4b;
-  --gold-leaf: #c9a227;
+  --signal-ink: #1b2536;
+  --signal-paper: #f4f1e9;
+  --surface: #fbf9f2;
+  /* Alias for components that read --ink directly (SVG charts and maps). */
+  --ink: var(--signal-ink);
+  --stained-ruby: #a12647;
+  --stained-sapphire: #17598f;
+  --stained-amber: #8a5f04;
+  --stained-emerald: #216844;
+  --stained-violet: #5f3fa0;
+  --pane-ruby: #c9416a;
+  --pane-sapphire: #2f7fc2;
+  --pane-amber: #e09c1f;
+  --pane-emerald: #3d9c72;
+  --pane-violet: #8a63cf;
+  --glow-ruby: #e05880;
+  --glow-sapphire: #4a9fe0;
+  --glow-amber: #f2b73c;
+  --glow-emerald: #4cb98a;
+  --glow-violet: #9a7ae0;
+  --rule: #c8c5b8;
+  --ink-muted: #46506a;
+  --gold-leaf: #a88414;
 
-  /* Motion: short durations, soft easings. Motion answers orientation
-   * (what opened, where it went, what changed), never decoration. */
-  --fx-fast: 0.14s;
-  --fx-med: 0.24s;
-  --fx-slow: 0.5s;
+  /* The lead came: a dark line with a light bevel, the window's grammar. */
+  --lead: color-mix(in srgb, var(--signal-ink) 28%, transparent);
+  --lead-light: color-mix(in srgb, #ffffff 48%, transparent);
+
+  /* Motion: longer travels, physical easings. Motion answers orientation
+   * (what opened, where it went, what changed) and lets light behave like
+   * light: slow, heavy, always moving. */
+  --fx-fast: 0.16s;
+  --fx-med: 0.32s;
+  --fx-slow: 0.7s;
   --ease-soft-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-soft-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-bloom: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
 
   --font-interface: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-editorial: var(--font-garamond, "EB Garamond"), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --font-reader: var(--font-garamond, "EB Garamond"), "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 }
 
-/* Candlelight — the whole study by lamplight, not inverted white. */
+/* Candlelight: the nave at night, panes lit from behind. */
 html[data-candle] {
-  --signal-ink: #e6d8bc;
-  --signal-paper: #1d1812;
-  --surface: #262019;
-  --stained-ruby: #c96f80;
-  --stained-sapphire: #7fa8c4;
-  --stained-amber: #d9ac4a;
-  --stained-emerald: #7fa98f;
-  --stained-violet: #a08fc0;
-  --rule: #3d3427;
-  --ink-muted: #a4906e;
-  --gold-leaf: #d9b45e;
+  --signal-ink: #ece3cb;
+  --signal-paper: #0a1120;
+  --surface: #111b30;
+  --stained-ruby: #e0839a;
+  --stained-sapphire: #8db9ec;
+  --stained-amber: #e2b155;
+  --stained-emerald: #85c09e;
+  --stained-violet: #b9a4e6;
+  --pane-ruby: #d8527a;
+  --pane-sapphire: #3f8fd4;
+  --pane-amber: #f0ae30;
+  --pane-emerald: #4cb088;
+  --pane-violet: #9a7ae0;
+  --glow-ruby: #f08ba4;
+  --glow-sapphire: #6cb2f0;
+  --glow-amber: #ffc966;
+  --glow-emerald: #7fd6ac;
+  --glow-violet: #c2a8f5;
+  --rule: #2b3a57;
+  --ink-muted: #a2adc7;
+  --gold-leaf: #dbb661;
+
+  --lead: color-mix(in srgb, var(--gold-leaf) 30%, transparent);
+  --lead-light: color-mix(in srgb, var(--gold-leaf) 14%, transparent);
 }
 
 @theme inline {
@@ -57,6 +92,16 @@ html[data-candle] {
   --color-amber: var(--stained-amber);
   --color-emerald: var(--stained-emerald);
   --color-violet: var(--stained-violet);
+  --color-pane-ruby: var(--pane-ruby);
+  --color-pane-sapphire: var(--pane-sapphire);
+  --color-pane-amber: var(--pane-amber);
+  --color-pane-emerald: var(--pane-emerald);
+  --color-pane-violet: var(--pane-violet);
+  --color-glow-ruby: var(--glow-ruby);
+  --color-glow-sapphire: var(--glow-sapphire);
+  --color-glow-amber: var(--glow-amber);
+  --color-glow-emerald: var(--glow-emerald);
+  --color-glow-violet: var(--glow-violet);
   --color-rule: var(--rule);
   --color-muted: var(--ink-muted);
   --color-gold: var(--gold-leaf);
@@ -69,14 +114,118 @@ html {
   background: var(--signal-paper);
   color: var(--signal-ink);
   font-family: var(--font-interface);
+  text-rendering: optimizeLegibility;
 }
 
-/* Vellum grain — a whisper of texture, never wallpaper. */
+/* Keyboard focus wears the sapphire pane everywhere, as a base layer the
+ * components can still override. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--stained-sapphire);
+    outline-offset: 2px;
+  }
+}
+
+/*
+ * The nave by day: morning sun through the amber lights at the upper left,
+ * the great blue window at the upper right, four shafts of the rose fan
+ * overhead, a ruby reflection on the floor, and stone tooth under it all.
+ * Layers are fixed to the viewport so the light holds still while the work
+ * scrolls through it. The candle block swaps the images for the night
+ * office; layer count and geometry stay identical so sizes carry over.
+ */
 body {
-  background-image: radial-gradient(
-      ellipse at 50% -20%,
-      color-mix(in srgb, var(--surface) 55%, transparent),
-      transparent 60%
+  background-color: var(--signal-paper);
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--signal-ink) 2.6%, transparent) 0.7px, transparent 0.8px),
+    radial-gradient(circle, color-mix(in srgb, var(--signal-ink) 1.7%, transparent) 0.9px, transparent 1px),
+    conic-gradient(
+      from 148deg at 50% -32%,
+      transparent 0deg,
+      color-mix(in srgb, var(--pane-sapphire) 5%, transparent) 6deg,
+      transparent 14deg,
+      color-mix(in srgb, var(--pane-amber) 4.5%, transparent) 22deg,
+      transparent 30deg,
+      color-mix(in srgb, var(--pane-violet) 4%, transparent) 36deg,
+      transparent 44deg,
+      color-mix(in srgb, var(--pane-ruby) 3.5%, transparent) 52deg,
+      transparent 62deg
+    ),
+    radial-gradient(
+      ellipse 55% 42% at 12% -8%,
+      color-mix(in srgb, var(--pane-amber) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 48% at 80% -12%,
+      color-mix(in srgb, var(--pane-sapphire) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 70% 42% at 50% 112%,
+      color-mix(in srgb, var(--pane-ruby) 6%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 45% 36% at 30% 45%,
+      color-mix(in srgb, var(--pane-violet) 5%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 55%,
+      color-mix(in srgb, var(--stained-sapphire) 5%, transparent)
+    );
+  background-size: 3px 3px, 5px 5px, auto, auto, auto, auto, auto, auto;
+  background-position: 0 0, 1px 2px, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-attachment: fixed;
+}
+
+/* The nave by night: dark speckle and gold dust in the air, the rose fan
+ * lit from behind, candles low at the left, the blue window burning at the
+ * upper right, an ember of ruby on the floor. */
+html[data-candle] body {
+  background-color: var(--signal-paper);
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, #000000 24%, transparent) 0.7px, transparent 0.8px),
+    radial-gradient(circle, color-mix(in srgb, var(--glow-amber) 2.2%, transparent) 0.6px, transparent 0.7px),
+    conic-gradient(
+      from 148deg at 50% -32%,
+      transparent 0deg,
+      color-mix(in srgb, var(--glow-sapphire) 6.5%, transparent) 6deg,
+      transparent 14deg,
+      color-mix(in srgb, var(--glow-amber) 5%, transparent) 22deg,
+      transparent 30deg,
+      color-mix(in srgb, var(--pane-violet) 5.5%, transparent) 36deg,
+      transparent 44deg,
+      color-mix(in srgb, var(--glow-ruby) 5%, transparent) 52deg,
+      transparent 62deg
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 14% 88%,
+      color-mix(in srgb, var(--glow-amber) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 58% 46% at 82% -10%,
+      color-mix(in srgb, var(--glow-sapphire) 20%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 88% 105%,
+      color-mix(in srgb, var(--pane-ruby) 9%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 32% at 28% 2%,
+      color-mix(in srgb, var(--pane-violet) 10%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--pane-sapphire) 7%, transparent),
+      transparent 32%,
+      color-mix(in srgb, #000000 34%, transparent)
     );
 }
 
@@ -85,7 +234,10 @@ h1, h2, h3 {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--stained-amber) 26%, transparent);
+  background: color-mix(in srgb, var(--pane-amber) 30%, transparent);
+}
+html[data-candle] ::selection {
+  background: color-mix(in srgb, var(--glow-amber) 35%, transparent);
 }
 
 a {
@@ -93,8 +245,9 @@ a {
 }
 
 /*
- * Reading modes on the reader surface. Paper follows the study's own light;
- * warm and evening remain available independent of the shell.
+ * Reading modes on the reader surface. Warm is vellum under morning light;
+ * evening is the night office inside the text, a small room of the larger
+ * candlelight nave. Both hold their own contrast independent of the shell.
  */
 .reader-surface {
   font-family: var(--font-reader);
@@ -107,17 +260,17 @@ a {
   color: #241f18;
 }
 .reader-surface[data-mode="evening"] {
-  background: #211c15;
-  color: #e8ddc8;
+  background: #101a2e;
+  color: #e9e1cc;
 }
 .reader-surface[data-mode="evening"] .verse-num {
-  color: #a08c62;
+  color: #8db9ec;
 }
 .reader-surface[data-mode="evening"] .has-note .verse-num {
-  color: #d9b45e;
+  color: #e2b155;
 }
 html[data-candle] .reader-surface[data-mode="warm"] {
-  background: #2a2118;
+  background: #1d1a2b;
   color: #e8ddc8;
 }
 
@@ -131,28 +284,36 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   margin-right: 0.28em;
   cursor: pointer;
   user-select: none;
+  text-shadow: 0 0 6px color-mix(in srgb, var(--glow-sapphire) 28%, transparent);
 }
 .has-note .verse-num {
   color: var(--stained-amber);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--glow-amber) 30%, transparent);
+}
+html[data-candle] .verse-num {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--glow-sapphire) 48%, transparent);
+}
+html[data-candle] .has-note .verse-num {
+  text-shadow: 0 0 8px color-mix(in srgb, var(--glow-amber) 55%, transparent);
 }
 .verse-target {
   scroll-margin-top: 6rem;
 }
-/* Verse highlights: a low-alpha stained-glass tint behind the text. */
+/* Verse highlights: a pane of color held behind the text, lit through. */
 .hl-amber {
-  background: color-mix(in srgb, var(--stained-amber) 13%, transparent);
+  background: color-mix(in srgb, var(--stained-amber) 18%, transparent);
   border-radius: 2px;
 }
 .hl-sapphire {
-  background: color-mix(in srgb, var(--stained-sapphire) 11%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 16%, transparent);
   border-radius: 2px;
 }
 .hl-emerald {
-  background: color-mix(in srgb, var(--stained-emerald) 12%, transparent);
+  background: color-mix(in srgb, var(--stained-emerald) 16%, transparent);
   border-radius: 2px;
 }
 .hl-ruby {
-  background: color-mix(in srgb, var(--stained-ruby) 10%, transparent);
+  background: color-mix(in srgb, var(--stained-ruby) 15%, transparent);
   border-radius: 2px;
 }
 /*
@@ -164,26 +325,26 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   border-radius: 2px;
 }
 .hl-background {
-  background: color-mix(in srgb, var(--hl-color) 12%, transparent);
+  background: color-mix(in srgb, var(--hl-color) 16%, transparent);
 }
 .hl-underline {
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--hl-color) 80%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--hl-color) 85%, transparent);
 }
 .hl-bold {
   font-weight: 700;
 }
 .hl-outline {
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hl-color) 50%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hl-color) 55%, transparent);
 }
 /* Listed after the tints so the selection wins when both apply. */
 .verse-selected {
-  background: color-mix(in srgb, var(--stained-amber) 16%, transparent);
+  background: color-mix(in srgb, var(--stained-amber) 22%, transparent);
   border-radius: 2px;
 }
 /*
  * Red letter: dominical verses in the deep ruby pane of the window, the
- * verse numbers beside them untouched. The token darkens for paper and
- * lifts for candlelight; stained glass, never traffic-light red.
+ * verse numbers beside them in the common ink. The token darkens for paper
+ * and lifts for candlelight; stained glass throughout.
  */
 .red-letter {
   color: var(--stained-ruby);
@@ -191,18 +352,18 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 /*
  * Text comparison marks: words a translation adds wear a sapphire wash and
  * underline; words the base carries that the translation lacks are struck in
- * ruby. Stained glass, never traffic lights.
+ * ruby. Stained glass on both channels.
  */
 .diff-added {
-  background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 16%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 75%, transparent);
   border-radius: 2px;
 }
 .diff-omitted {
   color: var(--ink-muted);
-  background: color-mix(in srgb, var(--stained-ruby) 8%, transparent);
+  background: color-mix(in srgb, var(--stained-ruby) 10%, transparent);
   text-decoration: line-through;
-  text-decoration-color: color-mix(in srgb, var(--stained-ruby) 65%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--stained-ruby) 70%, transparent);
   border-radius: 2px;
 }
 /*
@@ -211,29 +372,31 @@ html[data-candle] .reader-surface[data-mode="warm"] {
  * both. Box shadow, not border: the verse's line box stays put.
  */
 .vf-amber {
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-amber) 80%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-amber) 85%, transparent);
 }
 .vf-sapphire {
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 80%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 85%, transparent);
 }
 .vf-emerald {
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-emerald) 80%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-emerald) 85%, transparent);
 }
 .vf-ruby {
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-ruby) 80%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-ruby) 85%, transparent);
 }
 /*
  * Inline find: matches wear a violet wash, a third channel beside the
- * highlight tint and the filter underline; the current match deepens so the
- * walk never loses its place.
+ * highlight tint and the filter underline; the current match deepens and
+ * casts a halo so the walk keeps its place at a glance.
  */
 .find-match {
-  background: color-mix(in srgb, var(--stained-violet) 14%, transparent);
+  background: color-mix(in srgb, var(--stained-violet) 16%, transparent);
   border-radius: 2px;
 }
 .find-match.find-current {
-  background: color-mix(in srgb, var(--stained-violet) 32%, transparent);
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-violet) 75%, transparent);
+  background: color-mix(in srgb, var(--stained-violet) 38%, transparent);
+  box-shadow:
+    inset 0 -0.13em 0 color-mix(in srgb, var(--stained-violet) 80%, transparent),
+    0 0 8px color-mix(in srgb, var(--glow-violet) 30%, transparent);
 }
 /*
  * Hover emphasis: resting on a reference chip anywhere in the workspace
@@ -243,21 +406,23 @@ html[data-candle] .reader-surface[data-mode="warm"] {
  * it reads over the highlight tints it may share a verse with.
  */
 .ref-hover {
-  background: color-mix(in srgb, var(--stained-sapphire) 15%, transparent);
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--stained-sapphire) 50%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 17%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--stained-sapphire) 55%, transparent);
   border-radius: 2px;
 }
 /*
  * Read aloud: the verse the system voice is on, a fifth channel beside the
  * highlight tint, the filter underline, the find wash, and the reference
  * ring. Sapphire like the references, but a left edge instead of a ring so
- * a verse under both never reads as one mark; listed after the other
- * verse-level channels so the wash reads over the selection's amber when a
- * spoken verse is also selected.
+ * a verse under both reads as two marks; a low halo gathers the spoken
+ * verse. Listed after the other verse-level channels so the wash reads
+ * over the selection's amber when a spoken verse is also selected.
  */
 .read-aloud {
-  background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
-  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 16%, transparent);
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--stained-sapphire) 75%, transparent),
+    0 0 10px color-mix(in srgb, var(--glow-sapphire) 18%, transparent);
   border-radius: 2px;
 }
 /*
@@ -265,28 +430,32 @@ html[data-candle] .reader-surface[data-mode="warm"] {
  * the workspace lights every visible word carrying the same base Strong's
  * id, a sixth channel beside the five verse-level ones, at word
  * granularity. Sapphire, the hover family's color, as a wash over a soft
- * underline so it never reads as the selected word's amber or the
+ * underline so it reads apart from the selected word's amber and the
  * verse-level reference ring, and so a word inside a ref-hover verse still
  * shows through.
  */
 .word-hover {
-  background: color-mix(in srgb, var(--stained-sapphire) 22%, transparent);
-  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 65%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 24%, transparent);
+  box-shadow: inset 0 -0.13em 0 color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
   border-radius: 2px;
 }
 
-/* Pericope headings: quiet small-caps over the passage they name, with the
- * source's parallel references in a smaller line beneath (BSB paratext). */
+/* Pericope headings: small caps over the passage they name, set in a
+ * sapphire-gray that reads as inked rubrication, with the source's parallel
+ * references in a smaller line beneath (BSB paratext). */
 .pericope-heading {
   display: block;
   font-family: var(--font-interface);
   font-variant-caps: all-small-caps;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.13em;
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--ink-muted);
+  color: color-mix(in srgb, var(--stained-sapphire) 55%, var(--ink-muted));
   margin-top: 1.1rem;
   margin-bottom: 0.25rem;
+}
+html[data-candle] .pericope-heading {
+  text-shadow: 0 0 10px color-mix(in srgb, var(--glow-sapphire) 22%, transparent);
 }
 .pericope-heading:first-child {
   margin-top: 0;
@@ -325,15 +494,15 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 }
 .tagged-word:hover {
   border-bottom-color: var(--stained-sapphire);
-  background: color-mix(in srgb, var(--stained-sapphire) 10%, transparent);
+  background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
 }
 .tagged-word.word-active {
-  background: color-mix(in srgb, var(--stained-amber) 22%, transparent);
+  background: color-mix(in srgb, var(--stained-amber) 24%, transparent);
   border-bottom-color: var(--stained-amber);
 }
-/* Words mode: tappable words carry a standing dotted rule, not only a hover. */
+/* Words mode: tappable words carry a standing dotted rule, even at rest. */
 .tagged-word.armed {
-  border-bottom-color: color-mix(in srgb, var(--stained-sapphire) 45%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--stained-sapphire) 50%, transparent);
 }
 
 /* Original-text mode: each word carries its own quiet interlinear line. */
@@ -358,7 +527,7 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 }
 .reader-surface[data-mode="evening"] .orig-sub,
 .reader-surface[data-mode="evening"] .alt-note {
-  color: #a08c62;
+  color: #a2adc7;
 }
 
 /* Verse numbering note where the original text counts differently (Heb./KJV). */
@@ -379,7 +548,8 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   border-bottom: 1px solid var(--rule);
 }
 
-/* Illuminated capital — burgundy letter, gold-leaf shoulder. */
+/* Illuminated capital: the ruby letter with a gold-leaf shoulder, glowing
+ * softly when the candles are lit. */
 .drop-cap::first-letter {
   font-family: var(--font-editorial);
   font-size: 3.4em;
@@ -390,8 +560,13 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   color: var(--stained-ruby);
   text-shadow: 2px 2px 0 color-mix(in srgb, var(--gold-leaf) 55%, transparent);
 }
+html[data-candle] .drop-cap::first-letter {
+  text-shadow:
+    2px 2px 0 color-mix(in srgb, var(--gold-leaf) 55%, transparent),
+    0 0 18px color-mix(in srgb, var(--glow-ruby) 32%, transparent);
+}
 
-/* The leaded-window mark: four panes with lead lines. */
+/* The leaded-window mark: four lit panes under a lead came. */
 .leaded-mark {
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
@@ -403,17 +578,24 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   height: 26px;
   border-radius: 11px 11px 2px 2px;
 }
+.leaded-mark span {
+  box-shadow: inset 0 1px 1px color-mix(in srgb, #ffffff 35%, transparent);
+}
 .leaded-mark span:nth-child(1) { background: var(--stained-sapphire); border-radius: 9px 0 0 0; }
 .leaded-mark span:nth-child(2) { background: var(--stained-ruby); border-radius: 0 9px 0 0; }
 .leaded-mark span:nth-child(3) { background: var(--stained-amber); }
 .leaded-mark span:nth-child(4) { background: var(--stained-emerald); }
+html[data-candle] .leaded-mark {
+  box-shadow: 0 0 8px color-mix(in srgb, var(--glow-sapphire) 32%, transparent);
+}
 
 .small-caps {
   font-variant-caps: all-small-caps;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
 }
 
-/* Section rule — a centered mark between rules, ornament by typography. */
+/* Section rule: a centered mark between rules, ornament by typography. The
+ * rules themselves carry a breath of sapphire, lead drawn thin. */
 .section-rule {
   display: flex;
   align-items: center;
@@ -424,7 +606,7 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 .section-rule::after {
   content: "";
   flex: 1;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid color-mix(in srgb, var(--stained-sapphire) 18%, var(--rule));
 }
 
 /* Greek and Hebrew set properly inline. */
@@ -441,10 +623,10 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 
 /*
  * Motion and light: the workspace breathes. Every animation is applied
- * only under (prefers-reduced-motion: no-preference), so reduced-motion
- * users reach the same states with no movement at all; the blanket rule
- * below stands as a second guard. Component classes live in @layer
- * components so Tailwind utilities still compose over them.
+ * under (prefers-reduced-motion: no-preference), so reduced-motion users
+ * reach the same states with no movement at all; the blanket rule below
+ * stands as a second guard. Component classes live in @layer components so
+ * Tailwind utilities still compose over them.
  */
 
 /* The keyframes library, defined once; utilities and surfaces apply them. */
@@ -452,14 +634,15 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   from { opacity: 0; }
 }
 @keyframes fx-rise {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
 }
+/* Menus bloom from their origin: a little blur, a little scale, then focus. */
 @keyframes fx-scale-in {
-  from { opacity: 0; transform: scale(0.96); }
+  from { opacity: 0; transform: scale(0.94); filter: blur(4px); }
 }
 /* A pane settling into its frame, gentler than a menu's entrance. */
 @keyframes fx-pane-enter {
-  from { opacity: 0; transform: translateY(3px) scale(0.997); }
+  from { opacity: 0; transform: translateY(5px) scale(0.997); }
 }
 @keyframes fx-pulse-soft {
   0%, 100% { opacity: 1; }
@@ -470,30 +653,43 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   from { background-position: 200% 0; }
   to { background-position: -200% 0; }
 }
-/* The ambient wash's drift, nearly still, like sun moving across stone. */
+/* The ambient wash's drift: sun crossing the floor over a long minute, with
+ * a slow swell as the light gathers and loosens. */
 @keyframes fx-light-drift {
-  0%, 100% { transform: translate3d(-1.5%, -1%, 0); }
-  50% { transform: translate3d(1.5%, 1%, 0); }
+  0%, 100% { transform: translate3d(-2.5%, -1.6%, 0) scale(1.015); }
+  50% { transform: translate3d(2.5%, 1.6%, 0) scale(1.03); }
+}
+/* The second wash layer breathing against the drift, candle-flame slow. */
+@keyframes fx-breathe {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+/* Hero entrances and card cascades: depth arriving, translate and blur and
+ * fade resolving into focus. */
+@keyframes fx-bloom {
+  from { opacity: 0; transform: translateY(12px) scale(0.965); filter: blur(7px); }
 }
 
 @layer components {
   /* Entrance utilities. Under reduced motion none of these apply, and the
-   * element simply renders in its final state. */
+   * element renders in its final state. */
   @media (prefers-reduced-motion: no-preference) {
     .fx-fade { animation: fx-fade-in var(--fx-med) var(--ease-soft-out) both; }
-    .fx-rise { animation: fx-rise var(--fx-med) var(--ease-soft-out) both; }
+    .fx-rise { animation: fx-rise var(--fx-med) var(--ease-bloom) both; }
     /* Menus: --fx-origin names the corner they grow from (default top). */
     .fx-scale {
-      animation: fx-scale-in var(--fx-fast) var(--ease-soft-out) both;
+      animation: fx-scale-in calc(var(--fx-fast) * 1.4) var(--ease-bloom) both;
       transform-origin: var(--fx-origin, 50% 0);
     }
     .fx-pane-enter { animation: fx-pane-enter var(--fx-med) var(--ease-soft-out) both; }
     .fx-pulse { animation: fx-pulse-soft 2.4s ease-in-out infinite; }
+    /* Cards and hero surfaces arrive with depth. */
+    .fx-bloom { animation: fx-bloom var(--fx-slow) var(--ease-bloom) both; }
     /* Stagger: each child names its order as --i (style={{ "--i": 2 }});
      * the backwards fill holds a child hidden until its turn arrives. */
     .fx-stagger > * {
-      animation: fx-rise var(--fx-med) var(--ease-soft-out) both;
-      animation-delay: calc(var(--i, 0) * 45ms);
+      animation: fx-rise var(--fx-med) var(--ease-bloom) both;
+      animation-delay: calc(var(--i, 0) * 60ms);
     }
   }
 
@@ -504,46 +700,156 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   }
 
   /*
-   * Stained glass as a surface: a whisper of window color over the stone,
-   * held by a faint leaded edge. The base stays a little translucent so
-   * the ambient wash can breathe through where the shell mounts it.
+   * The glass family. Leaded panes as surfaces: a came of dark lead with a
+   * light bevel, color held inside the panel like glass lit from behind,
+   * the base left translucent so the ambient wash breathes through where
+   * the shell mounts it. Three weights:
+   *   .glass       the standard pane for chips, cards, and chrome
+   *   .glass-lit   hero surfaces, the pane that burns a little and halos
+   *   .glass-deep  drawers and modals, closer glass over a darker room
    */
   .glass {
     background:
-      linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--stained-sapphire) 6%, transparent),
-        transparent 42%,
-        color-mix(in srgb, var(--stained-amber) 6%, transparent)
+      radial-gradient(
+        130% 90% at 50% -18%,
+        color-mix(in srgb, var(--pane-sapphire) 9%, transparent),
+        transparent 62%
       ),
-      color-mix(in srgb, var(--surface) 88%, transparent);
-    border: 1px solid color-mix(in srgb, var(--signal-ink) 16%, transparent);
-    box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 22%, transparent);
+      linear-gradient(
+        118deg,
+        color-mix(in srgb, var(--pane-sapphire) 11%, transparent),
+        transparent 46%,
+        color-mix(in srgb, var(--pane-amber) 10%, transparent)
+      ),
+      color-mix(in srgb, var(--surface) 90%, transparent);
+    border: 1px solid var(--lead);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      inset 0 -1px 0 color-mix(in srgb, var(--signal-ink) 7%, transparent),
+      0 1px 2px color-mix(in srgb, var(--signal-ink) 9%, transparent);
   }
   html[data-candle] .glass {
     background:
+      radial-gradient(
+        130% 95% at 50% -20%,
+        color-mix(in srgb, var(--pane-sapphire) 13%, transparent),
+        transparent 60%
+      ),
       linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--stained-sapphire) 9%, transparent),
-        transparent 42%,
-        color-mix(in srgb, var(--stained-amber) 9%, transparent)
+        118deg,
+        color-mix(in srgb, var(--pane-sapphire) 15%, transparent),
+        transparent 46%,
+        color-mix(in srgb, var(--pane-amber) 12%, transparent)
+      ),
+      color-mix(in srgb, var(--surface) 86%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      inset 0 0 22px color-mix(in srgb, var(--glow-sapphire) 7%, transparent),
+      0 1px 3px color-mix(in srgb, #000000 45%, transparent);
+  }
+
+  .glass-lit {
+    background:
+      radial-gradient(
+        140% 105% at 50% -22%,
+        color-mix(in srgb, var(--pane-sapphire) 16%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        118deg,
+        color-mix(in srgb, var(--pane-sapphire) 13%, transparent),
+        transparent 48%,
+        color-mix(in srgb, var(--pane-amber) 13%, transparent)
       ),
       color-mix(in srgb, var(--surface) 88%, transparent);
-    border-color: color-mix(in srgb, var(--gold-leaf) 22%, transparent);
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--gold-leaf) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--stained-sapphire) 42%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      inset 0 -1px 0 color-mix(in srgb, var(--signal-ink) 7%, transparent),
+      0 0 22px color-mix(in srgb, var(--glow-sapphire) 20%, transparent),
+      0 0 56px color-mix(in srgb, var(--glow-amber) 10%, transparent),
+      0 2px 6px color-mix(in srgb, var(--signal-ink) 11%, transparent);
+  }
+  html[data-candle] .glass-lit {
+    background:
+      radial-gradient(
+        140% 105% at 50% -22%,
+        color-mix(in srgb, var(--pane-sapphire) 22%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        118deg,
+        color-mix(in srgb, var(--pane-sapphire) 16%, transparent),
+        transparent 48%,
+        color-mix(in srgb, var(--pane-amber) 14%, transparent)
+      ),
+      color-mix(in srgb, var(--surface) 86%, transparent);
+    border-color: color-mix(in srgb, var(--gold-leaf) 40%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      inset 0 0 26px color-mix(in srgb, var(--glow-sapphire) 9%, transparent),
+      0 0 26px color-mix(in srgb, var(--glow-sapphire) 26%, transparent),
+      0 0 64px color-mix(in srgb, var(--glow-amber) 14%, transparent),
+      0 2px 8px color-mix(in srgb, #000000 45%, transparent);
+  }
+
+  .glass-deep {
+    background:
+      radial-gradient(
+        150% 110% at 50% -25%,
+        color-mix(in srgb, var(--pane-sapphire) 8%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--pane-sapphire) 9%, transparent),
+        transparent 42%,
+        color-mix(in srgb, var(--pane-violet) 7%, transparent)
+      ),
+      color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--signal-ink) 36%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      0 10px 32px color-mix(in srgb, var(--signal-ink) 18%, transparent),
+      0 0 44px color-mix(in srgb, var(--glow-sapphire) 9%, transparent);
+  }
+  html[data-candle] .glass-deep {
+    background:
+      radial-gradient(
+        150% 110% at 50% -25%,
+        color-mix(in srgb, var(--pane-sapphire) 12%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--pane-sapphire) 12%, transparent),
+        transparent 42%,
+        color-mix(in srgb, var(--pane-violet) 9%, transparent)
+      ),
+      color-mix(in srgb, var(--surface) 88%, transparent);
+    border-color: color-mix(in srgb, var(--gold-leaf) 36%, transparent);
+    box-shadow:
+      inset 0 1px 0 var(--lead-light),
+      inset 0 0 30px color-mix(in srgb, var(--glow-sapphire) 8%, transparent),
+      0 14px 44px color-mix(in srgb, #000000 55%, transparent),
+      0 0 60px color-mix(in srgb, var(--glow-amber) 8%, transparent);
   }
 
   /* A glass panel that lifts toward the light on hover. */
   .glass-hover:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, #ffffff 26%, transparent),
-      0 4px 14px color-mix(in srgb, var(--stained-sapphire) 18%, transparent);
+      inset 0 1px 0 var(--lead-light),
+      inset 0 -1px 0 color-mix(in srgb, var(--signal-ink) 7%, transparent),
+      0 6px 18px color-mix(in srgb, var(--glow-sapphire) 22%, transparent),
+      0 0 30px color-mix(in srgb, var(--glow-amber) 10%, transparent);
   }
   html[data-candle] .glass-hover:hover {
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--gold-leaf) 12%, transparent),
-      0 4px 16px color-mix(in srgb, var(--gold-leaf) 14%, transparent);
+      inset 0 1px 0 var(--lead-light),
+      inset 0 0 22px color-mix(in srgb, var(--glow-sapphire) 8%, transparent),
+      0 6px 20px color-mix(in srgb, var(--glow-amber) 18%, transparent),
+      0 0 34px color-mix(in srgb, var(--glow-sapphire) 12%, transparent);
   }
   @media (prefers-reduced-motion: no-preference) {
     .glass-hover {
@@ -556,10 +862,10 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   /*
    * The switch: a small leaded casement for boolean controls. Resting, the
    * pane is dark stone; checked, light fills it (a sapphire-to-amber wash)
-   * and the thumb slides over the lead line, lit gold. Markup is a real
-   * checkbox inside a label, so keys and clicks behave natively; the input
-   * is visually hidden, never display:none, so focus stays reachable and
-   * shows on the track.
+   * and the thumb slides over the lead line and kindles gold. Markup is a
+   * real checkbox inside a label, so keys and clicks behave natively; the
+   * input is visually hidden, never display:none, so focus stays reachable
+   * and shows on the track.
    *
    *   <label class="switch">
    *     <input type="checkbox" />
@@ -587,9 +893,9 @@ html[data-candle] .reader-surface[data-mode="warm"] {
     width: 2.125rem;
     height: 1.125rem;
     border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--signal-ink) 32%, transparent);
-    background: var(--surface);
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--signal-ink) 34%, transparent);
+    background: color-mix(in srgb, var(--signal-ink) 5%, var(--surface));
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 14%, transparent);
   }
   .switch-track::after {
     content: "";
@@ -602,21 +908,23 @@ html[data-candle] .reader-surface[data-mode="warm"] {
     background: var(--ink-muted);
   }
   .switch input:checked + .switch-track {
-    border-color: color-mix(in srgb, var(--stained-sapphire) 70%, transparent);
+    border-color: color-mix(in srgb, var(--stained-sapphire) 65%, transparent);
     background: linear-gradient(
       100deg,
-      color-mix(in srgb, var(--stained-sapphire) 45%, var(--surface)),
-      color-mix(in srgb, var(--stained-amber) 45%, var(--surface))
+      color-mix(in srgb, var(--stained-sapphire) 55%, var(--surface)),
+      color-mix(in srgb, var(--stained-amber) 55%, var(--surface))
     );
-    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 18%, transparent);
+    box-shadow:
+      inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 18%, transparent),
+      0 0 10px color-mix(in srgb, var(--glow-sapphire) 22%, transparent);
   }
   .switch input:checked + .switch-track::after {
     transform: translateX(1rem);
     background: var(--gold-leaf);
-    box-shadow: 0 0 6px color-mix(in srgb, var(--stained-amber) 65%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--glow-amber) 60%, transparent);
   }
   html[data-candle] .switch input:checked + .switch-track::after {
-    box-shadow: 0 0 8px color-mix(in srgb, var(--stained-amber) 85%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--glow-amber) 80%, transparent);
   }
   .switch:hover input:not(:disabled) + .switch-track {
     border-color: color-mix(in srgb, var(--stained-sapphire) 55%, transparent);
@@ -624,32 +932,40 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   .switch input:focus-visible + .switch-track {
     outline: 2px solid var(--stained-sapphire);
     outline-offset: 2px;
+    box-shadow:
+      inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 14%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--glow-sapphire) 22%, transparent);
   }
   .switch input:disabled + .switch-track { opacity: 0.45; }
   .switch:has(input:disabled) { cursor: default; }
   @media (prefers-reduced-motion: no-preference) {
     .switch-track {
-      transition: background var(--fx-fast) ease, border-color var(--fx-fast) ease;
+      transition:
+        background var(--fx-med) ease,
+        border-color var(--fx-fast) ease,
+        box-shadow var(--fx-med) ease;
     }
     .switch-track::after {
       transition:
-        transform var(--fx-fast) var(--ease-soft-out),
+        transform var(--fx-med) var(--ease-spring),
         background var(--fx-fast) ease,
-        box-shadow var(--fx-fast) ease;
+        box-shadow var(--fx-med) ease;
     }
   }
 
   /*
    * The segmented control: one leaded frame, each segment a pane, and the
-   * chosen pane fills with light. Buttons inside carry aria-pressed.
+   * chosen pane fills with light and keeps a low halo. Buttons inside carry
+   * aria-pressed.
    */
   .seg {
     display: inline-flex;
     gap: 2px;
     padding: 2px;
-    border: 1px solid color-mix(in srgb, var(--signal-ink) 16%, transparent);
+    border: 1px solid var(--lead);
     border-radius: 5px;
-    background: var(--surface);
+    background: color-mix(in srgb, var(--signal-ink) 4%, var(--surface));
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--signal-ink) 8%, transparent);
   }
   .seg > button {
     border-radius: 3px;
@@ -661,8 +977,24 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   .seg > button:hover { color: var(--signal-ink); }
   .seg > button[aria-pressed="true"] {
     color: var(--stained-sapphire);
-    background: color-mix(in srgb, var(--stained-sapphire) 12%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--stained-sapphire) 45%, transparent);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--pane-sapphire) 22%, transparent),
+      color-mix(in srgb, var(--pane-sapphire) 12%, transparent)
+    );
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--stained-sapphire) 55%, transparent),
+      0 0 10px color-mix(in srgb, var(--glow-sapphire) 20%, transparent);
+  }
+  html[data-candle] .seg > button[aria-pressed="true"] {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--pane-sapphire) 30%, transparent),
+      color-mix(in srgb, var(--pane-sapphire) 18%, transparent)
+    );
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--stained-sapphire) 65%, transparent),
+      0 0 14px color-mix(in srgb, var(--glow-sapphire) 28%, transparent);
   }
   .seg > button:focus-visible {
     outline: 2px solid var(--stained-sapphire);
@@ -679,12 +1011,14 @@ html[data-candle] .reader-surface[data-mode="warm"] {
 }
 
 /*
- * The ambient wash: sunlight through a high window, drifting slowly behind
- * the workspace chrome. Mounted as the shell's first child behind the
- * content (the shell root is relative and isolated); it never takes
- * pointers and stays under 5% color, a presence sensed rather than seen.
- * Still under reduced motion, hidden in print. Opaque chrome covers it
- * today; surfaces that adopt .glass let it breathe through.
+ * The ambient wash: the nave's own light behind the workspace chrome.
+ * Mounted as the shell's first child behind the content (the shell root is
+ * relative and isolated); it never takes pointers. Two layers move against
+ * each other: the pane washes drift on a slow seventy-second sun, the rose
+ * fan on ::before breathes against them, so the light changes while you
+ * read. The color is present and legible: peaks stay inside the audited
+ * caps (paper sapphire 22%, candle sapphire 24%) so text over it holds AA.
+ * Still under reduced motion, hidden in print.
  */
 .stained-ambient {
   position: absolute;
@@ -693,41 +1027,86 @@ html[data-candle] .reader-surface[data-mode="warm"] {
   pointer-events: none;
   background:
     radial-gradient(
-      ellipse 45% 38% at 18% 12%,
-      color-mix(in srgb, var(--stained-amber) 4%, transparent),
+      ellipse 46% 40% at 16% 10%,
+      color-mix(in srgb, var(--pane-amber) 15%, transparent),
       transparent 70%
     ),
     radial-gradient(
-      ellipse 40% 42% at 82% 8%,
-      color-mix(in srgb, var(--stained-sapphire) 3.5%, transparent),
+      ellipse 42% 44% at 82% 6%,
+      color-mix(in srgb, var(--pane-sapphire) 22%, transparent),
       transparent 70%
     ),
     radial-gradient(
-      ellipse 55% 45% at 55% 95%,
-      color-mix(in srgb, var(--stained-ruby) 2.5%, transparent),
+      ellipse 34% 30% at 62% 30%,
+      color-mix(in srgb, var(--pane-violet) 8%, transparent),
       transparent 70%
+    ),
+    radial-gradient(
+      ellipse 58% 46% at 55% 98%,
+      color-mix(in srgb, var(--pane-ruby) 9%, transparent),
+      transparent 70%
+    );
+}
+.stained-ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    conic-gradient(
+      from 148deg at 50% -30%,
+      transparent 0deg,
+      color-mix(in srgb, var(--pane-sapphire) 5%, transparent) 6deg,
+      transparent 14deg,
+      color-mix(in srgb, var(--pane-amber) 4%, transparent) 22deg,
+      transparent 30deg,
+      color-mix(in srgb, var(--pane-emerald) 3.5%, transparent) 36deg,
+      transparent 44deg,
+      color-mix(in srgb, var(--pane-ruby) 3.5%, transparent) 52deg,
+      transparent 62deg
     );
 }
 html[data-candle] .stained-ambient {
   background:
     radial-gradient(
-      ellipse 45% 38% at 18% 12%,
-      color-mix(in srgb, var(--stained-amber) 5%, transparent),
+      ellipse 42% 44% at 82% 6%,
+      color-mix(in srgb, var(--glow-sapphire) 24%, transparent),
       transparent 70%
     ),
     radial-gradient(
-      ellipse 40% 42% at 82% 8%,
-      color-mix(in srgb, var(--stained-violet) 3.5%, transparent),
+      ellipse 44% 38% at 16% 88%,
+      color-mix(in srgb, var(--glow-amber) 16%, transparent),
       transparent 70%
     ),
     radial-gradient(
-      ellipse 55% 45% at 55% 95%,
-      color-mix(in srgb, var(--stained-sapphire) 3%, transparent),
+      ellipse 36% 30% at 28% 4%,
+      color-mix(in srgb, var(--pane-violet) 12%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 88% 96%,
+      color-mix(in srgb, var(--pane-ruby) 9%, transparent),
       transparent 70%
     );
 }
+html[data-candle] .stained-ambient::before {
+  background:
+    conic-gradient(
+      from 148deg at 50% -30%,
+      transparent 0deg,
+      color-mix(in srgb, var(--glow-sapphire) 6.5%, transparent) 6deg,
+      transparent 14deg,
+      color-mix(in srgb, var(--glow-amber) 5%, transparent) 22deg,
+      transparent 30deg,
+      color-mix(in srgb, var(--pane-violet) 5%, transparent) 36deg,
+      transparent 44deg,
+      color-mix(in srgb, var(--glow-ruby) 5%, transparent) 52deg,
+      transparent 62deg
+    );
+}
 @media (prefers-reduced-motion: no-preference) {
-  .stained-ambient { animation: fx-light-drift 48s ease-in-out infinite; }
+  .stained-ambient { animation: fx-light-drift 72s ease-in-out infinite; }
+  .stained-ambient::before { animation: fx-breathe 14s ease-in-out infinite; }
+  html[data-candle] .stained-ambient::before { animation-duration: 9s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -735,6 +1114,31 @@ html[data-candle] .stained-ambient {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* Lead came scrollbars: thin, quiet, sapphire under the thumb. The mobile
+ * rules below hide them entirely on the rail and the reader tools. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--signal-ink) 32%, transparent) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--signal-ink) 26%, transparent);
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--stained-sapphire) 45%, transparent);
+  border: 3px solid transparent;
+  background-clip: padding-box;
 }
 
 /* Print-only content: hidden on screen, rendered when the report prints. */
@@ -749,6 +1153,13 @@ html[data-candle] .stained-ambient {
   /* The ambient light stays on the screen; paper carries no wash. */
   .stained-ambient {
     display: none !important;
+  }
+  /* The nave's atmosphere and every halo drop away for the press. */
+  body {
+    background-image: none !important;
+  }
+  * {
+    text-shadow: none !important;
   }
   /* Print-only content: rendered for the report, hidden on screen. */
   .print-only {
@@ -849,14 +1260,18 @@ body:has(> main > .workspace-shell) > footer {
     display: none;
   }
 
-  /* Sidebar and dock to drawers: overlays on a scrim, never columns. */
+  /* Sidebar and dock to drawers: overlays on a dimmed, softened nave. */
   .workspace-shell .ws-scrim {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 45;
     background: color-mix(in srgb, var(--signal-ink) 40%, transparent);
-    animation: ws-scrim-in 0.18s ease-out;
+    backdrop-filter: blur(3px);
+    animation: ws-scrim-in var(--fx-med) var(--ease-soft-out);
+  }
+  html[data-candle] .workspace-shell .ws-scrim {
+    background: color-mix(in srgb, #000000 55%, transparent);
   }
   .workspace-shell .ws-sidebar,
   .workspace-shell .ws-dock {
@@ -868,12 +1283,12 @@ body:has(> main > .workspace-shell) > footer {
   .workspace-shell .ws-sidebar {
     left: 0;
     width: min(320px, 85vw);
-    animation: ws-drawer-left-in 0.18s ease-out;
+    animation: ws-drawer-left-in 0.24s var(--ease-soft-out);
   }
   .workspace-shell .ws-dock {
     right: 0;
     width: min(340px, 88vw);
-    animation: ws-drawer-right-in 0.18s ease-out;
+    animation: ws-drawer-right-in 0.24s var(--ease-soft-out);
   }
   /* The collapsed tool tray has no room on a phone; a word tap or a
    * search row opens the dock drawer on its own. */
