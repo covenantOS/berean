@@ -253,6 +253,9 @@ function Intake() {
             paneId,
           });
           break;
+        case "search":
+          dispatch({ type: "openSearch", q: tab.q, mode: tab.mode, paneId });
+          break;
       }
     }
     window.history.replaceState(null, "", "/workspace");

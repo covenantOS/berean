@@ -168,7 +168,8 @@ export type DeepLinkTab =
   | { kind: "canvasdoc"; canvasId: string }
   | { kind: "diagram"; diagramId: string }
   | { kind: "workflow"; runId: string }
-  | { kind: "personalbook"; bookId: string };
+  | { kind: "personalbook"; bookId: string }
+  | { kind: "search"; q: string; mode: "bible" | "original" | "semantic" };
 
 /** The Strong's pattern the session sanitizer applies to lexicon and word study tabs. */
 const STRONGS_PARAM_RE = /^[hg]\d{1,5}$/i;
@@ -203,6 +204,18 @@ export function parseDeepLinkTab(raw: string): DeepLinkTab | null {
   const kind = raw.slice(0, i).trim().toLowerCase();
   const payload = raw.slice(i + 1).trim();
   if (!payload) return null;
+  /* Search rides as search:<q>, search:original:<q>, search:semantic:<q>. */
+  if (kind === "search") {
+    if (payload.startsWith("original:")) {
+      const q = payload.slice(9).trim();
+      return q ? { kind: "search", q, mode: "original" } : null;
+    }
+    if (payload.startsWith("semantic:")) {
+      const q = payload.slice(9).trim();
+      return q ? { kind: "search", q, mode: "semantic" } : null;
+    }
+    return { kind: "search", q: payload, mode: "bible" };
+  }
   switch (kind) {
     case "lexicon":
     case "wordstudy": {
