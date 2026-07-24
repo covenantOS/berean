@@ -1,0 +1,35 @@
+name: deploy
+
+# Production deploy to Cloudflare Containers. The image is large (about
+# 1.76GB with the corpus), so the build lives here instead of on a laptop:
+# every push to main builds the image, pushes it to the account registry,
+# and deploys the front Worker. Secrets used: CLOUDFLARE_API_KEY and
+# CLOUDFLARE_EMAIL (a Global API Key for the admin account).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+      CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # The deploy builds the image from the Dockerfile; wrangler handles
+      # the registry push and the Worker rollout itself.
+      - name: Deploy to Cloudflare Containers
+        run: npx wrangler deploy
