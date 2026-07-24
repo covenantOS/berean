@@ -10,7 +10,7 @@ import {
 import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import { DND, readPayload, startModuleDrag } from "./dnd";
-import { phoneViewport } from "./viewport";
+import { phoneViewport, usePhoneViewport } from "./viewport";
 import type { DockTab } from "./workspace-state";
 import CommentaryDock from "./CommentaryDock";
 import CrossRefsDock from "./CrossRefsDock";
@@ -35,6 +35,9 @@ const ITEM_BY_TAB = new Map(DOCK_ITEMS.map((item) => [item.tab, item]));
  */
 export default function RightDock() {
   const { state, dispatch } = useWorkspace();
+  /* Below the phone breakpoint the dock is a full-screen sheet; its close
+   * reads Done where the desktop wears the collapse guillemet. */
+  const phone = usePhoneViewport();
   const ordered = state.dockTabOrder
     .map((tab) => ITEM_BY_TAB.get(tab))
     .filter((item): item is (typeof DOCK_ITEMS)[number] => Boolean(item));
@@ -125,9 +128,9 @@ export default function RightDock() {
   const dragTrayTab = (e: ReactDragEvent, tab: DockTab, label: string) =>
     startModuleDrag(e, DND.dockTool, { dock: tab }, label);
 
-  /* Drawer discipline below the phone breakpoint, matching the sidebar:
+  /* Sheet discipline below the phone breakpoint, matching the sidebar:
    * Escape closes the open dock, and a pick that changes the panes (a
-   * cross-reference, a word study) lets the drawer yield so the answer
+   * cross-reference, a word study) lets the sheet yield so the answer
    * stands in the open. Both ask the breakpoint; the desktop dock never
    * moves. */
   useEffect(() => {
@@ -187,7 +190,7 @@ export default function RightDock() {
   return (
     <>
       {/* The scrim shows only below the breakpoint (globals.css); a tap
-       *  on it closes the drawer. At desktop it never renders visibly. */}
+       *  on it closes the sheet. At desktop it never renders visibly. */}
       <div
         aria-hidden="true"
         onClick={() => {
@@ -244,14 +247,18 @@ export default function RightDock() {
         </div>
         <button
           type="button"
-          title="Collapse dock"
+          title={phone ? "Close the tools" : "Collapse dock"}
           onClick={() => {
             playSound("close");
             dispatch({ type: "toggleDock" });
           }}
-          className="fx-press shrink-0 px-2 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className={
+            phone
+              ? "fx-press shrink-0 px-3 text-[0.68rem] font-semibold tracking-wide uppercase text-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              : "fx-press shrink-0 px-2 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          }
         >
-          »
+          {phone ? "Done" : "»"}
         </button>
       </div>
       <div key={state.dockTab} className="fx-fade min-h-0 flex-1 overflow-y-auto p-4">

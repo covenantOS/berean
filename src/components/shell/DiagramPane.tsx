@@ -19,6 +19,7 @@ import {
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
 import { playSound } from "@/lib/sound";
+import PhoneSurfaceNote from "./PhoneSurfaceNote";
 import PrintButton from "./PrintButton";
 import { useWorkspaceDispatch } from "./WorkspaceContext";
 
@@ -106,6 +107,7 @@ export default function DiagramPane({ diagramId }: { diagramId: string }) {
 
   return (
     <div className="mx-auto max-w-4xl" data-print-root>
+      <PhoneSurfaceNote text="A sentence diagram reads best on a larger screen. The whole diagram stays open below." />
       <header className="border-b border-rule pb-2">
         <p className="small-caps text-xs font-semibold text-amber">Sentence Diagram</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">{doc.name}</h2>

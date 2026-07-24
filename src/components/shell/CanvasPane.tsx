@@ -29,6 +29,7 @@ import {
 import { formatPassageRef, parsePassageRef } from "@/lib/documents";
 import { useCollection, useRecord } from "@/lib/hooks";
 import { playSound } from "@/lib/sound";
+import PhoneSurfaceNote from "./PhoneSurfaceNote";
 import { useWorkspaceDispatch } from "./WorkspaceContext";
 
 /**
@@ -292,6 +293,7 @@ export default function CanvasPane({ canvasId }: { canvasId: string }) {
 
   return (
     <div className="flex h-full flex-col">
+      <PhoneSurfaceNote text="The canvas reads best on a larger screen. Everything on it stays open below." />
       {/* The toolbar: view controls, the add-row, and the export. */}
       <div className="flex flex-wrap items-center gap-1 border-b border-rule bg-paper px-2 py-1">
         <button type="button" title="Zoom out" aria-label="Zoom out" onClick={() => zoomBy(1 / 1.25)} className={TOOL_BUTTON}>

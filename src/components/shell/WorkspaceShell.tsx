@@ -4,6 +4,7 @@ import Omnibox from "@/components/palette/Omnibox";
 import DeepLinkIntake from "./DeepLinkIntake";
 import { WorkspaceProvider, useWorkspace } from "./WorkspaceContext";
 import IconRail from "./IconRail";
+import MobileBar from "./MobileBar";
 import Sidebar from "./Sidebar";
 import PaneGrid from "./PaneGrid";
 import RightDock from "./RightDock";
@@ -62,6 +63,8 @@ function ShellFrame() {
         <RightDock />
       </div>
       <StatusBar />
+      {/* The phone's five-destination bar; renders nothing at desktop width. */}
+      <MobileBar />
       <WelcomeOverlay />
     </div>
   );

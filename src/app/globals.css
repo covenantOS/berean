@@ -1214,14 +1214,15 @@ body:has(> main > .workspace-shell) > footer {
 }
 
 /*
- * Workspace shell on a phone (Phase 4 baseline): 360 to 768px wide,
- * reading-first. The rail becomes a bottom tab bar, the sidebar and the
- * dock become drawers over a scrim, split panes stack in one scrolling
- * column, and the status bar yields its line to the text. Every rule sits
- * behind the breakpoint, so the desktop shell renders untouched.
+ * Workspace shell on a phone: reading-first. One pane fills the frame and
+ * cycles from its header chip, five plain destinations sit on a bottom bar,
+ * the sidebar and the dock rise as full-screen sheets, and the reader's
+ * folded controls live in one More sheet. Pane management (splits, closes,
+ * add module) stays at desktop width. Every rule sits behind the
+ * breakpoint, so the desktop shell renders untouched.
  */
 
-/* The scrim mounts with each drawer but shows only below the breakpoint. */
+/* The scrim mounts with each sheet but shows only below the breakpoint. */
 .workspace-shell .ws-scrim {
   display: none;
 }
@@ -1237,36 +1238,22 @@ body:has(> main > .workspace-shell) > footer {
     display: none;
   }
 
-  /* Rail to bottom bar: the same modes, thumb-reachable, inset aware. */
+  /* The desktop rail yields to the mobile bar (MobileBar.tsx), which owns
+   * the bottom edge: fixed, thumb-reachable, inset aware. */
   .workspace-shell .ws-rail {
+    display: none;
+  }
+  .workspace-shell .ws-mobilebar {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 40;
-    width: auto;
-    flex-direction: row;
     border-top: 1px solid var(--rule);
-    border-right: none;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  .workspace-shell .ws-rail-modes {
-    flex-direction: row;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .workspace-shell .ws-rail-modes > button {
-    flex: 1 0 auto;
-    min-width: 3.25rem;
-    border-left: none;
-    border-top: 2px solid transparent;
-  }
-  /* Presets and layouts are desktop mechanics; the phone keeps modes. */
-  .workspace-shell .ws-rail-foot {
-    display: none;
-  }
 
-  /* Sidebar and dock to drawers: overlays on a dimmed, softened nave. */
+  /* Sidebar and dock to full-screen sheets over a dimmed, softened nave. */
   .workspace-shell .ws-scrim {
     display: block;
     position: fixed;
@@ -1282,62 +1269,49 @@ body:has(> main > .workspace-shell) > footer {
   .workspace-shell .ws-sidebar,
   .workspace-shell .ws-dock {
     position: fixed;
-    top: 0;
-    bottom: 0;
+    inset: 0;
     z-index: 50;
-  }
-  .workspace-shell .ws-sidebar {
-    left: 0;
-    width: min(320px, 85vw);
-    animation: ws-drawer-left-in 0.24s var(--ease-soft-out);
-  }
-  .workspace-shell .ws-dock {
-    right: 0;
-    width: min(340px, 88vw);
-    animation: ws-drawer-right-in 0.24s var(--ease-soft-out);
+    width: auto;
+    animation: ws-sheet-in 0.24s var(--ease-soft-out);
   }
   /* The collapsed tool tray has no room on a phone; a word tap or a
-   * search row opens the dock drawer on its own. */
+   * search row opens the dock sheet on its own. */
   .workspace-shell .ws-dock-tray {
     display: none;
   }
 
-  /* Splits stack: the grid scrolls as one column, each pane a tall
-   * section, a lone pane filling the height. The dividers hide with the
-   * drag handles, since touch drag is the shell's known rough edge. */
-  .workspace-shell .ws-grid {
-    overflow-y: auto;
-  }
-  .workspace-shell .ws-grid-inner {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: 100%;
-  }
-  .workspace-shell .ws-split {
-    display: block;
-    height: auto;
-  }
-  .workspace-shell .ws-sep {
+  /* No pane management on a phone: the tab strip stays (it switches the
+   * pane's content); the admin cluster and the add-module button step
+   * aside, and the pane header's count chip cycles which pane stands in
+   * front. */
+  .workspace-shell .ws-pane-admin,
+  .workspace-shell .ws-add-module {
     display: none;
   }
-  .workspace-shell .ws-pane {
-    flex: 1 0 72dvh;
-    height: 72dvh;
-    margin-bottom: 0.375rem;
-  }
 
-  /* The reader's crowded header scrolls sideways instead of squeezing. */
+  /* The reader's tools fold into the More sheet; the header keeps the
+   * pager and the reference. */
   .workspace-shell .ws-reader-header {
     padding-inline: 0.5rem;
   }
   .workspace-shell .ws-reader-tools {
-    justify-content: flex-start;
-    overflow-x: auto;
-    scrollbar-width: none;
+    display: none;
   }
-  .workspace-shell .ws-reader-tools > * {
-    flex-shrink: 0;
+
+  /* A bottom sheet rising over the frame (the reader's More sheet),
+   * inset aware. */
+  .workspace-shell .ws-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    max-height: 78dvh;
+    border-top: 1px solid var(--rule);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: ws-sheet-in 0.24s var(--ease-soft-out);
   }
 }
 
@@ -1346,13 +1320,8 @@ body:has(> main > .workspace-shell) > footer {
     opacity: 0;
   }
 }
-@keyframes ws-drawer-left-in {
+@keyframes ws-sheet-in {
   from {
-    transform: translateX(-100%);
-  }
-}
-@keyframes ws-drawer-right-in {
-  from {
-    transform: translateX(100%);
+    transform: translateY(100%);
   }
 }

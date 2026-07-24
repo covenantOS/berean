@@ -22,6 +22,7 @@ import { personalbooks } from "@/lib/personalbooks";
 import { playSound } from "@/lib/sound";
 import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import { DND, edgeAtPoint, hasGridPayload, readPayload, startModuleDrag } from "./dnd";
+import { usePhoneViewport } from "./viewport";
 import {
   countLeaves,
   dockTabForTab,
@@ -114,13 +115,34 @@ const HarmonyPane = dynamic(() => import("./HarmonyPane"), { loading: PaneLoadin
 const WisdomExplorerPane = dynamic(() => import("./WisdomExplorerPane"), { loading: PaneLoading });
 const MediaPane = dynamic(() => import("./MediaPane"), { loading: PaneLoading });
 
+/** The pane grid's leaves in tree order: the phone's one-pane presentation
+ *  reads it to know which pane stands in front and which comes next. */
+function leafList(node: PaneNode): LeafNode[] {
+  return node.kind === "leaf"
+    ? [node]
+    : [...leafList(node.children[0]), ...leafList(node.children[1])];
+}
+
 /**
  * The center pane grid: renders the split tree recursively. Leaves are
  * tabbed panes; splits carry a draggable divider. Clicking anywhere in a
- * pane makes it the target for navigation.
+ * pane makes it the target for navigation. Below the phone breakpoint the
+ * grid shows the active pane alone, full-frame: the split tree stays in
+ * state untouched and returns at desktop width, and the pane header's
+ * count chip cycles which pane stands in front.
  */
 export default function PaneGrid() {
   const { state } = useWorkspace();
+  const phone = usePhoneViewport();
+  if (phone) {
+    const leaves = leafList(state.root);
+    const leaf = leaves.find((l) => l.id === state.activePaneId) ?? leaves[0];
+    return (
+      <div className="ws-grid-inner h-full min-h-0 w-full bg-paper p-1.5">
+        {leaf && <Pane leaf={leaf} />}
+      </div>
+    );
+  }
   return (
     <div className="ws-grid-inner h-full min-h-0 w-full bg-paper p-1.5">
       <NodeView node={state.root} />
@@ -437,6 +459,20 @@ function Pane({ leaf }: { leaf: LeafNode }) {
   const panes = countLeaves(state.root);
   const activeTab = leaf.tabs.find((t) => t.id === leaf.activeTabId) ?? null;
 
+  /* The phone's pane affordance: one pane fills the frame, and this slim
+   * chip names which stands in front and cycles to the next. Pane
+   * management (splits, closes, link sets) stays at desktop width; the
+   * split tree itself never moves. */
+  const phone = usePhoneViewport();
+  const paneIndex = phone ? leafList(state.root).findIndex((l) => l.id === leaf.id) : 0;
+  const cyclePane = () => {
+    const leaves = leafList(state.root);
+    const next = leaves[(leaves.findIndex((l) => l.id === leaf.id) + 1) % leaves.length];
+    if (!next || next.id === leaf.id) return;
+    playSound("navigate");
+    dispatch({ type: "activatePane", paneId: next.id });
+  };
+
   /* The body's drop preview: a tint or a split edge, reset on drop,
    * dragleave, and any dragend. The strip's insertion index lives with the
    * strip, which carries its own subscriptions. */
@@ -476,7 +512,18 @@ function Pane({ leaf }: { leaf: LeafNode }) {
         }`}
       >
         <TabStrip leaf={leaf} />
-        <div className="flex shrink-0 items-center gap-0.5 border-l border-rule px-1">
+        {phone && panes > 1 && (
+          <button
+            type="button"
+            title="Bring the next pane forward"
+            aria-label={`Pane ${paneIndex + 1} of ${panes}; bring the next pane forward`}
+            onClick={cyclePane}
+            className="fx-press flex shrink-0 items-center border-l border-rule px-2.5 text-[0.62rem] font-medium tracking-wide whitespace-nowrap text-muted hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          >
+            {paneIndex + 1} of {panes}
+          </button>
+        )}
+        <div className="ws-pane-admin flex shrink-0 items-center gap-0.5 border-l border-rule px-1">
           <LinkSetBadge paneId={leaf.id} linkSet={leaf.linkSet} />
           <button
             type="button"
@@ -959,7 +1006,9 @@ function TabStrip({ leaf }: { leaf: LeafNode }) {
         />
       )}
       {/* Add module: the launcher opens in this pane and names what it can
-       *  carry; newTab chimes at the switchboard. */}
+       *  carry; newTab chimes at the switchboard. Phones hide it (the
+       *  ws-add-module rule): no pane management at that width, panes cycle
+       *  from the header chip. */}
       <button
         type="button"
         title="Add module: choose what this pane opens"
@@ -967,7 +1016,7 @@ function TabStrip({ leaf }: { leaf: LeafNode }) {
         onClick={() => {
           dispatch({ type: "openLauncher", paneId: leaf.id });
         }}
-        className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        className="ws-add-module fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >
         +
       </button>

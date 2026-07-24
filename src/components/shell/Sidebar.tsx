@@ -34,7 +34,7 @@ import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
-import { phoneViewport } from "./viewport";
+import { phoneViewport, usePhoneViewport } from "./viewport";
 import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode, type WorkspaceAction } from "./workspace-state";
 
 /** A rail section's loading state: the leaded window, quiet, while the
@@ -86,10 +86,13 @@ const MODE_TITLES: Record<RailMode, string> = {
  */
 export default function Sidebar() {
   const { state, dispatch } = useWorkspace();
+  /* Below the phone breakpoint the sidebar is a full-screen sheet; its close
+   * reads Done where the desktop wears the collapse guillemet. */
+  const phone = usePhoneViewport();
 
-  /* Drawer discipline below the phone breakpoint: Escape closes, and a
+  /* Sheet discipline below the phone breakpoint: Escape closes, and a
    * pick that changes the panes (a chapter, a search, a guide) lets the
-   * drawer yield so the answer stands in the open. Both ask the
+   * sheet yield so the answer stands in the open. Both ask the
    * breakpoint; the desktop sidebar never moves. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -112,7 +115,7 @@ export default function Sidebar() {
   return (
     <>
       {/* The scrim shows only below the breakpoint (globals.css); a tap
-       *  on it closes the drawer. At desktop it never renders visibly. */}
+       *  on it closes the sheet. At desktop it never renders visibly. */}
       <div
         aria-hidden="true"
         onClick={() => {
@@ -131,14 +134,18 @@ export default function Sidebar() {
         </span>
         <button
           type="button"
-          title="Collapse sidebar"
+          title={phone ? "Close the sheet" : "Collapse sidebar"}
           onClick={() => {
             playSound("close");
             dispatch({ type: "toggleSidebar" });
           }}
-          className="fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          className={
+            phone
+              ? "fx-press px-2 py-1 text-[0.68rem] font-semibold tracking-wide uppercase text-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              : "fx-press px-1 text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+          }
         >
-          «
+          {phone ? "Done" : "«"}
         </button>
       </header>
       <div key={state.railMode} className="fx-fade min-h-0 flex-1 overflow-y-auto">

@@ -43,6 +43,7 @@ import { visualFilters, type VisualFilterSet } from "@/lib/visualfilters";
 import InsightsRail from "./InsightsRail";
 import NotebookPicker from "./NotebookPicker";
 import { SelectionMenu, StylePalette, VerseContextMenu, WordContextMenu } from "./ReaderMenus";
+import { usePhoneViewport } from "./viewport";
 import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import { findLeaf, READER_FONT_SCALE_DEFAULT, type WordSelection } from "./workspace-state";
 
@@ -205,6 +206,8 @@ export function translationShelf(): Promise<ShelfTranslation[]> {
  * The header's Listen reads the chapter aloud: the LibriVox recording
  * where the KJV has one, the system voice elsewhere, the spoken verse
  * marked in a read-aloud channel and followed gently down the pane.
+ * Below the phone breakpoint the header keeps the pager and the reference,
+ * and the rest of the strip folds into one More sheet of plain rows.
  */
 export default function ReaderPane({
   paneId,
@@ -287,6 +290,11 @@ export default function ReaderPane({
   /** Set by keylinking: the native double-click selection raises no toolbar. */
   const suppressSelUntil = useRef(0);
   const closeMenu = useCallback(() => setMenu(null), []);
+  /* The phone's presentation: the header keeps the pager and the reference,
+   * and every other control folds into one More sheet rising from the
+   * bottom. The desktop strip never moves. */
+  const phone = usePhoneViewport();
+  const [moreOpen, setMoreOpen] = useState(false);
 
   /*
    * Link-set scroll sync. This pane reports its topmost visible verse,
@@ -495,6 +503,19 @@ export default function ReaderPane({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [reading, menu]);
+
+  // The phone's More sheet leaves on Escape, the other sheets' discipline.
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        playSound("close");
+        setMoreOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [moreOpen]);
 
   // Words and the original text render their own words; find keeps to the
   // plain chapter text, so it closes when those views take over.
@@ -1419,6 +1440,204 @@ export default function ReaderPane({
     </>
   );
 
+  /* The phone's More sheet: every control the header strip carries, listed
+   * as plain rows over a scrim. Toggles report their state and keep the
+   * sheet open (the Done button and Escape close it); actions that change
+   * what is on screen (find, listen, a guide, compare, reading view) run
+   * and let the sheet yield. The desktop strip never renders this. */
+  const closeMore = () => {
+    playSound("close");
+    setMoreOpen(false);
+  };
+  const sheetToggle = (label: string, hint: string, on: boolean, act: () => void) => (
+    <button
+      key={label}
+      type="button"
+      role="switch"
+      aria-checked={on}
+      title={hint}
+      onClick={act}
+      className="flex w-full items-center justify-between gap-3 border-b border-rule px-4 py-3 text-left text-[0.8rem] last:border-b-0 hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+    >
+      <span className={on ? "font-medium text-sapphire" : "text-ink"}>{label}</span>
+      <span className={`small-caps shrink-0 text-[0.6rem] ${on ? "text-sapphire" : "text-muted"}`}>
+        {on ? "On" : "Off"}
+      </span>
+    </button>
+  );
+  const sheetAction = (label: string, hint: string, act: () => void, pressed = false) => (
+    <button
+      key={label}
+      type="button"
+      title={hint}
+      aria-pressed={pressed || undefined}
+      onClick={() => {
+        act();
+        closeMore();
+      }}
+      className="flex w-full items-center justify-between gap-3 border-b border-rule px-4 py-3 text-left text-[0.8rem] last:border-b-0 hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+    >
+      <span className={pressed ? "font-medium text-sapphire" : "text-ink"}>{label}</span>
+      <span aria-hidden="true" className="shrink-0 text-muted">
+        ›
+      </span>
+    </button>
+  );
+  const moreSheet =
+    phone && moreOpen ? (
+      <>
+        <div aria-hidden="true" className="ws-scrim" onClick={closeMore} />
+        <div role="dialog" aria-modal="true" aria-label="Reader controls" className="ws-sheet glass">
+          <div className="flex h-11 shrink-0 items-center justify-between border-b border-rule px-4">
+            <span className="small-caps text-[0.7rem] font-semibold text-ink">
+              {ready ? `${ready.bookName} ${ready.chapter}` : "Reader"}
+            </span>
+            <button
+              type="button"
+              onClick={closeMore}
+              className="fx-press px-2 py-1 text-[0.68rem] font-semibold tracking-wide uppercase text-sapphire hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              Done
+            </button>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <div className="flex w-full items-center justify-between gap-3 border-b border-rule px-4 py-2.5">
+              <span className="text-[0.8rem] text-ink">Text size</span>
+              <span className="flex items-center" role="group" aria-label="Text size">
+                <button
+                  type="button"
+                  title="Smaller text"
+                  aria-label="Smaller text"
+                  disabled={scaleStep <= 1}
+                  onClick={() => stepScale(-1)}
+                  className="fx-press border border-rule px-2.5 py-1 text-[0.6rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  A−
+                </button>
+                <button
+                  type="button"
+                  title="Larger text"
+                  aria-label="Larger text"
+                  disabled={scaleStep >= 5}
+                  onClick={() => stepScale(1)}
+                  className="fx-press border-y border-r border-rule px-2.5 py-1 text-[0.75rem] font-medium text-muted hover:text-ink disabled:opacity-30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                >
+                  A+
+                </button>
+              </span>
+            </div>
+            {ready &&
+              view === "text" &&
+              !wordsOn &&
+              sheetAction(
+                "Find in this chapter",
+                "Find in this chapter",
+                () => setFind((f) => ({ open: !f.open, q: "", index: 0 })),
+                find.open
+              )}
+            {ready &&
+              (ready.audio !== null || speechOk) &&
+              sheetAction(
+                listen !== "idle" ? "Stop listening" : "Listen",
+                ready.audio
+                  ? "Listen to this chapter read from the LibriVox recording"
+                  : "Read this chapter aloud with the system voice",
+                toggleListen,
+                listen !== "idle"
+              )}
+            {sheetToggle(
+              "Insights",
+              "Resource cards for this chapter, gathered beside the text",
+              insightsOn,
+              () => setInsightsOn(!insightsOn)
+            )}
+            {sheetAction(
+              "Compare translations",
+              "Compare every translation of this chapter, word by word",
+              () => dispatch({ type: "openTextCompare", book, chapter, paneId })
+            )}
+            {sheetAction("Passage Guide", "Open the Passage Guide for this chapter", () =>
+              dispatch({ type: "openGuide", book, chapter, paneId })
+            )}
+            {ready &&
+              ready.hasOriginal &&
+              sheetAction("Exegetical Guide", "Open the Exegetical Guide for this chapter", () =>
+                dispatch({ type: "openExegetical", book, chapter, paneId })
+              )}
+            {ready &&
+              ready.translationId === "kjv" &&
+              ready.hasTagged &&
+              sheetToggle(
+                "Words",
+                "Words carrying Strong's numbers become tappable",
+                wordsOn,
+                () => setWordsOn(!wordsOn)
+              )}
+            {ready &&
+              view === "text" &&
+              sheetToggle("Text only", "Hide the verse numbers for reading", textOnly, () =>
+                setTextOnly(!textOnly)
+              )}
+            {ready &&
+              view === "text" &&
+              ready.pericopes.length > 0 &&
+              sheetToggle(
+                "Headings",
+                "Pericope headings over the passages they name",
+                headingsOn,
+                () => setHeadingsOn(!headingsOn)
+              )}
+            {ready &&
+              view === "text" &&
+              !ready.poetry &&
+              sheetToggle("Lines", "One verse per line", verseLines, () => setVerseLines(!verseLines))}
+            {ready &&
+              view === "text" &&
+              ready.redletter.length > 0 &&
+              sheetToggle("Red letter", "The words of Christ in ruby", redLetter, () =>
+                setRedLetter(!redLetter)
+              )}
+            {ready &&
+              sheetAction(
+                "Reading view",
+                "Distraction-free reading over the whole window; Escape exits",
+                () => setReading(true)
+              )}
+            {ready && ready.hasOriginal && (
+              <div className="flex w-full items-center justify-between gap-3 border-b border-rule px-4 py-2.5 last:border-b-0">
+                <span className="text-[0.8rem] text-ink">Text</span>
+                <div className="seg" role="group" aria-label="Text or original">
+                  <button
+                    type="button"
+                    aria-pressed={view === "text"}
+                    onClick={() => setView("text")}
+                  >
+                    {ready.translation}
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={view === "original"}
+                    title={
+                      ready.lang === "hebrew" ? "The Hebrew text (TAHOT)" : "The Greek text (TAGNT)"
+                    }
+                    onClick={() => setView("original")}
+                  >
+                    Original
+                  </button>
+                </div>
+              </div>
+            )}
+            {ready &&
+              ready.hasOriginal &&
+              view === "original" &&
+              sheetToggle("Gloss", "The English gloss under each word", glossOn, () =>
+                setGlossOn(!glossOn)
+              )}
+          </div>
+        </div>
+      </>
+    ) : null;
+
   /* Reading view: this pane's text over the whole window. Rail, sidebar,
    * dock, and pane chrome stay mounted beneath the overlay, so nothing in
    * the workspace state moves. Escape or the exit control returns; the
@@ -1724,6 +1943,25 @@ export default function ReaderPane({
             </button>
           )}
         </div>
+        {/* The phone's entry to the folded controls: the strip above hides
+         *  at that width (globals.css) and this sheet carries them. */}
+        {phone && (
+          <div className="flex flex-1 items-center justify-end">
+            <button
+              type="button"
+              title="Text, tools, and guides for this chapter"
+              aria-haspopup="dialog"
+              aria-expanded={moreOpen}
+              onClick={() => {
+                playSound("open");
+                setMoreOpen(true);
+              }}
+              className="fx-press shrink-0 border border-rule px-2 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide text-muted hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+            >
+              More
+            </button>
+          </div>
+        )}
       </header>
       {ready && (
         /* The locator: the chapter's scroll progress as a rail, pericope
@@ -1907,6 +2145,7 @@ export default function ReaderPane({
         </div>
       </div>
       {menus}
+      {moreSheet}
     </div>
   );
 }
