@@ -51,3 +51,4 @@ data/_sources/ubs-dictionaries/*.JSON
 
 # Dev auth database (better-sqlite3 dialect when DATABASE_URL is unset)
 data/auth.db*
+.wrangler/tmp/
