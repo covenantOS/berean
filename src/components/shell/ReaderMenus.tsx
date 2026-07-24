@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { copyPassage } from "@/lib/copystyles";
 import { listDocuments } from "@/lib/documents";
 import { addFavorite, listFolders } from "@/lib/favorites";
@@ -16,7 +17,7 @@ import { notes as marginNotes, saveNote, type MarginNote } from "@/lib/marginali
 import { pronounceLemma, useSpeechAvailable } from "@/lib/pronounce";
 import { playSound } from "@/lib/sound";
 import { useCollection } from "@/lib/hooks";
-import { verseCardSvg } from "@/lib/verseCard";
+import { verseCardSvg, downloadCardPng } from "@/lib/verseCard";
 import { removeVerseFromSet, visualFilters } from "@/lib/visualfilters";
 import ClippingsPicker from "./ClippingsPicker";
 import NotebookPicker from "./NotebookPicker";
@@ -113,6 +114,19 @@ function useFloatingMenu(x: number, y: number, onClose: () => void, opts: Floati
       "--fx-origin": above ? "50% 100%" : "0 0",
     } as CSSProperties,
   };
+}
+
+/**
+ * Floating menus escape the pane's stacking context through a body portal:
+ * rendered inside a pane, a fixed menu loses the viewport when an ancestor
+ * animates transform, so it can slide under the dock and off the page.
+ */
+function FloatingMenu({ children }: { children: ReactNode }) {
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setHost(document.body);
+  }, []);
+  return host ? createPortal(children, host) : null;
 }
 
 /**
@@ -225,7 +239,7 @@ interface Mention {
  * Right-click on a verse: the verse's tagged people and places on the left,
  * the chapter's guides plus copy, note, and highlight on the right.
  */
-export function VerseContextMenu({
+function VerseContextMenuInner({
   x,
   y,
   paneId,
@@ -693,7 +707,7 @@ export function VerseContextMenu({
  * study and concordance search on the right. The search row appears only
  * for English surface text; the concordance answers English queries.
  */
-export function WordContextMenu({
+function WordContextMenuInner({
   x,
   y,
   paneId,
@@ -819,7 +833,7 @@ export function WordContextMenu({
  * anchor there too: marginalia keys on the verse, not the character range.
  * Translate stays out: nothing backs it yet.
  */
-export function SelectionMenu({
+function SelectionMenuInner({
   x,
   y,
   paneId,
@@ -862,15 +876,7 @@ export function SelectionMenu({
   /** Print/export aid: the selection as a letterpress card, downloaded as SVG. */
   const exportCard = () => {
     const svg = verseCardSvg(text, reference, abbrev);
-    const blob = new Blob([svg], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${book}-${chapter}-${verse}-card.svg`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    void downloadCardPng(svg, `${book}-${chapter}-${verse}-card.svg`);
     playSound("complete");
     onClose();
   };
@@ -1009,5 +1015,31 @@ export function SelectionMenu({
         />
       </span>
     </div>
+  );
+}
+
+/* The exported menu components render through the body portal; the inner
+ * implementations keep their original prop shapes. */
+export function VerseContextMenu(props: Parameters<typeof VerseContextMenuInner>[0]) {
+  return (
+    <FloatingMenu>
+      <VerseContextMenuInner {...props} />
+    </FloatingMenu>
+  );
+}
+
+export function WordContextMenu(props: Parameters<typeof WordContextMenuInner>[0]) {
+  return (
+    <FloatingMenu>
+      <WordContextMenuInner {...props} />
+    </FloatingMenu>
+  );
+}
+
+export function SelectionMenu(props: Parameters<typeof SelectionMenuInner>[0]) {
+  return (
+    <FloatingMenu>
+      <SelectionMenuInner {...props} />
+    </FloatingMenu>
   );
 }

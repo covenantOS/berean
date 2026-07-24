@@ -11,7 +11,7 @@ import {
   saveNote,
 } from "@/lib/marginalia";
 import { shareCard, canShareCard } from "@/lib/shareCard";
-import { verseCardSvg } from "@/lib/verseCard";
+import { verseCardSvg, downloadCardPng } from "@/lib/verseCard";
 import NotebookPicker from "@/components/shell/NotebookPicker";
 
 type Mode = "paper" | "warm" | "evening";
@@ -373,15 +373,7 @@ export default function ChapterReader({
   function exportCard() {
     const card = composeCard();
     if (!card) return;
-    const blob = new Blob([card.svg], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = card.filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    void downloadCardPng(card.svg, card.filename);
   }
 
   /** The device's share sheet takes the card as an SVG file; a sheet that

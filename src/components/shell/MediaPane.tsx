@@ -13,6 +13,7 @@ import { canShareCard, shareCard } from "@/lib/shareCard";
 import { playSound } from "@/lib/sound";
 import {
   verseCardSvg,
+  downloadCardPng,
   type VerseCardSize,
   type VerseCardTheme,
 } from "@/lib/verseCard";
@@ -74,15 +75,7 @@ function cardFilename(c: { book: string; chapter: number; from: number; to: numb
 
 /** The established export: the SVG as a blob, a temporary link, a click. */
 function downloadSvg(svg: string, filename: string) {
-  const blob = new Blob([svg], { type: "image/svg+xml" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  void downloadCardPng(svg, filename);
 }
 
 export default function MediaPane({

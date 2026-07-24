@@ -152,3 +152,55 @@ export function verseCardSvg(
   parts.push(`</svg>`, "");
   return parts.join("\n");
 }
+
+/**
+ * Downloads the card as a PNG, the format every photo app and chat target
+ * accepts. The SVG renders into a canvas at 2x for crispness; when the
+ * browser cannot rasterize (older engines, blocked canvas), the SVG file
+ * itself downloads instead, the previous behavior.
+ */
+export async function downloadCardPng(svg: string, filename: string): Promise<"png" | "svg"> {
+  const base = filename.replace(/\.svg$/, "");
+  try {
+    const svgUrl = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    try {
+      const img = new Image();
+      const loaded = new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("image load failed"));
+      });
+      img.src = svgUrl;
+      await loaded;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth * 2;
+      canvas.height = img.naturalHeight * 2;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("no canvas context");
+      ctx.scale(2, 2);
+      ctx.drawImage(img, 0, 0);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("canvas export failed");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${base}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      return "png";
+    } finally {
+      URL.revokeObjectURL(svgUrl);
+    }
+  } catch {
+    const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${base}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return "svg";
+  }
+}
