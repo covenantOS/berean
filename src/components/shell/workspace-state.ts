@@ -33,9 +33,9 @@ export const RAIL_MODES: RailMode[] = [
   "settings",
 ];
 
-export type DockTab = "commentary" | "lexicon" | "crossrefs" | "scribe";
+export type DockTab = "commentary" | "lexicon" | "crossrefs";
 
-export const DOCK_TABS: DockTab[] = ["commentary", "lexicon", "crossrefs", "scribe"];
+export const DOCK_TABS: DockTab[] = ["commentary", "lexicon", "crossrefs"];
 
 /** "horizontal" arranges panes side by side (a row); "vertical" stacks them. */
 export type SplitDirection = "horizontal" | "vertical";
@@ -1197,12 +1197,11 @@ export function dashboardTab(): DashboardTab {
   return { id: newId("tab"), type: "dashboard" };
 }
 
-/** A fresh pane tab for a dock tool; the Scribe stays in the tray. */
-export function toolTabForDock(dock: DockTab, lexiconId: string | null = null): ToolTab | null {
+/** A fresh pane tab for a dock tool; every dock module lifts into the grid. */
+export function toolTabForDock(dock: DockTab, lexiconId: string | null = null): ToolTab {
   if (dock === "commentary") return commentaryTab();
   if (dock === "crossrefs") return crossrefsTab();
-  if (dock === "lexicon") return lexiconTab(lexiconId);
-  return null;
+  return lexiconTab(lexiconId);
 }
 
 /** The dock module a tool tab belongs to; null for reader and search tabs. */
@@ -3993,6 +3992,9 @@ export function sanitizeWorkspace(p: Partial<StoredWorkspace>): WorkspaceState |
     railMode: RAIL_MODES.includes(p.railMode as RailMode) ? (p.railMode as RailMode) : "read",
     sidebarOpen: p.sidebarOpen !== false,
     dockOpen: p.dockOpen === true,
+    /* A session stored before the scribe tab left the dock carries
+     * dockTab: "scribe"; it fails the DOCK_TABS check and lands on
+     * commentary, the dock's honest first module. */
     dockTab: DOCK_TABS.includes(p.dockTab as DockTab) ? (p.dockTab as DockTab) : "commentary",
     dockTabOrder: sanitizeDockTabOrder(p.dockTabOrder),
     lexiconId: typeof p.lexiconId === "string" && p.lexiconId ? p.lexiconId : null,

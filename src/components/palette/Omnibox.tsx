@@ -694,7 +694,7 @@ export default function Omnibox() {
         role="dialog"
         aria-modal="true"
         aria-label="Command omnibox"
-        className="glass fx-scale w-full max-w-xl rounded-[4px] shadow-lg"
+        className="glass-deep fx-scale w-full max-w-xl rounded-[4px]"
         style={{ "--fx-origin": "50% 0" } as CSSProperties}
       >
         <div className="flex items-center gap-3 border-b border-rule px-4">

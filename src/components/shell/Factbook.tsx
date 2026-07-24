@@ -181,7 +181,7 @@ export default function Factbook({ entityId }: { entityId: string }) {
                   y={r.locator.y + 0.5}
                   fontSize={1.6}
                   fontFamily="var(--font-editorial, Georgia, serif)"
-                  fill="var(--ink, #221d15)"
+                  fill="var(--ink)"
                   stroke="white"
                   strokeWidth={0.4}
                   paintOrder="stroke"

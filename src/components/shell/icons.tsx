@@ -191,12 +191,3 @@ export function CrossRefsIcon() {
     </Icon>
   );
 }
-
-export function ScribeIcon() {
-  return (
-    <Icon>
-      <path d="M14 4C9 5 5.5 9 4.5 14.5 10 13.5 13.5 9.5 14 4z" />
-      <path d="M4.5 14.5C6.5 10.5 9 7.8 12.5 6.2" />
-    </Icon>
-  );
-}

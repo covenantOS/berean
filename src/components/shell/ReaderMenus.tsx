@@ -42,7 +42,7 @@ import type { WordSelection } from "./workspace-state";
  */
 
 const FRAME =
-  "fixed z-50 glass fx-scale shadow-lg font-[family-name:var(--font-interface)]";
+  "fixed z-50 glass-deep fx-scale font-[family-name:var(--font-interface)]";
 const ROW =
   "fx-press flex w-full items-center gap-2 px-3 py-1 text-left text-[0.72rem] text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire";
 const HEAD = "small-caps px-3 pb-1 text-[0.62rem] text-muted";

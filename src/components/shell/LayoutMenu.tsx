@@ -83,7 +83,7 @@ export default function LayoutMenu() {
         <div
           role="menu"
           aria-label="Layouts"
-          className="glass fx-scale absolute bottom-0 left-full z-50 ml-1 w-64 shadow-lg"
+          className="glass-deep fx-scale absolute bottom-0 left-full z-50 ml-1 w-64"
           style={{ "--fx-origin": "0% 100%" } as CSSProperties}
         >
           <div className="small-caps px-3 pt-2 pb-1 text-[0.62rem] text-muted">Built-in</div>

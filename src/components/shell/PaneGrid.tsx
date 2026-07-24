@@ -298,8 +298,7 @@ function dispatchDrop(
   }
   const dockTool = readPayload<{ dock: DockTab }>(e, DND.dockTool);
   if (dockTool) {
-    const tab = toolTabForDock(dockTool.dock, lexiconId);
-    if (tab) dispatch({ type: "openTab", tab, target });
+    dispatch({ type: "openTab", tab: toolTabForDock(dockTool.dock, lexiconId), target });
     return;
   }
   const chapter = readPayload<{ book: string; chapter: number }>(e, DND.chapter);
@@ -389,7 +388,7 @@ function LinkSetBadge({ paneId, linkSet }: { paneId: string; linkSet: LinkSet | 
           role="menu"
           aria-label="Link set"
           style={{ "--fx-origin": "100% 0" } as CSSProperties}
-          className="glass fx-scale absolute top-full right-0 z-30 mt-1 w-32 py-0.5"
+          className="glass-deep fx-scale absolute top-full right-0 z-30 mt-1 w-32 py-0.5"
         >
           {LINK_SETS.map((set) => (
             <button
@@ -956,9 +955,12 @@ function TabStrip({ leaf }: { leaf: LeafNode }) {
           className="my-1 w-0.5 shrink-0 bg-amber shadow-[0_0_6px_color-mix(in_srgb,var(--stained-amber)_75%,transparent)]"
         />
       )}
+      {/* Add module: the launcher opens in this pane and names what it can
+       *  carry; newTab chimes at the switchboard. */}
       <button
         type="button"
-        title="New tab"
+        title="Add module: choose what this pane opens"
+        aria-label="Add module"
         onClick={() => {
           dispatch({ type: "newTab", paneId: leaf.id });
         }}

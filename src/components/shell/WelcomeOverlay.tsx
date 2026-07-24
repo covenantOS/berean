@@ -86,7 +86,7 @@ export default function WelcomeOverlay() {
     >
       {/* The first-run room keeps the study's light (globals .stained-ambient). */}
       <div className="stained-ambient" aria-hidden="true" />
-      <div className="glass fx-rise w-full max-w-md rounded-[4px] p-8 shadow-lg">
+      <div className="glass-lit fx-bloom w-full max-w-md rounded-[4px] p-8">
         <span className="leaded-mark mb-4" aria-hidden="true">
           <span />
           <span />
@@ -146,7 +146,7 @@ export default function WelcomeOverlay() {
                   type="button"
                   onClick={() => finish(p.id, true)}
                   style={{ "--i": i } as CSSProperties}
-                  className="glass glass-hover fx-press rounded-[4px] px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="glass glass-hover fx-bloom fx-press rounded-[4px] px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span className="block text-sm font-medium">{p.name}</span>
                   <span className="block text-xs text-muted">{p.blurb}</span>

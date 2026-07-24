@@ -206,7 +206,7 @@ export default function WisdomExplorerPane({
                   }}
                   style={{ "--i": Math.min(i, 12) } as React.CSSProperties}
                   title={`Psalm ${p.psalm}: ${load.payload.genres.find((g) => g.id === p.genre)?.label ?? p.genre} · ${p.author} · ${p.verses} vv · ${p.words} words`}
-                  className="glass glass-hover text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                  className="glass glass-hover fx-bloom text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
                 >
                   <span
                     aria-hidden="true"

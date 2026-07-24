@@ -118,7 +118,7 @@ export default function InsightsRail({
     <section
       key={title}
       style={{ "--i": i } as CSSProperties}
-      className="glass glass-hover rounded-[4px] px-3 py-2"
+      className="glass glass-hover fx-bloom rounded-[4px] px-3 py-2"
     >
       <p className="flex items-baseline gap-2">
         <span className="small-caps text-[0.68rem] font-semibold text-muted">{title}</span>

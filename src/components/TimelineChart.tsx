@@ -229,7 +229,7 @@ function EraBand({
           return (
             <g key={t}>
               <line x1={x} x2={x} y1={axisY} y2={axisY + 5} stroke="var(--rule)" strokeWidth={1} />
-              <text x={x} y={axisY + 16} fontSize={10} textAnchor="middle" fill="var(--ink-muted, #6d5f4b)">
+              <text x={x} y={axisY + 16} fontSize={10} textAnchor="middle" fill="var(--ink-muted)">
                 {label}
               </text>
             </g>
@@ -285,7 +285,7 @@ function EraBand({
                 y={labelY}
                 fontSize={11}
                 fontWeight={active || matched ? "bold" : "normal"}
-                fill="var(--ink, #221d15)"
+                fill="var(--ink)"
               >
                 {event.label}
                 {event.approx ? " ~" : ""}

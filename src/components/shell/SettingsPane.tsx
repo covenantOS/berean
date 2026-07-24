@@ -92,7 +92,7 @@ export default function SettingsPane() {
 
   return (
     <div className="fx-stagger space-y-4">
-      <header className="border-b border-rule pb-2" style={{ "--i": 0 } as CSSProperties}>
+      <header className="glass-lit rounded-[4px] px-3 py-2" style={{ "--i": 0 } as CSSProperties}>
         <p className="small-caps text-xs font-semibold text-amber">Settings</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">Your work belongs to you</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">

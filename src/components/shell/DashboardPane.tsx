@@ -19,7 +19,7 @@ import { useWorkspaceDispatch } from "./WorkspaceContext";
  * nothing counted as an achievement: a study landing, not a feed.
  */
 
-const CARD = "glass glass-hover rounded-[4px] p-5";
+const CARD = "glass glass-hover fx-bloom rounded-[4px] p-5";
 const CARD_HEAD = "small-caps mb-2 text-sm text-muted";
 const LINK = "text-sapphire hover:underline";
 
@@ -67,7 +67,7 @@ export default function DashboardPane() {
 
   return (
     <div className="fx-stagger mx-auto max-w-3xl space-y-4">
-      <header className="glass rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
+      <header className="glass-lit rounded-[4px] px-3 py-2 print:rounded-none print:border-x-0 print:border-t-0 print:bg-none print:bg-transparent print:shadow-none print:px-0 print:pb-2 print:pt-0">
         <p className="small-caps text-xs font-semibold text-amber">Today</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">The day&apos;s appointed work</h2>
         <p className="mt-0.5 text-[0.68rem] text-muted">

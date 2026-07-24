@@ -248,7 +248,7 @@ function BookCard({
   onConcordance: () => void;
 }) {
   return (
-    <div className="glass glass-hover" style={{ "--i": stagger } as React.CSSProperties}>
+    <div className="glass glass-hover fx-bloom" style={{ "--i": stagger } as React.CSSProperties}>
       <span
         aria-hidden="true"
         className="block h-[3px]"

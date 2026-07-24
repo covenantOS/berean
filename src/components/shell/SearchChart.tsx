@@ -29,7 +29,7 @@ export const CHART_KINDS: { key: ChartKind; label: string }[] = [
 const SAPPHIRE = "var(--stained-sapphire)";
 const AMBER = "var(--stained-amber)";
 const RULE = "var(--rule)";
-const MUTED = "var(--ink-muted, #6d5f4b)";
+const MUTED = "var(--ink-muted)";
 
 /** Beyond this many slices a pie reads as noise; the tail folds into Other. */
 const PIE_MAX_SLICES = 12;

@@ -725,7 +725,7 @@ function ExportMenu({
           role="menu"
           aria-label="Export this manuscript"
           style={{ "--fx-origin": "100% 0" } as React.CSSProperties}
-          className="glass fx-scale absolute right-0 z-40 mt-1 w-60 rounded-[4px] py-1 shadow-lg"
+          className="glass-deep fx-scale absolute right-0 z-40 mt-1 w-60 rounded-[4px] py-1"
         >
           <button
             type="button"

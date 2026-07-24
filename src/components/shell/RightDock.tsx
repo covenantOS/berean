@@ -15,13 +15,12 @@ import type { DockTab } from "./workspace-state";
 import CommentaryDock from "./CommentaryDock";
 import CrossRefsDock from "./CrossRefsDock";
 import LexiconDock from "./LexiconDock";
-import { CommentaryIcon, CrossRefsIcon, LexiconIcon, ScribeIcon } from "./icons";
+import { CommentaryIcon, CrossRefsIcon, LexiconIcon } from "./icons";
 
 const DOCK_ITEMS: { tab: DockTab; label: string; icon: ComponentType }[] = [
   { tab: "commentary", label: "Commentary", icon: CommentaryIcon },
   { tab: "lexicon", label: "Lexicon", icon: LexiconIcon },
   { tab: "crossrefs", label: "Cross-refs", icon: CrossRefsIcon },
-  { tab: "scribe", label: "Scribe", icon: ScribeIcon },
 ];
 
 const ITEM_BY_TAB = new Map(DOCK_ITEMS.map((item) => [item.tab, item]));
@@ -29,10 +28,9 @@ const ITEM_BY_TAB = new Map(DOCK_ITEMS.map((item) => [item.tab, item]));
 /**
  * The right dock: a tray of tool modules answering the selection. Tray tabs
  * drag into the grid to open as pane tabs and drag within the tray to
- * reorder; a tool tab dragged back from a pane returns to the tray. The
- * Scribe reorders but never leaves. Commentary, Lexicon, and Cross-refs are
- * live over the passage in focus; the Scribe lands in a later phase. Tray
- * and dock are glass over the ambient wash, tools crossfade as the tab
+ * reorder; a tool tab dragged back from a pane returns to the tray.
+ * Commentary, Lexicon, and Cross-refs are live over the passage in focus.
+ * Tray and dock are glass over the ambient wash, tools crossfade as the tab
  * turns, and the bells mark the dock opening, closing, and switching.
  */
 export default function RightDock() {
@@ -55,8 +53,7 @@ export default function RightDock() {
     return () => window.removeEventListener("dragend", reset);
   }, []);
 
-  const acceptsReorder = (e: ReactDragEvent) =>
-    e.dataTransfer.types.includes(DND.dockTool) || e.dataTransfer.types.includes(DND.dockReorder);
+  const acceptsReorder = (e: ReactDragEvent) => e.dataTransfer.types.includes(DND.dockTool);
   const acceptsReturn = (e: ReactDragEvent) => e.dataTransfer.types.includes(DND.paneToolTab);
   const accepts = (e: ReactDragEvent) => acceptsReorder(e) || acceptsReturn(e);
 
@@ -110,9 +107,7 @@ export default function RightDock() {
         dispatch({ type: "returnTabToDock", paneId: paneTool.paneId, tabId: paneTool.tabId });
         return;
       }
-      const dragged =
-        readPayload<{ dock: DockTab }>(e, DND.dockTool) ??
-        readPayload<{ dock: DockTab }>(e, DND.dockReorder);
+      const dragged = readPayload<{ dock: DockTab }>(e, DND.dockTool);
       if (!dragged) return;
       const from = state.dockTabOrder.indexOf(dragged.dock);
       if (from === -1) return;
@@ -128,7 +123,7 @@ export default function RightDock() {
   });
 
   const dragTrayTab = (e: ReactDragEvent, tab: DockTab, label: string) =>
-    startModuleDrag(e, tab === "scribe" ? DND.dockReorder : DND.dockTool, { dock: tab }, label);
+    startModuleDrag(e, DND.dockTool, { dock: tab }, label);
 
   /* Drawer discipline below the phone breakpoint, matching the sidebar:
    * Escape closes the open dock, and a pick that changes the panes (a
@@ -166,11 +161,7 @@ export default function RightDock() {
           <button
             key={tab}
             type="button"
-            title={
-              tab === "scribe"
-                ? `Open ${label}; drag to reorder the tray`
-                : `Open ${label}; drag to reorder, or into the workspace`
-            }
+            title={`Open ${label}; drag to reorder, or into the workspace`}
             data-dock-index={i}
             draggable
             onDragStart={(e) => dragTrayTab(e, tab, label)}
@@ -226,11 +217,7 @@ export default function RightDock() {
                 type="button"
                 role="tab"
                 aria-selected={tabActive}
-                title={
-                  tab === "scribe"
-                    ? `${label}; drag to reorder the tray`
-                    : `${label}; drag to reorder, or into the workspace`
-                }
+                title={`${label}; drag to reorder, or into the workspace`}
                 data-dock-index={i}
                 draggable
                 onDragStart={(e) => dragTrayTab(e, tab, label)}
@@ -271,15 +258,6 @@ export default function RightDock() {
         {state.dockTab === "commentary" && <CommentaryDock />}
         {state.dockTab === "lexicon" && <LexiconDock />}
         {state.dockTab === "crossrefs" && <CrossRefsDock />}
-        {state.dockTab === "scribe" && (
-          <>
-            <h3 className="font-editorial text-sm font-semibold">Scribe</h3>
-            <p className="mt-2 text-xs leading-relaxed text-muted">
-              The Scribe prepares the study; it never writes the sermon. Every citation is
-              verified against the text server-side.
-            </p>
-          </>
-        )}
       </div>
       </aside>
     </>

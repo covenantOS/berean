@@ -139,7 +139,7 @@ export default function AtlasMap({
         <g
           fontFamily="var(--font-editorial, Georgia, serif)"
           fontSize={4.4}
-          fill="var(--ink, #221d15)"
+          fill="var(--ink)"
           stroke="white"
           strokeWidth={1.1}
           paintOrder="stroke"

@@ -691,6 +691,12 @@ html[data-candle] .leaded-mark {
       animation: fx-rise var(--fx-med) var(--ease-bloom) both;
       animation-delay: calc(var(--i, 0) * 60ms);
     }
+    /* A staggered child wearing fx-bloom blooms on its own turn: the class
+     * names the entrance, the cascade keeps naming the order. */
+    .fx-stagger > *.fx-bloom {
+      animation-name: fx-bloom;
+      animation-duration: var(--fx-slow);
+    }
   }
 
   /* Press feedback: a button settles a half step into the stone. */

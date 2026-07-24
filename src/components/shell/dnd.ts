@@ -18,8 +18,6 @@ export const DND = {
   paneToolTab: "application/x-berean-pane-tool-tab",
   /** A live tool in the dock tray. Payload: { dock: "commentary" | "lexicon" | "crossrefs" }. */
   dockTool: "application/x-berean-dock-tool",
-  /** The Scribe tray tab: it reorders in the tray but never enters the grid. */
-  dockReorder: "application/x-berean-dock-reorder",
   /** A chapter in the Read tree. Payload: { book, chapter }. */
   chapter: "application/x-berean-chapter",
   /** A Library shelf lexicon entry: opens a prompting lexicon tab. */

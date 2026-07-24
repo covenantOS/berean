@@ -945,7 +945,7 @@ function CiteButton({ resourceId }: { resourceId: string }) {
       </button>
       {picking && (
         <span
-          className="glass fx-scale absolute left-0 top-full z-10 mt-1 block w-56"
+          className="glass-deep fx-scale absolute left-0 top-full z-10 mt-1 block w-56"
           style={{ "--fx-origin": "0 0" } as CSSProperties}
         >
           <span className="small-caps block px-3 pt-2 pb-1 text-[0.62rem] text-muted">

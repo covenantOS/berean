@@ -45,7 +45,8 @@ import {
  * its passage). Choosing anything hands the tab's slot to the choice through
  * replaceTab, so the launcher never lingers underneath. Recents come from
  * what genuinely remembers: the search rail's history and the pane's own
- * navigation trail.
+ * navigation trail. The header names the mechanic plainly: this panel is how
+ * you choose a module for a pane, the same door the tab strip's + opens.
  */
 
 const HEAD = "small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted";
@@ -135,7 +136,14 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
   };
 
   return (
-    <div className="mx-auto max-w-md py-2">
+    <div className="glass-lit fx-bloom mx-auto max-w-md rounded-[4px] px-2 py-3">
+      <header className="px-3 pb-1">
+        <p className="small-caps text-xs font-semibold text-amber">Modules</p>
+        <h2 className="font-editorial mt-0.5 text-lg font-semibold">Choose a module for this pane</h2>
+        <p className="mt-0.5 text-[0.68rem] text-muted">
+          A reader, a guide, a search, or one of the rooms; the choice takes this tab&apos;s place.
+        </p>
+      </header>
       {ref && bookName && (
         <>
           <div className={HEAD}>
