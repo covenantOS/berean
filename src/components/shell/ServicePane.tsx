@@ -103,6 +103,58 @@ function hymnText(h: HymnDoc): string {
   return parts.join("\n\n");
 }
 
+interface ConfessionDoc {
+  id: string;
+  title: string;
+  sections: { id: string; label: string; title: string; paragraphs: string[] }[];
+}
+
+const CREEDS = [
+  { id: "apostles-creed", label: "The Apostles' Creed" },
+  { id: "nicene-creed", label: "The Nicene Creed" },
+  { id: "chalcedon", label: "The Definition of Chalcedon" },
+];
+
+/**
+ * The ecumenical creeds inside the composer, the hymnbook's sibling: pick
+ * one and its text fills the element, so the congregation confesses from
+ * the printed order. The corpus (src/lib/confessions.ts) carries the three
+ * received texts.
+ */
+function CreedPicker({ onPick }: { onPick: (title: string, text: string) => void }) {
+  const pick = (id: string) => {
+    if (!id) return;
+    const creed = CREEDS.find((c) => c.id === id)!;
+    fetch(`/api/pane/confession?doc=${encodeURIComponent(id)}`)
+      .then(async (res) => (res.ok ? ((await res.json()) as ConfessionDoc) : null))
+      .then((doc) => {
+        if (!doc) return;
+        const text = doc.sections
+          .map((s) => s.paragraphs.join("\n"))
+          .filter(Boolean)
+          .join("\n\n");
+        onPick(creed.label, text);
+      });
+  };
+  return (
+    <select
+      value=""
+      onChange={(e) => pick(e.target.value)}
+      aria-label="Choose a creed"
+      className="w-full rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm sm:col-span-2"
+    >
+      <option value="" disabled>
+        Choose from the ecumenical creeds…
+      </option>
+      {CREEDS.map((c) => (
+        <option key={c.id} value={c.id}>
+          {c.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 interface FetchedPassage {
   bookName: string;
   chapter: number;
@@ -440,6 +492,9 @@ export default function ServicePane({ serviceId }: { serviceId: string }) {
                         })
                       }
                     />
+                  )}
+                  {typeInfo?.key === "creed" && (
+                    <CreedPicker onPick={(title, text) => patchElement(el.id, { title, text })} />
                   )}
                   <textarea
                     value={el.text ?? ""}
