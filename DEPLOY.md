@@ -80,6 +80,46 @@ Railway.
 6. Under Environment, add `ANTHROPIC_API_KEY` if you want the Scribe live.
 7. Deploy. Render serves HTTPS on its own domain automatically.
 
+## Cloudflare Containers (the owner's production route)
+
+Cloudflare Containers (GA April 2026, Workers Paid plan) run the shipped
+Dockerfile on Cloudflare's network with a front Worker load-balancing
+requests. The repo carries everything: `wrangler.jsonc` (the container
+block, four max instances, observability on) and `worker/index.ts` (the
+front door and the `BereanServer` container class).
+
+1. Install Wrangler and log in: `npm i -g wrangler` then `wrangler login`.
+   Docker must be running locally; `wrangler deploy` builds the image,
+   pushes it to the account's container registry, and deploys the Worker.
+2. Set the secrets (they bind to the Worker and forward into the container
+   process via `worker/index.ts`):
+   - `wrangler secret put DATABASE_URL` (the Neon connection string)
+   - `wrangler secret put BETTER_AUTH_SECRET`
+   - `wrangler secret put BETTER_AUTH_URL` (the public origin, e.g.
+     https://berean.your-subdomain.workers.dev or a custom domain)
+   - Optional: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `RESEND_FROM`.
+     If the framework ever fails to forward them, set the same names on
+     the deployment in the Containers dashboard; that path is the fallback.
+3. `npx wrangler deploy`. The first deploy builds and pushes the full
+   image (about 600MB with the corpus), so it takes several minutes;
+   later deploys reuse cached layers.
+4. `npx wrangler containers list` shows instance health. The health check
+   for any external monitor is `/api/health`.
+5. The Neon database needs no change: the container reaches it over TLS
+   from Cloudflare's network (Neon's pooler accepts it). Auth runs the pg
+   dialect there automatically; better-sqlite3 never ships to production.
+6. Custom domain: attach one in the dashboard (Workers > your worker >
+   Domains) and set `BETTER_AUTH_URL` to match.
+7. The sync tombstone purge has no cron on this host; schedule the same
+   weekly curl above against the public origin, or wire a Workers Cron
+   Trigger later.
+
+Notes: container disks are ephemeral, which is fine by design (state lives
+in Neon and the browser). Instance memory must cover the warm shelf and
+search indexes (about 1.3GB; the image self-limits at 1536MB of old-space).
+Cold starts run 1-3 seconds after idle; `sleepAfter` in `worker/index.ts`
+trades cost against latency.
+
 ## Railway
 
 1. Push the repo to GitHub.

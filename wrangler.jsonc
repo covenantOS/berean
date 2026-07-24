@@ -1,0 +1,37 @@
+{
+  // Berean on Cloudflare Containers (GA April 2026). The front Worker in
+  // worker/index.ts load-balances requests across container instances of
+  // the standalone Next.js server built by ./Dockerfile. Deploy:
+  //   wrangler login
+  //   wrangler secret put DATABASE_URL
+  //   wrangler secret put BETTER_AUTH_SECRET
+  //   wrangler deploy
+  "name": "berean",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-04-13",
+  "observability": {
+    "enabled": true
+  },
+  "containers": [
+    {
+      "class_name": "BereanServer",
+      "image": "./Dockerfile",
+      "max_instances": 4,
+      "instance_type": "standard-2"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BEREAN",
+        "class_name": "BereanServer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["BereanServer"]
+    }
+  ]
+}
