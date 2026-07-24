@@ -5,7 +5,7 @@ interface BereanEnv {
   DATABASE_URL?: string;
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
-  ANTHROPIC_API_KEY?: string;
+  MINIMAX_API_KEY?: string;
 }
 
 /**
@@ -32,7 +32,7 @@ export class BereanServer extends Container {
       ...(env.DATABASE_URL ? { DATABASE_URL: env.DATABASE_URL } : {}),
       ...(env.BETTER_AUTH_SECRET ? { BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET } : {}),
       ...(env.BETTER_AUTH_URL ? { BETTER_AUTH_URL: env.BETTER_AUTH_URL } : {}),
-      ...(env.ANTHROPIC_API_KEY ? { ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY } : {}),
+      ...(env.MINIMAX_API_KEY ? { MINIMAX_API_KEY: env.MINIMAX_API_KEY } : {}),
     };
   }
 
