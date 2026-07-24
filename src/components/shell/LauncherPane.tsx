@@ -327,6 +327,17 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           </button>
         </li>
         <li>
+          <button
+            type="button"
+            title="Paste or drop a .md/.txt; your document opens with its references alive"
+            className={ROW}
+            onClick={() => choose(libraryTab())}
+          >
+            Import your documents
+            <span className={HINT}>Personal books</span>
+          </button>
+        </li>
+        <li>
           <button type="button" className={ROW} onClick={() => choose(workflowEditorTab(null))}>
             Compose a workflow
             <span className={HINT}>Workflow editor</span>

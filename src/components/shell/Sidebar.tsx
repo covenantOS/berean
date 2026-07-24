@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import { CANON, bookIndex, getBook } from "@/lib/canon";
 import {
   activeCopyStyle,
@@ -26,6 +26,7 @@ import {
 import { isDue, memoryPassages } from "@/lib/memory";
 import { currentDay, generatorFor, plans, readingsForDay } from "@/lib/plans";
 import { dueRequests, markPrayed, prayerLists } from "@/lib/prayers";
+import { personalbooks } from "@/lib/personalbooks";
 import { normalize, projects as projectsCollection } from "@/lib/projects";
 import { toggleFavorite, useSearchSaves, type SearchEntry } from "@/lib/search-history";
 import { playSound } from "@/lib/sound";
@@ -34,7 +35,7 @@ import { useWorkspace, useWorkspaceDispatch } from "./WorkspaceContext";
 import PrintButton from "./PrintButton";
 import { DND, startModuleDrag } from "./dnd";
 import { phoneViewport } from "./viewport";
-import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode } from "./workspace-state";
+import { findLeaf, paneRef, PREFERRED_TRANSLATION_KEY, type RailMode, type WorkspaceAction } from "./workspace-state";
 
 /** A rail section's loading state: the leaded window, quiet, while the
  *  section's code arrives. */
@@ -1075,6 +1076,56 @@ const byCanon = (
   b: { book: string; chapter: number; verse: number }
 ) => bookIndex(a.book) - bookIndex(b.book) || a.chapter - b.chapter || a.verse - b.verse;
 
+function PersonalBooksSection({ dispatch }: { dispatch: Dispatch<WorkspaceAction> }) {
+  const books = useCollection(personalbooks);
+  return (
+    <>
+      <div className="small-caps flex items-baseline justify-between px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
+        <span>Your books</span>
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "openLibrary" })}
+          title="Import a document in the Library pane"
+          className="text-sapphire hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+        >
+          Import
+        </button>
+      </div>
+      {books.length === 0 ? (
+        <p className="px-3 pb-1 text-[0.68rem] text-muted">
+          Nothing imported yet. Paste or drop a .md/.txt into the Library pane and its references
+          come alive.
+        </p>
+      ) : (
+        <ul>
+          {books.map((b) => (
+            <li key={b.id} className="flex items-center gap-1 px-3 py-[3px] hover:bg-paper">
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "openPersonalBook", bookId: b.id, title: b.title })}
+                title={`Open ${b.title}`}
+                className="min-w-0 flex-1 truncate text-left text-[0.8rem] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                {b.title}
+              </button>
+              {b.author ? <span className="shrink-0 text-[0.62rem] text-muted">{b.author}</span> : null}
+              <button
+                type="button"
+                onClick={() => personalbooks.remove(b.id)}
+                title="Remove this book"
+                aria-label={`Remove ${b.title}`}
+                className="shrink-0 px-1 text-[0.7rem] leading-none text-muted hover:text-ruby focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
 function DocumentsList() {
   const { dispatch, activeRef } = useWorkspace();
   const docs = useCollection(documents);
@@ -1215,6 +1266,10 @@ function DocumentsList() {
           </ul>
         </>
       )}
+      {/* Your books: imported personal documents. The import form lives in
+       * the Library pane; this section is the everyday home for what the
+       * user brought in. */}
+      <PersonalBooksSection dispatch={dispatch} />
       {filterSets.length > 0 && (
         <>
           <div className="small-caps px-3 pt-3 pb-1 text-[0.62rem] font-semibold text-muted">
