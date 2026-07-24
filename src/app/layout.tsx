@@ -12,6 +12,9 @@ const garamond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
+  // The absolute base social-card URLs resolve against. Without it Next
+  // falls back to localhost:3000 and every shared link's card goes dead.
+  metadataBase: new URL(process.env.BEREAN_SITE_URL ?? "https://berean.blue"),
   title: { default: "Berean Blue", template: "%s · Berean Blue" },
   description:
     "Berean — Scripture study and authored knowledge. A study prepared, by Church Posting.",
