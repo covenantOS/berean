@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { SCRIBE_MODEL, scribeClient, ENGINE_UNFURNISHED, JSON_ONLY, parseCandidates } from "@/lib/engine";
 import { verifyCandidates } from "@/lib/semantic";
 
 export const maxDuration = 300;
 
-const MODEL = "claude-opus-4-8";
+const MODEL = SCRIBE_MODEL;
 const MAX_CANDIDATES = 30;
 
 const SEMANTIC_SCHEMA = {
@@ -57,23 +58,19 @@ export async function POST(req: NextRequest) {
   }
   const scope = body.scope === "ot" || body.scope === "nt" ? body.scope : "all";
 
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    return NextResponse.json(
-      {
-        error:
-          "The Scribe's engine is not furnished. Set ANTHROPIC_API_KEY on the server to enable search by meaning.",
-      },
-      { status: 503 }
-    );
-  }
 
-  const client = new Anthropic();
+  const client = scribeClient();
+  if (!client) {
+    return NextResponse.json({ error: ENGINE_UNFURNISHED }, { status: 503 });
+  }
   let candidates: { ref: string; reason: string }[];
   try {
     const stream = client.messages.stream({
       model: MODEL,
       max_tokens: 4000,
-      system: SYSTEM,
+      system: SYSTEM + JSON_ONLY + `
+
+Answer in exactly this shape: {"candidates": [{"ref": "Book C:V", "reason": string}]}. No other fields.`,
       output_config: { format: { type: "json_schema", schema: SEMANTIC_SCHEMA } },
       messages: [
         {
@@ -92,10 +89,7 @@ export async function POST(req: NextRequest) {
     }
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") throw new Error("Empty response");
-    candidates = (JSON.parse(textBlock.text) as { candidates: typeof candidates }).candidates.slice(
-      0,
-      MAX_CANDIDATES
-    );
+    candidates = parseCandidates(textBlock.text);
   } catch (err) {
     const detail = err instanceof Anthropic.APIError ? err.message : "Upstream error";
     return NextResponse.json(

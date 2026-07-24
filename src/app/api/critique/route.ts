@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { SCRIBE_MODEL, scribeClient, ENGINE_UNFURNISHED, JSON_ONLY, parseJsonObject, parseCounsel } from "@/lib/engine";
 import { checkManuscriptQuotes, findRefs } from "@/lib/refs";
 import { getChapter } from "@/lib/bible";
 
 export const maxDuration = 300;
 
-const MODEL = "claude-opus-4-8";
+const MODEL = SCRIBE_MODEL;
 
 const CRITIQUE_SCHEMA = {
   type: "object",
@@ -55,12 +56,6 @@ export async function POST(req: NextRequest) {
   // against the actual verse text. This runs with or without an AI engine.
   const quoteChecks = await checkManuscriptQuotes(text);
 
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    return NextResponse.json({
-      quoteChecks,
-      note: "Quotations were checked against the text mechanically. The Scribe's editorial reading requires ANTHROPIC_API_KEY on the server.",
-    });
-  }
 
   // Gather the actual text of every cited passage for the critic to read.
   const refs = findRefs(text).slice(0, 30);
@@ -81,13 +76,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const client = new Anthropic();
+  const client = scribeClient();
+  if (!client) {
+    return NextResponse.json({ error: ENGINE_UNFURNISHED }, { status: 503 });
+  }
   let counsel: { point: string; ground: string }[];
   try {
     const stream = client.messages.stream({
       model: MODEL,
       max_tokens: 8000,
-      system: SYSTEM,
+      system: SYSTEM + JSON_ONLY + `
+
+Answer in exactly this shape: {"counsel": [{"point": string, "ground": string}]}. No other fields.`,
       output_config: { format: { type: "json_schema", schema: CRITIQUE_SCHEMA } },
       messages: [
         {
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     }
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") throw new Error("Empty response");
-    counsel = (JSON.parse(textBlock.text) as { counsel: typeof counsel }).counsel.slice(0, 8);
+    counsel = parseCounsel(textBlock.text);
   } catch (err) {
     const detail = err instanceof Anthropic.APIError ? err.message : "Upstream error";
     return NextResponse.json(

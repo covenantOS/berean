@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { SCRIBE_MODEL, scribeClient, ENGINE_UNFURNISHED, JSON_ONLY, parseJsonObject, listField } from "@/lib/engine";
 import { CANON, getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 
 export const maxDuration = 300;
 
-const MODEL = "claude-opus-4-8";
+const MODEL = SCRIBE_MODEL;
 
 const ELEMENT_KEYS = [
   "call",
@@ -82,21 +83,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    return NextResponse.json(
-      {
-        error:
-          "The Scribe's engine is not furnished. Set ANTHROPIC_API_KEY on the server to enable drafted liturgies.",
-      },
-      { status: 503 }
-    );
-  }
 
   const verses = await getChapter(book.slug, chapter);
   if (!verses) return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   const chapterText = verses.map((v) => `[${v.verse}] ${v.text}`).join("\n");
 
-  const client = new Anthropic();
+  const client = scribeClient();
+  if (!client) {
+    return NextResponse.json({ error: ENGINE_UNFURNISHED }, { status: 503 });
+  }
   let parsed: {
     elements: {
       type: string;
@@ -109,7 +104,9 @@ export async function POST(req: NextRequest) {
     const stream = client.messages.stream({
       model: MODEL,
       max_tokens: 8000,
-      system: SYSTEM,
+      system: SYSTEM + JSON_ONLY + `
+
+Answer in exactly this shape: {"elements": [{"type": string, "title": string, "ref": {"book": string, "chapter": integer, "from": integer, "to": integer}, "rationale": string}]}. No other fields.`,
       output_config: { format: { type: "json_schema", schema: LITURGY_SCHEMA } },
       messages: [
         {
@@ -124,7 +121,7 @@ export async function POST(req: NextRequest) {
     }
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") throw new Error("Empty response");
-    parsed = JSON.parse(textBlock.text);
+    parsed = parseJsonObject(textBlock.text);
   } catch (err) {
     const detail = err instanceof Anthropic.APIError ? err.message : "Upstream error";
     return NextResponse.json(
@@ -135,7 +132,13 @@ export async function POST(req: NextRequest) {
 
   // Verify every proposed reference points at a real passage; drop any that do not.
   const elements = [];
-  for (const el of parsed.elements) {
+  const parsedElements = listField<{
+      type: string;
+      title?: string;
+      ref?: { book: string; chapter: number; from?: number; to?: number };
+      rationale: string;
+    }>(parsed, "elements");
+  for (const el of parsedElements) {
     let ref = el.ref;
     if (ref) {
       const b = getBook(ref.book);

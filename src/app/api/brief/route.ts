@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { SCRIBE_MODEL, scribeClient, ENGINE_UNFURNISHED, JSON_ONLY, parseJsonObject, parseBriefSections, briefOverview } from "@/lib/engine";
 import { getBook } from "@/lib/canon";
 import { getChapter } from "@/lib/bible";
 import type { Citation, ExegeticalBrief } from "@/lib/brief";
 
 export const maxDuration = 300;
 
-const MODEL = "claude-opus-4-8";
+const MODEL = SCRIBE_MODEL;
 
 const BRIEF_SCHEMA = {
   type: "object",
@@ -72,31 +73,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    return NextResponse.json(
-      {
-        error:
-          "The Scribe's engine is not furnished. Set ANTHROPIC_API_KEY on the server to enable cited briefs.",
-      },
-      { status: 503 }
-    );
-  }
 
   const verses = await getChapter(book.slug, chapter);
   if (!verses) return NextResponse.json({ error: "Unknown passage." }, { status: 400 });
 
   const chapterText = verses.map((v) => `[${v.verse}] ${v.text}`).join("\n");
 
-  const client = new Anthropic();
+  const client = scribeClient();
+  if (!client) {
+    return NextResponse.json({ error: ENGINE_UNFURNISHED }, { status: 503 });
+  }
   let parsed: {
     overview: string;
     sections: { heading: string; body: string; citations: { verse: number; quote: string }[] }[];
   };
+  let sections: { heading: string; body: string; citations: { verse: number; quote: string }[] }[];
   try {
     const stream = client.messages.stream({
       model: MODEL,
       max_tokens: 16000,
-      system: SYSTEM,
+      system: SYSTEM + JSON_ONLY + `
+
+Answer in exactly this shape: {"overview": string, "sections": [{"heading": string, "body": string, "citations": [{"verse": integer, "quote": string}]}]}. No other fields.`,
       output_config: { format: { type: "json_schema", schema: BRIEF_SCHEMA } },
       messages: [
         {
@@ -121,7 +119,8 @@ export async function POST(req: NextRequest) {
     }
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") throw new Error("Empty response");
-    parsed = JSON.parse(textBlock.text);
+    parsed = parseJsonObject(textBlock.text);
+  sections = parseBriefSections(parsed);
   } catch (err) {
     const detail = err instanceof Anthropic.APIError ? err.message : "Upstream error";
     return NextResponse.json(
@@ -137,10 +136,10 @@ export async function POST(req: NextRequest) {
 
   const brief: ExegeticalBrief = {
     passage: { book: book.slug, chapter },
-    overview: parsed.overview,
+    overview: briefOverview(parsed),
     generatedAt: new Date().toISOString(),
     model: MODEL,
-    sections: parsed.sections.map((s) => ({
+    sections: sections.map((s) => ({
       heading: s.heading,
       body: s.body,
       citations: s.citations.map((c): Citation => {

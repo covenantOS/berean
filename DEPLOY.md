@@ -23,7 +23,7 @@ Railway.
   image sets `NODE_OPTIONS=--max-old-space-size=1536` to match a 2GB
   container. A 1GB plan works for a demo with slower first reads per work;
   lower the ceiling to 768 in the Dockerfile if you choose it.
-- **ANTHROPIC_API_KEY (optional).** Set it in the host's environment to
+- **MINIMAX_API_KEY (optional).** Set it in the host's environment to
   enable the Scribe and semantic search. Without it the app runs fully and
   those surfaces say so honestly.
 - **Accounts and sync (optional).** Accounts are better-auth magic links;
@@ -87,7 +87,7 @@ deploys still work from any machine with Docker and wrangler logged in.
 3. Render detects the Dockerfile. Leave the build and start commands blank.
 4. Choose the instance type with 2GB RAM.
 5. Under Health Check Path, enter `/api/health`.
-6. Under Environment, add `ANTHROPIC_API_KEY` if you want the Scribe live.
+6. Under Environment, add `MINIMAX_API_KEY` if you want the Scribe live.
 7. Deploy. Render serves HTTPS on its own domain automatically.
 
 ## Cloudflare Containers (the owner's production route)
@@ -107,7 +107,7 @@ front door and the `BereanServer` container class).
    - `wrangler secret put BETTER_AUTH_SECRET`
    - `wrangler secret put BETTER_AUTH_URL` (the public origin, e.g.
      https://berean.your-subdomain.workers.dev or a custom domain)
-   - Optional: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `RESEND_FROM`.
+   - Optional: `MINIMAX_API_KEY`, `RESEND_API_KEY`, `RESEND_FROM`.
      If the framework ever fails to forward them, set the same names on
      the deployment in the Containers dashboard; that path is the fallback.
 3. `npx wrangler deploy`. The first deploy builds and pushes the full
@@ -136,7 +136,7 @@ trades cost against latency.
 2. In Railway: New Project > Deploy from GitHub repo > select berean.
 3. Railway detects the Dockerfile and builds it. No start command needed.
 4. Under Settings > Resources, confirm 2GB RAM.
-5. Under Variables, add `ANTHROPIC_API_KEY` if you want the Scribe live.
+5. Under Variables, add `MINIMAX_API_KEY` if you want the Scribe live.
 6. Under Settings > Networking, generate a public domain. Railway serves
    HTTPS on it automatically.
 
