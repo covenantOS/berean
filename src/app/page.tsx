@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Clouds } from "@/components/canvasui/Clouds";
+import { Ripple } from "@/components/canvasui/Ripple";
 import MagicLinkForm from "@/components/landing/MagicLinkForm";
 
 /**
@@ -93,6 +94,7 @@ export default function LandingPage() {
       <section className="mx-auto max-w-3xl px-4 pb-10 pt-14 sm:px-6">
         <div className="glass-lit fx-bloom rounded-[4px] px-3 py-4 sm:px-6 sm:py-6">
           <Clouds opacity={0.35} density={2} speed={0.35} style={{ borderRadius: "4px" }}>
+            <Ripple style={{ borderRadius: "4px" }}>
             <div className="flex flex-col items-center gap-4 px-4 py-10 text-center sm:px-8">
               <LeadedMark />
               <p className="small-caps text-xs text-muted">
@@ -121,6 +123,7 @@ export default function LandingPage() {
                 </Link>
               </div>
             </div>
+            </Ripple>
           </Clouds>
         </div>
       </section>
