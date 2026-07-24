@@ -15,6 +15,94 @@ import {
 import { listProjects } from "@/lib/projects";
 import { useWorkspaceDispatch } from "./WorkspaceContext";
 
+interface HymnSummary {
+  id: string;
+  title: string;
+  author: string | null;
+  meter: string;
+  firstLine: string;
+}
+
+interface HymnDoc extends HymnSummary {
+  tunes: { name: string; composer: string | null }[];
+  verses: string[][];
+  refrain: string[] | null;
+}
+
+/**
+ * The hymnbook inside the composer: pick a hymn and its title, meter, and
+ * tune fill the element, with the text of the hymn itself so the order of
+ * service prints the words the congregation sings.
+ */
+function HymnPicker({ onPick }: { onPick: (h: HymnDoc) => void }) {
+  const [hymns, setHymns] = useState<HymnSummary[] | null>(null);
+  const [q, setQ] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/pane/hymns", { signal: controller.signal })
+      .then(async (res) => (res.ok ? ((await res.json()) as { hymns: HymnSummary[] }) : null))
+      .then((data) => setHymns(data?.hymns ?? []))
+      .catch(() => setHymns([]));
+    return () => controller.abort();
+  }, []);
+
+  const needle = q.trim().toLowerCase();
+  const shown = (hymns ?? []).filter(
+    (h) =>
+      !needle ||
+      h.title.toLowerCase().includes(needle) ||
+      h.firstLine.toLowerCase().includes(needle) ||
+      (h.author ?? "").toLowerCase().includes(needle)
+  );
+
+  const pick = (id: string) => {
+    if (!id) return;
+    fetch(`/api/pane/hymns?id=${encodeURIComponent(id)}`)
+      .then(async (res) => (res.ok ? ((await res.json()) as HymnDoc) : null))
+      .then((h) => h && onPick(h));
+  };
+
+  return (
+    <div className="sm:col-span-2">
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Search the hymnbook"
+        aria-label="Search the hymnbook"
+        className="mb-1 w-full rounded-[4px] border border-rule bg-paper px-2 py-1.5 text-sm"
+      />
+      <select
+        size={4}
+        value=""
+        onChange={(e) => pick(e.target.value)}
+        aria-label="Choose a hymn"
+        className="w-full rounded-[4px] border border-rule bg-paper px-2 py-1 text-sm"
+      >
+        <option value="" disabled>
+          {hymns === null ? "Opening the hymnbook…" : `${shown.length} hymns`}
+        </option>
+        {shown.slice(0, 40).map((h) => (
+          <option key={h.id} value={h.id}>
+            {h.title}
+            {h.author ? ` — ${h.author}` : ""}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+/** The hymn's words for the service sheet: verses numbered, refrain marked. */
+function hymnText(h: HymnDoc): string {
+  const parts: string[] = [];
+  h.verses.forEach((verse, i) => {
+    parts.push(`${i + 1}. ${verse.join("\n")}`);
+    if (h.refrain && i === 0) parts.push(`Refrain: ${h.refrain.join(" ")}`);
+  });
+  return parts.join("\n\n");
+}
+
 interface FetchedPassage {
   bookName: string;
   chapter: number;
@@ -341,6 +429,17 @@ export default function ServicePane({ serviceId }: { serviceId: string }) {
                         </>
                       )}
                     </div>
+                  )}
+                  {typeInfo?.key === "hymn" && (
+                    <HymnPicker
+                      onPick={(h) =>
+                        patchElement(el.id, {
+                          title: h.title,
+                          music: [h.meter, h.tunes[0]?.name].filter(Boolean).join(" · ") || undefined,
+                          text: hymnText(h),
+                        })
+                      }
+                    />
                   )}
                   <textarea
                     value={el.text ?? ""}
