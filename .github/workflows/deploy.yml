@@ -29,6 +29,9 @@ jobs:
           node-version: 22
           cache: npm
 
+      # The worker bundle resolves @cloudflare/containers from node_modules.
+      - run: npm ci
+
       # The deploy builds the image from the Dockerfile; wrangler handles
       # the registry push and the Worker rollout itself.
       - name: Deploy to Cloudflare Containers
