@@ -5,6 +5,7 @@ import { markOnboarded, seedStarterDocuments } from "@/lib/onboarding";
 import { playSound } from "@/lib/sound";
 import { useWorkspace } from "./WorkspaceContext";
 import { LAYOUT_PRESETS, PREFERRED_TRANSLATION_KEY, type PresetId } from "./workspace-state";
+import { ParticleReveal } from "@/components/canvasui/ParticleReveal";
 
 /** One translation on the shelf, as /api/translations reports it. */
 interface ShelfTranslation {
@@ -93,6 +94,7 @@ export default function WelcomeOverlay() {
           <span />
           <span />
         </span>
+        <ParticleReveal radius={260}>
         <p className="small-caps text-xs font-semibold text-amber">Welcome to Berean Blue</p>
         {step === 1 ? (
           <div key="translation" className="fx-fade">
@@ -168,6 +170,7 @@ export default function WelcomeOverlay() {
             </div>
           </div>
         )}
+        </ParticleReveal>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { guides } from "@/lib/guides";
 import { useCollection } from "@/lib/hooks";
 import { recordSearch, useSearchSaves } from "@/lib/search-history";
 import { layoutState, layouts } from "./layouts";
+import { Clouds } from "@/components/canvasui/Clouds";
 import { useWorkspace } from "./WorkspaceContext";
 import {
   allSearchTab,
@@ -137,6 +138,7 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
 
   return (
     <div className="glass-lit fx-bloom mx-auto max-w-md rounded-[4px] px-2 py-3">
+      <Clouds opacity={0.4} density={2} speed={0.4} style={{ borderRadius: "4px" }}>
       <header className="px-3 pb-1">
         <p className="small-caps text-xs font-semibold text-amber">Modules</p>
         <h2 className="font-editorial mt-0.5 text-lg font-semibold">Choose a module for this pane</h2>
@@ -432,6 +434,7 @@ export default function LauncherPane({ paneId, tab }: { paneId: string; tab: Lau
           </ul>
         </>
       )}
+      </Clouds>
     </div>
   );
 }
