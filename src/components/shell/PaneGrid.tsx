@@ -965,7 +965,7 @@ function TabStrip({ leaf }: { leaf: LeafNode }) {
         title="Add module: choose what this pane opens"
         aria-label="Add module"
         onClick={() => {
-          dispatch({ type: "newTab", paneId: leaf.id });
+          dispatch({ type: "openLauncher", paneId: leaf.id });
         }}
         className="fx-press shrink-0 px-2.5 text-[0.95rem] text-muted transition-colors hover:bg-paper hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
       >

@@ -1632,6 +1632,7 @@ export type WorkspaceAction =
   | { type: "clearSelection" }
   | { type: "compareRef"; book: string; chapter: number; translation: string; paneId?: string }
   | { type: "newTab"; paneId?: string }
+  | { type: "openLauncher"; paneId?: string }
   | { type: "replaceTab"; paneId: string; tabId: string; tab: Tab }
   | { type: "closeTab"; paneId: string; tabId: string }
   | { type: "splitPane"; paneId: string; direction: SplitDirection }
@@ -3039,8 +3040,28 @@ export function workspaceReducer(
         action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
       const leaf = findLeaf(state.root, paneId);
       if (!leaf) return state;
-      // A new tab opens the launcher, keyed to the pane's passage; the old
-      // plain-reader behavior survives as the launcher's first suggestion.
+      // A new tab opens the Today dashboard: a page, not a pop-up. The
+      // module chooser survives at the "+" strip button and inside Today as
+      // the "Open something" section; the launcher's pinned reader row keeps
+      // the old plain-reader behavior alive.
+      const tab = dashboardTab();
+      return {
+        ...state,
+        activePaneId: paneId,
+        root: updateLeaf(state.root, paneId, (l) => ({
+          ...l,
+          tabs: [...l.tabs, tab],
+          activeTabId: tab.id,
+        })),
+      };
+    }
+
+    case "openLauncher": {
+      const paneId =
+        action.paneId && findLeaf(state.root, action.paneId) ? action.paneId : state.activePaneId;
+      const leaf = findLeaf(state.root, paneId);
+      if (!leaf) return state;
+      // The module chooser, opened deliberately from the strip's "+".
       const tab = launcherTab(paneRef(leaf) ?? undefined);
       return {
         ...state,
