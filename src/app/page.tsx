@@ -14,6 +14,18 @@ import MagicLinkForm from "@/components/landing/MagicLinkForm";
 export const metadata: Metadata = {
   description:
     "Berean Blue is a quiet, complete study of the Scripture: the King James text, the original languages, thirteen commentaries, the Spurgeon archive, your notes and sermons. On your device, and synced when you want it.",
+  openGraph: {
+    title: "Berean Blue",
+    description:
+      "A quiet, complete study of the Scripture: the text, the original languages, thirteen commentaries, the Spurgeon archive, your notes and sermons.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Berean Blue",
+    description:
+      "A quiet, complete study of the Scripture: the text, the original languages, thirteen commentaries, the Spurgeon archive, your notes and sermons.",
+  },
 };
 
 const FEATURES: { title: string; line: string }[] = [
