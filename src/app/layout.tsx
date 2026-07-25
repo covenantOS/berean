@@ -59,14 +59,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <LeadedMark />
               <span className="flex flex-col leading-tight">
                 <span className="font-editorial text-lg font-bold tracking-wide text-ink">
-                  Berean
+                  Berean Blue
                 </span>
                 <span className="small-caps text-[0.68rem] text-muted">
                   by Church Posting
                 </span>
               </span>
             </Link>
-            <nav className="flex items-center gap-1 sm:gap-2" aria-label="Primary">
+            <nav className="hidden items-center gap-1 sm:flex sm:gap-2" aria-label="Primary">
               {NAV.map((item) => (
                 <Link
                   key={item.href}
@@ -77,6 +77,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Link>
               ))}
               <CandleToggle />
+            </nav>
+            <nav className="flex items-center gap-1 sm:hidden" aria-label="Primary mobile">
+              <Link
+                href="/workspace"
+                className="fx-press rounded-[4px] px-2.5 py-1.5 text-sm font-medium text-ink no-underline hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+              >
+                Read
+              </Link>
+              <details className="relative">
+                <summary className="fx-press cursor-pointer list-none rounded-[4px] px-2.5 py-1.5 text-sm font-medium text-ink hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire">
+                  Menu
+                </summary>
+                <div className="glass-deep absolute right-0 top-full z-50 mt-1 flex w-44 flex-col rounded-[4px] py-1">
+                  {NAV.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="fx-press px-3 py-2 text-sm font-medium text-ink no-underline hover:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-sapphire"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <CandleToggle />
+                </div>
+              </details>
             </nav>
           </div>
         </header>
