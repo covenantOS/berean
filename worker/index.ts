@@ -22,7 +22,7 @@ interface BereanEnv {
  */
 export class BereanServer extends Container {
   defaultPort = 8080;
-  sleepAfter = "15m";
+  sleepAfter = "30s";
 
   constructor(ctx: ConstructorParameters<typeof Container>[0], env: BereanEnv) {
     super(ctx, env);
@@ -56,7 +56,7 @@ export default {
     }
     const container = await getRandom(
       env.BEREAN as Parameters<typeof getRandom>[0],
-      4
+      1
     );
     return container.fetch(request);
   },
